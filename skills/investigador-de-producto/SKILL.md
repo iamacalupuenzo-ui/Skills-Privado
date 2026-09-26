@@ -10,7 +10,7 @@ description: >
   herramienta", "registra lo que probamos".
 argument-hint: "[producto, herramienta o método a investigar, o 'registro' para documentar uno ya probado]"
 metadata:
-  version: "2.3.0"
+  version: "2.3.1"
   entornos: "Codex, Claude Code"
 ---
 
@@ -50,6 +50,7 @@ la investigación.
 - `references/evaluacion-en-uso.md` — protocolo para probar un producto sobre algo nuestro: línea base, revisión de seguridad previa, rondas, verificación independiente y veredicto. **Leer completo antes de ejecutar el producto.**
 - `references/notion-research.md` — esquema de la base Investigaciones. Leer solo cuando el usuario pide guardar o actualizar en Notion.
 - `references/casos/` — registros anteriores a 2026-09-24. Solo lectura: los casos nuevos van en la carpeta de investigaciones (ver abajo).
+- `scripts/guard-check.ps1` — resuelve el skill root, verifica método y carpeta de investigaciones, y lista los casos existentes para el chequeo anti duplicado. Correr antes de cualquier otra cosa (ver GUARD).
 
 ---
 
@@ -72,26 +73,15 @@ la investigación.
 
 ## GUARD — verificar contexto
 
-```powershell
-$skillRoots = @(
-  (Join-Path $env:USERPROFILE '.codex\skills\investigador-de-producto'),
-  (Join-Path $env:USERPROFILE '.claude\skills\investigador-de-producto'),
-  'D:\Investigacion\Skills\Skils\skills\investigador-de-producto'
-) | Where-Object { Test-Path -LiteralPath $_ }
-$skillRoot = $skillRoots | Select-Object -First 1
-Test-Path -LiteralPath (Join-Path $skillRoot 'references\evaluacion-en-uso.md')
-$researchDir = 'D:\Investigacion - V4\02-investigaciones'
-Test-Path -LiteralPath $researchDir
-Get-ChildItem -LiteralPath $researchDir, (Join-Path $skillRoot 'references\casos') -File -ErrorAction SilentlyContinue | Select-Object Name
-```
+Correr `scripts/guard-check.ps1` (sin argumentos). Interpretar su código de salida:
 
-- Si la primera da `False` → falta el método. Declararlo y no ejecutar ningún producto
-  hasta tenerlo: sin protocolo, una prueba en uso es una corrida a ciegas.
-- Si la carpeta de investigaciones da `False` → preguntar la ruta en este equipo antes
-  de escribir cualquier informe.
-- El último comando lista los informes existentes (carpeta nueva y casos anteriores): es
-  el chequeo anti duplicado. Si ya hay uno del mismo objeto, leerlo y continuarlo en una
-  versión nueva en vez de abrir otro.
+- **Exit 1** (`METODO_OK=False`) → falta el método. Declararlo y no ejecutar ningún
+  producto hasta tenerlo: sin protocolo, una prueba en uso es una corrida a ciegas.
+- **Exit 2** (`RESEARCH_DIR_OK=False`) → preguntar la ruta de investigaciones en este
+  equipo antes de escribir cualquier informe.
+- **Exit 0** → listo. La lista bajo `ARCHIVOS_EXISTENTES:` es el chequeo anti duplicado
+  (carpeta nueva y casos anteriores): si ya hay uno del mismo objeto, leerlo y
+  continuarlo en una versión nueva en vez de abrir otro.
 - En modo EN_USO, además: confirmar cuál es el sujeto de prueba real y que se puede medir
   antes de tocarlo. Si no hay forma de medir el estado inicial, decirlo y acordar la
   métrica antes de seguir.
