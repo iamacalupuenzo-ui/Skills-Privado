@@ -5,11 +5,14 @@ description: >
   de empresa o personal. Úsalo cuando una necesidad requiera decidir entre
   segmentación de una épica, gestión del proyecto, trazabilidad en Notion,
   construcción de producto, dirección visual o un cambio al sistema de diseño.
-  Deriva al skill especializado con el contexto y límites preservados; en la
-  construcción elige el builder según el stack y el sistema de diseño del
-  proyecto. No implementa componentes ni reemplaza los skills que coordina.
+  Debe usarse cuando el usuario pida "organiza este proyecto", "necesito construir
+  esto", "revisemos la dirección visual", "esto necesita cambiar en el sistema de
+  diseño" o "no sé a qué skill corresponde esto". Deriva al skill especializado con
+  el contexto y límites preservados; en la construcción elige el builder según el
+  stack y el sistema de diseño del proyecto. No implementa componentes ni reemplaza
+  los skills que coordina.
 metadata:
-  version: "2.0.1"
+  version: "2.0.2"
 ---
 
 # Product Orchestrator
