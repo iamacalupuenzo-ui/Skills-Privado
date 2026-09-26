@@ -9,7 +9,7 @@ description: >
   en un skill", "haz un skill de", "el skill de X necesita actualizarse",
   "audita el skill de Y", "qué le falta al skill de Z".
 metadata:
-  version: "1.2.2"
+  version: "1.3.0"
 ---
 
 # Skill Builder — Arquitectura para Codex y Claude Code

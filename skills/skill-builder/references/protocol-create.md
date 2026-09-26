@@ -115,7 +115,9 @@ Secciones posibles (adaptar el orden; omitir lo que no aporte):
 12. Sección de referencias (lista de archivos)
 
 Reglas de escritura:
-- Description explica capacidad y activación; comprobar ejemplos sin exigir comillas.
+- Description explica capacidad y activación; combina el resultado delimitado con 2-4
+  frases de disparo reales entre comillas (ver `references/skill-anatomy.md`, sección 1) —
+  ni comillas vacías sin resultado, ni resultado sin ejemplos de activación.
 - Cada modo define entrada, acción, verificación y salida; pausa por decisiones nuevas.
 - Los bloqueantes son concretos, no principios vagos
 - Las racionalizaciones son específicas al dominio del skill, no genéricas

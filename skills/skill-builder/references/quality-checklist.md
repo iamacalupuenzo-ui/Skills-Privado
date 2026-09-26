@@ -1,7 +1,8 @@
 # Skill Builder — Checklist de calidad
 
-23 criterios organizados en 6 categorías. Verificar cada uno contra el contenido real
-del skill — no marcar ✅ por intuición.
+24 criterios organizados en 6 categorías (C24 se agregó el 2026-09-26 y queda al final del
+archivo para no renumerar los existentes; pertenece a la Categoría 2 — Orquestación).
+Verificar cada uno contra el contenido real del skill — no marcar ✅ por intuición.
 
 ---
 
@@ -151,6 +152,21 @@ Probar código nuevo en aislamiento; validar el paquete con el agente objetivo c
 ❌ Declarar compatibilidad total solo porque el archivo aparece en el inventario.
 
 ---
+
+## Categoría 2 (continuación): C24
+
+**C24 — Operaciones deterministas evaluadas para script**
+Para cada procedimiento del SKILL.md o sus references que sea una secuencia mecánica
+repetida (resolver un ejecutable, parsear un JSON de estado, calcular un umbral, verificar
+una condición booleana), hay evidencia de que se evaluó extraerla a `scripts/` — ya sea
+como script real con contrato y prueba de caso de fallo (ver `patterns-catalog.md`,
+Patrón 19), o una nota explícita de por qué no aplica (ej. requiere juicio no determinista).
+✅ El skill tiene un script con contrato comentado y su caso negativo probado.
+❌ Una secuencia de comandos idéntica se repite en dos protocolos distintos como prosa,
+   sin que se haya considerado extraerla.
+No fuerces un script donde no hay operación determinista real — inventar código de ejemplo
+no ejecutable para cumplir esta casilla es peor que omitirla (ver antipatrón en
+skill-anatomy.md, sección 12).
 
 ## Resultado
 

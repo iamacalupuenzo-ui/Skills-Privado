@@ -361,6 +361,46 @@ vez de descubrir el problema recién en la validación.
 
 ---
 
+## Patrón 19: scripts/ con contrato y pruebas (orquestacion-multi-harness)
+
+Verificado el 2026-09-26 — la sesión ejecutó ambos scripts en aislamiento, incluido el caso
+de fallo, antes de darlos por buenos:
+
+````bash
+#!/usr/bin/env bash
+# Contrato: imprime en stdout el nombre del ejecutable correcto para esta sesión, sale 0.
+# Si el ejecutable resuelto no puede correr, imprime el error exacto en stderr y sale 1 —
+# no cae a otro ejecutable en silencio.
+set -euo pipefail
+
+resolve() {
+  if [ -n "${ORCA_CLI_COMMAND:-}" ]; then echo "$ORCA_CLI_COMMAND"; return 0; fi
+  if [ -n "${ORCA_DEV_REPO_ROOT:-}" ]; then echo "orca-dev"; return 0; fi
+  if [ "$(uname -s 2>/dev/null)" = "Linux" ]; then echo "orca-ide"; return 0; fi
+  echo "orca"
+}
+
+CMD="$(resolve)"
+if ! "$CMD" --version >/dev/null 2>&1; then
+  echo "No se pudo ejecutar '$CMD --version'. No se cae a otro ejecutable." >&2
+  exit 1
+fi
+echo "$CMD"
+````
+
+Pruebas que se corrieron antes de declararlo listo (no alcanza con que "se vea bien"):
+- Caso normal: sin variables de entorno seteadas → imprime `orca`, exit 0.
+- Caso de fallo: `ORCA_CLI_COMMAND=orca-que-no-existe-xyz` → reporta el error exacto, exit 1,
+  sin fallback silencioso a otro ejecutable.
+
+**Lección:** el contrato (qué entra, qué sale, qué pasa si falla) se escribe como comentario
+antes del código, no después. El caso de fallo se prueba de verdad — forzando la condición
+(variable de entorno con un valor inválido, umbral bajado a propósito para el otro script del
+mismo skill) — no se asume que "si no hay error visible, funciona". Un script sin su caso
+negativo probado no cumple C21/C22 del checklist aunque el caso normal funcione.
+
+---
+
 ## Decisiones de arquitectura por tipo de skill
 
 | Tipo de skill | Modos típicos | References típicas | Effort |

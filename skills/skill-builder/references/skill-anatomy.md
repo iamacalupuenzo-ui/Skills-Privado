@@ -19,9 +19,25 @@ metadata:
 ```
 
 Comprueba que name coincida con el directorio y que description explique capacidad y momento de uso.
-La descripción necesita distinguirse de skills vecinos; no una cuota de frases entre comillas.
-“Gestiona cosas del proyecto” no permite saber qué recorrido corresponde.
-“Revisa dependencias y propone correcciones sin modificar registros” sí delimita el resultado.
+La descripción necesita distinguirse de skills vecinos — no basta una lista de frases entre
+comillas sin delimitar el resultado. “Gestiona cosas del proyecto” no permite saber qué
+recorrido corresponde, aunque venga con comillas. “Revisa dependencias y propone correcciones
+sin modificar registros” sí delimita el resultado.
+
+Verificado el 2026-09-26 contra el estándar abierto Agent Skills
+(github.com/anthropics/skills, agentskills.io — adoptado por Claude, Codex y 26+ plataformas
+más): el estilo oficial sí recomienda tercera persona con frases de disparo concretas entre
+comillas — “Debe usarse cuando el usuario pida ‘X’, ‘Y’, ‘Z’”. Esto no contradice la regla de
+arriba: la técnica correcta combina ambas — delimitar el resultado observable Y anclarlo con
+2-4 frases de activación reales (tomadas de pedidos que el usuario ya hizo o haría, no
+inventadas para llenar una cuota). Ejemplo que cumple las dos cosas a la vez:
+
+> Documenta las variantes, propiedades y estados de un componente ya implementado, a partir
+> de su código real. Debe usarse cuando el usuario pida “documenta este componente”, “actualiza
+> el handoff” o “qué le falta de specs a X”; no implementa el componente ni publica cambios.
+
+La regla sigue siendo “no una cuota vacía de comillas sin resultado delimitado” — nunca
+“nunca usar comillas”.
 
 Mantén los campos opcionales solo si existe una necesidad y el consumidor los admite.
 La especificación y un validador de un cliente pueden diferir: anota cuál comprobaste.
@@ -77,6 +93,14 @@ Ejemplo de ruta de lectura:
 > Para actualizar un documento existente, lee references/protocol-update.md antes de editar.
 
 El ejemplo es ilustrativo: cada ruta del paquete real debe existir.
+
+**Candidato a script, no lo dejes en prosa.** Si durante la entrevista o la escritura del
+SKILL.md aparece una secuencia mecánica que se repetiría igual en cada invocación —resolver
+un ejecutable, parsear un JSON de estado, calcular un umbral, verificar una condición
+booleana— es señal de extraerla a `scripts/` con contrato de entrada/salida y un caso
+negativo probado, en vez de volver a redactarla como instrucción en prosa cada vez. Ver
+`references/patterns-catalog.md`, Patrón 19, para un ejemplo real con las dos pruebas
+(caso normal y caso de fallo) ya verificadas.
 No basta enumerar “patrones”: explica cuándo consultarlos.
 Evita encadenamientos profundos. El principal debe permitir localizar los recursos relevantes.
 Para una referencia extensa agrega un índice útil, no otro resumen que reemplace sus ejemplos.
