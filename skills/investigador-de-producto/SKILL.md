@@ -10,7 +10,7 @@ description: >
   herramienta", "registra lo que probamos".
 argument-hint: "[producto, herramienta o método a investigar, o 'registro' para documentar uno ya probado]"
 metadata:
-  version: "2.3.1"
+  version: "2.3.2"
   entornos: "Codex, Claude Code"
 ---
 
@@ -59,6 +59,13 @@ la investigación.
 - **Carpeta local:** `D:\Investigacion - V4\02-investigaciones`. Se respalda en Google
   Drive. Ahí van los informes nuevos y sus versiones, nunca dentro de la carpeta del skill:
   `update` reemplaza la copia instalada entera y borraría lo escrito ahí.
+- **Subcarpetas por tipo de contenido** (agregado 2026-09-26): un caso de investigación de
+  producto (herramienta, CLI, servicio, método evaluado) va en la raíz de
+  `02-investigaciones`, como siempre. Si la investigación termina en una **guía operativa
+  reutilizable** (no un caso cerrado de producto, sino un procedimiento para volver a
+  usar — ej. "cómo orquestar", "cómo iniciar una sesión"), el archivo va en
+  `02-investigaciones\recursos\`. Los documentos personales del usuario (fuera del alcance
+  de este skill) viven en `02-investigaciones\personal\` — nunca escribir ahí.
 - **Nombre del archivo:** `investigador-de-producto-[objeto]-v[N]-[YYYY-MM-DD].md`, sin
   tildes ni espacios. Una versión nueva es un archivo nuevo; las anteriores no se
   sobrescriben.
