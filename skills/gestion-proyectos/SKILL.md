@@ -4,10 +4,11 @@ description: >
   Dirige la gestión operativa de proyectos desde una arquitectura de información propia:
   conecta requerimientos, entregables, trabajo y evidencia; controla alcance, dependencias,
   riesgos, avances y cierre. Notion es el sistema interno y ClickUp la visibilidad compartida.
-  Activar para ordenar proyectos, evaluar trabajo, planificar, preparar lanzamientos,
-  revisar riesgos, dar estado o hacer seguimiento.
+  Debe usarse cuando el usuario pida "ordena este proyecto", "cuál es el estado del sprint",
+  "qué bloquea esta entrega", "preparemos el lanzamiento", "revisemos los riesgos" o
+  "hagamos seguimiento de esto".
 metadata:
-  version: "1.9.1"
+  version: "1.9.2"
 ---
 
 # Gestión de proyectos — PM operativo
