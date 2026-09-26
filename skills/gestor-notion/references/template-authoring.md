@@ -126,7 +126,7 @@ Toda plantilla vive en dos lugares:
 | Destino | Para qué |
 |---|---|
 | **Notion** — BD Templates & Entregables | Operativo. Relacionada al paso, se abre mientras se trabaja |
-| **Local** — `Documents\Proyectos\_outputs\plantillas\` | Versionable, editable, y respaldo si Notion no está |
+| **Local** — `D:\Investigacion - V4\04-plantillas\` | Versionable, editable, y respaldo si Notion no está |
 
 Ambos con el mismo contenido. El archivo local lleva el enlace a Notion en el encabezado;
 el README local lleva la tabla índice con los enlaces cruzados.

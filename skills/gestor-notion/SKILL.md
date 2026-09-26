@@ -6,7 +6,7 @@ description: >
   "busca en Notion", "relaciona estas páginas" o "crea una plantilla". Para gestionar
   tareas, dependencias, avances o seguimiento PM, usar gestion-proyectos.
 metadata:
-  version: "1.2.2"
+  version: "1.2.3"
 ---
 
 # Gestor de Notion — Operador del workspace
@@ -295,7 +295,7 @@ Relaciones entre ambientes:
 - **B9 — Duplicado no es sinónimo de error**: antes de proponer limpiar duplicados, verificar a qué apunta cada copia. Si apuntan a flujos distintos son versiones intencionales del mismo trabajo. Un ítem huérfano sin proceso asociado también es válido. Ver `process-modeling.md`.
 - **B10 — No inventar contenido de proceso**: si un proceso queda sin pasos tras una migración, declararlo como hueco abierto y pedir que los defina el usuario. Nunca escribir pasos de un proceso que no conoces.
 - **B11 — El modelo se aprueba antes de migrar**: en modo MODELO, presentar el diagnóstico con datos y la estructura propuesta, y esperar la decisión del usuario antes de crear BDs, cambiar schemas o mover páginas. La decisión estructural es suya.
-- **B12 — Toda plantilla se ancla a un paso y vive en dos lugares**: sin `Sub-proceso` no se crea, y siempre en Notion **y** en `Documents\Proyectos\_outputs\plantillas\` con enlaces cruzados. Las reglas completas (B-T1 a B-T7) están en `template-authoring.md`.
+- **B12 — Toda plantilla se ancla a un paso y vive en dos lugares**: sin `Sub-proceso` no se crea, y siempre en Notion **y** en `D:\Investigacion - V4\04-plantillas\` con enlaces cruzados. Las reglas completas (B-T1 a B-T7) están en `template-authoring.md`.
 - **B13 — Verificar la fuente antes de registrar**: resolver rutas reales. En este equipo la fuente es `D:/Investigacion/Skills/e-skills/skills`; Codex y Claude usan enlaces individuales y `.agents/skills` está vacío. Ausencia en una instalación no autoriza archivar ni borrar.
 - **B14 — Un skill, una fila y una capacidad**: registrar cada skill en una única fila de la base Skills y relacionarlo con una capacidad. Antes de crear, buscar por nombre; para cambiar su clasificación se actualiza la fila existente.
 - **B15 — Verificar el schema contra la BD, no contra el mapa**: antes de escribir campos poco usados, hacer `notion-fetch` del `collection://` y comparar. Para skills, el schema de la base Skills y `sistema-skills-notion.md` prevalecen sobre la base histórica `Skills & Marcos`.

@@ -374,7 +374,7 @@ Nota guardada
 
 1. Investigar (si aplica) — marco primero, preguntas después, dos o tres fuentes cruzadas
 2. Crear en Notion con `Sub-proceso` vinculado
-3. Crear el archivo local en `Documents\Proyectos\_outputs\plantillas\` con el encabezado
+3. Crear el archivo local en `D:\Investigacion - V4\04-plantillas\` con el encabezado
    de contexto y el enlace a Notion
 4. Actualizar `plantillas/README.md`: tabla índice, secuencia de uso, patrón de variantes
 5. Verificar que el paso muestre la plantilla en su propiedad `Templates`

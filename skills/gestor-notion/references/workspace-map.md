@@ -198,7 +198,7 @@ Criterio de `Tipo`: guiones, agendas y actas → `Guía`. Informes y análisis �
 Mapas y lienzos → `Canvas`. *(Faltan `Acta` y `Plan`; el select se queda corto.)*
 
 **18 plantillas cargadas** (17 de la fase de entendimiento + Checklist Handoff Dev preexistente).
-Espejo local en `Documents\Proyectos\_outputs\plantillas\` con README índice.
+Espejo local en `D:\Investigacion - V4\04-plantillas\` con README índice.
 
 Cadena de la fase de entendimiento:
 `Brief → Supuestos → Plan → Guion → Registro → Síntesis → Problem Statement`
