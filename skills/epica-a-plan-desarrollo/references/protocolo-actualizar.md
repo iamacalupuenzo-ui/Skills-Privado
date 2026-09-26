@@ -5,8 +5,10 @@ Se activa cuando el GUARD encontró un archivo
 
 ## Fase 0 — Localizar y leer el plan anterior
 
-Buscar en `Documents\Proyectos\<proyecto>\` el archivo con el número de versión
-más alto que coincida con el patrón `epica-a-plan-desarrollo-<proyecto>-v*.md`.
+El GUARD ya corrió `scripts/find-latest-plan.sh <proyecto>` para decidir este modo — su
+salida es la ruta del plan más reciente. Si por algún motivo hay que repetir la resolución
+en esta fase, correr el mismo script en vez de buscar el patrón a mano; evita que este
+protocolo y el GUARD queden con dos lecturas distintas del mismo archivo.
 Leerlo completo — la actualización parte de ahí, no desde cero.
 
 ## Fase 1 — Identificar qué cambió
@@ -40,7 +42,7 @@ sección adicional al inicio:
 Guardar como archivo nuevo, nunca sobreescribir el anterior:
 
 ```
-C:\Users\Enzo Macalupu\Documents\Proyectos\<proyecto>\epica-a-plan-desarrollo-<proyecto>-v[N+1]-<YYYY-MM-DD>.md
+D:\Investigacion - V4\01-proyectos\<proyecto>\epica-a-plan-desarrollo-<proyecto>-v[N+1]-<YYYY-MM-DD>.md
 ```
 
 Si el usuario solicitó actualizar Notion, leer `trazabilidad-notion.md` después de
@@ -52,7 +54,7 @@ cobertura. GitLab se conserva como fuente de lectura.
 
 ```
 Resultado: plan de desarrollo v[N+1] — actualización de v[N]
-Fuente:    Documents\Proyectos\<proyecto>\epica-a-plan-desarrollo-<proyecto>-v[N+1]-<fecha>.md
+Fuente:    D:\Investigacion - V4\01-proyectos\<proyecto>\epica-a-plan-desarrollo-<proyecto>-v[N+1]-<fecha>.md
 Cambios:   [resumen de qué se tocó respecto a la versión anterior]
 Validación: cada historia nueva o modificada tiene criterio de aceptación
 Pendiente: [si quedó algo abierto]

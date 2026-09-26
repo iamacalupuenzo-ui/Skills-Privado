@@ -65,7 +65,7 @@ Volcar todo en la estructura de `references/plantilla-plan-desarrollo.md`. Guard
 en:
 
 ```
-C:\Users\Enzo Macalupu\Documents\Proyectos\<proyecto>\epica-a-plan-desarrollo-<proyecto>-v1-<YYYY-MM-DD>.md
+D:\Investigacion - V4\01-proyectos\<proyecto>\epica-a-plan-desarrollo-<proyecto>-v1-<YYYY-MM-DD>.md
 ```
 
 Si la carpeta del proyecto no existe todavía, crearla (`<proyecto>\_proyecto.md`
@@ -84,7 +84,7 @@ evidencia de lectura.
 
 ```
 Resultado: plan de desarrollo v1 armado para [proyecto] — [N] módulos, [N] historias
-Fuente:    Documents\Proyectos\<proyecto>\epica-a-plan-desarrollo-<proyecto>-v1-<fecha>.md
+Fuente:    D:\Investigacion - V4\01-proyectos\<proyecto>\epica-a-plan-desarrollo-<proyecto>-v1-<fecha>.md
 Cambios:   documento nuevo
 Validación: cada historia tiene al menos un criterio de aceptación; [N] supuestos marcados
 Pendiente: [lista de preguntas abiertas de la Fase 7, si las hay]

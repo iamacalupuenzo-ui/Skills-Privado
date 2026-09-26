@@ -51,7 +51,7 @@ los acepte como pendientes explícitos.
 ## Fase 4 — Guardar y continuar
 
 1. Guardar el borrador validado como archivo nuevo:
-   `Documents\Proyectos\<proyecto>\epica-definida-<proyecto>-v1-<YYYY-MM-DD>.md`.
+   `D:\Investigacion - V4\01-proyectos\<proyecto>\epica-definida-<proyecto>-v1-<YYYY-MM-DD>.md`.
 2. Si el usuario pidió registrar en Notion, crear la épica (Estado `Borrador`) y las
    historias (Estado `Backlog`, con su `Orden`) usando las plantillas `Nueva épica` y
    `Nueva historia de usuario`, siguiendo `trazabilidad-notion.md`. La propiedad
@@ -63,7 +63,7 @@ los acepte como pendientes explícitos.
 
 ```
 Resultado: épica definida v1 — [nombre]
-Fuente:    Documents\Proyectos\<proyecto>\epica-definida-<proyecto>-v1-<fecha>.md
+Fuente:    D:\Investigacion - V4\01-proyectos\<proyecto>\epica-definida-<proyecto>-v1-<fecha>.md
 Historias: [cantidad] propuestas, en orden [lista corta]
 Supuestos: [aceptados como pendientes o "ninguno"]
 Notion:    [registrado con URLs / no solicitado]

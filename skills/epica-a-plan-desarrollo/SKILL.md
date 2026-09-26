@@ -1,8 +1,8 @@
 ---
 name: epica-a-plan-desarrollo
-description: Responsable de Gestión de producto. Convierte una épica o historia de usuario ya redactada en un plan de desarrollo accionable — la segmenta en módulos, define los flujos end-to-end de cada módulo, la desglosa en historias y casos de uso con criterios de aceptación, y arma el plan de testing y el orden de implementación. Registra y mantiene en Notion la cadena Épica → Historia de usuario → Caso de uso con su estructura estándar (relato, ficha técnica, mapa de cobertura, caso detallado con diagrama). Si solo hay una idea o un problema narrado, lo define con una entrevista breve hasta tener una épica e historias validadas. Es el único que actualiza épicas, historias y casos de uso cuando un flujo cambia durante el desarrollo. Úsalo cuando el usuario tiene una idea o una épica escrita, necesita saber en qué módulos y flujos se divide antes de construir, quiere registrar, revisar o mejorar épicas, historias y casos de uso, o el builder deriva un cambio de flujo. No implementa código.
+description: Responsable de Gestión de producto. Convierte una épica o historia de usuario ya redactada en un plan de desarrollo accionable — la segmenta en módulos, define los flujos end-to-end de cada módulo, la desglosa en historias y casos de uso con criterios de aceptación, y arma el plan de testing y el orden de implementación. Registra y mantiene en Notion la cadena Épica → Historia de usuario → Caso de uso con su estructura estándar (relato, ficha técnica, mapa de cobertura, caso detallado con diagrama). Si solo hay una idea o un problema narrado, lo define con una entrevista breve hasta tener una épica e historias validadas. Es el único que actualiza épicas, historias y casos de uso cuando un flujo cambia durante el desarrollo. Debe usarse cuando el usuario pida "arma el plan de desarrollo de esta épica", "segmenta esta historia en casos de uso", "actualiza el plan con este cambio de flujo", "define una épica desde esta idea" o "qué módulos y flujos tiene esto antes de construir", o cuando el builder derive un cambio de flujo. No implementa código.
 metadata:
-  version: "1.6.0"
+  version: "1.7.0"
 ---
 
 # Épica a plan de desarrollo
@@ -47,6 +47,8 @@ y las tareas no son suyos: viven en Gestión de proyectos y los opera `gestion-p
   flujo pedidos durante el desarrollo).
 - `references/trazabilidad-notion.md` — protocolo condicional para leer, relacionar,
   auditar y mejorar la cadena Épica → historia de usuario → casos de uso en Notion.
+- `scripts/find-latest-plan.sh` — resuelve si existe un plan previo para el proyecto y
+  cuál es la versión más alta. Lo usan el GUARD y `protocolo-actualizar.md`.
 
 ## GUARD
 
@@ -60,9 +62,11 @@ y las tareas no son suyos: viven en Gestión de proyectos y los opera `gestion-p
 2. **Proyecto identificable**: determinar a qué proyecto pertenece esta épica
    (nombre explícito del usuario, o inferible del contexto de trabajo actual).
    Si no es identificable, preguntar solo eso.
-3. **Plan previo**: buscar en `Documents\Proyectos\<proyecto>\` un archivo
-   `epica-a-plan-desarrollo-<proyecto>-v*.md`. Si existe, el modo es ACTUALIZAR.
-   Si no existe, el modo es ANALIZAR.
+3. **Plan previo**: correr `scripts/find-latest-plan.sh <proyecto>`. Si imprime una ruta
+   (exit 0), el modo es ACTUALIZAR y esa ruta es el plan a leer. Si no imprime nada
+   (exit 1), el modo es ANALIZAR — no hay que buscar a mano ni asumir el patrón de
+   nombre, el script ya resuelve la versión más alta en
+   `D:\Investigacion - V4\01-proyectos\<proyecto>\`.
 4. **Repo opcional**: si el proyecto tiene código accesible localmente, se puede
    usar como contexto para no duplicar módulos ya construidos — no es un
    requisito para completar el skill.
