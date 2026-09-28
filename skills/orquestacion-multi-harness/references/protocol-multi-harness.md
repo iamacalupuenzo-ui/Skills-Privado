@@ -39,6 +39,7 @@ ORCA orchestration worker-start --run <run_id> --spec "<Target/Change/Constraint
 
 - `--worktree` **nunca** apunta a `D:\Investigacion - V4\...` — ver
   `references/artifact-locations.md`. El código/harness corre en el repo del proyecto.
+- **Despacha con `scripts/dispatch-worker.sh`**, no con `worker-start` suelto: garantiza que el prompt llegue aunque la pestaña del agente esté cerrada (ver `references/known-issues.md`, «Prompt no entregado»).
 - Si `worker-start` falla en `agent_readiness` por timeout, seguir la recuperación
   estándar de `orchestration`: `worker-release` del residual, luego `worker-start
   --retry-of <dispatch_id> --task <task_id>` con `--timeout-ms` más alto (referencia:

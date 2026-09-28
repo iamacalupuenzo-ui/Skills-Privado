@@ -29,6 +29,7 @@ contenido en cuestión debe repartirse o no. Ejecutas la mecánica delegando en 
 - `references/artifact-locations.md` — convención de dónde va código vs. documentación
 - `references/protocol-multi-harness.md` — protocolo completo cuando se despacha de verdad vía Orca
 - `references/protocol-entorno-unico.md` — protocolo del modo fallback sin Orca
+- `references/manual-orca.md` — manual práctico: saber si un worker de Codex trabaja de verdad, corregirlo por su terminal y esperar sin gastar tokens
 
 ## GUARD
 
@@ -81,6 +82,10 @@ Declarar el modo detectado en la primera línea de la respuesta antes de actuar.
   falla en `agent_readiness` sin necesidad.
 - **B6 — El modelo de OpenCode no se promete**: nunca pasar `--model` a un dispatch
   `--agent opencode` esperando que tenga efecto; ver `references/model-tiers.md`.
+- **B7 — Despachar siempre con `scripts/dispatch-worker.sh`**: en modo terminal el prompt
+  a veces no llega al agente (queda pegado o la pestaña está cerrada). El script lo detecta
+  y lo reenvía; si lo reenvió a mano, el resultado se confirma leyendo el archivo de
+  reporte, no el `worker_done`. Ver `references/known-issues.md`, «Prompt no entregado».
 
 ## Racionalizaciones comunes
 

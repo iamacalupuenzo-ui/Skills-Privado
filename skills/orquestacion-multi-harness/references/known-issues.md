@@ -59,3 +59,14 @@ Si `worker-show`/`worker-list` reporta `resource.state: user_owned` con
 `retainedReason: user_takeover`, un humano tomó control de esa terminal en la app de
 escritorio de Orca. No enviar comandos a esa terminal ni intentar liberarla — solo
 seguir monitoreando con `check --wait`.
+
+## Prompt no entregado al lanzar un worker (modo terminal)
+
+**Síntomas** (sesión FleetOperations del 2026-09-27, se repitió en casi la mitad de los despachos):
+- `worker-start` devuelve `state: failed` o `outcome_unknown` y el `preview` de `worker-show` muestra `› Ask Codex to do anything`: el agente arrancó, pero el prompt nunca llegó.
+- El `preview` muestra `[Pasted Content N chars]`: el prompt quedó pegado sin enviar.
+- Pasa sobre todo cuando Enzo no tiene abierta la pestaña del agente en Orca.
+
+**Manejo obligatorio:** despacha siempre con `scripts/dispatch-worker.sh`, no con `worker-start` suelto. El script espera 15 s y lee la terminal. Si ve el prompt pegado, envía Enter; si el agente está vacío, reenvía el spec con `orca terminal send --text ... --enter`; si ve que el agente ya trabaja, no toca nada. Para lanzar varios workers en paralelo: `dispatch-worker.sh ... & dispatch-worker.sh ... & wait`.
+
+**Consecuencia:** si el spec se reenvió a mano, el dispatch ya quedó asentado como fallido y Orca rechaza el `worker_done` («inactive dispatch … already settled»). En ese caso no esperes el `worker_done`: confirma el resultado leyendo el archivo de reporte del spec (por ejemplo, con un bucle que espere a que aparezca la sección pedida) y después haz `check --ack` del rechazo.
