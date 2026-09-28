@@ -1,7 +1,7 @@
 # Flujo canónico del catálogo de skills
 
 Este documento define cómo se crea, actualiza, publica e instala un skill reutilizable.
-El repositorio [Skils](https://github.com/iamacalupuenzo-ui/Skils) es la fuente única de
+El repositorio [Skills-Privado](https://github.com/iamacalupuenzo-ui/Skills-Privado) es la fuente única de
 verdad. Las carpetas de `~/.codex/skills` y `~/.claude/skills` son destinos instalados,
 no lugares donde se mantiene la versión canónica.
 
@@ -9,7 +9,7 @@ no lugares donde se mantiene la versión canónica.
 
 1. Si existe `SKILS_REPOSITORY`, usar esa ruta.
 2. En otro caso, localizar el repositorio Git que contiene `skills-manifest.json` y cuyo
-   remoto `origin` es `https://github.com/iamacalupuenzo-ui/Skils.git`.
+   remoto `origin` es `https://github.com/iamacalupuenzo-ui/Skills-Privado.git`.
 3. Si no se puede resolver, detener la edición reutilizable e informar la ruta que falta.
 
 Estructura esperada:
@@ -48,14 +48,14 @@ Son operaciones independientes y requieren alcance explícito:
 | Operación | Comando o acción | Resultado verificable |
 | --- | --- | --- |
 | Publicar | `git add`, `git commit`, `git push origin main` | Commit visible en `origin/main` |
-| Instalar por primera vez | `npx --yes github:iamacalupuenzo-ui/Skils#main install --target all` | `doctor` informa `OK` |
-| Actualizar instalaciones | `npx --yes github:iamacalupuenzo-ui/Skils#main update --target all` | `doctor` informa `OK` |
+| Instalar por primera vez | `npx --yes github:iamacalupuenzo-ui/Skills-Privado#main install --target all` | `doctor` informa `OK` |
+| Actualizar instalaciones | `npx --yes github:iamacalupuenzo-ui/Skills-Privado#main update --target all` | `doctor` informa `OK` |
 | Validar sin escribir | Agregar `--dry-run` a install o update | Lista de cambios previstos |
 
 Después de instalar, ejecutar:
 
 ```powershell
-npx --yes github:iamacalupuenzo-ui/Skils#main doctor --target all
+npx --yes github:iamacalupuenzo-ui/Skills-Privado#main doctor --target all
 ```
 
 Codex puede requerir reinicio si no redescubre el skill; Claude Code lo leerá al iniciar

@@ -20,7 +20,7 @@ al repositorio o fijar una revisión concreta.
 El comando instala los siete skills publicados en ambos ambientes:
 
 ```sh
-npx --yes github:iamacalupuenzo-ui/Skils#main install --target all
+npx --yes github:iamacalupuenzo-ui/Skills-Privado#main install --target all
 ```
 
 Destinos utilizados por defecto:
@@ -33,14 +33,14 @@ Destinos utilizados por defecto:
 Para instalar en un solo ambiente:
 
 ```sh
-npx --yes github:iamacalupuenzo-ui/Skils#main install --target codex
-npx --yes github:iamacalupuenzo-ui/Skils#main install --target claude
+npx --yes github:iamacalupuenzo-ui/Skills-Privado#main install --target codex
+npx --yes github:iamacalupuenzo-ui/Skills-Privado#main install --target claude
 ```
 
 Para instalar una selección:
 
 ```sh
-npx --yes github:iamacalupuenzo-ui/Skils#main install --target all --skill investigador-de-producto,skill-builder
+npx --yes github:iamacalupuenzo-ui/Skills-Privado#main install --target all --skill investigador-de-producto,skill-builder
 ```
 
 ## Actualización
@@ -48,7 +48,7 @@ npx --yes github:iamacalupuenzo-ui/Skils#main install --target all --skill inves
 Cuando exista una versión aprobada en `main`, ejecutar:
 
 ```sh
-npx --yes github:iamacalupuenzo-ui/Skils#main update --target all
+npx --yes github:iamacalupuenzo-ui/Skills-Privado#main update --target all
 ```
 
 `update` reemplaza únicamente el directorio de cada skill declarado en el catálogo. No
@@ -60,13 +60,13 @@ Antes de modificar archivos, construye una copia temporal y valida que cada fuen
 
 ```sh
 # Ver qué instalaría, sin modificar el equipo
-npx --yes github:iamacalupuenzo-ui/Skils#main install --target all --dry-run
+npx --yes github:iamacalupuenzo-ui/Skills-Privado#main install --target all --dry-run
 
 # Verificar los skills instalados
-npx --yes github:iamacalupuenzo-ui/Skils#main doctor --target all
+npx --yes github:iamacalupuenzo-ui/Skills-Privado#main doctor --target all
 
 # Listar el catálogo aprobado
-npx --yes github:iamacalupuenzo-ui/Skils#main list
+npx --yes github:iamacalupuenzo-ui/Skills-Privado#main list
 ```
 
 Codex suele detectar los cambios locales automáticamente. Si un skill no aparece tras la
@@ -77,8 +77,8 @@ instalación, reiniciar Codex. Claude Code leerá los skills en su siguiente ses
 En automatizaciones o equipos con perfiles no convencionales se puede indicar el destino:
 
 ```sh
-npx --yes github:iamacalupuenzo-ui/Skils#main install --target codex --codex-dir "D:\\Agentes\\codex-skills"
-npx --yes github:iamacalupuenzo-ui/Skils#main install --target claude --claude-dir "/opt/agent/claude-skills"
+npx --yes github:iamacalupuenzo-ui/Skills-Privado#main install --target codex --codex-dir "D:\\Agentes\\codex-skills"
+npx --yes github:iamacalupuenzo-ui/Skills-Privado#main install --target claude --claude-dir "/opt/agent/claude-skills"
 ```
 
 También se aceptan las variables `CODEX_SKILLS_DIR` y `CLAUDE_SKILLS_DIR`.

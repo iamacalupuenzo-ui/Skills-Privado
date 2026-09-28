@@ -16,7 +16,7 @@ Antes de crear la fila, resolver la fuente canónica: el repositorio Skils (ver
 `skill-builder/references/catalog-flow.md`). Comprobar que el skill está declarado:
 
 ```powershell
-npx --yes github:iamacalupuenzo-ui/Skils#main list
+npx --yes github:iamacalupuenzo-ui/Skills-Privado#main list
 ```
 
 Si el skill no está en el catálogo, no registrarlo; la ausencia no autoriza archivar una
