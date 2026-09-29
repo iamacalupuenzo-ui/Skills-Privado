@@ -106,6 +106,39 @@ componente viajan con el componente; la aplicación no los replica. Nunca
 agregar `@font-face`, una URL de fuentes ni una familia tipográfica propia para
 reemplazar los tokens: el consumidor solo usa la tipografía publicada por el DS.
 
+## Imports por subpath (desde 0.6.0)
+
+Desde la versión 0.6.0, cada componente de Comsatel DS tiene su propio punto de
+entrada. En un producto, **cada** import del DS va por subpath; nunca desde la raíz
+`@iamacalupuenzo-ui/comsatel-ds`:
+
+```ts
+import { Button } from '@iamacalupuenzo-ui/comsatel-ds/button';
+import { Icon } from '@iamacalupuenzo-ui/comsatel-ds/icons';
+import { InputGroup, PasswordInput } from '@iamacalupuenzo-ui/comsatel-ds/input';
+import { Menu, type MenuGroupData } from '@iamacalupuenzo-ui/comsatel-ds/menu';
+import { formatDateTime } from '@iamacalupuenzo-ui/comsatel-ds/format';
+```
+
+- **Dónde está el subpath de cada símbolo:** en la línea «Import liviano» de la guía
+  del componente, o en `exports` de
+  `node_modules/@iamacalupuenzo-ui/comsatel-ds/package.json` y el `.d.ts` de cada
+  entrada. El subpath es el nombre de la carpeta del componente; excepciones
+  conocidas: `PressScale` está en `/motion`, `Collapse` en `/directives` y los
+  tokens de TypeScript en `/tokens`.
+- **No importar `/shared`**: es apoyo interno del DS.
+- **Versiones anteriores:** hasta la 0.3.x solo existe la raíz; en 0.4.0 y 0.5.0 solo
+  algunos subpaths. Comprobar `exports` de la versión instalada antes de usar uno.
+- **Efecto medido en FleetOperations** (DS 0.6.0, mismo código y lockfile): con
+  imports desde la raíz cada pantalla descargaba 390 kB del DS; por subpath, de
+  133 kB (tablero) a 289 kB (mapa). En 0.5.0, un solo import desde la raíz traía la
+  librería entera; desde 0.6.0 la raíz solo reexporta, pero sigue juntando en un
+  chunk todo lo que se importa desde ella.
+- **Migrar un repositorio existente:** reemplazar cada
+  `import { … } from '@iamacalupuenzo-ui/comsatel-ds'` por un import por subpath
+  según el mapa símbolo → subpath de los `.d.ts` instalados; al terminar, no debe
+  quedar ningún import desde la raíz (`grep -rn "comsatel-ds'" src`).
+
 ## Tipografía en formularios
 
 Clasificar cada texto antes de aplicar estilos: título de pantalla,

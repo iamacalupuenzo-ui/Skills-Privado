@@ -1,7 +1,8 @@
 # Checklist de auditoría de tokens — 13 criterios (Angular)
 
 Aplicar los 13 en orden sobre cada componente
-(`projects/comsatel-ds/src/lib/<nombre>/<nombre>.ts/html/css`) y su página de
+(`projects/comsatel-ds/<nombre>/src/<nombre>.ts/html/css` desde la 0.6.0; ver
+`entry-points.md`) y su página de
 documentación (`src/app/pages/<nombre>-demo/<nombre>-page.ts/html/css`). La
 disciplina de tokens (C1, C2, C3, C5-C12) es la MISMA que en el sistema React
 — son criterios de diseño, no de framework — así que cada uno trae también el
@@ -225,13 +226,13 @@ Buscar cualquier `box-shadow` con valores crudos → reemplazar por
 `var(--algo)` usada en el código pero nunca definida en `tokens.css`. No
 genera error de consola — silenciosamente no aplica ningún estilo.
 ```bash
-grep -rn "var(--nombre-sospechoso)" projects/comsatel-ds/src/lib/
+grep -rn "var(--nombre-sospechoso)" projects/comsatel-ds/*/src/
 grep -n "nombre-sospechoso:" projects/comsatel-ds/src/styles/tokens.css   # si no aparece, está roto
 ```
 
 ## C7 — Íconos no vienen del registro curado, o no escalan en progresión
 
-Cualquier componente en `projects/comsatel-ds/src/lib/*/` que use un ícono
+Cualquier componente en `projects/comsatel-ds/*/src/` que use un ícono
 debe consumirlo vía `<cs-icon name="..." [size]="n">` desde
 `icon-registry.ts` — nunca un SVG suelto dibujado a mano dentro del
 componente. Si el ícono que hace falta no está en el registro, agregarlo
@@ -256,7 +257,7 @@ que ya tenemos construido, debemos traer ese mismo componente."
 **Caso real ya resuelto en Angular — glyphs de checkbox/radio dentro de
 Dropdown.** El glyph de un ítem `selectionMode: "checkbox"` reutiliza
 literalmente las clases `.cs-checkbox__box`/`.cs-checkbox__box--checked` del
-Checkbox real, extraídas a `projects/comsatel-ds/src/lib/shared/selection-glyphs.css`
+Checkbox real, extraídas a `projects/comsatel-ds/shared/src/selection-glyphs.css`
 e importadas con `@import` tanto en `checkbox.css` como en
 `dropdown-item.css` — nunca duplicar ese CSS. Cuando se porte Radio, su
 anillo/punto deben usar el mismo criterio: extraer a

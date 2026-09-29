@@ -32,7 +32,7 @@ description: >
   proyectos, o para decidir una arquitectura de tokens nueva — eso lo
   decide el usuario, este skill aplica la que ya existe.
 metadata:
-  version: "2.8.6"
+  version: "2.9.0"
 ---
 
 # Comsatel Design System — auditor y reconstructor (Angular)
@@ -156,6 +156,12 @@ hace respetar de ahí en adelante.
   externos al skill: workspace Angular, decisión PrimeNG, referencia React,
   inventario de brechas y C-Locater. **Leer al inicio** para resolver qué
   fuente corresponde al modo y al componente.
+- `references/entry-points.md` — un punto de entrada por componente (desde
+  0.6.0): dónde viven las fuentes (`projects/comsatel-ds/<componente>/src`),
+  cómo agregar o mover un componente, imports entre entradas, recursos,
+  historias, guía («Import liviano») y las puertas antes de publicar. **Leer
+  siempre** antes de agregar un componente, mover una carpeta, cambiar un import
+  entre componentes o tocar `public-api.ts` — ver B19.
 - `references/package-release.md` — protocolo para publicar una versión del
   paquete en GitHub Packages. **Leer antes de cualquier `npm publish`, tag o
   afirmación de que una versión ya puede instalarse.**
@@ -175,8 +181,9 @@ documentados son específicos de este repositorio.
    nombre distribuible configurado en el paquete y que el proyecto Angular
    conserva `comsatel-ds` como identificador de build. No asumir que el
    nombre publicado es no-scoped ni que coincide con el workspace.
-3. Confirmar que existe `projects/comsatel-ds/src/lib/tokens/typography.ts`
-   y que exporta una función `textStyle`.
+3. Confirmar que existe `projects/comsatel-ds/tokens/src/typography.ts`
+   (hasta la 0.5.0 estaba en `src/lib/tokens/`) y que exporta una función
+   `textStyle`.
 4. Leer `references/project-resources.md` y cargar solo los recursos de
    proyecto que correspondan a la tarea. El mapa determina dónde se lee
    contexto; los archivos Angular reales siguen siendo la fuente de verdad.
@@ -230,7 +237,8 @@ lo son entre sí.
    si de todas formas se quiere re-auditar (pudo haber cambiado desde
    entonces) en vez de asumir que hace falta.
 2. Leer el componente en
-   `projects/comsatel-ds/src/lib/<nombre>/<nombre>.ts/html/css` y, si
+   `projects/comsatel-ds/<nombre>/src/<nombre>.ts/html/css` (ruta desde la
+   0.6.0; ver `references/entry-points.md`) y, si
    existe, su página en `src/app/pages/<nombre>-demo/<nombre>-page.ts/html/css`.
 3. Correr los 13 criterios de `references/audit-checklist.md` sobre el
    componente de librería. Para cada uno, citar la línea exacta que lo
@@ -561,6 +569,19 @@ lo son entre sí.
   estilo en la página — no se fuerza dentro del Playground genérico ni se
   omite por falta de espacio.
 
+- **B19 — Un componente es un punto de entrada.** Desde la 0.6.0 cada
+  componente vive en `projects/comsatel-ds/<componente>/` con su
+  `ng-package.json`, su `public-api.ts` y sus fuentes en `src/`, y se publica
+  como `@iamacalupuenzo-ui/comsatel-ds/<componente>`. Un componente nuevo no se
+  crea en `src/lib/` ni se agrega solo a la raíz: se crea su entrada, la raíz la
+  reexporta y su guía lleva la línea «Import liviano». Entre componentes se
+  importa siempre por subpath: nunca desde la raíz (ciclo raíz → subpath → raíz)
+  ni con una ruta relativa que salga de la carpeta (ng-packagr la rechaza o
+  duplica la clase). Si no, el consumidor vuelve a descargar componentes que no
+  usa: con imports desde la raíz, cada pantalla de FleetOperations bajaba 390 kB
+  del DS; por subpath, de 133 a 289 kB. Receta y puertas en
+  `references/entry-points.md`.
+
 ---
 
 ## Gate de cierre: referencia funcional, estructura y evidencia visual
@@ -728,6 +749,11 @@ Antes de cerrar cualquier modo, confirmar:
 - [ ] Si el patrón tiene prior art conocido (tabla, calendario, selector de
       columnas, etc.), se puede nombrar qué producto real ya lo resuelve así
       y cómo — no se inventó la estructura de interacción (B18)
+- [ ] Si se agregó o movió un componente, tiene su entrada en
+      `projects/comsatel-ds/<componente>/`, la raíz la reexporta, su guía lleva
+      «Import liviano» y pasaron `check:entry-imports`, `verify:package`, los
+      tests de la librería y Storybook sin perder historias (B19,
+      `entry-points.md`)
 
 Si algún ítem falla, no cerrar como completo — decir explícitamente qué
 falta.
@@ -813,3 +839,5 @@ Pendiente: portar a Angular vía RECONSTRUIR (no incluido en esta pasada)
   zoneless — motor de comportamiento para componentes complejos (B14)
 - `references/verification-gates.md` — matriz obligatoria de referencia
   funcional, estructura semántica y evidencia visual antes del cierre
+- `references/entry-points.md` — un punto de entrada por componente: estructura,
+  receta para agregar o mover un componente y puertas antes de publicar (B19)

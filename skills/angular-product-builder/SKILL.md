@@ -15,7 +15,7 @@ description: >
   componentes dentro del sistema de diseño, no clona su repositorio y no copia
   sus demos.
 metadata:
-  version: "2.3.0"
+  version: "2.4.0"
 ---
 
 # Angular Product Builder
@@ -214,6 +214,16 @@ evaluar, no se edita.
   de lectura del paquete. La API pública instalada es la evidencia del
   consumidor; si no documenta un patrón, se reporta un contrato faltante en vez
   de pedir acceso a fuentes privadas.
+- **B2b — Imports según la estructura del sistema elegido.** Antes de escribir
+  el primer import, leer `exports` del paquete instalado: si el sistema publica
+  un punto de entrada por componente (Comsatel DS desde 0.6.0, Angular Material,
+  PrimeNG), cada import va por su subpath y ninguno desde la raíz; si publica una
+  sola entrada, se importa desde ella. No trasladar la forma de un sistema a otro
+  por costumbre. Un import desde la raíz de un sistema con subpaths hace que cada
+  pantalla descargue componentes que no usa (en FleetOperations, 390 kB del DS
+  por pantalla contra 133–289 kB por subpath). Regla y receta en
+  `references/design-system-contract.md` y en el archivo del sistema en
+  `references/design-systems/`.
 - **B3 — Plan antes de interfaz.** Cada característica define actor, resultado,
   flujo, estados, errores, permisos y notificaciones; construir solo el estado
   feliz crea software operacionalmente incompleto.
@@ -283,6 +293,8 @@ evaluar, no se edita.
   ajuste.
 - Se propone editar el sistema de diseño durante la construcción de una aplicación.
 - Se intenta importar un archivo interno o copiar CSS para “avanzar rápido”.
+- Se escribe un import desde la raíz de un sistema de diseño que publica un subpath
+  por componente, o se asume la forma de importar de otro sistema sin leer su `exports`.
 - Un plan enumera componentes pero no actores, estados ni recuperación.
 - Una alerta no identifica responsable, acción o duración.
 - Un mapa no tiene alternativa de lista/detalle, ni hora de dato, ni estado de error.

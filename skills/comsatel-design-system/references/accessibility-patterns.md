@@ -86,7 +86,7 @@ protected onKeydown(e: KeyboardEvent): void {
 }
 ```
 
-Ejemplo real: `projects/comsatel-ds/src/lib/modal/modal.ts`.
+Ejemplo real: `projects/comsatel-ds/modal/src/modal.ts`.
 
 ## 2. Foco inicial y restauración
 
@@ -255,7 +255,7 @@ no depende de `zone.js` ni dispara change detection en cada frame, así que no c
 zoneless (sección 0). No sustituye nada de foco/portal/teclado — solo calcula el número intermedio de
 una animación.
 
-Patrón real: `projects/comsatel-ds/src/lib/directives/press-scale.directive.ts`.
+Patrón real: `projects/comsatel-ds/motion/src/press-scale.directive.ts` (desde la 0.4.0 vive en el subpath `/motion`).
 
 ```ts
 import { Directive, ElementRef, HostListener, OnDestroy, inject } from '@angular/core';

@@ -1,5 +1,11 @@
 # Inventario de estado — Comsatel Design System (Angular)
 
+> **Rutas desde la 0.6.0 (2026-09-29):** cada componente es un punto de entrada.
+> Donde este inventario dice `projects/comsatel-ds/src/lib/<x>/`, la ruta vigente es
+> `projects/comsatel-ds/<x>/src/`, y el componente se importa desde
+> `@iamacalupuenzo-ui/comsatel-ds/<x>`. Excepciones: `PressScale` vive en `/motion`
+> y `Collapse` en `/directives`. Receta y puertas en `entry-points.md`.
+
 Actualización: 2026-09-17, reconstrucción de la marca de Flotas. Se reemplazó la
 identidad visual aislada de C-Locater Flotas por el sistema C-Flotas: wordmark
 `C-` + cápsula negra `FLOTAS` + firma `by COMSATEL`, e isotipo `C-` + cápsula

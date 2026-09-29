@@ -57,6 +57,32 @@ duplicada dentro de este skill.
 - Los estilos encapsulados de cada componente viajan con el componente; la
   aplicación no los replica.
 
+## Cómo se importa cada componente
+
+Cada sistema de diseño decide cómo se reparte su código, y el producto lo sigue.
+No aplicar por costumbre la forma de otro sistema:
+
+1. Leer `exports` del `package.json` instalado del sistema elegido (y su
+   README). Hay dos formas habituales:
+   - **Un punto de entrada por componente** (Angular Material, PrimeNG,
+     Comsatel DS desde 0.6.0): cada componente se importa desde su subpath,
+     por ejemplo `@angular/material/button`. Es la forma que hay que usar.
+   - **Una sola entrada**: todo se importa desde la raíz del paquete.
+2. Si el sistema publica subpaths, **cada** import del producto va por subpath,
+   incluidos los de servicios, pipes y tipos. Un import desde la raíz junta en un
+   mismo chunk todo lo que la aplicación importa desde ahí, y cada pantalla lo
+   descarga completo aunque use pocos componentes.
+3. Nunca importar entradas marcadas como internas por el sistema (por ejemplo
+   `/shared` en Comsatel DS) ni rutas de archivos internos (`fesm2022/`,
+   `types/`, `src/`).
+4. Registrar la regla en las instrucciones del repositorio destino (CLAUDE.md o
+   AGENTS.md) para que la siguiente sesión no la redescubra.
+5. Para medir el efecto, comparar dos builds con `--stats-json` del mismo código
+   y lockfile, cambiando solo los imports; no prometer un ahorro sin esa medición.
+
+La receta concreta de cada sistema (qué subpaths existen, dónde se consultan)
+vive en `references/design-systems/<sistema>.md`.
+
 ## Formularios
 
 Clasificar cada texto antes de aplicar estilos: título de pantalla,
