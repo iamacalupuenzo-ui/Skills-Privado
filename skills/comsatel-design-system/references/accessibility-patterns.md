@@ -5,7 +5,7 @@ Leer este archivo al construir cualquier componente que necesite: foco atrapado,
 una animación de entrada/salida propia. Son los mismos problemas que resuelve un componente "difícil"
 (Modal, Menu, Toast, Table con selección) — acá está el criterio y el código de referencia para
 resolverlos a mano, sin ninguna librería de UI externa (ver `PRIMENG_PLAN.md` en
-`Comsatel-DS-Angular` para el porqué de esa decisión).
+`ui-components` para el porqué de esa decisión).
 
 **El motor de comportamiento/accesibilidad (foco, portal, scroll, cierre, navegación por teclado) es
 distinto del motor de movimiento visual (interpolar un número entre dos valores con una curva de
@@ -18,14 +18,14 @@ instalar un PrimeNG.
 Practices Guide (APG), la referencia oficial de accesibilidad web para "Dialog (Modal)", "Menu and
 Menubar", "Disclosure", etc. Cualquier componente serio los implementa siguiendo esa misma guía. Este
 archivo describe CÓMO se implementan en Angular concretamente, con el código real ya construido en
-`Comsatel-DS-Angular` como ejemplo — nunca cita de dónde "viene" el patrón (mismo criterio que B10 en
+`ui-components` como ejemplo — nunca cita de dónde "viene" el patrón (mismo criterio que B10 en
 `SKILL.md`).
 
 ---
 
 ## 0. El problema que hay que resolver primero, siempre: zoneless
 
-**`Comsatel-DS-Angular` corre sin `zone.js`** (confirmado: no está en `package.json` — Angular 22 es
+**`ui-components` corre sin `zone.js`** (confirmado: no está en `package.json` — Angular 22 es
 zoneless por defecto en este proyecto). Esto cambia una regla fundamental de cómo escribir estado
 interno en un componente:
 

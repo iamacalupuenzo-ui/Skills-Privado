@@ -2,8 +2,8 @@
 name: comsatel-design-system
 description: >
   Auditor y reconstructor del Comsatel Design System en Angular (proyecto
-  activo, normalmente en C:\Users\emacalupu\Documents\Boveda\Monday\Comsatel-DS
-  (con D:\Investigacion\Comsatel-DS-Angular como ruta alternativa de búsqueda). Conoce la arquitectura
+  activo en C:\Users\emacalupu\Documents\00 - Proyectos Enzo - V1\ui-components:
+  repositorio GitLab, paquete @comsatel/ui-components). Conoce la arquitectura
   completa de tokens (color, tipografía, espaciado, radios, sombras, motion,
   z-index), el patrón de página Angular real (DemoShell/CodeBlock/doc-page.css)
   y los bugs de plataforma ya encontrados, y evalúa cualquier componente o
@@ -72,7 +72,7 @@ mismas secciones de documentación, mismo comportamiento — cada uno con los
 valores y el motor de su propia plataforma (ver B14 más abajo sobre el
 motor de Angular).
 
-**C-Locater (`D:\Investigacion\C-Locater`) es una tercera fuente, al mismo
+**C-Locater (`C:\Users\emacalupu\Documents\Proyectos\CLocater\C-Locater`) es una tercera fuente, al mismo
 nivel que React: referencia de estructura, nunca de valores.** Es un
 producto real, independiente del design system, con su propio sistema de
 tokens shadcn/Tailwind. Cuando el usuario pide extraer una sección o
@@ -174,9 +174,12 @@ Antes de aplicar cualquier criterio de este skill, confirmar que se está
 trabajando en el proyecto Angular correcto — los tokens y patrones acá
 documentados son específicos de este repositorio.
 
-1. Confirmar que el directorio activo (o el que se va a editar) corresponde a una de estas rutas o a un subdirectorio:
-   `C:\Users\emacalupu\Documents\Boveda\Monday\Comsatel-DS` (ubicación actual conocida) o
-   `D:\Investigacion\Comsatel-DS-Angular` (ubicación alternativa histórica). Si ambas existen, validar identidad y trabajar en la que el usuario indique.
+1. Confirmar que el directorio activo (o el que se va a editar) es
+   `C:\Users\emacalupu\Documents\00 - Proyectos Enzo - V1\ui-components` o un subdirectorio, con origin en GitLab
+   (`https://project.comsatel.com.pe/comsatel/development/products/clocator2/webs/componentes-ui/ui-components`). Desde 2026-10-01 es la fuente única; las carpetas marcadas
+   `(DEPRECATED)` o `(ANTIGUO)` (`Sistema-Diseño-Comsatel`, `Boveda\Monday\Comsatel-DS`,
+   `C:\Investigacion\Comsatel-DS-Angular`) son copias congeladas: no se editan ni se usan como fuente.
+   Los cambios van en una rama `feature/*` con merge request a `develop` (ver `references/package-release.md`).
 2. Leer `projects/comsatel-ds/package.json` y `angular.json`: confirmar el
    nombre distribuible configurado en el paquete y que el proyecto Angular
    conserva `comsatel-ds` como identificador de build. No asumir que el
@@ -198,10 +201,10 @@ documentados son específicos de este repositorio.
 
 Este GUARD no reemplaza el de arriba, se suma cuando el modo es EXTRAER:
 
-1. Confirmar que `D:\Investigacion\C-Locater` existe antes de leer
+1. Confirmar que `C:\Users\emacalupu\Documents\Proyectos\CLocater\C-Locater` existe antes de leer
    cualquier archivo de ahí.
 2. La fase de construcción del modo EXTRAER opera sobre
-   `Sistema-de-dise-o-Comsatel` (React) — NO sobre `Comsatel-DS-Angular`.
+   `Sistema-de-dise-o-Comsatel` (React) — NO sobre `ui-components` (Angular).
    No confundir con el GUARD principal, que verifica Angular como "el"
    proyecto activo: en EXTRAER, Angular recién entra en una segunda
    pasada, ya cubierta por el flujo RECONSTRUIR normal ("porta X desde
@@ -440,7 +443,7 @@ lo son entre sí.
 - **B14 — Ningún componente Angular instala una librería de UI de
   terceros (PrimeNG u otra) como dependencia de producción.** Evaluado a
   fondo (2026-09-09, ver `PRIMENG_PLAN.md` en la raíz de
-  `Comsatel-DS-Angular` para el historial completo) y descartado — no por
+  `ui-components` para el historial completo) y descartado — no por
   motivo técnico (el piloto con PrimeNG funcionaba) sino por licenciamiento
   (PrimeNG 22 exige licencia comercial que Comsatel no califica gratis, y
   envolverlo dentro del sistema de diseño no exime a los desarrolladores
@@ -572,7 +575,7 @@ lo son entre sí.
 - **B19 — Un componente es un punto de entrada.** Desde la 0.6.0 cada
   componente vive en `projects/comsatel-ds/<componente>/` con su
   `ng-package.json`, su `public-api.ts` y sus fuentes en `src/`, y se publica
-  como `@iamacalupuenzo-ui/comsatel-ds/<componente>`. Un componente nuevo no se
+  como `@comsatel/ui-components/<componente>`. Un componente nuevo no se
   crea en `src/lib/` ni se agrega solo a la raíz: se crea su entrada, la raíz la
   reexporta y su guía lleva la línea «Import liviano». Entre componentes se
   importa siempre por subpath: nunca desde la raíz (ciclo raíz → subpath → raíz)

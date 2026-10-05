@@ -1,7 +1,7 @@
 # Arquitectura de tokens — Comsatel Design System (Angular)
 
 Mapa de dónde vive cada tipo de token y cómo se resuelve, en el proyecto Angular
-(`C:\Users\emacalupu\Documents\Boveda\Monday\Comsatel-DS`; alternativa histórica: `D:\Investigacion\Comsatel-DS-Angular`). Todo cambio de token pasa por uno de
+(`C:\Users\emacalupu\Documents\00 - Proyectos Enzo - V1\ui-components`). Todo cambio de token pasa por uno de
 estos archivos — nunca por un valor hardcodeado en un componente.
 
 Los VALORES son idénticos a los del sistema React (`Sistema-de-dise-o-Comsatel`)

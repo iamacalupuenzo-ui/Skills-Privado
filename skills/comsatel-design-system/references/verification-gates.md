@@ -77,7 +77,7 @@ componente queda `Pendiente de verificación` con la causa concreta.
 
 Cuando la aplicación consume la librería del mismo repositorio mediante un
 `paths` de TypeScript que apunta a `dist/` (por ejemplo,
-`@iamacalupuenzo-ui/comsatel-ds`), una
+`@comsatel/ui-components`), una
 prueba local puede pasar por un paquete construido en una sesión anterior. No
 es evidencia equivalente a CI.
 

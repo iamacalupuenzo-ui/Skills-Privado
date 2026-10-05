@@ -3,7 +3,7 @@
 > **Rutas desde la 0.6.0 (2026-09-29):** cada componente es un punto de entrada.
 > Donde este inventario dice `projects/comsatel-ds/src/lib/<x>/`, la ruta vigente es
 > `projects/comsatel-ds/<x>/src/`, y el componente se importa desde
-> `@iamacalupuenzo-ui/comsatel-ds/<x>`. Excepciones: `PressScale` vive en `/motion`
+> `@comsatel/ui-components/<x>`. Excepciones: `PressScale` vive en `/motion`
 > y `Collapse` en `/directives`. Receta y puertas en `entry-points.md`.
 
 Actualización: 2026-09-17, reconstrucción de la marca de Flotas. Se reemplazó la
@@ -380,12 +380,11 @@ servidor real reiniciado limpio, sin errores de consola, íconos check/x
 renderizando, y texto de la columna "Propuesta" (iconTier base) confirmado
 en 12px vs. 11px de la columna "Actual" (sm) vía `getComputedStyle`.
 
-**Ruta del proyecto, aclaración 2026-09-14:** en la laptop donde se corrió esta
-sesión, el repositorio vive en
-`C:\Users\emacalupu\Documents\Boveda\Monday\Comsatel-DS` (con `AGENTS.md`,
-`GAPS.md`, `guidelines/` generadas y gates `check:docs`/`test:ci` — variante
-"agent readiness" del proyecto), no en `D:\Investigacion\Comsatel-DS-Angular`
-como asume el resto de este skill. La página de seguimiento propia del
+**Ruta del proyecto, actualizada 2026-10-05:** el repositorio vive en
+`C:\Users\emacalupu\Documents\00 - Proyectos Enzo - V1\ui-components` (GitLab, con `AGENTS.md`,
+`guidelines/` generadas y gates `check:docs`/`test:ci`). Las copias anteriores
+(`Boveda\Monday\Comsatel-DS (ANTIGUO)`, `Sistema-Diseño-Comsatel (DEPRECATED)` y
+`C:\Investigacion\Comsatel-DS-Angular (ANTIGUO)`) quedaron congeladas. La página de seguimiento propia del
 proyecto (`src/app/pages/evaluation-tracking/evaluation-tracking-page.html`)
 es la fuente de verdad de estado en esa copia — contrastarla contra este
 archivo al empezar una sesión ahí, no asumir que están sincronizadas.
@@ -492,7 +491,7 @@ compuestos, incluyendo los pendientes de Angular y los pendientes de fuente
 React.
 
 Este archivo se actualiza al final de cada auditoría o reconstrucción sobre
-el proyecto Angular (`C:\Users\emacalupu\Documents\Boveda\Monday\Comsatel-DS`; alternativa histórica: `D:\Investigacion\Comsatel-DS-Angular`). Es el único
+el proyecto Angular (`C:\Users\emacalupu\Documents\00 - Proyectos Enzo - V1\ui-components`). Es el único
 archivo del skill que se espera que cambie con el uso — los demás son
 conocimiento estático de la arquitectura.
 
@@ -824,7 +823,7 @@ envolverlo dentro del sistema de diseño no exime a los desarrolladores que
 lo consuman después (confirmado con la FAQ oficial de PrimeUI). La única
 versión MIT permanente (PrimeNG 21) no soporta Angular 22, que es lo que
 corre este proyecto. Historial completo de la evaluación en
-`C:\Users\emacalupu\Documents\Boveda\Monday\Comsatel-DS\PRIMENG_PLAN.md` (o `D:\Investigacion\Comsatel-DS-Angular\PRIMENG_PLAN.md` si esa fue la ruta validada).
+`C:\Users\emacalupu\Documents\00 - Proyectos Enzo - V1\ui-components\PRIMENG_PLAN.md`.
 
 **Todo componente se construye a mano, sin excepción — ver B14 en
 `SKILL.md` y `references/accessibility-patterns.md`.** Ese archivo tiene el

@@ -13,8 +13,8 @@ contrato público. Nunca se copia `projects/comsatel-ds/`, `src/app/`, demos,
 Storybook ni CSS interno hacia una aplicación consumidora.
 
 Antes de elegir componentes, leer el `README.md` instalado en
-`node_modules/@iamacalupuenzo-ui/comsatel-ds/` o su fuente pública en
-`https://github.com/iamacalupuenzo-ui/Comsatel-DS`. Esa es la API vigente; no
+`node_modules/@comsatel/ui-components/` o su fuente en GitLab
+`https://project.comsatel.com.pe/comsatel/development/products/clocator2/webs/componentes-ui/ui-components`. Esa es la API vigente; no
 inventar imports ni mantener una lista duplicada dentro de este skill. El
 consumidor se guía por esa superficie pública y sus tipos: no consulta fuentes
 privadas ni solicita un token con alcance `repo` para inferir una composición.
@@ -36,45 +36,40 @@ privadas ni solicita un token con alcance `repo` para inferir una composición.
 
 ## Instalación permitida
 
-El repositorio consumidor solo declara qué scope usa GitHub Packages. Este
-archivo se versiona porque no contiene secretos:
+El paquete `@comsatel/ui-components` vive en el Package Registry de GitLab
+corporativo (desde 2026-10-01; el paquete `@iamacalupuenzo-ui/comsatel-ds` de
+GitHub Packages quedó congelado). El repositorio consumidor versiona un `.npmrc`
+que declara el registro y referencia el token por variable de entorno, sin
+guardar su valor:
 
 ```ini
-@iamacalupuenzo-ui:registry=https://npm.pkg.github.com
+@comsatel:registry=https://project.comsatel.com.pe/api/v4/packages/npm/
+//project.comsatel.com.pe/api/v4/packages/npm/:_authToken=${GITLAB_NPM_TOKEN}
 ```
 
-La credencial se configura una vez por usuario de Windows en `~/.npmrc` y
-referencia una variable de entorno, sin guardar el valor del token en ningún
-repositorio:
-
-```ini
-//npm.pkg.github.com/:_authToken=${GITHUB_PACKAGES_TOKEN}
-```
-
-Si el usuario aún no creó la variable persistente, indicarle este único comando
-con un placeholder, sin pedir ni repetir el secreto. `"User"` es literal; no
-se reemplaza por el nombre de Windows:
+El token es personal, de GitLab, con alcance `read_package_registry` o
+`read_api`. Si el usuario aún no creó la variable persistente, indicarle este
+único comando con un placeholder, sin pedir ni repetir el secreto. `"User"` es
+literal; no se reemplaza por el nombre de Windows:
 
 ```powershell
-[Environment]::SetEnvironmentVariable("GITHUB_PACKAGES_TOKEN", "<token>", "User")
+[Environment]::SetEnvironmentVariable("GITLAB_NPM_TOKEN", "<token>", "User")
 ```
 
 Una terminal, Codex u otra aplicación que ya estuviera abierta conserva el
 valor anterior. Tras cambiar la variable, reiniciar el proceso que ejecutará
-`npm` y verificar la cuenta sin imprimir el token:
-
-```powershell
-npm whoami --registry=https://npm.pkg.github.com
-```
+`npm`. Sin token (o con uno sin alcance), GitLab responde `404`, no `401`: un
+`404` al instalar casi siempre es la variable que no llegó al proceso. El
+registro solo es accesible con red corporativa o VPN.
 
 Instalar una versión explícita, nunca `latest` ni un rango automático en la
 primera adopción:
 
 ```sh
-npm install @iamacalupuenzo-ui/comsatel-ds@<version>
+npm install @comsatel/ui-components@<version>
 ```
 
-El token clásico de instalación requiere únicamente `read:packages`. Si el
+Si el
 paquete no expone una API, estilo o ejemplo necesario, es un contrato faltante
 del DS: se registra la mejora; no se elevan permisos a `repo` ni se copian
 archivos internos.
@@ -84,7 +79,7 @@ base tipográfica global. El punto de entrada aporta las fuentes oficiales y los
 tokens, pero intencionalmente no resetea el `body` de la aplicación consumidora:
 
 ```css
-@import '@iamacalupuenzo-ui/comsatel-ds/styles.css';
+@import '@comsatel/ui-components/styles.css';
 
 * { box-sizing: border-box; }
 
@@ -110,19 +105,19 @@ reemplazar los tokens: el consumidor solo usa la tipografía publicada por el DS
 
 Desde la versión 0.6.0, cada componente de Comsatel DS tiene su propio punto de
 entrada. En un producto, **cada** import del DS va por subpath; nunca desde la raíz
-`@iamacalupuenzo-ui/comsatel-ds`:
+`@comsatel/ui-components`:
 
 ```ts
-import { Button } from '@iamacalupuenzo-ui/comsatel-ds/button';
-import { Icon } from '@iamacalupuenzo-ui/comsatel-ds/icons';
-import { InputGroup, PasswordInput } from '@iamacalupuenzo-ui/comsatel-ds/input';
-import { Menu, type MenuGroupData } from '@iamacalupuenzo-ui/comsatel-ds/menu';
-import { formatDateTime } from '@iamacalupuenzo-ui/comsatel-ds/format';
+import { Button } from '@comsatel/ui-components/button';
+import { Icon } from '@comsatel/ui-components/icons';
+import { InputGroup, PasswordInput } from '@comsatel/ui-components/input';
+import { Menu, type MenuGroupData } from '@comsatel/ui-components/menu';
+import { formatDateTime } from '@comsatel/ui-components/format';
 ```
 
 - **Dónde está el subpath de cada símbolo:** en la línea «Import liviano» de la guía
   del componente, o en `exports` de
-  `node_modules/@iamacalupuenzo-ui/comsatel-ds/package.json` y el `.d.ts` de cada
+  `node_modules/@comsatel/ui-components/package.json` y el `.d.ts` de cada
   entrada. El subpath es el nombre de la carpeta del componente; excepciones
   conocidas: `PressScale` está en `/motion`, `Collapse` en `/directives` y los
   tokens de TypeScript en `/tokens`.
@@ -135,7 +130,7 @@ import { formatDateTime } from '@iamacalupuenzo-ui/comsatel-ds/format';
   librería entera; desde 0.6.0 la raíz solo reexporta, pero sigue juntando en un
   chunk todo lo que se importa desde ella.
 - **Migrar un repositorio existente:** reemplazar cada
-  `import { … } from '@iamacalupuenzo-ui/comsatel-ds'` por un import por subpath
+  `import { … } from '@comsatel/ui-components'` por un import por subpath
   según el mapa símbolo → subpath de los `.d.ts` instalados; al terminar, no debe
   quedar ningún import desde la raíz (`grep -rn "comsatel-ds'" src`).
 

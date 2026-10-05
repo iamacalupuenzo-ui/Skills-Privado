@@ -2,8 +2,8 @@
 
 Desde la versión 0.6.0, cada componente del Comsatel DS se publica en su propio
 subpath, como Angular Material o PrimeNG:
-`@iamacalupuenzo-ui/comsatel-ds/button`, `/table`, `/modal`… La raíz
-`@iamacalupuenzo-ui/comsatel-ds` sigue exportando los mismos símbolos, pero ya no
+`@comsatel/ui-components/button`, `/table`, `/modal`… La raíz
+`@comsatel/ui-components` sigue exportando los mismos símbolos, pero ya no
 contiene código: solo reexporta los subpaths. **Leer siempre** antes de agregar un
 componente, mover una carpeta, cambiar un import entre componentes o tocar
 `public-api.ts`.
@@ -45,16 +45,16 @@ equivale hoy a `projects/comsatel-ds/<x>/src/`.
      carpeta de la entrada** (error TS6059 de `rootDir`); un `public-api.ts` que
      apunte a `../src/lib/...` no compila.
 2. Agregar en `projects/comsatel-ds/src/public-api.ts` la línea
-   `export * from '@iamacalupuenzo-ui/comsatel-ds/<componente>';`.
+   `export * from '@comsatel/ui-components/<componente>';`.
    - Si el subpath expone algo solo para otras entradas (como los tokens internos
      de `/dropdown` que usan `select` y `column-manager`), la raíz lo reexporta con
      **lista explícita** (`export { A, B } from '…'` y `export type { T } from '…'`)
      para no ampliar la API pública.
 3. Imports dentro de la librería:
    - Hacia otro componente: **siempre por subpath**
-     (`import { Icon } from '@iamacalupuenzo-ui/comsatel-ds/icons'`), incluidos
+     (`import { Icon } from '@comsatel/ui-components/icons'`), incluidos
      `import type`.
-   - Nunca desde la raíz `'@iamacalupuenzo-ui/comsatel-ds'`: arma el ciclo
+   - Nunca desde la raíz `'@comsatel/ui-components'`: arma el ciclo
      raíz → subpath → raíz.
    - Nunca con ruta relativa que salga de la carpeta (`'../button/button'`): ng-packagr
      la rechaza o duplica la clase.
@@ -68,7 +68,7 @@ equivale hoy a `projects/comsatel-ds/<x>/src/`.
    `projects/comsatel-ds/*/src/**/*.stories.ts` y los tests de la librería
    `../*/src/**/*.spec.ts`.
 6. Guía: agregar debajo de `- **Import:**` la línea
-   `- **Import liviano:** \`import { X } from '@iamacalupuenzo-ui/comsatel-ds/<componente>';\``
+   `- **Import liviano:** \`import { X } from '@comsatel/ui-components/<componente>';\``
    (`node scripts/add-light-imports.mjs <componente>` la genera desde las tablas de
    props). Luego `npm run docs` y completar descripciones.
 7. Correr las puertas de abajo.
@@ -104,7 +104,7 @@ y, si se movió CSS, que el CSS emitido coincida con la versión publicada anter
   detector de `TODO` no distingue mayúsculas. Redactar con «cada», «todos los».
 - **`build:lib` y no `ng build comsatel-ds`**: el segundo no agrega `./styles.css` a
   `exports` ni enlaza el paquete.
-- **Un `npm install` puede borrar el enlace** de `node_modules/@iamacalupuenzo-ui/comsatel-ds`;
+- **Un `npm install` puede borrar el enlace** de `node_modules/@comsatel/ui-components`;
   `build:lib` lo recrea. En Windows, un `ng serve` o `esbuild.exe` vivo del repo bloquea
   `npm ci` con `EPERM`: detener solo los procesos que corren desde el repo del DS.
 - **El import raíz ya no trae la librería entera**, pero junta en un chunk todo lo que

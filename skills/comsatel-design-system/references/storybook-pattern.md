@@ -1,4 +1,4 @@
-# Patrón de Storybook (Comsatel-DS-Angular)
+# Patrón de Storybook (ui-components)
 
 El proyecto Angular tiene Storybook configurado (`.storybook/main.ts`,
 glob `../projects/comsatel-ds/src/lib/**/*.stories.ts`) publicado en

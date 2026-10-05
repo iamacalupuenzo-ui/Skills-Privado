@@ -1,6 +1,6 @@
 # Extracción desde C-Locater — catálogo y disciplina
 
-C-Locater (`D:\Investigacion\C-Locater`) es un producto real de fleet
+C-Locater (`C:\Users\emacalupu\Documents\Proyectos\CLocater\C-Locater`) es un producto real de fleet
 tracking (React + Leaflet + Tailwind v4), independiente del design system,
 con su propia marca y su propio sistema de tokens shadcn/Tailwind. No es
 parte del Comsatel Design System — es una tercera fuente de referencia, al

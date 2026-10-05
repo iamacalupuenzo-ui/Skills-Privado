@@ -4,7 +4,7 @@ Leer este archivo SOLO cuando aparece uno de estos síntomas exactos — no es
 lectura previa obligatoria para auditar o reconstruir un componente.
 
 Contexto fijo: Angular CLI + Vite (dev server `ng serve`), puerto 4300,
-proyecto `C:\Users\emacalupu\Documents\Boveda\Monday\Comsatel-DS` (o, si existe en el equipo, `D:\Investigacion\Comsatel-DS-Angular`). A diferencia del proyecto
+proyecto `C:\Users\emacalupu\Documents\00 - Proyectos Enzo - V1\ui-components`. A diferencia del proyecto
 React (Astro, puerto 4321, servidor manejado por el usuario en su propia
 terminal), en Angular el servidor SÍ se maneja desde la sesión — ver punto 1.
 
@@ -42,7 +42,7 @@ vigila `src/app/`.
 
 **Fix, en este orden exacto:**
 ```bash
-cd C:/Users/emacalupu/Documents/Boveda/Monday/Comsatel-DS  # o D:/Investigacion/Comsatel-DS-Angular
+cd "C:/Users/emacalupu/Documents/00 - Proyectos Enzo - V1/ui-components"
 npx @angular/cli build comsatel-ds
 ```
 Confirmar que termina con `✔ Built comsatel-ds` sin errores. Luego reiniciar
@@ -50,7 +50,7 @@ el dev server COMPLETO — no basta con que siga corriendo:
 ```bash
 netstat -ano | grep ":4300" | grep LISTENING   # obtener el PID
 taskkill //F //PID <pid>
-cd C:/Users/emacalupu/Documents/Boveda/Monday/Comsatel-DS  # o D:/Investigacion/Comsatel-DS-Angular
+cd "C:/Users/emacalupu/Documents/00 - Proyectos Enzo - V1/ui-components"
 nohup npx ng serve --port 4300 > /tmp/ng-serve.log 2>&1 &
 disown
 ```
