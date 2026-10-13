@@ -9,7 +9,7 @@ description: >
   estatus". No diseña pantallas (usa ux-ui-orchestrator), no escribe el código de una pantalla
   (usa angular-product-builder) ni gestiona épicas ni Notion (usa product-orchestrator).
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # Orquestador de desarrollo — Comsatel Flotas
@@ -31,10 +31,15 @@ sin autorización explícita para esa acción.
 - `references/convenciones-comunes.md` — commits, MR, ramas, tokens y trampas de Windows. Leer antes de commitear o abrir un MR.
 - `references/estatus.md` — cómo evaluar «¿cómo vamos?» con evidencia. Leer cuando pidan estatus.
 
+## Antes del desarrollo: la documentación de UX
+
+El desarrollo parte de documentación ya generada. Esa etapa tiene su propio orquestador, **`ux-ui-orchestrator`** (orquestador de documentación), que coordina los skills que producen cada documento: `ux-requirements-analyzer` (UXR), `user-flow-designer` (flujos FLW), `ui-spec-writer` (pantallas SCR, componentes, tokens), `web-atomic-component-designer` (catálogo atómico), `stitch-ui-generator` (exploración) y `ux-development-handoff` (paquete de entrega y puerta `DESIGN_READY_FOR_DEV`). Este orquestador **no** los sustituye ni los repite: si faltan UXR, flujos o pantallas, o la puerta del handoff no pasó, deriva a `ux-ui-orchestrator` y espera. Cuando el paquete está listo, `ux-a-desarrollo` lo baja a código.
+
 ## Segmentos que orquestas
 
 | Segmento | Cuándo | Fuente |
 |---|---|---|
+| `ux-ui-orchestrator` | Falta documentación de UX o el handoff no está listo (etapa previa) | skill |
 | `ux-a-desarrollo` | Hay UXR, flujo o decisión del PO que baja a código | skill |
 | `angular-product-builder` | Construir la pantalla o el flujo con el DS | skill |
 | `flujo-producto` | Versionar, publicar y desplegar un producto; subir el DS a un producto | skill |
@@ -56,6 +61,7 @@ sin autorización explícita para esa acción.
 |---|---|
 | Edita `ui-components` (componente, token, guía, `GAPS.md`) | `flujo-ds` |
 | Edita `web-backoffice`, `web-flotas`, `microui-*` o `flotas-web-bff` | `flujo-producto` |
+| Falta UXR, flujo, pantalla (SCR) o el handoff no pasó la puerta | `ux-ui-orchestrator` primero; no se construye sin ese paquete |
 | Hay UXR, flujo, UXS o una decisión del PO por bajar | `ux-a-desarrollo` y luego construir |
 | Falta un componente del DS | Construir en el producto con una API migrable, registrar la brecha (`flujo-producto`) y subirlo al DS por olas (`flujo-ds`) |
 | Subir el DS a los productos | `flujo-ds` hasta que el paquete esté en el registro; después `flujo-producto` en pareja |

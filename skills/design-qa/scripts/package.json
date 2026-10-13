@@ -1,0 +1,10 @@
+{
+  "name": "design-qa-vercel-fallback",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Fallback de clarity-check.md: llama a jev via Vercel AI Gateway cuando falla la API directa de TypeSafe.",
+  "dependencies": {
+    "ai": "^7.0.105"
+  }
+}

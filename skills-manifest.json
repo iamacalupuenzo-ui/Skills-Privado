@@ -18,6 +18,14 @@
     "flujo-ds",
     "flujo-producto",
     "ux-a-desarrollo",
-    "verificar-calidad"
+    "verificar-calidad",
+    "ux-ui-orchestrator",
+    "ux-requirements-analyzer",
+    "user-flow-designer",
+    "ui-spec-writer",
+    "web-atomic-component-designer",
+    "stitch-ui-generator",
+    "ux-development-handoff",
+    "design-qa"
   ]
 }

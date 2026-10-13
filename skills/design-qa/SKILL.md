@@ -8,7 +8,7 @@ description: >
   diseño", "corrige la obs", "documentá este componente", "mapear la documentación de",
   "auditá el componente", o cuando comparte imágenes de desarrollo o URLs de nodos Figma.
 argument-hint: "[observación, componente a documentar, nodo de Figma o imagen de desarrollo]"
-allowed-tools: Read, mcp__figma-console-local__figma_execute, mcp__figma-console-local__figma_take_screenshot, mcp__figma-console-local__figma_capture_screenshot, mcp__figma-console-local__figma_get_status, mcp__figma-console-local__figma_get_selection, mcp__figma-console-local__figma_list_open_files, mcp__figma-console-local__figma_navigate
+allowed-tools: Read, Bash, mcp__figma-console-local__figma_execute, mcp__figma-console-local__figma_take_screenshot, mcp__figma-console-local__figma_capture_screenshot, mcp__figma-console-local__figma_get_status, mcp__figma-console-local__figma_get_selection, mcp__figma-console-local__figma_list_open_files, mcp__figma-console-local__figma_navigate
 effort: medium
 ---
 
@@ -26,7 +26,7 @@ en otra. Verificar cuál está activo y usar `mcp__<nombre-activo>__*`.
 - `references/components.md` — catálogo del kit y resolución por nombre
 
 **LEER SEGÚN EL MODO:**
-- QA → `references/classification.md`, `references/comment-format.md`, `references/figma-execution.md`
+- QA → `references/classification.md`, `references/comment-format.md`, `references/clarity-check.md`, `references/figma-execution.md`
 - Documentación → `references/documentation-build.md`
 - Corrección de componente → `references/component-audit-checklist.md`
 - Archivo con sistema parcial o sin kit → `references/design-system-maturity.md`
@@ -73,6 +73,7 @@ seguir. No hacer QA de algo que todavía no existe.
 2. Obtener specs → `references/anti-hallucination.md`
 3. Clasificar → `references/classification.md`
 4. Redactar → `references/comment-format.md`
+4.5. Verificar claridad (Problema/Corrección, Tipo ≠ Nota) → `references/clarity-check.md`
 5. Crear → `references/figma-execution.md`
 6. Bloque de confirmación
 
@@ -122,6 +123,10 @@ Tipo:     [Problema mayor / Problema menor / Nota]
 Etiqueta: [categoría]
 Node:     [id del instance]
 ```
+Si corrió el chequeo de claridad (`references/clarity-check.md`) y el score fue 2 (falta
+severidad/impacto), agregar una línea: `Claridad: falta [lo que el score marcó como ausente]`.
+Si TypeSafe no estaba configurado o falló, agregar: `(TypeSafe no configurado — chequeo de
+claridad omitido)`.
 
 **Al cerrar sesión de QA:**
 ```
