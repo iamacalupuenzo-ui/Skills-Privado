@@ -10,12 +10,14 @@ description: >
   destino (CLAUDE.md/AGENTS.md) por encima de sus propias recomendaciones, se
   apoya en los skills oficiales de Angular incluidos en el catálogo
   (angular-developer, angular-new-app) para el framework y audita
-  repositorios existentes con evidencia. Úsalo para “crea un login”, “inicia una app de flota”, “agrega
+  repositorios existentes con evidencia. Conoce la arquitectura de micro UI de
+  Flotas (shell, remotos con federación, shared-core, BFF) y pide referencias
+  visuales solo cuando el patrón no existe en el sistema de diseño. Úsalo para “crea un login”, “inicia una app de flota”, “agrega
   el mapa de unidades” o “implementa alertas en esta plataforma”, y para “audita la arquitectura de este proyecto”. No construye
   componentes dentro del sistema de diseño, no clona su repositorio y no copia
   sus demos.
 metadata:
-  version: "2.4.0"
+  version: "2.7.0"
 ---
 
 # Angular Product Builder
@@ -54,6 +56,17 @@ que resuelven y lo adapta con la librería pública.
   entre reglas, protocolo de entrada, patrón de pantalla (servicio de pantalla
   y de transiciones), brechas del sistema de diseño, trampas reales y trabajo
   concurrente con otros agentes.
+- `references/arquitectura-microui.md` — leer si el destino es un shell, una
+  micro UI o un producto nuevo de Flotas: de qué es dueña cada pieza, qué no va
+  en un cambio de UI, receta local y trampas de federación.
+- `references/mapa-del-piloto-y-reglas-ui.md` — leer siempre antes de construir
+  una pantalla de Flotas: dónde está el layout, las plantillas y las guías, y las
+  reglas de UI ya decididas (scroll en la página, 10 filas, menú a 12 px, estado
+  vacío, errores) y las reglas aprendidas construyendo prototipos (un remoto por
+  entrada de manifest, rótulos PENDIENTE, mock como contrato propuesto). Se lee antes que `referencias-visuales.md`.
+- `references/referencias-visuales.md` — leer antes de pedir o usar una
+  referencia visual: orden de búsqueda, qué se extrae y composición de las
+  pantallas tipo (listado, login, inicio, mensaje).
 - `references/angular-moderno.md` — leer antes de escribir código Angular:
   cómo usar los skills oficiales incluidos (`angular-developer`,
   `angular-new-app`), las reglas que este skill hace suyas y las que ceden
@@ -96,7 +109,11 @@ que resuelven y lo adapta con la librería pública.
    historia o caso de uso en Gestión de producto, leerlos según
    `especificacion-producto.md` antes de planificar. El caso de uso es la
    especificación; no se reemplaza por lo que se recuerda de la conversación.
-8. **Resolver las reglas del repositorio.** Antes de editar, leer `CLAUDE.md`
+8. **Resolver la arquitectura.** Si el repositorio es un shell, un remoto de
+   Native Federation o un producto nuevo de Flotas, leer `arquitectura-microui.md`
+   y declarar qué pieza se toca (shell, remoto, DS, `shared-core`) antes de
+   editar. Un cambio de DS se explica y se confirma primero.
+9. **Resolver las reglas del repositorio.** Antes de editar, leer `CLAUDE.md`
    y/o `AGENTS.md` de la raíz y los documentos que enlaza, según
    `arquitectura-proyecto.md`. Esas reglas mandan sobre este skill y sobre la
    guía general de Angular; si hay un choque, se aplica la del repositorio y el
@@ -142,8 +159,10 @@ evaluar, no se edita.
    importar los estilos públicos una vez. Establecer la base tipográfica global
    con sus tokens públicos; no cargar fuentes externas ni declarar una familia
    propia como sustituto.
-5. Crear la estructura `core/`, `layout/`, `features/` y una ruta mínima de la
-   pantalla solicitada; no simular una app completa si el usuario pidió una sola.
+5. Crear la estructura según el destino: en un producto monolítico `core/`,
+   `layout/`, `features/`; en una micro UI, `features/<dominio>/` con `./Routes`
+   expuesto y sin login ni layout (los da el shell, ver `arquitectura-microui.md`).
+   Crear una ruta mínima de la pantalla solicitada; no simular una app completa si el usuario pidió una sola.
 6. Ejecutar build y pruebas disponibles **si las reglas del repositorio lo
    permiten**; verificar que el import público se resuelva sin alcanzar CSS
    interno. En un proyecto nuevo, dejar escrito un `CLAUDE.md` con las reglas
@@ -270,6 +289,19 @@ evaluar, no se edita.
 - **B16 — Auditar es medir.** Un hallazgo sin comando, archivo o línea que lo
   respalde no se reporta, y una desviación consciente del repositorio no es un
   hallazgo. Un informe de opiniones no permite priorizar ni aprobar mejoras.
+- **B17 — Patrón del sistema antes de referencia visual.** Se busca el patrón en
+  el DS (`guidelines/patterns`, guías, producto referente) y solo se pide una
+  referencia al usuario si no resuelve una decisión concreta; de una referencia
+  se extraen prácticas, no aspecto (`referencias-visuales.md`). Pedir diseño por
+  costumbre frena el trabajo y copiar una captura contradice B4.
+- **B18 — La UI no decide arquitectura.** Interceptor HTTP, sesión expirada, CSRF,
+  fuente de versión, pipeline y política de versión del DS en federación son del
+  arquetipo: no se resuelven dentro de un cambio de interfaz; se registran como
+  pendientes y se avisan. Una micro UI no implementa login ni cabecera.
+- **B19 — Todo valor sale de un token verificado.** Antes de usar un token, color
+  o ícono, comprobar que existe en el paquete (`--color-text-danger` no existe).
+  Un token inexistente cae en el valor por defecto del navegador y el fallo es
+  silencioso.
 - **B14 — No pisar el trabajo ajeno.** Cuando otra persona u otro agente edita
   el mismo repositorio, el estado del disco es el vigente: no se revierte, no
   se completa su diseño a ciegas y se reporta lo que rompe. Ver
@@ -299,6 +331,15 @@ evaluar, no se edita.
 - Una alerta no identifica responsable, acción o duración.
 - Un mapa no tiene alternativa de lista/detalle, ni hora de dato, ni estado de error.
 - Se usa una captura de un referente como especificación visual.
+- Se pide al usuario un diseño o referencia sin haber buscado el patrón en el DS.
+- Una micro UI incluye su propio login, cabecera o menú, o el shell no declara la
+  base tipográfica y los campos se salen de su tarjeta.
+- Un cambio de interfaz arrastra decisiones de arquitectura (interceptor, sesión,
+  versiones) o se «arregla» el NG0912 desde una pantalla.
+- Se usa `var(--token, fallback)` o un token sin haber verificado que existe.
+- Se corre la suite completa de pruebas «por si acaso» sin que el usuario lo haya
+  pedido: se ejecuta solo lo necesario y se entrega la lista de lo que debe
+  probar la persona.
 
 ## Formato de respuesta
 
@@ -321,6 +362,8 @@ evaluar, no se edita.
 - `references/design-system-contract.md`
 - `references/design-systems/comsatel-ds.md`
 - `references/arquitectura-proyecto.md`
+- `references/arquitectura-microui.md`
+- `references/referencias-visuales.md`
 - `references/angular-moderno.md`
 - `references/auditoria-arquitectura.md`
 - `references/especificacion-producto.md`

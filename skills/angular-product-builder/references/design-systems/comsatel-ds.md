@@ -255,6 +255,40 @@ verificarlos en lugar de darlos por vigentes.
 - **Sin `::ng-deep`.** Un componente del DS no se restiliza desde el consumidor.
   Si falta una variante, es una brecha para el DS.
 
+## Hallazgos verificados (versiones 1.5.0 a 1.9.1, 2026-10-07 a 2026-10-09)
+
+Comprobados reconstruyendo `microui-bo-tenants` y refactorizando el shell
+`web-backoffice`. Hechos de esa versión; volver a verificar si cambia.
+
+- **Desde la 1.6.0 el paquete trae `guidelines/`** (`node_modules/@comsatel/ui-components/guidelines/`, con `patterns/`). Se leen ahí; no se deducen de los tipos. `GAPS.md` del repositorio del DS sigue diciendo «brechas de producto» para Autocomplete, DatePicker y FileUpload aunque sus guías existen en 1.9.1: se verifica antes de reportar brecha.
+- **En el DS 1.9.1 el `id` del host de `cs-input`/`cs-password-input` pasa al `<input>` interno**: los selectores `#id input` (de versiones anteriores) ya no encuentran nada y el foco no se aplica; se usa `#id`.
+- **No hay componente de mapa (lienzo) en el DS 1.9.1.** Solo paneles flotantes (`cs-map-panel`, `cs-map-search`, `cs-map-notification`), `cs-map-tabs` y `cs-fleet-unit-list`; Leaflet solo vive en una demo del DS y en el piloto. El README de `microui-monitoring` supone un componente que no existe.
+- **No hay selector de color, cálculo de contraste ni vista previa de marca**: se compone con `cs-input` hexadecimal y funciones puras del producto; es brecha a confirmar.
+- **`cs-progress-indicator` no muestra «Paso X de N» ni error por paso**: se compone un `<p role="status">` y un `cs-banner`. `cs-stepper` está obsoleto.
+- **El título de `cs-empty-state` es un `<p>`, no un encabezado**: las páginas de mensaje llevan su propio `h1`.
+- **`cs-banner`: `role="alert"` solo para errores**; los avisos usan región `aria-live="polite"`. Un banner por cada decisión pendiente satura: no se usa para rótulos.
+- **`cs-checkbox` no tiene mensaje de error propio; `cs-password-input` no ofrece ayuda de política.**
+- **`cs-modal` devuelve el foco al abridor**: si el abridor desaparece (retirar, 409), el foco debe llevarse a un contenedor estable.
+- **`--layout-panel-width` es un token de paneles de mapa**: no se usa como medida de formularios.
+- **Sin base tipográfica ni `box-sizing`.** `styles.css` trae tokens y fuentes pero
+  no fija el `body`: sin la receta de arriba el texto fuera de componentes sale
+  en serif y `cs-input` (ancho 100%) se sale de su tarjeta. El shell declara
+  ambas cosas una vez.
+- **Tokens.** `--color-text-danger` no existe. Existen, entre otros,
+  `--layout-padding-xl/2xl/3xl`, `--layout-gap-md/lg/xl`, `--radius-md/lg`,
+  `--layout-border-thin`, `--elevation-surface-default`,
+  `--color-border-divider`, `--color-text-base-default/subtle`,
+  `--font-size-content-ui`, `--font-line-height-content-ui`.
+- **`cs-button` acepta `type="submit"` desde el DS 1.8.0.** En un formulario, el botón principal lleva `type="submit"` y el envío se maneja con `(submit)` del `<form>` (así el Enter funciona). Sin `type` sigue siendo `button`.
+- **`cs-banner` no declara `role="alert"`.** Para errores de formulario, envolverlo
+  en un contenedor con `role="alert"`. Variantes: brand, neutral, danger,
+  success, warning.
+- **Componentes de pantalla:** `cs-list-template` (1.3.0) para listados,
+  `csModalHeaderActions` en el modal (1.4.0), `cs-tooltip` en capa superior
+  (1.5.0), `cs-list-item` para listas de navegación (evento `activate`).
+- **DS cargado dos veces en federación** (shell y remoto): avisos NG0912. Es una
+  decisión de arquetipo; ver `../arquitectura-microui.md`.
+
 ## Comandos y dependencias
 
 Se permite usar los scripts ya declarados por la aplicación (`npm run build`,
