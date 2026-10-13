@@ -17,7 +17,7 @@ description: >
   componentes dentro del sistema de diseño, no clona su repositorio y no copia
   sus demos.
 metadata:
-  version: "2.7.0"
+  version: "2.8.0"
 ---
 
 # Angular Product Builder
@@ -39,6 +39,16 @@ notificaciones.
 deriva a `comsatel-design-system`; para otro sistema, al dueño que indique el
 usuario. Tampoco copia referentes internacionales: investiga el comportamiento
 que resuelven y lo adapta con la librería pública.
+
+## Qué viene después de construir
+
+Este skill diseña y construye. Versionar, publicar, desplegar y comprobar QA no son de este skill:
+
+- Orden y puertas de todo el trabajo: `orquestador-desarrollo`.
+- De la decisión de UX al código (estados, registro de decisiones, iteración con capturas): `ux-a-desarrollo`.
+- Versión del producto, MR en pareja, despliegue y diagnóstico de QA: `flujo-producto`.
+- Cambios al Design System y su publicación: `flujo-ds`.
+- Pruebas, navegador y servidores locales: `verificar-calidad`.
 
 ## Referencias
 
