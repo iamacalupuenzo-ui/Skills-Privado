@@ -32,6 +32,25 @@ La decisión y evidencia que justifican la CLI están documentadas en
 | `investigador-de-producto` | Activo | Codex, Claude Code |
 | `paridad-diseno-desarrollo` | Activo | Codex, Claude Code |
 | `skill-builder` | Activo | Codex, Claude Code |
+| `orquestador-desarrollo` | Activo | Claude Code |
+| `flujo-ds` | Activo | Claude Code |
+| `flujo-producto` | Activo | Claude Code |
+| `ux-a-desarrollo` | Activo | Claude Code |
+| `verificar-calidad` | Activo | Claude Code |
+| `ux-ui-orchestrator` | Activo | Claude Code |
+| `ux-requirements-analyzer` | Activo | Claude Code |
+| `user-flow-designer` | Activo | Claude Code |
+| `ui-spec-writer` | Activo | Claude Code |
+| `web-atomic-component-designer` | Activo | Claude Code |
+| `stitch-ui-generator` | Activo | Claude Code |
+| `ux-development-handoff` | Activo | Claude Code |
+| `design-qa` | Activo | Claude Code |
+
+### Skills de documentación de UX y desarrollo
+
+- `orquestador-desarrollo` orquesta el desarrollo (flujo del DS y de los productos, verificación, publicación y despliegue). Su etapa previa es `ux-ui-orchestrator`, el orquestador de documentación, que coordina `ux-requirements-analyzer`, `user-flow-designer`, `ui-spec-writer`, `web-atomic-component-designer`, `stitch-ui-generator` y `ux-development-handoff`.
+- **Fuente única:** los skills de documentación de UX se editan **aquí**, en `skills/<nombre>/`. La carpeta `.claude/skills` del repositorio `kb-ux-uxr` no es una fuente: es una copia instalada y se pisa al actualizar con `skils`. Un cambio hecho solo allí se pierde. Para cambiar uno: editar en este repositorio, correr `npm test`, publicar y reinstalar.
+- Los skills nuevos están instalados solo en Claude Code; Codex requiere autorización explícita.
 
 La correspondencia entre los nombres vigentes y los registros históricos de Notion está
 en [`notion-registry.md`](notion-registry.md).
