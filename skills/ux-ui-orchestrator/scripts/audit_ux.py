@@ -97,6 +97,9 @@ def audit(kb):
         warnings.append(msg)
 
     stories = {"-".join(p.name.split("-")[:3]) for p in md_files(kb / "requirements" / "context-packs" / "user-stories", "HU-*.md")}
+    # Historias candidatas: se definen dentro del catálogo (HUC-*), como encabezado o fila de backlog, sin archivo propio.
+    for catalog in md_files(kb / "requirements" / "context-packs" / "user-stories", "HUC-*.md"):
+        stories |= set(re.findall(r"(?m)^(?:#{2,6}\s*|\|\s*\[?)(HU-\d+-\d+)\b", read(catalog)))
     screens, screen_errors = load_screens(design)
     errors.extend(screen_errors)
 
@@ -130,7 +133,7 @@ def audit(kb):
         text = read(p)
         for us in sorted(set(re.findall(r"\bHU-\d+-\d+\b", text))):
             if stories and us not in stories:
-                err(f"{p.name}: referencia {us} que no existe en requirements/context-packs/user-stories")
+                err(f"{p.name}: referencia {us} que no existe en requirements/context-packs/user-stories (ni como archivo HU-* ni en un catálogo HUC-*)")
         if uid != "UXR-000" and uid not in flow_reqs:
             warn(f"{p.name}: ningún FLW lo lista en requirements (¿falta flujo?)")
 
