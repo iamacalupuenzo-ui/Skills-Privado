@@ -4,7 +4,7 @@
   "worktree": "C:/Users/emacalupu/Documents/00 - Proyectos Enzo - V1/kb-ux-uxr",
   "repo_url": "https://project.comsatel.com.pe/comsatel/development/products/clocator2/knowledge-base/-/blob/",
   "design_ref": "ux/uxr-dsp001",
-  "sync": "C:/Users/emacalupu/.claude/scripts/notion-sync.js",
+  "sync": "scripts/notion-sync.js",
   "opencode": "C:/Users/emacalupu/.opencode/bin/opencode.exe",
   "pendientes": "pendientes.json",
   "paquete_actual": "DSP-001",

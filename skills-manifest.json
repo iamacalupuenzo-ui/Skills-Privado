@@ -26,6 +26,9 @@
     "web-atomic-component-designer",
     "stitch-ui-generator",
     "ux-development-handoff",
-    "design-qa"
+    "design-qa",
+    "claude-design-orchestrator",
+    "figma-design-validator",
+    "accessibility-reviewer"
   ]
 }

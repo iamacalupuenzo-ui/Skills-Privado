@@ -9,7 +9,7 @@ const MOD = require("path").resolve(__dirname, /historico$/.test(__dirname) ? ".
 const CFG = JSON.parse(require("fs").readFileSync(require("path").join(MOD, "config.json"), "utf8"));
 const S = process.env.NOTION_TRABAJO || require("path").join(MOD, "trabajo").replace(/\\/g, "/");
 const WT = process.env.NOTION_WORKTREE || CFG.worktree;
-const SYNC = CFG.sync;
+const SYNC = process.env.NOTION_SYNC || require("path").resolve(MOD, CFG.sync);
 const DS = { preg: "9811a7d0-6388-829a-82b4-0735e973e46b", flw: "3a91a7d0-6388-83d7-972f-07afabf710e0", scr: "a101a7d0-6388-8200-ace3-0747fc33b0fb" };
 const fase = process.argv[2];
 if (!["niveles", "relaciones", "estados"].includes(fase)) { console.error("fase: niveles | relaciones | estados"); process.exit(2); }

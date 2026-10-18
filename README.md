@@ -44,11 +44,14 @@ La decisión y evidencia que justifican la CLI están documentadas en
 | `web-atomic-component-designer` | Activo | Claude Code |
 | `stitch-ui-generator` | Activo | Claude Code |
 | `ux-development-handoff` | Activo | Claude Code |
+| `claude-design-orchestrator` | Activo | Claude Code |
+| `figma-design-validator` | Activo | Claude Code |
+| `accessibility-reviewer` | Activo | Claude Code |
 | `design-qa` | Activo | Claude Code |
 
 ### Skills de documentación de UX y desarrollo
 
-- `orquestador-desarrollo` orquesta el desarrollo (flujo del DS y de los productos, verificación, publicación y despliegue). Su etapa previa es `ux-ui-orchestrator`, el orquestador de documentación, que coordina `ux-requirements-analyzer`, `user-flow-designer`, `ui-spec-writer`, `web-atomic-component-designer`, `stitch-ui-generator` y `ux-development-handoff`.
+- `orquestador-desarrollo` orquesta el desarrollo (flujo del DS y de los productos, verificación, publicación y despliegue). Su etapa previa es `ux-ui-orchestrator`, el orquestador de documentación, que coordina `ux-requirements-analyzer`, `user-flow-designer`, `ui-spec-writer`, `web-atomic-component-designer`, `stitch-ui-generator`, `claude-design-orchestrator`, `figma-design-validator`, `accessibility-reviewer` y `ux-development-handoff`.
 - **Fuente única:** los skills de documentación de UX se editan **aquí**, en `skills/<nombre>/`. La carpeta `.claude/skills` del repositorio `kb-ux-uxr` no es una fuente: es una copia instalada y se pisa al actualizar con `skils`. Un cambio hecho solo allí se pierde. Para cambiar uno: editar en este repositorio, correr `npm test`, publicar y reinstalar.
 - Los skills nuevos están instalados solo en Claude Code; Codex requiere autorización explícita.
 

@@ -5,7 +5,7 @@
 D="$(cd "$(dirname "$0")" && pwd)"; MOD="$(cd "$D/.." && pwd)"; [ "$(basename "$D")" = historico ] && MOD="$(cd "$D/../.." && pwd)"
 S="${NOTION_TRABAJO:-$MOD/trabajo}"
 WT="${NOTION_WORKTREE:-$(grep -o '"worktree": *"[^"]*"' "$MOD/config.json" | sed 's/.*: *"//;s/"$//')}"
-N="C:/Users/emacalupu/.claude/scripts/notion-sync.js"
+N="${NOTION_SYNC:-$(cd "$(dirname "$0")/.." && pwd)/notion-sync.js}"
 LISTA="$1"; OUT="$2"
 mkdir -p "$OUT"; : > "$OUT/resumen.txt"
 FALLOS=0
