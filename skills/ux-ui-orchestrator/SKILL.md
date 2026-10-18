@@ -141,6 +141,34 @@ Cada veredicto es READY, CONDITIONAL o NOT READY, con razón y bloqueos. Actuali
 
 Con la auditoría limpia, o los errores restantes declarados, cierra según la sección 4 de `references/worktree-protocol.md`: `graphify update .`, resumen de cambios y decisiones pendientes, y propuesta de merge, PR, conservar o descartar. Espera la respuesta; no hagas commit, merge ni borres el worktree por iniciativa propia.
 
+## Módulo Notion (opcional; solo esta copia local)
+
+**Activación.** Si junto a este archivo existe `notion/config.json` con `"activo": true`, el módulo está activo; si el usuario dice «sin Notion», se omite en esa sesión. La copia del repo no lo incluye ni debe incluirlo. Antes de la primera subida de la sesión lee `notion/LEEME.md` y `notion/reglas-de-carga.md`; la especificación completa está en `notion/arquitectura-preguntas.md`.
+
+**Al empezar** (cuando el usuario diga «tenemos este paquete de historias»):
+1. Revisa `notion/pendientes.json`: si hay subidas pendientes, avísalas y súbelas en orden.
+2. Lee el paquete y sus historias de `origin/develop`, compáralos con la huella de la última carga y marca *Vigencia = Revisar por cambio de fuente* en las preguntas afectadas. Nunca cambies su *Estado*.
+3. Crea o actualiza en Notion el proyecto y el producto si no existen, el paquete de alcance y las historias.
+4. Propón la lista de **módulos** (un módulo = un flujo) con el orden sugerido y espera la confirmación del usuario antes de seguir.
+
+**En cada fase, primero Notion y luego el repo.** Al terminar cada fase del paso 3 (UXR → flujos → pantallas → UXS → exploración), sube a Notion lo generado con los scripts de `notion/scripts/`, delegando la ejecución en opencode (`notion/prompts-opencode/`), verifica leyendo Notion y solo entonces da la fase por subida. El repo recibe el módulo ya refinado, con su estructura y su vocabulario («cerrada», tablas «Open questions»).
+
+| Fase | Skill | Se sube | Base |
+|---|---|---|---|
+| Historias de experiencia | `ux-requirements-analyzer` | UXR con resumen «En 30 segundos»; sus preguntas con ficha (contexto, qué se evalúa, alternativas, propuesta o resolución) | Requerimientos UX, Preguntas |
+| Flujos | `user-flow-designer` | Flujos | Flujos |
+| Pantallas | `ui-spec-writer` | Una fila por pantalla | Pantallas |
+| Conjunto | este orquestador | UXS con los veredictos de Stitch y QA | Especificaciones UX |
+| Exploración | `claude-design-orchestrator` o `stitch-ui-generator` | Exploración y enlace al lienzo | Exploraciones |
+
+Con el módulo activo se **omiten** las fases de diseño gobernado en Figma y de handoff (el usuario entrega a desarrollo el paquete completo: historias de experiencia, flujos, pantallas y UXS), y no se emiten los veredictos de Figma ni de Desarrollo. `accessibility-reviewer` es una revisión opcional bajo demanda, no exigida para cerrar un módulo. Los resúmenes «En 30 segundos» se redactan para todos los documentos de las historias nuevas y viven solo en Notion.
+
+**Preguntas.** Las preguntas nacen en las tablas «Open questions» de los UXR y se gestionan en Notion. En Notion solo se editan preguntas, estados, respuestas y comentarios; el texto de los documentos lo regenera el agente desde el archivo. Bloquea el diseño solo una pregunta *Abierta* con *Bloquea* Diseño o Desarrollo; una *Propuesta* no lo bloquea, pero frena el paso a desarrollo. Antes de cada fase indica qué preguntas la bloquean (solo avisa; el usuario decide). Las de negocio, Seguridad o Arquitectura se presentan con alternativas y su efecto en el diseño, sin recomendación; las de diseño llevan propuesta (IA) con cómo funcionaría, evidencia y límites.
+
+**Cierre de módulo.** *Diseño cerrado*: sin preguntas que bloqueen el diseño, documentos del módulo aprobados por una persona y exploración con decisión humana resuelta. *Listo para desarrollo*: lo anterior más las preguntas «Propuesta» confirmadas y lo construido verificado contra lo diseñado. El agente comprueba los indicadores; no aprueba ni confirma por nadie. Cuando el usuario diga «sesión finalizada», devuelve las decisiones al repo (registro nuevo y tablas «Open questions» actualizadas) por MR, sin llevar al repo el contexto, las propuestas de IA, los resúmenes ni los indicadores de Notion.
+
+**Si Notion u opencode no están disponibles.** Sigue generando en el repo y anota en `notion/pendientes.json` lo que falta subir; no avances al paso siguiente si depende de que las preguntas del anterior ya estén en Notion.
+
 ## Compuertas humanas
 
 Todos los skills UX/UI dejan `status: draft`. Este orquestador mantiene esa línea:
@@ -173,4 +201,5 @@ Cierra con un resumen breve, en este orden: escenario y ruta ejecutada; artefact
 - `references/role-readiness.md` — qué necesita cada etapa/consumidor y mapa de códigos de error → skill dueño.
 - `references/worktree-protocol.md` — aislamiento con git worktree (rama `ux/<slug>`), integración y limpieza.
 - `templates/ux-design-spec-template.md` — plantilla de la UXS.
+- `notion/LEEME.md`, `notion/reglas-de-carga.md`, `notion/esquema-bases.md`, `notion/arquitectura-preguntas.md` — módulo Notion (solo copia local; ver la sección «Módulo Notion»).
 - `scripts/audit_ux.py` — auditoría determinista (`--json` para salida estructurada).
