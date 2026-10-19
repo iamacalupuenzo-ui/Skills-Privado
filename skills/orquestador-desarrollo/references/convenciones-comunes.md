@@ -25,7 +25,9 @@
 
 ## Tokens y registro de paquetes
 
-- `GITLAB_TOKEN` sirve para la API y `git`. No imprimirlo nunca.
+- `GITLAB_TOKEN` (variable de usuario de Windows, alcances `api` y `write_repository`) sirve para la API y `git`. No imprimirlo nunca.
+- API: cabecera `PRIVATE-TOKEN`. `git` no la acepta: usar autenticación básica sin guardar el token, con `git -c credential.helper= -c "http.extraHeader=Authorization: Basic <base64 de oauth2:TOKEN>"`. GitLab es 14.2.1: no existe `/personal_access_tokens/self`.
+- El servidor `project.comsatel.com.pe` resuelve a una IP interna: sin la VPN de OpenVPN no responde.
 - El `.npmrc` de los productos espera `GITLAB_NPM_TOKEN`; sin esa variable `npm install` responde 401. Usar `GITLAB_NPM_TOKEN="$GITLAB_TOKEN" npm install paquete@x.y.z --save-exact` solo para ese comando.
 
 ## Trampas de Windows

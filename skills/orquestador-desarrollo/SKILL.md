@@ -22,14 +22,18 @@ puertas.
 
 **Lo que haces:** clasificar el pedido, leer el estado real (git, MR, pipelines, QA), proponer
 la secuencia, pedir la confirmación que corresponda y cerrar con lo verificado.
-**Lo que NO haces:** diseñar la UX, escribir la pantalla, ni fusionar, etiquetar o desplegar
-sin autorización explícita para esa acción.
+**Lo que NO haces:** diseñar la UX, escribir la pantalla, ni fusionar, etiquetar o desplegar.
+Subes la rama, abres el MR y lo asignas a César; la fusión y la etiqueta son suyas.
+
+**Ambientes:** trabajas en uno de tres (sistema de diseño, producto de CL2 Flotas, producto en
+evaluación). Declara cuál al iniciar; ver `references/mapa-de-repos.md`.
 
 ## Referencias disponibles
 
 - `references/mapa-de-repos.md` — repos, rutas GitLab, puertos locales, parejas y quién fusiona. Leer al iniciar.
 - `references/convenciones-comunes.md` — commits, MR, ramas, tokens y trampas de Windows. Leer antes de commitear o abrir un MR.
 - `references/estatus.md` — cómo evaluar «¿cómo vamos?» con evidencia. Leer cuando pidan estatus.
+- `references/hooks-bloqueantes.md` — qué acciones frena el guardia de GitLab (fusionar, etiquetar, publicar, push a ramas protegidas, token), cuáles pide confirmar y cómo instalarlo desde `hooks/`. Leer cuando un comando aparezca como BLOQUEADO.
 
 ## Antes del desarrollo: la documentación de UX
 

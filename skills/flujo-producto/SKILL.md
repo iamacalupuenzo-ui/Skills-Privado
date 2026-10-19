@@ -25,6 +25,7 @@ desplegar y comprobar.
 - `references/publicar-con-mr.md` — pasos de rama, suite, commit, push y MR en pareja. Leer al publicar.
 - `references/diagnostico-qa.md` — cómo saber qué falta cuando QA no carga. Leer ante un error en QA.
 - `references/bff-de-prueba.md` — el BFF de prueba de flotas y sus cuentas. Leer al tocar Web Cliente en QA.
+- `../orquestador-desarrollo/references/hooks-bloqueantes.md` — qué frena el guardia (fusionar, etiquetar, push a `develop`, token) y qué pide confirmar (subir la rama, abrir el MR). El agente sube la rama, abre el MR y lo asigna a César; la fusión es de él.
 
 ## GUARD — verificar contexto
 
