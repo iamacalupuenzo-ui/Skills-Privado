@@ -54,6 +54,9 @@ const casos = [
   ['allow', "git commit -q -F - <<'EOF'\nfeat: bloquea npm publish, git tag y merge_requests/1/merge\nEOF"],
   // Un remoto que no es de Comsatel (el repo de skills en GitHub) no usa la protección de GitLab
   ['ask', 'git push origin main', 'D:\\Investigacion\\Skills\\Skils'],
+  ['ask', 'cd "/d/Investigacion/Skills/Skils" && git push origin main'],
+  // Un repo de Comsatel sí tiene ramas protegidas, aunque el comando haga cd
+  ['deny', 'cd "D:/0001 - Proyectos Generales/01 - Proyectos Trabajo/web-flotas" && git push origin develop', 'D:\\0001 - Proyectos Generales\\01 - Proyectos Trabajo'],
 ];
 
 function decision(cmd, tool = 'Bash', cwd = cwdSeguro) {

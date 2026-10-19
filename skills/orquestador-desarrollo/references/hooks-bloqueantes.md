@@ -44,7 +44,7 @@ asignado a César.
 ## Archivos (viven en el repo de skills, como base de conocimiento)
 
 - `hooks/guardia-gitlab.mjs` — el guardia (Node, sin dependencias).
-- `hooks/probar-guardia.mjs` — 40 casos: lo que debe bloquear, confirmar y dejar pasar.
+- `hooks/probar-guardia.mjs` — 42 casos: lo que debe bloquear, confirmar y dejar pasar.
 - `hooks/instalar-hooks.mjs` — lo instala en tu configuración de Claude Code.
 
 ## Instalar, probar y retirar

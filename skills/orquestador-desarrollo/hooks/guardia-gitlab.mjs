@@ -100,6 +100,12 @@ function evaluar(cmd, cwd) {
   }
 
   for (const s of sentencias(todo)) {
+    // Sigue los `cd` del propio comando para saber en qué repo se ejecuta cada git.
+    const cd = s.match(/^(?:cd|set-location|pushd)\s+(?:\/d\s+)?("[^"]+"|'[^']+'|\S+)/i);
+    if (cd) {
+      cwd = cd[1].replace(/^["']|["']$/g, '').replace(/^\/([a-z])\//i, '$1:/');
+      continue;
+    }
     // 4. git tag que crea o borra etiquetas.
     const tag = analizarGit(s, 'tag');
     if (tag) {
