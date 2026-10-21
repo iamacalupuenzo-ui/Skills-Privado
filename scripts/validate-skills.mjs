@@ -10,7 +10,10 @@
 //   - un skill propio conserva un nombre viejo (comsatel-angular-product-builder, comsatel-product-orchestrator)
 //   - un skill vendorizado difiere de su UPSTREAM.json (alguien lo editó) o le falta la licencia
 //   - un skill vendorizado no está en el manifest
+//   - un skill de AUTONOMOS apunta a otro skill con ../ (debe ser instalable solo)
+//   - una referencia compartida (SHARED_REFERENCES) difiere de su original
 // Avisos (no rompen):
+//   - el mismo enlace ../ en los demás skills propios
 //   - carpetas en skills/ que no están en el manifest (nunca se instalan)
 
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
@@ -23,6 +26,17 @@ const skillsDir = join(root, 'skills');
 const manifest = JSON.parse(readFileSync(join(root, 'skills-manifest.json'), 'utf8'));
 const errors = [];
 const warnings = [];
+
+// Copias que cada skill lleva consigo para ser instalable solo: la fuente es la primera.
+const SHARED_REFERENCES = [
+  ['orquestador-desarrollo/references/hooks-bloqueantes.md', 'flujo-ds/references/hooks-bloqueantes.md', 'flujo-producto/references/hooks-bloqueantes.md'],
+  ['orquestador-desarrollo/references/mapa-de-repos.md', 'flujo-producto/references/mapa-de-repos.md'],
+];
+
+// Skills que ya son instalables solos: un `../otro-skill/` aquí rompe. En el resto, aviso.
+// ux-ui-orchestrator queda fuera: su worktree-protocol.md remite a af-requirements-orchestrator y es un archivo del equipo (Ian).
+const AUTONOMOS = ['orquestador-desarrollo', 'flujo-ds', 'flujo-producto', 'angular-product-builder'];
+const ENLACE_A_OTRO_SKILL = /`[^`]*\.\.\/[a-z][a-z0-9-]*\//;
 
 const OLD_NAMES = ['comsatel-angular-product-builder', 'comsatel-product-orchestrator'];
 
@@ -67,8 +81,20 @@ for (const name of manifest.skills) {
     for (const file of listFiles(dir)) {
       if (!file.endsWith('.md')) continue;
       const body = readFileSync(join(dir, file), 'utf8');
+      if (ENLACE_A_OTRO_SKILL.test(body)) {
+        const msg = `${name}/${file}: apunta a otro skill con ../ (copia el recurso dentro del skill)`;
+        (AUTONOMOS.includes(name) ? errors : warnings).push(msg);
+      }
       for (const old of OLD_NAMES) if (body.includes(old)) errors.push(`${name}/${file}: conserva el nombre viejo ${old}`);
     }
+  }
+}
+
+for (const [source, ...copies] of SHARED_REFERENCES) {
+  const original = readFileSync(join(skillsDir, source), 'utf8').replace(/\r\n/g, '\n');
+  for (const copy of copies) {
+    const body = readFileSync(join(skillsDir, copy), 'utf8').replace(/\r\n/g, '\n');
+    if (body !== original) errors.push(`${copy}: difiere de ${source}; copia el original`);
   }
 }
 

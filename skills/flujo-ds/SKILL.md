@@ -9,7 +9,7 @@ description: >
   el DS a los productos". No construye pantallas de producto (usa flujo-producto) ni audita
   tokens (usa comsatel-design-system).
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
 ---
 
 # Flujo del Design System
@@ -22,7 +22,7 @@ tiempo.
 
 - `references/publicar-el-ds.md` — los pasos exactos de `develop` a `main`, con cómo verificar cada uno. Leer al publicar.
 - `references/subir-ds-a-productos.md` — cómo se consume una versión nueva en los cuatro productos. Leer después de publicar.
-- `../orquestador-desarrollo/references/hooks-bloqueantes.md` — qué frena el guardia (etiquetas `ds-v*`, `npm publish`, push a ramas protegidas) y por qué: las etiquetas y la publicación del DS las ejecuta César, no el agente.
+- `references/hooks-bloqueantes.md` — qué frena el guardia (etiquetas `ds-v*`, `npm publish`, push a ramas protegidas) y por qué: las etiquetas y la publicación del DS las ejecuta César, no el agente.
 
 ## GUARD — verificar contexto
 

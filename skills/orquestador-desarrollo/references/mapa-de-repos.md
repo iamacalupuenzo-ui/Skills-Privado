@@ -16,8 +16,7 @@ Si el pedido no deja claro el ambiente, pregunta. Un cambio en un producto no au
 
 ## Repositorios
 
-Raíz local en la laptop del trabajo: `C:\Users\emacalupu\Documents\00 - Proyectos Enzo - V1\`.
-Raíz local en la laptop personal: `D:\0001 - Proyectos Generales\01 - Proyectos Trabajo\`.
+Raíz local: la carpeta donde están clonados los repos; las rutas de esta tabla son relativas a ella.
 Raíz GitLab: `comsatel/development/products/clocator2/` (servidor `project.comsatel.com.pe`, solo por VPN).
 
 | Repo | Ruta GitLab | Qué es | Despliega |

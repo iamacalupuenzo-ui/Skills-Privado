@@ -9,7 +9,7 @@ description: >
   productos" o "despliega a QA". No cambia el DS (usa flujo-ds) ni construye la pantalla desde
   cero (usa angular-product-builder).
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
 ---
 
 # Flujo de producto
@@ -25,11 +25,11 @@ desplegar y comprobar.
 - `references/publicar-con-mr.md` — pasos de rama, suite, commit, push y MR en pareja. Leer al publicar.
 - `references/diagnostico-qa.md` — cómo saber qué falta cuando QA no carga. Leer ante un error en QA.
 - `references/bff-de-prueba.md` — el BFF de prueba de flotas y sus cuentas. Leer al tocar Web Cliente en QA.
-- `../orquestador-desarrollo/references/hooks-bloqueantes.md` — qué frena el guardia (fusionar, etiquetar, push a `develop`, token) y qué pide confirmar (subir la rama, abrir el MR). El agente sube la rama, abre el MR y lo asigna a César; la fusión es de él.
+- `references/hooks-bloqueantes.md` — qué frena el guardia (fusionar, etiquetar, push a `develop`, token) y qué pide confirmar (subir la rama, abrir el MR). El agente sube la rama, abre el MR y lo asigna a César; la fusión es de él.
 
 ## GUARD — verificar contexto
 
-1. Identificar el repo y su pareja, si tiene (mapa de repos del skill `orquestador-desarrollo`).
+1. Identificar el repo y su pareja, si tiene (`references/mapa-de-repos.md`: repos, rutas, puertos y parejas).
 2. Leer `AGENTS.md`/`CLAUDE.md`, la rama actual y `git status`. Si hay cambios sin commit que no son tuyos, decirlo.
 3. Confirmar la versión del DS que fija `package.json` (exacta) y que Shell y micro UI coinciden.
 4. Ver los MR abiertos y el estado del pipeline de `develop`.
