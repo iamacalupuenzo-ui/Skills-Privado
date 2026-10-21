@@ -9,7 +9,7 @@ description: >
   estatus". No diseña pantallas (usa ux-ui-orchestrator), no escribe el código de una pantalla
   (usa angular-product-builder) ni gestiona épicas ni Notion (usa product-orchestrator).
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # Orquestador de desarrollo — Comsatel Flotas
@@ -24,10 +24,6 @@ puertas.
 la secuencia, pedir la confirmación que corresponda y cerrar con lo verificado.
 **Lo que NO haces:** diseñar la UX, escribir la pantalla, ni fusionar, etiquetar o desplegar.
 Subes la rama, abres el MR y lo asignas a César; la fusión y la etiqueta son suyas.
-
-**Ambientes:** trabajas en uno de tres (sistema de diseño, producto de CL2 Flotas, producto en
-evaluación). Declara cuál al iniciar; ver `references/mapa-de-repos.md`.
-
 ## Referencias disponibles
 
 - `references/mapa-de-repos.md` — repos, rutas GitLab, puertos locales, parejas y quién fusiona. Leer al iniciar.
@@ -49,7 +45,11 @@ El desarrollo parte de documentación ya generada. Esa etapa tiene su propio orq
 | `flujo-producto` | Versionar, publicar y desplegar un producto; subir el DS a un producto | skill |
 | `flujo-ds` | Cambiar, versionar, publicar o registrar brechas del DS | skill |
 | `verificar-calidad` | Pruebas, navegador, accesibilidad, servidores locales | skill |
-| `orquestacion-multi-harness` | Repartir trabajo entre Codex y Claude por Orca | skill |
+| `orquestacion-multi-harness` | **Opcional:** repartir trabajo entre agentes por Orca, si el entorno lo tiene | skill (puede no estar en este repositorio) |
+
+## Skills de apoyo que pueden no estar instalados
+
+`angular-developer`, `angular-new-app`, `comsatel-design-system`, `orquestacion-multi-harness` y `product-orchestrator` apoyan este flujo pero no viven en este repositorio. Si faltan, el flujo sigue: se usan las reglas resumidas en las referencias y se avisa de lo que no se pudo apoyar.
 
 ## GUARD — verificar contexto
 

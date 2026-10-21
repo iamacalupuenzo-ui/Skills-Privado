@@ -84,7 +84,7 @@ function evaluar(cmd, cwd) {
   if (/merge_requests\/\d+\/merge\b/i.test(todo) || /\bglab\s+mr\s+(merge|accept)\b/i.test(todo)) {
     return ['deny', 'Fusionar un merge request',
       'El agente no fusiona. La fusión a develop la ejecuta César (arquitecto) después de revisar el MR.',
-      'Deja el MR listo (pipeline en verde, sin conflictos ni discusiones abiertas) y asígnalo a César con un comentario. Enzo también puede fusionar, pero lo decide él en la interfaz de GitLab.'];
+      'Deja el MR listo (pipeline en verde, sin conflictos ni discusiones abiertas) y asígnalo a César con un comentario. El responsable del repositorio también puede fusionar, pero lo decide él en la interfaz de GitLab.'];
   }
 
   // 3. Etiquetas y publicación de paquetes.
@@ -132,7 +132,7 @@ function evaluar(cmd, cwd) {
     if (push.opciones.some((o) => /^(-f|--force|--force-with-lease(=.*)?|--force-if-includes)$/.test(o)) || push.args.some((a) => a.startsWith('+'))) {
       return ['deny', 'git push forzado',
         'Reescribe la historia remota y puede borrar el trabajo de otras personas.',
-        'Haz un commit nuevo o un rebase local y vuelve a subir sin forzar. Si de verdad hace falta forzar, que lo decida Enzo en su terminal.'];
+        'Haz un commit nuevo o un rebase local y vuelve a subir sin forzar. Si de verdad hace falta forzar, que lo decida el responsable del repositorio en su terminal.'];
     }
     if (push.opciones.some((o) => /^(-d|--delete)$/.test(o))) {
       return ['deny', 'git push --delete (borrar una rama remota)',
