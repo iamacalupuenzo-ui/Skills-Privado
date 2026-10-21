@@ -18,11 +18,11 @@ garantiza los pocos casos donde un error no se puede deshacer.
 
 | Acción | Resultado | Por qué | Quién la hace |
 |---|---|---|---|
-| Fusionar un MR (`/merge`, `glab mr merge`) | Bloquea | El agente no fusiona; revisa y fusiona César | César (o Enzo en GitLab) |
+| Fusionar un MR (`/merge`, `glab mr merge`) | Bloquea | El agente no fusiona; revisa y fusiona César | César (o el responsable del repositorio, en GitLab) |
 | Crear o borrar etiquetas (`git tag`, `--tags`, API de tags) | Bloquea | Una etiqueta `ds-vX.Y.Z` publica el paquete del sistema de diseño | César |
 | `npm publish` | Bloquea | Publicar un paquete es irreversible | César, por etiqueta |
 | `git push` a `develop`, `main` o `release` | Bloquea | Están protegidas: solo entran por MR | César, tras el MR |
-| `git push --force`, `+rama`, `--delete` | Bloquea | Reescribe o borra historia remota | Enzo, en su terminal |
+| `git push --force`, `+rama`, `--delete` | Bloquea | Reescribe o borra historia remota | El responsable del repositorio, en su terminal |
 | Mostrar el token o escribirlo en un comando | Bloquea | Queda en el historial y la conversación | Nadie: usa la variable |
 | `git push` de una rama `feature/*` | Pide confirmación | Regla B1: nada se sube sin tu visto bueno | Tú confirmas |
 | Abrir un MR por la API | Pide confirmación | Debe ir a `develop`, asignado a César y enlazado a su pareja | Tú confirmas |
