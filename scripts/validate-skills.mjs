@@ -16,7 +16,10 @@
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { hashFile, listFiles, VENDORED_SKILLS } from './sync-angular-skills.mjs';
+import { hashFile, listFiles, VENDORED_SKILLS as ANGULAR_SKILLS } from './sync-angular-skills.mjs';
+import { ANATOMY_SKILLS } from './sync-anatomy-skill.mjs';
+
+const VENDORED_SKILLS = [...ANGULAR_SKILLS, ...ANATOMY_SKILLS];
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const skillsDir = join(root, 'skills');
@@ -82,7 +85,7 @@ for (const name of VENDORED_SKILLS) {
   const current = listFiles(dir).filter((f) => f !== 'UPSTREAM.json' && f !== 'LICENSE-UPSTREAM.md');
   for (const file of current) {
     if (!(file in upstream.files)) errors.push(`${name}/${file}: archivo que no está en el origen fijado (${upstream.commit.slice(0, 8)})`);
-    else if (hashFile(join(dir, file)) !== upstream.files[file]) errors.push(`${name}/${file}: modificado respecto del origen fijado (${upstream.commit.slice(0, 8)}); las reglas propias van en angular-product-builder, no aquí`);
+    else if (hashFile(join(dir, file)) !== upstream.files[file]) errors.push(`${name}/${file}: modificado respecto del origen fijado (${upstream.commit.slice(0, 8)}); las reglas propias van en un skill propio, no aquí`);
   }
   for (const file of Object.keys(upstream.files)) if (!current.includes(file)) errors.push(`${name}/${file}: falta respecto del origen fijado`);
 }

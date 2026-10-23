@@ -12,7 +12,8 @@
   },
   "scripts": {
     "test": "node --check bin/skils.js && node scripts/validate-skills.mjs",
-    "sync:angular": "node scripts/sync-angular-skills.mjs"
+    "sync:angular": "node scripts/sync-angular-skills.mjs",
+    "sync:anatomy": "node scripts/sync-anatomy-skill.mjs"
   },
   "files": [
     "bin/",

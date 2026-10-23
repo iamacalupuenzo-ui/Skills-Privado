@@ -29,6 +29,7 @@
     "design-qa",
     "claude-design-orchestrator",
     "figma-design-validator",
-    "accessibility-reviewer"
+    "accessibility-reviewer",
+    "anatomy"
   ]
 }

@@ -48,6 +48,7 @@ La decisión y evidencia que justifican la CLI están documentadas en
 | `figma-design-validator` | Activo | Claude Code |
 | `accessibility-reviewer` | Activo | Claude Code |
 | `design-qa` | Activo | Claude Code |
+| `anatomy` | Activo (de terceros, sin modificar) | Claude Code |
 
 ### Skills de documentación de UX y desarrollo
 
