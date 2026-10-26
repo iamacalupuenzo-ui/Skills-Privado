@@ -1,0 +1,151 @@
+pack_name: ux
+version: 1.0.0
+purpose: Llevar User Stories validadas hasta un diseño gobernado y un handoff DESIGN_READY_FOR_DEV, con trazabilidad US → UXR → FLW → SCR → DTM y compuertas humanas
+# Estándar de referencia: comsatel-skill-pack-factory v1.2 (un orquestador y como máximo seis especialistas).
+# ux-ui-orchestrator coordina 9 skills porque tiene que preparar toda la documentación de UX: requisitos, flujos,
+# pantallas, catálogo atómico, exploración, accesibilidad, diseño gobernado y handoff. Se acepta que supere los 6.
+excepcion_especialistas: Preparar toda la documentación de UX exige estas 9 especialidades; el límite de 6 rige para el pack de desarrollo.
+skills:
+- name: ux-ui-orchestrator
+  role: orchestrator
+  description: Diagnostica, planifica por fases, enruta las preguntas entre skills, audita y consolida la especificación UXS con veredicto por consumidor
+- name: ux-requirements-analyzer
+  role: specialist
+  description: Convierte User Stories y reglas de negocio en requisitos UX (UXR) y preguntas abiertas
+- name: user-flow-designer
+  role: specialist
+  description: Convierte los UXR en flujos (FLW) con camino feliz, excepciones, permisos y estados
+- name: ui-spec-writer
+  role: specialist
+  description: Convierte un flujo en especificación de pantallas (SCR), componentes y tokens
+- name: web-atomic-component-designer
+  role: specialist
+  description: Catálogo atómico Angular, opcional cuando hay librería de componentes
+- name: stitch-ui-generator
+  role: specialist
+  description: Genera la exploración visual en Google Stitch para pantallas ya especificadas
+- name: claude-design-orchestrator
+  role: specialist
+  description: Explora y critica alternativas de diseño en Claude Design
+- name: accessibility-reviewer
+  role: specialist
+  description: Evalúa una especificación, HTML o nodo contra WCAG 2.2 AA y registra hallazgos
+- name: figma-design-validator
+  role: specialist
+  description: Valida el diseño en Figma y lo registra como diseño gobernado
+- name: ux-development-handoff
+  role: specialist
+  description: Paquete de entrega a Desarrollo y puerta DESIGN_READY_FOR_DEV
+# Entrada del pack: historias y reglas ya producidas por af-requirements-orchestrator (RQS con veredicto UX/UI READY o CONDITIONAL).
+upstream:
+- af-requirements-orchestrator
+# Etapa siguiente, fuera del pack.
+downstream:
+- orquestador-desarrollo
+gates:
+- id: G0
+  name: Diagnóstico y plan
+  criteria:
+  - Escenario clasificado y ruta mínima mostrada antes de ejecutar
+  - Si escribe archivos, trabaja en un worktree ux/<slug>
+- id: G1
+  name: Requisitos UX
+  criteria:
+  - Cada UXR con lineage a US y AC
+  - Actor, permisos y estados; los vacíos quedan como preguntas
+- id: G2
+  name: Flujos
+  criteria:
+  - Camino feliz, excepciones, permisos y estados
+  - screens declarado
+- id: G3
+  name: Especificación
+  criteria:
+  - El preflight del handoff sin BLOCKED
+  - Cada SCR con flow, requirements, required_states y a11y_requirements
+- id: G4
+  name: Exploración
+  criteria:
+  - Cada artefacto con SCR → FLW
+  - register-exploration sin error y un solo STP por iniciativa
+- id: G5
+  name: Accesibilidad
+  criteria:
+  - ARP por SCR
+  - Ningún pass sin evaluar; fail e inconclusive visibles
+- id: G6
+  name: Diseño gobernado
+  criteria:
+  - governed_design por SCR
+  - Divergencia Stitch ↔ Figma en none o resolved, con DD humano
+- id: G7
+  name: Handoff
+  criteria:
+  - El gate del handoff sin FAILED ni BLOCKED
+  - Revisión humana pendiente registrada
+tasks:
+- id: T-01
+  skill: ux-requirements-analyzer
+  depends_on: []
+  gate: G1
+  outputs:
+  - UXR y preguntas abiertas
+- id: T-02
+  skill: user-flow-designer
+  depends_on:
+  - T-01
+  gate: G2
+  outputs:
+  - FLW
+- id: T-03
+  skill: ui-spec-writer
+  depends_on:
+  - T-02
+  gate: G3
+  outputs:
+  - SCR, CMP y TKN
+- id: T-04
+  skill: stitch-ui-generator
+  depends_on:
+  - T-03
+  gate: G4
+  condition: la exploración se hace en Stitch
+  outputs:
+  - GEN y STP
+- id: T-05
+  skill: claude-design-orchestrator
+  depends_on:
+  - T-03
+  gate: G4
+  condition: la exploración se hace en Claude Design
+  outputs:
+  - Intent Brief, alternativas y DD
+- id: T-06
+  skill: accessibility-reviewer
+  depends_on:
+  - T-04
+  - T-05
+  gate: G5
+  outputs:
+  - ARP
+- id: T-07
+  skill: figma-design-validator
+  depends_on:
+  - T-06
+  gate: G6
+  outputs:
+  - governed_design en el DTM
+- id: T-08
+  skill: ux-development-handoff
+  depends_on:
+  - T-07
+  gate: G7
+  outputs:
+  - HOF y gate DESIGN_READY_FOR_DEV
+# Decisiones y acciones que ningún skill toma por una persona.
+human_only:
+- Aprobar un diseño, asignar verified o approved, o registrar una validación en nombre de alguien
+- Elegir entre alternativas de diseño
+- Resolver una divergencia Stitch ↔ Figma y aprobar el diseño gobernado
+- Aprobar el gate DESIGN_READY_FOR_DEV
+- Crear un proyecto Stitch (exige autorización explícita)

@@ -20,10 +20,12 @@
 //   - el mismo enlace ../ en los demás skills propios
 //   - carpetas en skills/ que no están en el manifest (nunca se instalan)
 
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { hashFile, listFiles, VENDORED_SKILLS } from './sync-angular-skills.mjs';
+import { generar } from './construir-plugin.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const skillsDir = join(root, 'skills');
@@ -150,7 +152,7 @@ function validatePack(file) {
   const orchestrators = skills.filter((s) => s.role === 'orchestrator');
   const specialists = skills.filter((s) => s.role === 'specialist');
   if (orchestrators.length !== 1) errors.push(`${label}: debe tener exactamente un orquestador (tiene ${orchestrators.length})`);
-  if (specialists.length > 6) errors.push(`${label}: tiene ${specialists.length} especialistas, el máximo es 6 (o un ADR aprobado)`);
+  if (specialists.length > 6 && !/^excepcion_especialistas:\s*\S/m.test(readFileSync(file, 'utf8'))) errors.push(`${label}: tiene ${specialists.length} especialistas, el máximo es 6; declara excepcion_especialistas: con el motivo (o un ADR aprobado)`);
   for (const s of skills) {
     if (!s.role) errors.push(`${label}: ${s.name} no declara role`);
     if (!listed.has(s.name)) errors.push(`${label}: ${s.name} no está en skills-manifest.json`);
@@ -197,34 +199,23 @@ function validatePlugin(dirName) {
       if (!existsSync(join(dir, m[1]))) errors.push(`${label}/hooks/hooks.json: el hook llama a ${m[1]}, que no existe en el plugin`);
     }
   }
-  // Copia de skills frente a la fuente.
+  // La copia publicada debe ser exactamente lo que genera scripts/construir-plugin.mjs hoy.
   const packFile = join(root, 'packs', packName, 'pack.yaml');
   if (!existsSync(packFile)) { errors.push(`${label}: no hay packs/${packName}/pack.yaml del que salga`); return; }
-  const norm = (f) => readFileSync(f, 'utf8').replace(/\r\n/g, '\n');
-  const packSkills = [];
-  let enSkills = false;
-  for (const l of norm(packFile).split('\n')) {
-    if (/^skills:\s*$/.test(l)) { enSkills = true; continue; }
-    if (enSkills && /^\S/.test(l) && !l.startsWith('- ')) enSkills = false;
-    const m = enSkills && l.match(/^- name:\s*(\S+)/);
-    if (m) packSkills.push(m[1]);
-  }
-  const copied = existsSync(join(dir, 'skills')) ? readdirSync(join(dir, 'skills')) : [];
   const regen = `ejecuta npm run construir-plugin -- ${packName}`;
-  for (const s of packSkills) if (!copied.includes(s)) errors.push(`${label}: falta skills/${s} (${regen})`);
-  for (const s of copied) if (!packSkills.includes(s)) errors.push(`${label}: skills/${s} no está en el pack`);
-  for (const s of packSkills.filter((x) => copied.includes(x))) {
-    const src = join(skillsDir, s);
-    const dst = join(dir, 'skills', s);
-    const fuente = listFiles(src).filter((f) => !/^evals[\\/]/.test(f));
-    const copia = listFiles(dst);
-    for (const f of fuente) {
-      if (!copia.includes(f)) errors.push(`${label}/skills/${s}/${f}: falta en la copia (${regen})`);
-      else if (norm(join(src, f)) !== norm(join(dst, f))) errors.push(`${label}/skills/${s}/${f}: difiere de skills/${s}/${f} (${regen})`);
+  const tmp = mkdtempSync(join(tmpdir(), 'verifica-plugin-'));
+  try {
+    try { generar(packName, tmp); } catch (e) { errors.push(`${label}: no se pudo regenerar (${e.message.split('\n')[0]})`); return; }
+    const norm = (f) => readFileSync(f, 'utf8').replace(/\r\n/g, '\n');
+    const ruta = (f) => f.replace(/\\/g, '/');
+    const esperado = listFiles(tmp).map(ruta);
+    const real = [...listFiles(join(dir, 'skills')).map((f) => ruta(join('skills', f))), ...(existsSync(join(dir, 'pack.yaml')) ? ['pack.yaml'] : [])];
+    for (const f of esperado) {
+      if (!real.includes(f)) errors.push(`${label}/${f}: falta en el plugin (${regen})`);
+      else if (norm(join(tmp, f)) !== norm(join(dir, f))) errors.push(`${label}/${f}: difiere de lo que genera la fuente (${regen})`);
     }
-    for (const f of copia) if (!fuente.includes(f)) errors.push(`${label}/skills/${s}/${f}: sobra, no está en la fuente`);
-  }
-  if (!existsSync(join(dir, 'pack.yaml')) || norm(join(dir, 'pack.yaml')) !== norm(packFile)) errors.push(`${label}/pack.yaml: falta o difiere de packs/${packName}/pack.yaml (${regen})`);
+    for (const f of real) if (!esperado.includes(f)) errors.push(`${label}/${f}: sobra, no sale de la fuente (${regen})`);
+  } finally { rmSync(tmp, { recursive: true, force: true }); }
 }
 const pluginsDir = join(root, 'plugins');
 if (existsSync(pluginsDir)) {
