@@ -1,0 +1,14 @@
+{
+  "name": "comsatel-skills",
+  "description": "Skills de Comsatel para CL2 Flotas",
+  "owner": {
+    "name": "Comsatel"
+  },
+  "plugins": [
+    {
+      "name": "comsatel-desarrollo",
+      "description": "Orquestador de desarrollo y sus cinco especialistas (DS, producto, UX a código, construcción y verificación), con el guardia de GitLab incluido",
+      "source": "./plugins/comsatel-desarrollo"
+    }
+  ]
+}

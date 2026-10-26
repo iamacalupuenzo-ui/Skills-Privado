@@ -1,0 +1,9 @@
+{
+  "name": "comsatel-desarrollo",
+  "version": "1.0.0",
+  "description": "Flujo de desarrollo de CL2 Flotas: un orquestador y cinco skills para cambiar el Design System, publicar productos, bajar las decisiones de UX a código y verificar con evidencia. Incluye el guardia de GitLab que impide fusionar, etiquetar, publicar o mostrar el token.",
+  "author": {
+    "name": "Comsatel"
+  },
+  "keywords": ["comsatel", "design-system", "angular", "gitlab", "flujo-de-desarrollo"]
+}

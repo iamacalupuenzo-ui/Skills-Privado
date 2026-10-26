@@ -12,6 +12,7 @@
 //   - un skill vendorizado no está en el manifest
 //   - un skill de AUTONOMOS apunta a otro skill con ../ (debe ser instalable solo)
 //   - una referencia compartida (SHARED_REFERENCES) difiere de su original
+//   - un plugin (plugins/*) cuya copia de skills difiere de la fuente, o con marketplace/hook que apuntan a algo inexistente
 //   - un pack (packs/*/pack.yaml) con más de un orquestador, más de 6 especialistas o skills fuera del manifest
 //   - un skill de EVALS_REQUIRED sin evals/evals.json válido (casos completos, comportamientos
 //     bloqueantes que existen en su SKILL.md, referencias reales y al menos un caso que frena)
@@ -166,6 +167,68 @@ if (existsSync(packsDir)) {
     const file = join(packsDir, entry, 'pack.yaml');
     if (existsSync(file)) validatePack(file);
   }
+}
+
+// Plugins: la copia de skills/ debe coincidir con la fuente (salvo evals/), el marketplace
+// debe apuntar a la carpeta del plugin y el hook debe llamar a un archivo que exista.
+function jsonOrError(file, label) {
+  try { return JSON.parse(readFileSync(file, 'utf8')); } catch (e) { errors.push(`${label}: JSON inválido o ausente (${e.message.split('\n')[0]})`); return null; }
+}
+function validatePlugin(dirName) {
+  const dir = join(root, 'plugins', dirName);
+  const label = `plugins/${dirName}`;
+  const packName = dirName.replace(/^comsatel-/, '');
+  const meta = jsonOrError(join(dir, '.claude-plugin', 'plugin.json'), `${label}/.claude-plugin/plugin.json`);
+  if (meta) {
+    if (meta.name !== dirName) errors.push(`${label}: plugin.json dice name "${meta.name}", debe ser "${dirName}"`);
+    if (!/^\d+\.\d+\.\d+$/.test(meta.version || '')) errors.push(`${label}: plugin.json necesita version SemVer`);
+    if (!meta.description) errors.push(`${label}: plugin.json necesita description`);
+  }
+  const market = jsonOrError(join(root, '.claude-plugin', 'marketplace.json'), '.claude-plugin/marketplace.json');
+  if (market) {
+    const entry = (market.plugins || []).find((p) => p.name === dirName);
+    if (!entry) errors.push(`.claude-plugin/marketplace.json: no lista el plugin ${dirName}`);
+    else if (!existsSync(join(root, entry.source, '.claude-plugin', 'plugin.json'))) errors.push(`.claude-plugin/marketplace.json: source ${entry.source} no apunta a un plugin`);
+  }
+  const hooksFile = join(dir, 'hooks', 'hooks.json');
+  if (existsSync(hooksFile)) {
+    jsonOrError(hooksFile, `${label}/hooks/hooks.json`);
+    for (const m of readFileSync(hooksFile, 'utf8').matchAll(/\$\{CLAUDE_PLUGIN_ROOT\}\/([^"\\]+)/g)) {
+      if (!existsSync(join(dir, m[1]))) errors.push(`${label}/hooks/hooks.json: el hook llama a ${m[1]}, que no existe en el plugin`);
+    }
+  }
+  // Copia de skills frente a la fuente.
+  const packFile = join(root, 'packs', packName, 'pack.yaml');
+  if (!existsSync(packFile)) { errors.push(`${label}: no hay packs/${packName}/pack.yaml del que salga`); return; }
+  const norm = (f) => readFileSync(f, 'utf8').replace(/\r\n/g, '\n');
+  const packSkills = [];
+  let enSkills = false;
+  for (const l of norm(packFile).split('\n')) {
+    if (/^skills:\s*$/.test(l)) { enSkills = true; continue; }
+    if (enSkills && /^\S/.test(l) && !l.startsWith('- ')) enSkills = false;
+    const m = enSkills && l.match(/^- name:\s*(\S+)/);
+    if (m) packSkills.push(m[1]);
+  }
+  const copied = existsSync(join(dir, 'skills')) ? readdirSync(join(dir, 'skills')) : [];
+  const regen = `ejecuta npm run construir-plugin -- ${packName}`;
+  for (const s of packSkills) if (!copied.includes(s)) errors.push(`${label}: falta skills/${s} (${regen})`);
+  for (const s of copied) if (!packSkills.includes(s)) errors.push(`${label}: skills/${s} no está en el pack`);
+  for (const s of packSkills.filter((x) => copied.includes(x))) {
+    const src = join(skillsDir, s);
+    const dst = join(dir, 'skills', s);
+    const fuente = listFiles(src).filter((f) => !/^evals[\\/]/.test(f));
+    const copia = listFiles(dst);
+    for (const f of fuente) {
+      if (!copia.includes(f)) errors.push(`${label}/skills/${s}/${f}: falta en la copia (${regen})`);
+      else if (norm(join(src, f)) !== norm(join(dst, f))) errors.push(`${label}/skills/${s}/${f}: difiere de skills/${s}/${f} (${regen})`);
+    }
+    for (const f of copia) if (!fuente.includes(f)) errors.push(`${label}/skills/${s}/${f}: sobra, no está en la fuente`);
+  }
+  if (!existsSync(join(dir, 'pack.yaml')) || norm(join(dir, 'pack.yaml')) !== norm(packFile)) errors.push(`${label}/pack.yaml: falta o difiere de packs/${packName}/pack.yaml (${regen})`);
+}
+const pluginsDir = join(root, 'plugins');
+if (existsSync(pluginsDir)) {
+  for (const entry of readdirSync(pluginsDir)) if (statSync(join(pluginsDir, entry)).isDirectory()) validatePlugin(entry);
 }
 
 for (const [source, ...copies] of SHARED_REFERENCES) {
