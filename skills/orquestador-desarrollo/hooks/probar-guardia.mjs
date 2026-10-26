@@ -64,7 +64,10 @@ function decision(cmd, tool = 'Bash', cwd = cwdSeguro) {
     input: JSON.stringify({ tool_name: tool, tool_input: { command: cmd }, cwd }),
     encoding: 'utf8',
   });
-  if (r.status === 2) return { tipo: 'deny', texto: r.stderr };
+  // Contrato: la decisión viaja en el JSON y la salida es siempre 0. Un código 2 o 1 sería una
+  // regresión: bajo PowerShell (Windows) el código llega como 1 y el comando se ejecutaría.
+  if (r.status !== 0) return { tipo: `salida-${r.status}`, texto: r.stderr };
+  if (r.stdout.includes('"permissionDecision":"deny"')) return { tipo: 'deny', texto: r.stdout };
   if (r.stdout.includes('"permissionDecision":"ask"')) return { tipo: 'ask', texto: r.stdout };
   return { tipo: 'allow', texto: '' };
 }

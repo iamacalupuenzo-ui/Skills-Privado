@@ -9,7 +9,7 @@ description: >
   estatus". No diseña pantallas (usa ux-ui-orchestrator), no escribe el código de una pantalla
   (usa angular-product-builder) ni gestiona épicas ni Notion (usa product-orchestrator).
 metadata:
-  version: "1.2.1"
+  version: "1.2.2"
 ---
 
 # Orquestador de desarrollo — Comsatel Flotas

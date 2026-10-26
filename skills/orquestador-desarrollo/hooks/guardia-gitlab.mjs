@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 // Guardia de acciones críticas sobre GitLab de Comsatel (hook PreToolUse de Claude Code).
-// Lee el evento por stdin. Si la acción es crítica, la bloquea (exit 2 + motivo por stderr)
-// o pide confirmación (JSON "ask"). No toca nada más: lo demás pasa sin ruido.
+// Lee el evento por stdin. Si la acción es crítica, la bloquea o pide confirmación, siempre con un
+// JSON `permissionDecision` ("deny" o "ask") por stdout y salida 0. No se usa el código de salida 2:
+// en Windows los hooks pasan por PowerShell, que convierte cualquier fallo de un comando nativo en
+// código 1, y el código 1 no bloquea (el comando se ejecutaría). Lo demás pasa sin ruido.
 // Documentación: ../references/hooks-bloqueantes.md
 import { execFileSync } from 'node:child_process';
 
@@ -195,8 +197,14 @@ process.stdin.on('end', () => {
   if (!r) process.exit(0);
   const [tipo, titulo, motivo, que] = r;
   if (tipo === 'deny') {
-    process.stderr.write(AVISO_BLOQUEO(titulo, motivo, que) + '\n');
-    process.exit(2);
+    process.stdout.write(JSON.stringify({
+      hookSpecificOutput: {
+        hookEventName: 'PreToolUse',
+        permissionDecision: 'deny',
+        permissionDecisionReason: AVISO_BLOQUEO(titulo, motivo, que),
+      },
+    }));
+    process.exit(0);
   }
   process.stdout.write(JSON.stringify({
     hookSpecificOutput: {

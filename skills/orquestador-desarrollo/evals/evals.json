@@ -1,6 +1,6 @@
 {
   "skill_name": "orquestador-desarrollo",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "descripcion": "Casos para comprobar que el orquestador elige el flujo correcto, respeta las puertas y se detiene donde debe. Cada caso nace de una situación real del trabajo con el Design System y los productos de CL2 Flotas.",
   "evals": [
     {
