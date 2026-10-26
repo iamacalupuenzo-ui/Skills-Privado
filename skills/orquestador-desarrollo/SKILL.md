@@ -9,7 +9,7 @@ description: >
   estatus". No diseña pantallas (usa ux-ui-orchestrator), no escribe el código de una pantalla
   (usa angular-product-builder) ni gestiona épicas ni Notion (usa product-orchestrator).
 metadata:
-  version: "1.2.0"
+  version: "1.2.1"
 ---
 
 # Orquestador de desarrollo — Comsatel Flotas
@@ -54,7 +54,7 @@ El desarrollo parte de documentación ya generada. Esa etapa tiene su propio orq
 ## GUARD — verificar contexto
 
 1. Identificar el repositorio destino y leer su `AGENTS.md` o `CLAUDE.md`: sus reglas mandan sobre las de este skill.
-2. Leer el estado real: rama, `git status`, MR abiertos, pipelines y, si aplica, QA en vivo. No asumir lo que dice una conversación anterior.
+2. Leer el estado real: rama, `git status`, MR abiertos, pipelines y, si aplica, QA en vivo. No asumir lo que dice una conversación anterior. **Las lecturas no piden confirmación**: `git status`, `git fetch`, las consultas GET a la API de GitLab y los `curl` de sondeo a QA se ejecutan antes de responder. Solo se pregunta antes de escribir (subir, abrir un MR, editar).
 3. Confirmar la versión del DS que cada producto fija (exacta) antes de planear cualquier cambio de UI.
 4. Si el pedido toca el DS, pararse en la confirmación del usuario antes de editar (bloqueante B2).
 5. Si falta acceso (token, permisos de GitLab), decirlo y detener solo esa operación.

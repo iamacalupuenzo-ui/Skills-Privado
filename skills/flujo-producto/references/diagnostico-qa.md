@@ -25,7 +25,7 @@ Consola: `@comsatel/ui-components/<componente>@X is not compatible with existing
 
 ## Pipeline
 
-`GET /projects/:id/pipelines?ref=develop&per_page=2` y los `jobs` del primero. `deploy to qa` en `failed` con «failed to pull image» es infraestructura (reintento), no código.
+`GET /projects/:id/pipelines?ref=develop&per_page=2` y los `jobs` del primero. Si algún job falló (sobre todo `deploy to qa`), **lee su registro** con `GET /projects/:id/jobs/:job_id/trace` antes de decidir la causa: el estado `failed` solo dice que falló, no por qué. «failed to pull image» (por ejemplo, un timeout de Docker Hub) es infraestructura y se reintenta; un error de `helm template` o de la suite es del código. Las lecturas no piden confirmación; el reintento sí.
 
 ## Prueba de punta a punta (con el navegador)
 

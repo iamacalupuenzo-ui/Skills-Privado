@@ -9,7 +9,7 @@ description: >
   productos" o "despliega a QA". No cambia el DS (usa flujo-ds) ni construye la pantalla desde
   cero (usa angular-product-builder).
 metadata:
-  version: "1.0.1"
+  version: "1.0.2"
 ---
 
 # Flujo de producto

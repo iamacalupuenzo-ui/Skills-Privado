@@ -1,6 +1,6 @@
 {
   "skill_name": "orquestador-desarrollo",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "descripcion": "Casos para comprobar que el orquestador elige el flujo correcto, respeta las puertas y se detiene donde debe. Cada caso nace de una situación real del trabajo con el Design System y los productos de CL2 Flotas.",
   "evals": [
     {
@@ -76,7 +76,7 @@
       "aserciones": [
         "Identifica a web-flotas como la pareja de microui-monitoring.",
         "Explica que el DS es singleton en la federación y que con 1.9.1 y 1.9.2 el remoto no carga.",
-        "No propone subir un lado y dejar el otro para después.",
+        "No propone fusionar ni desplegar un lado sin su pareja (preparar la rama sin fusionarla, a la espera de la pareja, es aceptable).",
         "Pide confirmación antes de subir cualquier rama."
       ],
       "cubre": [
@@ -95,7 +95,7 @@
       "prompt": "Evaluemos el estatus: ¿cómo vamos con la publicación?",
       "esperado": "Sigue references/estatus.md: lee rama, git status, MR abiertos, pipelines de develop y QA en vivo, y responde con cifras y estado reales. Lo que no pudo verificar lo dice como tal.",
       "aserciones": [
-        "Consulta el estado real (git, MR, pipelines) antes de responder, sin apoyarse solo en lo dicho antes.",
+        "Consulta el estado real (git, MR, pipelines) antes de responder, sin apoyarse solo en lo dicho antes y sin pedir permiso para leer.",
         "Cierra con qué se hizo, qué se verificó con cifras, qué falta y quién lo hace.",
         "Distingue lo verificado de lo no verificado.",
         "No afirma que QA está bien solo porque el MR esté fusionado."

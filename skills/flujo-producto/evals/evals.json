@@ -1,6 +1,6 @@
 {
   "skill_name": "flujo-producto",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "descripcion": "Casos para comprobar que el flujo de producto usa el DS sin salirse de él, sube la versión en los cinco sitios, publica en pareja y distingue fallos de infraestructura de fallos de código.",
   "evals": [
     {
@@ -73,7 +73,7 @@
       "aserciones": [
         "Revisa los jobs del pipeline de develop y no solo el estado del MR.",
         "Considera si la versión subió, porque la etiqueta -qa es inmutable.",
-        "Lee el registro del job antes de culpar al cambio.",
+        "Lee el registro del job fallido (trace) antes de culpar al cambio; no basta con ver su estado.",
         "Distingue un fallo de infraestructura de uno de código y propone reintentar solo el primero."
       ],
       "cubre": [
