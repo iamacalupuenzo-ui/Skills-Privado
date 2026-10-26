@@ -15,8 +15,13 @@
         "Propone una rama fix/ o feature/ creada desde origin/develop.",
         "Menciona los controles que deben pasar: check:docs y test:ci."
       ],
-      "cubre": ["B5"],
-      "referencias": ["references/publicar-el-ds.md"]
+      "cubre": [
+        "B5"
+      ],
+      "referencias": [
+        "references/publicar-el-ds.md"
+      ],
+      "contexto": "Directorio: ui-components, rama develop, sin cambios locales. DS en 1.12.0."
     },
     {
       "id": 2,
@@ -30,8 +35,16 @@
         "Menciona que check:release-notes debe pasar antes de cualquier etiqueta.",
         "Indica que release, la etiqueta y main son del arquitecto o del usuario con autorización explícita."
       ],
-      "cubre": ["B1", "B2", "B3"],
-      "referencias": ["references/publicar-el-ds.md", "references/hooks-bloqueantes.md"]
+      "cubre": [
+        "B1",
+        "B2",
+        "B3"
+      ],
+      "referencias": [
+        "references/publicar-el-ds.md",
+        "references/hooks-bloqueantes.md"
+      ],
+      "contexto": "Directorio: ui-components. release está en 1.12.0; develop ya tiene la 1.13.0 sin fusionar a release."
     },
     {
       "id": 3,
@@ -45,8 +58,13 @@
         "Menciona la marca «Disponible desde X.Y» en la guía del componente.",
         "Menciona npm run check:versions o check:release-notes como control."
       ],
-      "cubre": ["B2"],
-      "referencias": ["references/publicar-el-ds.md"]
+      "cubre": [
+        "B2"
+      ],
+      "referencias": [
+        "references/publicar-el-ds.md"
+      ],
+      "contexto": "Directorio: ui-components, rama feature/page-template con cs-page-template construido. La versión actual publicada es 1.12.0."
     },
     {
       "id": 4,
@@ -60,8 +78,13 @@
         "Propone construirlo primero en el producto con API migrable y solo tokens.",
         "No registra la brecha solo en un ticket o nota externa."
       ],
-      "cubre": ["B5"],
-      "referencias": ["references/subir-ds-a-productos.md"]
+      "cubre": [
+        "B5"
+      ],
+      "referencias": [
+        "references/subir-ds-a-productos.md"
+      ],
+      "contexto": "Directorio: ui-components. Existe GAPS.md en la raíz."
     },
     {
       "id": 5,
@@ -75,7 +98,8 @@
         "No propone etiquetas ni publicación del DS para este cambio."
       ],
       "cubre": [],
-      "referencias": []
+      "referencias": [],
+      "contexto": "Directorio: web-flotas (un producto, no el DS)."
     },
     {
       "id": 6,
@@ -88,8 +112,13 @@
         "Explica que el DS es singleton compartido entre Shell y micro UI.",
         "Plantea subir Shell y micro UI en pareja con la misma versión."
       ],
-      "cubre": ["B4"],
-      "referencias": ["references/subir-ds-a-productos.md"]
+      "cubre": [
+        "B4"
+      ],
+      "referencias": [
+        "references/subir-ds-a-productos.md"
+      ],
+      "contexto": "Directorio: web-flotas. El DS 1.12.0 ya está en el registro."
     }
   ]
 }

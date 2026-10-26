@@ -16,7 +16,10 @@
         "Menciona verificar el resultado en el navegador."
       ],
       "cubre": [],
-      "referencias": ["references/uso-del-ds.md"]
+      "referencias": [
+        "references/uso-del-ds.md"
+      ],
+      "contexto": "Directorio: microui-monitoring, rama feature/filtro-unidades. DS 1.12.0 fijado."
     },
     {
       "id": 2,
@@ -30,8 +33,14 @@
         "Propone comprobar con grep que ninguno quedó con la versión anterior.",
         "Pide confirmación antes de hacer push."
       ],
-      "cubre": ["B1", "B2"],
-      "referencias": ["references/version-en-cinco-sitios.md"]
+      "cubre": [
+        "B1",
+        "B2"
+      ],
+      "referencias": [
+        "references/version-en-cinco-sitios.md"
+      ],
+      "contexto": "Directorio: web-backoffice, rama feature/color-chip, versión actual 0.4.0."
     },
     {
       "id": 3,
@@ -45,8 +54,15 @@
         "Verifica o pide verificar que ambos fijan el mismo DS exacto.",
         "El MR va a develop y se asigna a César, sin fusionarlo."
       ],
-      "cubre": ["B1", "B4", "B5"],
-      "referencias": ["references/publicar-con-mr.md"]
+      "cubre": [
+        "B1",
+        "B4",
+        "B5"
+      ],
+      "referencias": [
+        "references/publicar-con-mr.md"
+      ],
+      "contexto": "Directorio: microui-bo-tenants con DS 1.12.0 fijado. Su pareja web-backoffice fija 1.11.0."
     },
     {
       "id": 4,
@@ -60,8 +76,14 @@
         "Lee el registro del job antes de culpar al cambio.",
         "Distingue un fallo de infraestructura de uno de código y propone reintentar solo el primero."
       ],
-      "cubre": ["B6", "B7"],
-      "referencias": ["references/diagnostico-qa.md"]
+      "cubre": [
+        "B6",
+        "B7"
+      ],
+      "referencias": [
+        "references/diagnostico-qa.md"
+      ],
+      "contexto": "Directorio: web-flotas. El MR se fusionó a develop hace 20 minutos."
     },
     {
       "id": 5,
@@ -74,8 +96,14 @@
         "Reporta cifras reales de las pruebas y no un «todo verde» genérico.",
         "Pide confirmación del usuario antes de hacer push."
       ],
-      "cubre": ["B1", "B3"],
-      "referencias": ["references/publicar-con-mr.md"]
+      "cubre": [
+        "B1",
+        "B3"
+      ],
+      "referencias": [
+        "references/publicar-con-mr.md"
+      ],
+      "contexto": "Directorio: web-flotas, rama feature/orden-columnas. Las pruebas del módulo tocado pasaron."
     },
     {
       "id": 6,
@@ -88,8 +116,14 @@
         "Indica quién puede fusionar (César o el responsable del repositorio).",
         "Si recibe 403 o un bloqueo, lo informa y se detiene, sin buscar otra vía."
       ],
-      "cubre": ["B1", "B5"],
-      "referencias": ["references/hooks-bloqueantes.md"]
+      "cubre": [
+        "B1",
+        "B5"
+      ],
+      "referencias": [
+        "references/hooks-bloqueantes.md"
+      ],
+      "contexto": "Directorio: web-flotas. Hay dos MR abiertos (web-flotas y microui-monitoring), ya revisados."
     }
   ]
 }
