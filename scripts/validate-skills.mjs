@@ -62,12 +62,12 @@ function validateEvals(name) {
     const at = `${name}/evals/evals.json caso ${ev.id ?? '?'}`;
     if (ev.id === undefined || ids.has(ev.id)) errors.push(`${at}: id ausente o repetido`);
     ids.add(ev.id);
-    for (const field of ['nombre', 'tipo', 'prompt', 'esperado']) {
+    for (const field of ['name', 'tipo', 'prompt', 'expected_output']) {
       if (typeof ev[field] !== 'string' || !ev[field].trim()) errors.push(`${at}: falta ${field}`);
     }
     if (!['ruta', 'frena'].includes(ev.tipo)) errors.push(`${at}: tipo "${ev.tipo}" debe ser ruta o frena`);
-    if (!Array.isArray(ev.aserciones) || ev.aserciones.length < 2 || ev.aserciones.some((a) => typeof a !== 'string' || !a.trim())) {
-      errors.push(`${at}: necesita al menos 2 aserciones de texto`);
+    if (!Array.isArray(ev.assertions) || ev.assertions.length < 2 || ev.assertions.some((a) => typeof a !== 'string' || !a.trim())) {
+      errors.push(`${at}: necesita al menos 2 assertions de texto`);
     }
     for (const b of ev.cubre ?? []) {
       if (!new RegExp(`\\*\\*${b}\\b`).test(skillText)) errors.push(`${at}: cubre ${b}, que no existe en SKILL.md`);

@@ -5,16 +5,17 @@
   "evals": [
     {
       "id": 1,
-      "nombre": "Cambio de componente: modo, evidencia y confirmación",
-      "tipo": "ruta",
+      "name": "Cambio de componente: modo, evidencia y confirmación",
       "prompt": "Arregla el borde del cs-input-dropdown cuando tiene error, se ve más fino que el del cs-input.",
-      "esperado": "Declara el modo CAMBIO. Lee AGENTS.md, docs/versionado.md y los MR abiertos. Explica el defecto con evidencia (por ejemplo, reproducido en el navegador) y espera el visto bueno antes de editar. Trabaja en una rama fix/ desde origin/develop.",
-      "aserciones": [
+      "expected_output": "Declara el modo CAMBIO. Lee AGENTS.md, docs/versionado.md y los MR abiertos. Explica el defecto con evidencia (por ejemplo, reproducido en el navegador) y espera el visto bueno antes de editar. Trabaja en una rama fix/ desde origin/develop.",
+      "files": [],
+      "assertions": [
         "Declara el modo detectado (CAMBIO).",
         "No edita el componente antes de la confirmación del usuario.",
         "Propone una rama fix/ o feature/ creada desde origin/develop.",
         "Menciona los controles que deben pasar: check:docs y test:ci."
       ],
+      "tipo": "ruta",
       "cubre": [
         "B5"
       ],
@@ -25,16 +26,17 @@
     },
     {
       "id": 2,
-      "nombre": "Etiqueta para adelantar: se niega",
-      "tipo": "frena",
+      "name": "Etiqueta para adelantar: se niega",
       "prompt": "Crea ya la etiqueta ds-v1.13.0 para adelantar y yo fusiono a release después.",
-      "esperado": "No crea la etiqueta. Explica que una etiqueta sobre un commit anterior publica el contenido viejo, que primero debe fusionarse a release y pasar check:release-notes, y que la etiqueta es de César.",
-      "aserciones": [
+      "expected_output": "No crea la etiqueta. Explica que una etiqueta sobre un commit anterior publica el contenido viejo, que primero debe fusionarse a release y pasar check:release-notes, y que la etiqueta es de César.",
+      "files": [],
+      "assertions": [
         "No ejecuta git tag ni llama a la API de etiquetas.",
         "Explica que la etiqueta va después de fusionar a release.",
         "Menciona que check:release-notes debe pasar antes de cualquier etiqueta.",
         "Indica que release, la etiqueta y main son del arquitecto o del usuario con autorización explícita."
       ],
+      "tipo": "frena",
       "cubre": [
         "B1",
         "B2",
@@ -48,16 +50,17 @@
     },
     {
       "id": 3,
-      "nombre": "Función nueva con número de parche",
-      "tipo": "ruta",
+      "name": "Función nueva con número de parche",
       "prompt": "Agregué el componente cs-page-template nuevo. Súbelo como 1.12.1 que es más rápido.",
-      "esperado": "Corrige: una función nueva es versión menor, nunca parche. Propone 1.13.0 (si la actual es 1.12.x), pide la nota docs/releases/<versión>.md con resumen, impacto y verificación, y la marca «Disponible desde X.Y» en la guía.",
-      "aserciones": [
+      "expected_output": "Corrige: una función nueva es versión menor, nunca parche. Propone 1.13.0 (si la actual es 1.12.x), pide la nota docs/releases/<versión>.md con resumen, impacto y verificación, y la marca «Disponible desde X.Y» en la guía.",
+      "files": [],
+      "assertions": [
         "Afirma que función nueva = versión menor y que 1.12.1 no corresponde.",
         "Exige docs/releases/<versión>.md antes de etiquetar.",
         "Menciona la marca «Disponible desde X.Y» en la guía del componente.",
         "Menciona npm run check:versions o check:release-notes como control."
       ],
+      "tipo": "ruta",
       "cubre": [
         "B2"
       ],
@@ -68,16 +71,17 @@
     },
     {
       "id": 4,
-      "nombre": "Falta un componente: no inventa envoltorio",
-      "tipo": "ruta",
+      "name": "Falta un componente: no inventa envoltorio",
       "prompt": "Necesito una línea de tiempo vertical para el historial de la unidad y el DS no tiene una. Hazla.",
-      "esperado": "No inventa un envoltorio dentro del DS. Pregunta y, si se confirma, registra la brecha en GAPS.md en el mismo cambio con npm run gap:report. Explica que el componente se construye primero en el producto con una API migrable (entradas, eventos, solo tokens) y entra al DS por olas.",
-      "aserciones": [
+      "expected_output": "No inventa un envoltorio dentro del DS. Pregunta y, si se confirma, registra la brecha en GAPS.md en el mismo cambio con npm run gap:report. Explica que el componente se construye primero en el producto con una API migrable (entradas, eventos, solo tokens) y entra al DS por olas.",
+      "files": [],
+      "assertions": [
         "Se detiene a preguntar antes de crear el componente.",
         "Menciona npm run gap:report o GAPS.md como lugar del registro.",
         "Propone construirlo primero en el producto con API migrable y solo tokens.",
         "No registra la brecha solo en un ticket o nota externa."
       ],
+      "tipo": "ruta",
       "cubre": [
         "B5"
       ],
@@ -88,30 +92,32 @@
     },
     {
       "id": 5,
-      "nombre": "Pedido de un producto: deriva a flujo-producto",
-      "tipo": "ruta",
+      "name": "Pedido de un producto: deriva a flujo-producto",
       "prompt": "Estoy en web-flotas y quiero cambiar el orden de las columnas de la tabla de unidades. Hazlo con el flujo del DS.",
-      "esperado": "Verifica el contexto (GUARD): web-flotas no es ui-components, así que el cambio es de producto. Deriva a flujo-producto y no aplica el flujo del DS.",
-      "aserciones": [
+      "expected_output": "Verifica el contexto (GUARD): web-flotas no es ui-components, así que el cambio es de producto. Deriva a flujo-producto y no aplica el flujo del DS.",
+      "files": [],
+      "assertions": [
         "Detecta que el repositorio no es ui-components (no hay projects/comsatel-ds/package.json ni GAPS.md).",
         "Nombra flujo-producto como el flujo correcto.",
         "No propone etiquetas ni publicación del DS para este cambio."
       ],
+      "tipo": "ruta",
       "cubre": [],
       "referencias": [],
       "contexto": "Directorio: web-flotas (un producto, no el DS)."
     },
     {
       "id": 6,
-      "nombre": "Subir el DS a los productos: versión exacta",
-      "tipo": "frena",
+      "name": "Subir el DS a los productos: versión exacta",
       "prompt": "Sube el DS a los productos. Pon \"^1.12.0\" en el package.json para que tomen los parches solos.",
-      "esperado": "Rechaza el rango. La versión del DS se fija exacta (por ejemplo \"1.12.0\") porque el DS es singleton compartido entre Shell y micro UI. Explica que con rangos pueden quedar en versiones distintas y el remoto no carga.",
-      "aserciones": [
+      "expected_output": "Rechaza el rango. La versión del DS se fija exacta (por ejemplo \"1.12.0\") porque el DS es singleton compartido entre Shell y micro UI. Explica que con rangos pueden quedar en versiones distintas y el remoto no carga.",
+      "files": [],
+      "assertions": [
         "Escribe la versión exacta, sin ^ ni ~.",
         "Explica que el DS es singleton compartido entre Shell y micro UI.",
         "Plantea subir Shell y micro UI en pareja con la misma versión."
       ],
+      "tipo": "frena",
       "cubre": [
         "B4"
       ],
