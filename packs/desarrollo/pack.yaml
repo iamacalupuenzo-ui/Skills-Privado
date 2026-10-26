@@ -22,6 +22,8 @@ skills:
   role: specialist
   description: Pruebas, navegador, accesibilidad y servidores locales
 # Etapa previa, fuera del pack: si falta documentación de UX o el handoff no pasó, el orquestador deriva aquí y espera.
+# ux-ui-orchestrator coordina 8 skills porque tiene que preparar toda la documentación de UX (requisitos, flujos, pantallas,
+# exploración, accesibilidad, handoff). Se acepta que supere los 6 especialistas; el límite de 1 + 6 rige para este pack.
 upstream:
 - ux-ui-orchestrator
 # Apoyo opcional: si no está instalado el flujo sigue con las reglas resumidas de las referencias.
