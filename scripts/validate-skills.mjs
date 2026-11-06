@@ -10,14 +10,23 @@
 //   - un skill propio conserva un nombre viejo (comsatel-angular-product-builder, comsatel-product-orchestrator)
 //   - un skill vendorizado difiere de su UPSTREAM.json (alguien lo editó) o le falta la licencia
 //   - un skill vendorizado no está en el manifest
+//   - un skill de AUTONOMOS apunta a otro skill con ../ (debe ser instalable solo)
+//   - una referencia compartida (SHARED_REFERENCES) difiere de su original
+//   - un plugin (plugins/*) cuya copia de skills difiere de la fuente, o con marketplace/hook que apuntan a algo inexistente
+//   - un pack (packs/*/pack.yaml) con más de un orquestador, más de 6 especialistas o skills fuera del manifest
+//   - un skill de EVALS_REQUIRED sin evals/evals.json válido (casos completos, comportamientos
+//     bloqueantes que existen en su SKILL.md, referencias reales y al menos un caso que frena)
 // Avisos (no rompen):
+//   - el mismo enlace ../ en los demás skills propios
 //   - carpetas en skills/ que no están en el manifest (nunca se instalan)
 
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { hashFile, listFiles, VENDORED_SKILLS as ANGULAR_SKILLS } from './sync-angular-skills.mjs';
 import { ANATOMY_SKILLS } from './sync-anatomy-skill.mjs';
+import { generar } from './construir-plugin.mjs';
 
 const VENDORED_SKILLS = [...ANGULAR_SKILLS, ...ANATOMY_SKILLS];
 
@@ -27,7 +36,54 @@ const manifest = JSON.parse(readFileSync(join(root, 'skills-manifest.json'), 'ut
 const errors = [];
 const warnings = [];
 
+// Copias que cada skill lleva consigo para ser instalable solo: la fuente es la primera.
+const SHARED_REFERENCES = [
+  ['orquestador-desarrollo/references/hooks-bloqueantes.md', 'flujo-ds/references/hooks-bloqueantes.md', 'flujo-producto/references/hooks-bloqueantes.md'],
+  ['orquestador-desarrollo/references/mapa-de-repos.md', 'flujo-producto/references/mapa-de-repos.md'],
+];
+
+// Skills que ya son instalables solos: un `../otro-skill/` aquí rompe. En el resto, aviso.
+// ux-ui-orchestrator queda fuera: su worktree-protocol.md remite a af-requirements-orchestrator y es un archivo del equipo (Ian).
+const AUTONOMOS = ['orquestador-desarrollo', 'flujo-ds', 'flujo-producto', 'angular-product-builder'];
+const ENLACE_A_OTRO_SKILL = /`[^`]*\.\.\/[a-z][a-z0-9-]*\//;
+
 const OLD_NAMES = ['comsatel-angular-product-builder', 'comsatel-product-orchestrator'];
+
+// Skills que deben llevar casos de prueba de comportamiento en evals/evals.json.
+const EVALS_REQUIRED = ['orquestador-desarrollo', 'flujo-ds', 'flujo-producto'];
+const MIN_EVALS = 5;
+
+function validateEvals(name) {
+  const dir = join(skillsDir, name);
+  const file = join(dir, 'evals', 'evals.json');
+  if (!existsSync(file)) { errors.push(`${name}: falta evals/evals.json`); return; }
+  let data;
+  try { data = JSON.parse(readFileSync(file, 'utf8')); } catch (e) { errors.push(`${name}/evals/evals.json: JSON inválido (${e.message})`); return; }
+  if (data.skill_name !== name) errors.push(`${name}/evals/evals.json: skill_name dice "${data.skill_name}", debe ser "${name}"`);
+  const evals = Array.isArray(data.evals) ? data.evals : [];
+  if (evals.length < MIN_EVALS) errors.push(`${name}/evals/evals.json: tiene ${evals.length} casos, el mínimo es ${MIN_EVALS}`);
+  const skillText = readFileSync(join(dir, 'SKILL.md'), 'utf8');
+  const ids = new Set();
+  for (const ev of evals) {
+    const at = `${name}/evals/evals.json caso ${ev.id ?? '?'}`;
+    if (ev.id === undefined || ids.has(ev.id)) errors.push(`${at}: id ausente o repetido`);
+    ids.add(ev.id);
+    for (const field of ['name', 'tipo', 'prompt', 'expected_output']) {
+      if (typeof ev[field] !== 'string' || !ev[field].trim()) errors.push(`${at}: falta ${field}`);
+    }
+    if (!['ruta', 'frena'].includes(ev.tipo)) errors.push(`${at}: tipo "${ev.tipo}" debe ser ruta o frena`);
+    if (!Array.isArray(ev.assertions) || ev.assertions.length < 2 || ev.assertions.some((a) => typeof a !== 'string' || !a.trim())) {
+      errors.push(`${at}: necesita al menos 2 assertions de texto`);
+    }
+    for (const b of ev.cubre ?? []) {
+      if (!new RegExp(`\\*\\*${b}\\b`).test(skillText)) errors.push(`${at}: cubre ${b}, que no existe en SKILL.md`);
+    }
+    for (const ref of ev.referencias ?? []) {
+      if (!existsSync(join(dir, ref))) errors.push(`${at}: referencia ${ref} no existe`);
+    }
+  }
+  if (!evals.some((e) => e.tipo === 'frena')) errors.push(`${name}/evals/evals.json: debe haber al menos un caso de tipo frena (donde el skill se detiene)`);
+}
 
 function frontmatter(text) {
   const match = text.replace(/\r\n/g, '\n').match(/^---\n([\s\S]*?)\n---/);
@@ -70,8 +126,110 @@ for (const name of manifest.skills) {
     for (const file of listFiles(dir)) {
       if (!file.endsWith('.md')) continue;
       const body = readFileSync(join(dir, file), 'utf8');
+      if (ENLACE_A_OTRO_SKILL.test(body)) {
+        const msg = `${name}/${file}: apunta a otro skill con ../ (copia el recurso dentro del skill)`;
+        (AUTONOMOS.includes(name) ? errors : warnings).push(msg);
+      }
       for (const old of OLD_NAMES) if (body.includes(old)) errors.push(`${name}/${file}: conserva el nombre viejo ${old}`);
     }
+  }
+}
+
+for (const name of EVALS_REQUIRED) {
+  if (listed.has(name) && existsSync(join(skillsDir, name, 'SKILL.md'))) validateEvals(name);
+}
+
+// Packs: un orquestador y como máximo seis especialistas (estándar del pack factory),
+// todos en el manifest, y cada skill que declara evals los tiene exigidos aquí.
+function validatePack(file) {
+  const label = `packs/${file.split(/[\\/]/).slice(-2, -1)[0]}/pack.yaml`;
+  const lines = readFileSync(file, 'utf8').replace(/\r\n/g, '\n').split('\n');
+  const skills = [];
+  let inSkills = false;
+  for (let i = 0; i < lines.length; i++) {
+    if (/^skills:\s*$/.test(lines[i])) { inSkills = true; continue; }
+    if (inSkills && /^\S/.test(lines[i]) && !lines[i].startsWith('- ')) inSkills = false;
+    const name = inSkills && lines[i].match(/^- name:\s*(\S+)/);
+    if (name) skills.push({ name: name[1], role: (lines[i + 1] || '').match(/^\s+role:\s*(\w+)/)?.[1] });
+  }
+  const orchestrators = skills.filter((s) => s.role === 'orchestrator');
+  const specialists = skills.filter((s) => s.role === 'specialist');
+  if (orchestrators.length !== 1) errors.push(`${label}: debe tener exactamente un orquestador (tiene ${orchestrators.length})`);
+  if (specialists.length > 6 && !/^excepcion_especialistas:\s*\S/m.test(readFileSync(file, 'utf8'))) errors.push(`${label}: tiene ${specialists.length} especialistas, el máximo es 6; declara excepcion_especialistas: con el motivo (o un ADR aprobado)`);
+  for (const s of skills) {
+    if (!s.role) errors.push(`${label}: ${s.name} no declara role`);
+    if (!listed.has(s.name)) errors.push(`${label}: ${s.name} no está en skills-manifest.json`);
+  }
+  const evals = (readFileSync(file, 'utf8').split(/^evals:\s*$/m)[1] || '').match(/^- (\S+)/gm) || [];
+  for (const e of evals.map((x) => x.slice(2))) {
+    if (!EVALS_REQUIRED.includes(e)) errors.push(`${label}: declara evals para ${e}, que validate-skills.mjs no exige (agrégalo a EVALS_REQUIRED)`);
+  }
+}
+
+const packsDir = join(root, 'packs');
+if (existsSync(packsDir)) {
+  for (const entry of readdirSync(packsDir)) {
+    const file = join(packsDir, entry, 'pack.yaml');
+    if (existsSync(file)) validatePack(file);
+  }
+}
+
+// Plugins: la copia de skills/ debe coincidir con la fuente (salvo evals/), el marketplace
+// debe apuntar a la carpeta del plugin y el hook debe llamar a un archivo que exista.
+function jsonOrError(file, label) {
+  try { return JSON.parse(readFileSync(file, 'utf8')); } catch (e) { errors.push(`${label}: JSON inválido o ausente (${e.message.split('\n')[0]})`); return null; }
+}
+function validatePlugin(dirName) {
+  const dir = join(root, 'plugins', dirName);
+  const label = `plugins/${dirName}`;
+  const packName = dirName.replace(/^comsatel-/, '');
+  const meta = jsonOrError(join(dir, '.claude-plugin', 'plugin.json'), `${label}/.claude-plugin/plugin.json`);
+  if (meta) {
+    if (meta.name !== dirName) errors.push(`${label}: plugin.json dice name "${meta.name}", debe ser "${dirName}"`);
+    if (!/^\d+\.\d+\.\d+$/.test(meta.version || '')) errors.push(`${label}: plugin.json necesita version SemVer`);
+    if (!meta.description) errors.push(`${label}: plugin.json necesita description`);
+  }
+  const market = jsonOrError(join(root, '.claude-plugin', 'marketplace.json'), '.claude-plugin/marketplace.json');
+  if (market) {
+    const entry = (market.plugins || []).find((p) => p.name === dirName);
+    if (!entry) errors.push(`.claude-plugin/marketplace.json: no lista el plugin ${dirName}`);
+    else if (!existsSync(join(root, entry.source, '.claude-plugin', 'plugin.json'))) errors.push(`.claude-plugin/marketplace.json: source ${entry.source} no apunta a un plugin`);
+  }
+  const hooksFile = join(dir, 'hooks', 'hooks.json');
+  if (existsSync(hooksFile)) {
+    jsonOrError(hooksFile, `${label}/hooks/hooks.json`);
+    for (const m of readFileSync(hooksFile, 'utf8').matchAll(/\$\{CLAUDE_PLUGIN_ROOT\}\/([^"\\]+)/g)) {
+      if (!existsSync(join(dir, m[1]))) errors.push(`${label}/hooks/hooks.json: el hook llama a ${m[1]}, que no existe en el plugin`);
+    }
+  }
+  // La copia publicada debe ser exactamente lo que genera scripts/construir-plugin.mjs hoy.
+  const packFile = join(root, 'packs', packName, 'pack.yaml');
+  if (!existsSync(packFile)) { errors.push(`${label}: no hay packs/${packName}/pack.yaml del que salga`); return; }
+  const regen = `ejecuta npm run construir-plugin -- ${packName}`;
+  const tmp = mkdtempSync(join(tmpdir(), 'verifica-plugin-'));
+  try {
+    try { generar(packName, tmp); } catch (e) { errors.push(`${label}: no se pudo regenerar (${e.message.split('\n')[0]})`); return; }
+    const norm = (f) => readFileSync(f, 'utf8').replace(/\r\n/g, '\n');
+    const ruta = (f) => f.replace(/\\/g, '/');
+    const esperado = listFiles(tmp).map(ruta);
+    const real = [...listFiles(join(dir, 'skills')).map((f) => ruta(join('skills', f))), ...(existsSync(join(dir, 'pack.yaml')) ? ['pack.yaml'] : [])];
+    for (const f of esperado) {
+      if (!real.includes(f)) errors.push(`${label}/${f}: falta en el plugin (${regen})`);
+      else if (norm(join(tmp, f)) !== norm(join(dir, f))) errors.push(`${label}/${f}: difiere de lo que genera la fuente (${regen})`);
+    }
+    for (const f of real) if (!esperado.includes(f)) errors.push(`${label}/${f}: sobra, no sale de la fuente (${regen})`);
+  } finally { rmSync(tmp, { recursive: true, force: true }); }
+}
+const pluginsDir = join(root, 'plugins');
+if (existsSync(pluginsDir)) {
+  for (const entry of readdirSync(pluginsDir)) if (statSync(join(pluginsDir, entry)).isDirectory()) validatePlugin(entry);
+}
+
+for (const [source, ...copies] of SHARED_REFERENCES) {
+  const original = readFileSync(join(skillsDir, source), 'utf8').replace(/\r\n/g, '\n');
+  for (const copy of copies) {
+    const body = readFileSync(join(skillsDir, copy), 'utf8').replace(/\r\n/g, '\n');
+    if (body !== original) errors.push(`${copy}: difiere de ${source}; copia el original`);
   }
 }
 

@@ -9,7 +9,7 @@ description: >
   estatus". No diseña pantallas (usa ux-ui-orchestrator), no escribe el código de una pantalla
   (usa angular-product-builder) ni gestiona épicas ni Notion (usa product-orchestrator).
 metadata:
-  version: "1.1.0"
+  version: "1.2.2"
 ---
 
 # Orquestador de desarrollo — Comsatel Flotas
@@ -24,10 +24,6 @@ puertas.
 la secuencia, pedir la confirmación que corresponda y cerrar con lo verificado.
 **Lo que NO haces:** diseñar la UX, escribir la pantalla, ni fusionar, etiquetar o desplegar.
 Subes la rama, abres el MR y lo asignas a César; la fusión y la etiqueta son suyas.
-
-**Ambientes:** trabajas en uno de tres (sistema de diseño, producto de CL2 Flotas, producto en
-evaluación). Declara cuál al iniciar; ver `references/mapa-de-repos.md`.
-
 ## Referencias disponibles
 
 - `references/mapa-de-repos.md` — repos, rutas GitLab, puertos locales, parejas y quién fusiona. Leer al iniciar.
@@ -49,12 +45,16 @@ El desarrollo parte de documentación ya generada. Esa etapa tiene su propio orq
 | `flujo-producto` | Versionar, publicar y desplegar un producto; subir el DS a un producto | skill |
 | `flujo-ds` | Cambiar, versionar, publicar o registrar brechas del DS | skill |
 | `verificar-calidad` | Pruebas, navegador, accesibilidad, servidores locales | skill |
-| `orquestacion-multi-harness` | Repartir trabajo entre Codex y Claude por Orca | skill |
+| `orquestacion-multi-harness` | **Opcional:** repartir trabajo entre agentes por Orca, si el entorno lo tiene | skill (puede no estar en este repositorio) |
+
+## Skills de apoyo que pueden no estar instalados
+
+`angular-developer`, `angular-new-app`, `comsatel-design-system`, `orquestacion-multi-harness` y `product-orchestrator` apoyan este flujo pero no viven en este repositorio. Si faltan, el flujo sigue: se usan las reglas resumidas en las referencias y se avisa de lo que no se pudo apoyar.
 
 ## GUARD — verificar contexto
 
 1. Identificar el repositorio destino y leer su `AGENTS.md` o `CLAUDE.md`: sus reglas mandan sobre las de este skill.
-2. Leer el estado real: rama, `git status`, MR abiertos, pipelines y, si aplica, QA en vivo. No asumir lo que dice una conversación anterior.
+2. Leer el estado real: rama, `git status`, MR abiertos, pipelines y, si aplica, QA en vivo. No asumir lo que dice una conversación anterior. **Las lecturas no piden confirmación**: `git status`, `git fetch`, las consultas GET a la API de GitLab y los `curl` de sondeo a QA se ejecutan antes de responder. Solo se pregunta antes de escribir (subir, abrir un MR, editar).
 3. Confirmar la versión del DS que cada producto fija (exacta) antes de planear cualquier cambio de UI.
 4. Si el pedido toca el DS, pararse en la confirmación del usuario antes de editar (bloqueante B2).
 5. Si falta acceso (token, permisos de GitLab), decirlo y detener solo esa operación.

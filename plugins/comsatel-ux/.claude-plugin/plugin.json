@@ -1,0 +1,9 @@
+{
+  "name": "comsatel-ux",
+  "version": "1.0.0",
+  "description": "Documentación de UX/UI de CL2 Flotas de punta a punta: un orquestador y nueve especialistas llevan User Stories validadas hasta un diseño gobernado y un handoff DESIGN_READY_FOR_DEV, con trazabilidad US → UXR → FLW → SCR y compuertas humanas.",
+  "author": {
+    "name": "Comsatel"
+  },
+  "keywords": ["comsatel", "ux", "ui", "diseño", "handoff", "accesibilidad", "stitch", "figma"]
+}

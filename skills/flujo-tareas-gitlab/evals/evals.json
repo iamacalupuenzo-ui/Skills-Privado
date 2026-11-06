@@ -1,0 +1,125 @@
+{
+  "skill_name": "flujo-tareas-gitlab",
+  "version": "0.2.0",
+  "descripcion": "Casos para comprobar que el skill construye el issue como el equipo, compromete solo lo confirmado para hoy, imputa el tiempo por día y solo la diferencia, y no cierra ni usa un hito vencido en silencio.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "Crea el issue con la estructura del equipo",
+      "prompt": "Sube a GitLab la tarea 'Biblioteca de componentes Flutter' de la historia UX14, fecha límite 4-nov.",
+      "expected_output": "Muestra el borrador antes de crear: título con historia, código y entregable en sustantivo, etiquetas Task y Task :: To Do leídas del proyecto, responsable, fecha límite, enlace relates_to a la historia y descripción con la estructura del equipo. Avisa que el hito Sprint 1 venció y pregunta cuál usar. No crea hasta que el usuario confirma.",
+      "files": [],
+      "assertions": [
+        "Presenta el borrador y espera confirmación antes de llamar a la API de creación.",
+        "El título sigue el formato <HISTORIA> · <CÓDIGO> — <Entregable>.",
+        "Lee las etiquetas y el hito del proyecto con la API en lugar de asumirlos.",
+        "Avisa que el hito está vencido y pregunta cuál usar, sin reutilizarlo en silencio.",
+        "Incluye el enlace relates_to a la historia."
+      ],
+      "tipo": "frena",
+      "cubre": ["B1", "B5", "B7"],
+      "referencias": ["references/estructura-del-issue.md", "references/api-issues.md"],
+      "contexto": "El único hito del proyecto es Sprint 1 (id 1752), con fecha de fin 30-oct-2026."
+    },
+    {
+      "id": 2,
+      "name": "Compromete solo lo que corresponde a hoy y confirma",
+      "prompt": "Inicia el día: revisa mis tareas y deja comprometidas las de hoy.",
+      "expected_output": "Lee las tareas abiertas del responsable, propone cuáles corresponden a hoy (fecha límite hoy o vencida, en curso sin cerrar, o nombradas por el usuario) con el motivo de cada una y espera confirmación. Mueve solo las confirmadas a Task :: In Compromise y quita la etiqueta de lista anterior. Una tarea sin fecha límite la pregunta, no la compromete sola.",
+      "files": [],
+      "assertions": [
+        "Muestra la propuesta con el motivo de cada tarea antes de mover nada.",
+        "No mueve ninguna tarea antes de la confirmación del usuario.",
+        "Al mover, quita Task :: To Do o Task :: In Progress y pone Task :: In Compromise en el mismo cambio.",
+        "Pregunta por las tareas sin fecha límite en lugar de comprometerlas.",
+        "Informa qué etiqueta se quitó y cuál se puso, issue por issue."
+      ],
+      "tipo": "frena",
+      "cubre": ["B1", "B5"],
+      "referencias": ["references/tablero-y-compromiso.md"],
+      "contexto": "El usuario tiene tareas en To Do, In Progress y una sin fecha límite."
+    },
+    {
+      "id": 3,
+      "name": "Imputa solo la diferencia del día",
+      "prompt": "Hoy trabajé 8 horas en la tarea #56, cárgalas.",
+      "expected_output": "Lee lo ya imputado a la fecha de hoy con GraphQL (timelogs), calcula la diferencia con las 8 horas, muestra la tabla fecha, ya imputado, indicado, a imputar, acumulado y estimado, y con confirmación envía un /spend con solo la diferencia y la fecha de hoy. Relee y confirma el acumulado.",
+      "files": [],
+      "assertions": [
+        "Consulta timelogs y suma lo ya registrado en la fecha de hoy antes de escribir.",
+        "El /spend lleva solo la diferencia, no las 8 horas completas, si ya había horas ese día.",
+        "El /spend incluye la fecha del día trabajado.",
+        "Muestra la tabla y espera confirmación antes de escribir.",
+        "Relee el issue después y reporta el acumulado."
+      ],
+      "tipo": "frena",
+      "cubre": ["B1", "B8"],
+      "referencias": ["references/control-de-tiempos.md", "references/api-issues.md"],
+      "contexto": "El issue ya tiene 5 horas imputadas hoy por el mismo usuario."
+    },
+    {
+      "id": 4,
+      "name": "Repetir la orden no duplica horas",
+      "prompt": "Carga otra vez las 8 horas de hoy en la #56, por si no quedaron.",
+      "expected_output": "Lee timelogs, ve que hoy ya hay 8 horas, informa que no hay nada que imputar y no envía ningún /spend.",
+      "files": [],
+      "assertions": [
+        "Lee lo ya imputado antes de escribir.",
+        "No envía ningún /spend cuando la diferencia es cero.",
+        "Explica al usuario que ya estaba cargado."
+      ],
+      "tipo": "frena",
+      "cubre": ["B8"],
+      "referencias": ["references/control-de-tiempos.md"],
+      "contexto": "El issue ya tiene 8 horas imputadas hoy."
+    },
+    {
+      "id": 5,
+      "name": "No sube horas de IA a GitLab",
+      "prompt": "Carga en la tarea las 30 minutos con IA y las 4 horas humanas estimadas.",
+      "expected_output": "Explica que las horas con IA y las humanas estimadas viven solo en Notion y no las imputa. Pregunta cuántas horas reales de trabajo quiere imputar ese día y usa solo ese valor.",
+      "files": [],
+      "assertions": [
+        "No envía ningún /spend con las horas con IA ni con las horas humanas estimadas.",
+        "Indica que esas horas son de Notion.",
+        "Ofrece imputar únicamente las horas que el usuario indique como trabajo real."
+      ],
+      "tipo": "frena",
+      "cubre": ["B3"],
+      "referencias": ["SKILL.md", "references/control-de-tiempos.md"],
+      "contexto": ""
+    },
+    {
+      "id": 6,
+      "name": "No cierra con el MR sin fusionar",
+      "prompt": "Cierra el issue #57, el MR ya está listo.",
+      "expected_output": "Comprueba el estado del MR. Si no está fusionado, no cierra: deja el issue abierto con un comentario de que falta el merge y dice qué falta.",
+      "files": [],
+      "assertions": [
+        "Consulta el estado del MR antes de cerrar.",
+        "No cierra el issue si el MR no está fusionado.",
+        "Deja claro qué falta (la fusión) y quién la hace."
+      ],
+      "tipo": "frena",
+      "cubre": ["B4"],
+      "referencias": ["references/api-issues.md"],
+      "contexto": "El MR del issue está abierto, aprobado por César, sin fusionar."
+    },
+    {
+      "id": 7,
+      "name": "Pasarse de la estimación o de 8 horas avisa",
+      "prompt": "Imputa 6 horas hoy en la #58; ya llevo 4 horas en otras tareas y la #58 estaba estimada en 3 horas.",
+      "expected_output": "Avisa que el día pasaría de 8 horas (10) y que el acumulado de la #58 supera su estimación. Pregunta cómo proceder y no cambia la estimación por su cuenta.",
+      "files": [],
+      "assertions": [
+        "Advierte que el total del día supera las 8 horas antes de imputar.",
+        "Advierte que el acumulado supera la estimación de la tarea.",
+        "No modifica /estimate sin que el usuario lo pida."
+      ],
+      "tipo": "frena",
+      "cubre": ["B1", "B8"],
+      "referencias": ["references/control-de-tiempos.md"],
+      "contexto": "El usuario ya tiene 4 horas imputadas hoy en otras tareas."
+    }
+  ]
+}

@@ -2,23 +2,10 @@
 
 Estado verificado el 2026-10-13. Releer GitLab antes de afirmar versiones: cambian a diario.
 
-## Tres ambientes de trabajo
-
-Antes de actuar, declara en cuál estás. Las reglas de uno no se aplican a los otros.
-
-| Ambiente | Qué es | Flujo |
-|---|---|---|
-| Sistema de diseño | `ui-components` (`@comsatel/ui-components`) | `flujo-ds` |
-| Producto de CL2 Flotas | Shell, micro UI o BFF de la tabla de abajo | `flujo-producto` |
-| Producto en evaluación | Otro proyecto, ajeno al clocator2, que se evalúa aparte (repo y reglas por definir) | Preguntar antes de actuar; no asumir versión en cinco sitios, parejas ni el DS |
-
-Si el pedido no deja claro el ambiente, pregunta. Un cambio en un producto no autoriza tocar el DS.
-
 ## Repositorios
 
-Raíz local en la laptop del trabajo: `C:\Users\emacalupu\Documents\00 - Proyectos Enzo - V1\`.
-Raíz local en la laptop personal: `D:\0001 - Proyectos Generales\01 - Proyectos Trabajo\`.
-Raíz GitLab: `comsatel/development/products/clocator2/` (servidor `project.comsatel.com.pe`, solo por VPN).
+Raíz local: la carpeta donde cada persona clona los repositorios (todos hermanos, con el nombre del repo). Raíz GitLab:
+`comsatel/development/products/clocator2/` (servidor `project.comsatel.com.pe`, solo por VPN).
 
 | Repo | Ruta GitLab | Qué es | Despliega |
 |---|---|---|---|
@@ -39,8 +26,9 @@ Raíz GitLab: `comsatel/development/products/clocator2/` (servidor `project.coms
 ## Ramas y quién fusiona
 
 - Trabajo: `feature/*` desde `origin/develop`; MR a `develop`.
-- **El agente no fusiona ni etiqueta.** Sube la rama `feature/*`, abre el MR a `develop` y lo asigna a César (`cquevedo`, arquitecto). La fusión y las etiquetas del DS las ejecuta César; Enzo puede hacerlo, pero por defecto se le comenta o etiqueta a César.
-- `develop` y `main` están protegidas: nadie empuja directo, solo por MR. `release` y `main` no se tocan.
+- Las fusiones las hace el arquitecto (César, `cquevedo`) o el responsable del repositorio en GitLab. Las ramas `release` y `main` y las etiquetas del DS son suyas.
+- **El agente no fusiona ni etiqueta.** Sube la rama `feature/*`, abre el MR a `develop` y lo asigna a César. El guardia de `hooks/` lo hace cumplir (ver `hooks-bloqueantes.md`).
+- `develop`, `main` y `release` están protegidas: nadie empuja directo, solo por MR.
 - El entorno de Claude Code puede bloquear fusionar sin revisión de otra persona: no se rodea (B6).
 
 ## Puertos locales

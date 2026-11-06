@@ -54,7 +54,7 @@ const casos = [
   ['allow', "git commit -q -F - <<'EOF'\nfeat: bloquea npm publish, git tag y merge_requests/1/merge\nEOF"],
   // Un remoto que no es de Comsatel (el repo de skills en GitHub) no usa la protección de GitLab
   ['ask', 'git push origin main', 'D:\\Investigacion\\Skills\\Skils'],
-  ['ask', 'cd "/d/Investigacion/Skills/Skils" && git push origin main'],
+  ['ask', 'cd "/d/Investigacion/Skills/Skils" && git push origin main', 'D:\\Investigacion\\Skills\\Skils'],
   // Un repo de Comsatel sí tiene ramas protegidas, aunque el comando haga cd
   ['deny', 'cd "D:/0001 - Proyectos Generales/01 - Proyectos Trabajo/web-flotas" && git push origin develop', 'D:\\0001 - Proyectos Generales\\01 - Proyectos Trabajo'],
 ];
@@ -64,7 +64,10 @@ function decision(cmd, tool = 'Bash', cwd = cwdSeguro) {
     input: JSON.stringify({ tool_name: tool, tool_input: { command: cmd }, cwd }),
     encoding: 'utf8',
   });
-  if (r.status === 2) return { tipo: 'deny', texto: r.stderr };
+  // Contrato: la decisión viaja en el JSON y la salida es siempre 0. Un código 2 o 1 sería una
+  // regresión: bajo PowerShell (Windows) el código llega como 1 y el comando se ejecutaría.
+  if (r.status !== 0) return { tipo: `salida-${r.status}`, texto: r.stderr };
+  if (r.stdout.includes('"permissionDecision":"deny"')) return { tipo: 'deny', texto: r.stdout };
   if (r.stdout.includes('"permissionDecision":"ask"')) return { tipo: 'ask', texto: r.stdout };
   return { tipo: 'allow', texto: '' };
 }

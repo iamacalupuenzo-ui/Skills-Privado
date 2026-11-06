@@ -2,6 +2,8 @@
 
 Fuente de verdad: el `AGENTS.md` y las guías (`guidelines/`) de `ui-components`, y `adsa-cli` (`npx adsa-cli search "<qué necesitas>"` y `docs <componente>`). No leer tipos de `node_modules` ni importar hábitos de shadcn, MUI o Radix: este sistema tiene sus nombres.
 
+Para armar o cambiar una pantalla, el orden es: tipo de pantalla → patrón (`guidelines/patterns/index.md`) y plantilla (`cs-list-template`, `cs-page-template`, `cs-auth-template`) → componentes con `adsa-cli` → guía de cada uno. El orden de `search` es una pista, no la respuesta. El procedimiento completo, con la tabla de plantillas, está en `references/elegir-en-el-ds.md` del skill `angular-product-builder`.
+
 ## Imports y versión
 
 - `import { Button } from '@comsatel/ui-components/button'` (un subpath por componente). Nunca `projects/comsatel-ds/src/...`.

@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 // Guardia de acciones críticas sobre GitLab de Comsatel (hook PreToolUse de Claude Code).
-// Lee el evento por stdin. Si la acción es crítica, la bloquea (exit 2 + motivo por stderr)
-// o pide confirmación (JSON "ask"). No toca nada más: lo demás pasa sin ruido.
+// Lee el evento por stdin. Si la acción es crítica, la bloquea o pide confirmación, siempre con un
+// JSON `permissionDecision` ("deny" o "ask") por stdout y salida 0. No se usa el código de salida 2:
+// en Windows los hooks pasan por PowerShell, que convierte cualquier fallo de un comando nativo en
+// código 1, y el código 1 no bloquea (el comando se ejecutaría). Lo demás pasa sin ruido.
 // Documentación: ../references/hooks-bloqueantes.md
 import { execFileSync } from 'node:child_process';
 
@@ -84,7 +86,7 @@ function evaluar(cmd, cwd) {
   if (/merge_requests\/\d+\/merge\b/i.test(todo) || /\bglab\s+mr\s+(merge|accept)\b/i.test(todo)) {
     return ['deny', 'Fusionar un merge request',
       'El agente no fusiona. La fusión a develop la ejecuta César (arquitecto) después de revisar el MR.',
-      'Deja el MR listo (pipeline en verde, sin conflictos ni discusiones abiertas) y asígnalo a César con un comentario. Enzo también puede fusionar, pero lo decide él en la interfaz de GitLab.'];
+      'Deja el MR listo (pipeline en verde, sin conflictos ni discusiones abiertas) y asígnalo a César con un comentario. El responsable del repositorio también puede fusionar, pero lo decide él en la interfaz de GitLab.'];
   }
 
   // 3. Etiquetas y publicación de paquetes.
@@ -132,7 +134,7 @@ function evaluar(cmd, cwd) {
     if (push.opciones.some((o) => /^(-f|--force|--force-with-lease(=.*)?|--force-if-includes)$/.test(o)) || push.args.some((a) => a.startsWith('+'))) {
       return ['deny', 'git push forzado',
         'Reescribe la historia remota y puede borrar el trabajo de otras personas.',
-        'Haz un commit nuevo o un rebase local y vuelve a subir sin forzar. Si de verdad hace falta forzar, que lo decida Enzo en su terminal.'];
+        'Haz un commit nuevo o un rebase local y vuelve a subir sin forzar. Si de verdad hace falta forzar, que lo decida el responsable del repositorio en su terminal.'];
     }
     if (push.opciones.some((o) => /^(-d|--delete)$/.test(o))) {
       return ['deny', 'git push --delete (borrar una rama remota)',
@@ -195,8 +197,14 @@ process.stdin.on('end', () => {
   if (!r) process.exit(0);
   const [tipo, titulo, motivo, que] = r;
   if (tipo === 'deny') {
-    process.stderr.write(AVISO_BLOQUEO(titulo, motivo, que) + '\n');
-    process.exit(2);
+    process.stdout.write(JSON.stringify({
+      hookSpecificOutput: {
+        hookEventName: 'PreToolUse',
+        permissionDecision: 'deny',
+        permissionDecisionReason: AVISO_BLOQUEO(titulo, motivo, que),
+      },
+    }));
+    process.exit(0);
   }
   process.stdout.write(JSON.stringify({
     hookSpecificOutput: {

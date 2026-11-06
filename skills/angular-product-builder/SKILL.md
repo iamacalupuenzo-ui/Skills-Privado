@@ -17,7 +17,7 @@ description: >
   componentes dentro del sistema de diseño, no clona su repositorio y no copia
   sus demos.
 metadata:
-  version: "2.8.0"
+  version: "2.9.0"
 ---
 
 # Angular Product Builder
@@ -58,6 +58,10 @@ Este skill diseña y construye. Versionar, publicar, desplegar y comprobar QA no
 - `references/design-systems/comsatel-ds.md` — leer si el sistema elegido es
   Comsatel DS. Instalación, estilos, tipografía y recetas de composición que no
   se deben sustituir por inferencia.
+- `references/elegir-en-el-ds.md` — leer siempre antes de escribir UI con Comsatel DS:
+  el orden (tipo de pantalla → patrón y plantilla → componentes → tokens), qué
+  plantilla usar para listado, detalle, configuración, inicio y acceso, cómo
+  buscar con `adsa-cli` y qué hacer cuando un componente no existe.
 - `references/especificacion-producto.md` — leer siempre que el proyecto tenga
   épica, historias o casos de uso en Gestión de producto: cómo leerlos, cómo
   traducirlos a construcción y cómo pedir un ajuste cuando el flujo cambia.
@@ -111,6 +115,9 @@ Este skill diseña y construye. Versionar, publicar, desplegar y comprobar QA no
    y estado; los campos equivalentes usan el mismo rol tipográfico público.
    Nunca solicitar permisos de repositorio ni consultar fuentes privadas para
    deducir composiciones.
+   Con Comsatel DS, antes de escribir UI leer `elegir-en-el-ds.md`: las guías
+   (`guidelines/`, o `node_modules/@comsatel/ui-components/guidelines/` en un
+   producto) y el patrón de la pantalla se **leen**, no se deducen de los tipos.
 5. Si falta una API, token o estilo público, detener esa pieza y reportar el
    contrato faltante al mantenedor del sistema. Nunca copiar archivos internos.
 6. Antes de investigar referentes actuales, comprobar acceso web y usar fuentes
@@ -185,7 +192,10 @@ evaluar, no se edita.
    durante la construcción el flujo cambia, pausar esa pieza y derivar la
    "Solicitud de ajuste de producto" a `epica-a-plan-desarrollo`.
 2. Leer `design-system-contract.md`, la referencia del sistema elegido y
-   `feature-delivery.md`; reutilizar componentes públicos primero y componer
+   `feature-delivery.md`. Con Comsatel DS, seguir `elegir-en-el-ds.md`: nombrar el
+   patrón y la plantilla de la pantalla, buscar los componentes con
+   `npx adsa-cli search` y leer la guía de cada uno antes de usarlo; si falta
+   algo, detenerse y preguntar. Reutilizar componentes públicos primero y componer
    semánticamente lo específico del producto. En formularios, alinear los
    labels de campos equivalentes con los tokens publicados y preservar la
    anatomía tipográfica encapsulada de cada control. Elegir un tamaño de control
@@ -371,6 +381,7 @@ evaluar, no se edita.
 
 - `references/design-system-contract.md`
 - `references/design-systems/comsatel-ds.md`
+- `references/elegir-en-el-ds.md`
 - `references/arquitectura-proyecto.md`
 - `references/arquitectura-microui.md`
 - `references/referencias-visuales.md`
