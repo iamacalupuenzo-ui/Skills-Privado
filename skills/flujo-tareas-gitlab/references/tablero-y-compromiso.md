@@ -40,6 +40,8 @@ Criterio propuesto para decir que una tarea corresponde a hoy (se muestra como p
 
 Una tarea sin fecha límite nunca entra sola: se pregunta.
 
+La fecha límite es la misma en Notion y en GitLab. Lo que difiere es el cierre (B9, Enzo, 11-nov-2026): en Notion una tarea se cierra cuando termina el esfuerzo, aunque sea antes; el issue de GitLab se cierra en su fecha límite. Por eso el criterio de arriba se decide con la fecha límite y la lista, sin mirar el estado de Notion. Un issue con Notion «Completada» y GitLab abierto no es un error: se compromete y se cierra cuando llega su fecha.
+
 ## Fin del día (confirmado por Enzo el 4 de noviembre de 2026)
 
 Lo comprometido que no se cerró se **reevalúa al día siguiente**: se vuelve a proponer con el mismo criterio y no se mueve solo. Se le avisa al usuario qué quedó sin cerrar al terminar el día.

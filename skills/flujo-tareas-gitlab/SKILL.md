@@ -61,6 +61,7 @@ en `references/tablero-y-compromiso.md`, sección «Sigue por confirmar», y no 
 - **B5 — Los nombres de etiquetas y listas se leen del proyecto**, no de la memoria: cambian entre equipos.
 - **B6 — Nunca imprimir el token.** Se usa el encabezado `PRIVATE-TOKEN` desde la variable de entorno.
 - **B7 — Se enlaza cada issue a su historia** (`relates_to`); un issue sin historia se avisa.
+- **B9 — Un issue se cierra en su fecha límite, no cuando termina el esfuerzo.** La fecha límite es la misma en Notion y en GitLab (la planificada). Lo que difiere es el cierre: en Notion se cierra cuando se termina el trabajo, aunque sea antes; en GitLab se respeta la fecha planificada (Enzo, 11-nov-2026). Que una tarea esté «Completada» en Notion no es motivo para cerrar su issue antes de tiempo ni una discrepancia que corregir. Para decidir qué comprometer o mover cuenta la fecha límite y la lista, no el estado de Notion; Notion se consulta solo para informar.
 
 ## Racionalizaciones comunes
 
@@ -70,6 +71,7 @@ en `references/tablero-y-compromiso.md`, sección «Sigue por confirmar», y no 
 | «Las etiquetas son las de la última vez» | Se leen del proyecto (B5). |
 | «El MR está listo, cierro el issue» | Cierra al fusionarse (B4). |
 | «Cargo las horas con IA en GitLab también» | Esas horas son solo de Notion (B3). |
+| «En Notion ya está completada, cierro el issue» | Se cierra en su fecha límite (B9). |
 | «El hito anterior sirve» | Un hito vencido se confirma o se reemplaza, no se reutiliza en silencio. |
 
 ## Señales de alerta
