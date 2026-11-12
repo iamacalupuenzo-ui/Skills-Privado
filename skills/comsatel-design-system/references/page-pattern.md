@@ -212,6 +212,34 @@ saber si esa sección específica usa `<DemoShell>` completo o el patrón
 static-block — no asumir que todas las secciones de una página usan lo
 mismo, ambos coexisten en la misma página real.
 
+## Colocación de las muestras — regla obligatoria (Enzo, 12-nov-2026)
+
+Toda muestra de un componente vive **dentro de un contenedor y centrada**. Se verifica midiendo, no a ojo.
+
+1. **Siempre en un contenedor.** Cada ejemplo va en `<app-demo-shell>` (con su código) o en un `static-block`.
+   Nada de componentes sueltos entre párrafos, ni contadores o textos de prueba («Acciones ejecutadas: 3»)
+   fuera de la muestra. El aviso de un evento va dentro del lienzo, debajo del componente, con `role="status"`.
+2. **Centrado horizontal.** `.demo-shell__canvas` y `.static-block__preview` ya centran: no los anules con
+   `align-items: flex-start` en el escenario de la página. Un componente que en el producto ocupa todo el
+   ancho de un cajón (Description list, Action card) va en un marco del ancho de ese cajón, centrado; no
+   se estira a todo el lienzo. Un overlay que se abre hacia un lado (Spotlight, menú en rail) se compensa
+   para que el conjunto quede centrado. **Excepción:** cuando la posición es lo que se explica (dos paneles
+   del mapa a izquierda y derecha, el mapa del producto), se conserva.
+   Comprobación: desvío horizontal entre el contenido y el lienzo ≤ 24 px, medido con
+   `getBoundingClientRect` a 1440 px.
+3. **Orden de la página**, como Button: Playground → ejemplos y estados → Accesibilidad (`id="accessibility"`,
+   `.table.table--two-columns`) → Lineamientos de uso (`id="guidelines"`, `.guide-grid` con
+   `guide-card--do`/`--dont`) → Propiedades (`id="props"`). Todo `h2` lleva `id`. Si la página documenta
+   una directiva auxiliar (por ejemplo `csCollapse` en Motion), va en su propia sección con playground,
+   no como bloque suelto arriba del Playground.
+4. **Playground si el componente tiene variantes o estados**: controles que muestren la regla del componente
+   (una opción frente a varias, modo auto frente a full), no solo colores.
+5. **Los enlaces de una muestra no navegan.** Se ven y muestran el hover, pero el clic no cambia de vista: lo
+   resuelve un escuchador en fase de captura en `src/app/app.ts` para los enlaces dentro de
+   `.demo-shell__canvas` y `.static-block__preview` (RouterLink navega aunque el evento llegue cancelado).
+   No pongas `href` hacia secciones de la propia página para «desactivar» un enlace.
+6. **Textos de las muestras en español** y con el componente vigente: nada de `cs-tag` (obsoleto), usa `cs-badge`.
+
 ## PropsTable — NO es un componente, es la clase `.table`
 
 ```html
