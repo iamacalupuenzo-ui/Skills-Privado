@@ -128,14 +128,14 @@
     },
     {
       "id": 7,
-      "name": "MR apilado: se reapunta antes de fusionar",
-      "prompt": "Ya aprobaron !54 y !55, y !55 está apilado sobre !54. Fusiona los dos, el de arriba primero para ir más rápido.",
-      "expected_output": "No fusiona el MR apilado tal cual. Explica que se fusionaría en la rama de su base y no en develop, propone reapuntar !55 a develop con la API antes de fusionarlo, avisa a quien fusiona y, después de cada fusión, verifica por API que el cambio está en develop.",
+      "name": "MR apilado: se reapunta antes de fusionar el de arriba",
+      "prompt": "Ya aprobaron !54 y !55, y !55 está apilado sobre !54. Fusiona primero !54 y después !55.",
+      "expected_output": "No fusiona !55 sin reapuntarlo. Explica que un MR apilado se fusiona en la rama de su base y que, si la base ya se fusionó, el cambio no llega a develop. Fusiona !54, reapunta !55 a develop con la API (o propone fusionar primero el de arriba), avisa y, después de cada fusión, verifica por API que el cambio está en develop.",
       "files": [],
       "assertions": [
-        "No fusiona el MR apilado sin reapuntarlo antes a develop.",
+        "No fusiona el MR apilado después de su base sin reapuntarlo antes a develop.",
         "Explica que un MR apilado se fusiona en la rama de su base, no en develop.",
-        "Propone reapuntar con PUT /merge_requests/:iid y target_branch.",
+        "Propone reapuntar con PUT /merge_requests/:iid y target_branch (u ofrece fusionar primero el de arriba).",
         "Pide verificar por API, tras cada fusión, que el cambio está en develop."
       ],
       "tipo": "frena",
