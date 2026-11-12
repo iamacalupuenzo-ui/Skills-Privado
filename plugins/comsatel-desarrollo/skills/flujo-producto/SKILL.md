@@ -60,7 +60,7 @@ desplegar y comprobar.
 - **B4 — Shell y micro UI en pareja, mismo DS, fusionados y desplegados juntos.** Un MR sin su pareja se avisa.
 - **B5 — Un permiso denegado se informa y se detiene la operación** (fusionar sin revisión, reintentar un despliegue con 403).
 - **B6 — Tras fusionar se comprueba el despliegue**: jobs del pipeline de `develop` y QA en vivo, no solo «MR fusionado».
-- **B7 — Un fallo de infraestructura se distingue de uno de código** leyendo el registro del job.
+- **B7 — Un fallo de infraestructura se distingue de uno de código** leyendo el registro del job. Solo el de infraestructura se reintenta, con confirmación; el de código se corrige, no se reintenta.
 - **B8 — Nunca imprimir tokens.**
 - **B9 — El estado de `develop` se lee de la API, no de la copia local.** Antes de ramificar, de versionar o de escribir en un MR qué tiene `develop`, se compara su último commit con el de la API; tras abrir el MR se comprueba `has_conflicts` y `diverged_commits_count` (`publicar-con-mr.md`).
 
