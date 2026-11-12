@@ -32,7 +32,7 @@ description: >
   proyectos, o para decidir una arquitectura de tokens nueva — eso lo
   decide el usuario, este skill aplica la que ya existe.
 metadata:
-  version: "2.9.0"
+  version: "2.10.0"
 ---
 
 # Comsatel Design System — auditor y reconstructor (Angular)
@@ -103,6 +103,16 @@ documenta en `references/component-inventory.md` una vez tomadas, y las
 hace respetar de ahí en adelante.
 
 ---
+
+## Estado del DS desde la 1.0 (leer antes de auditar)
+
+El inventario (`references/component-inventory.md`) cuenta la historia del DS hasta la 0.6.0 (septiembre de 2026). Desde la 1.0.0 el paquete es `@comsatel/ui-components`, con versión SemVer única, y la fuente de verdad **ya no es este skill sino el repositorio del DS**:
+
+- `guidelines/<componente>.md` (también viaja dentro del paquete): props, contrato a11y y matriz de estados generados desde el código, «Disponible desde X.Y» y las trampas conocidas.
+- `docs/releases/<versión>.md`: qué cambió en cada versión y qué impacto tiene en los consumidores.
+- `GAPS.md`: lo que todavía no existe.
+
+Antes de auditar o construir, lee la guía del componente y la nota de la versión que lo tocó. Si el inventario y la guía difieren, manda la guía. La sección «Actualización 2026-11-12» del inventario resume lo que cambió de la 1.0 a la 1.16 y las decisiones vigentes (Badge como única etiqueta, ilustraciones en los estados, Stat con ilustración, AccountMenu).
 
 ## Referencias disponibles
 

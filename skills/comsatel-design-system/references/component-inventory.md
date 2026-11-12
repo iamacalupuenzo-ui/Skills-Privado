@@ -6,6 +6,39 @@
 > `@comsatel/ui-components/<x>`. Excepciones: `PressScale` vive en `/motion`
 > y `Collapse` en `/directives`. Receta y puertas en `entry-points.md`.
 
+Actualización: 2026-11-12, el DS pasó de la 0.6.0 a la 1.16.0. Este inventario
+quedó congelado en la era 0.x: para el estado real de un componente, la fuente
+es `guidelines/<componente>.md` del repositorio (también dentro del paquete) y
+la nota `docs/releases/<versión>.md`. Lo que se sumó, por versión:
+
+| Versión | Qué trae |
+| :-- | :-- |
+| 1.0.0 | Paquete corporativo `@comsatel/ui-components` en el Package Registry de GitLab; un cambio incompatible exige versión mayor |
+| 1.1.0 a 1.1.2 | `FleetUnitList` con telemetría completa y acciones; fuentes propias (sin Google Fonts); radio, textarea y Side drawer corregidos |
+| 1.2.0 | `Breadcrumb` |
+| 1.3.0 | `ListTemplate`, la plantilla de listado |
+| 1.4.0 y 1.5.0 | `Modal` con `[csModalHeaderActions]`; `Tooltip` dibujado sobre `body` y con volteo |
+| 1.6.0 | Las guías viajan dentro del paquete (`guidelines/`) |
+| 1.7.0 | `AuthTemplate` (variantes `centered` y `split`) |
+| 1.8.0 | `Button` con `type="submit"`, `iconOnly` y `aria-expanded`; `TableFooter` |
+| 1.9.x | `AppLayout` sin barra superior, marca arriba, sesión abajo y enlace «Saltar al contenido» |
+| 1.10.0 | Ícono `rotate-ccw`; error de `FormField` alineado a la primera línea |
+| 1.11.0 | `AppLayout` en modo móvil (cajón bajo 768 px) |
+| 1.12.0 | `Illustration` (escenas de estado), `PageTemplate`, ancho estable del filtro de `InputDropdown` |
+| 1.13.0 | Escala de color completa de 10 tonos en los primitivos de acento |
+| 1.14.0 | `Accordion` rediseñado (solo divisores) y `UnitAvatar` extraído de `FleetUnitList` |
+| 1.15.0 | `Copyable`, clase `.cs-link`, etiqueta de estado secundaria en `Badge`, título como encabezado en `EmptyState` |
+| 1.16.0 | `AccountMenu`; `Menu` con buscador, filtro externo y «Nuevo»; escenas `no-data` y `no-attachments`; escenas de indicador para `Stat`; `Stat` con `icon`, `illustration` y `tone`; `Badge` con `icon`; `Tag` obsoleto |
+
+Decisiones vigentes desde la 1.x (no reabrir sin que el usuario lo pida):
+
+- **`Badge` es la única etiqueta del sistema.** `icon` pone un ícono decorativo al inicio, del tamaño del badge (10, 12 o 14 px según `size`; con `status` no se muestra). `status` y `statusIcon` dan la etiqueta secundaria (con `variant="outline"`). `aria-live` y `aria-label` son atributos del propio elemento. `Tag` está obsoleto desde la 1.16, compone `Badge` y se retira en la 2.0. Equivalencias: primary y info a `brand`, secondary a `neutral`, success a `success`, warn a `warning`, danger a `danger`, contrast a `neutral-solid`; `value` pasa a ser el contenido y `rounded` a `pill`.
+- **Un componente obsoleto se marca en el catálogo con `deprecated: true`** en `src/app/lib/nav.ts` (marca «Obsoleto» en el menú) y «Obsoleto desde vX.Y» junto al título de su página. A diferencia de «Nuevo» y «Actualizado», no caduca: se queda hasta que se retire.
+- **Ilustraciones (`cs-illustration`).** Dos familias: escenas de estado de 160 × 120 (panel, insignia y trazo de 2,5 en el protagonista) para `EmptyState`, y escenas de indicador de 120 × 96, sin panel (`documents-*`, `recoveries-*`), tintadas con `--cs-illustration-ink` y `--cs-illustration-wash`, para `Stat`. `EmptyState` usa ilustración (`StateIllustrationName`); el ícono de 40 px queda para espacios reducidos.
+- **`Stat` con `illustration`.** Solo en `lg`; degradado de `tone` (neutral, brand, success) que se disuelve antes de la cifra; la ilustración se reduce bajo 340 px y desaparece bajo 240 px; la cifra sube a `heading-large` (36 px, y 28 px bajo 340 px). En tema oscuro el degradado mezcla la tinta de cada tono con la superficie (24 % y 9 %), porque los rellenos suaves se confundían con el fondo.
+- **`AccountMenu`.** Con una opción es un botón directo; con dos o más, la tarjeta completa abre el menú de la cuenta con `chevrons-up-down`; la fila mide igual en los dos casos. En rail queda el avatar, con el nombre en el tooltip y el menú a la derecha.
+- **Ilustrar solo lo que la historia define.** Antes de ilustrar una tarjeta de un tablero, leer la HU: la tasa de éxito se había ilustrado y la HU-SVR-02-12 la excluye.
+
 Actualización: 2026-09-17, reconstrucción de la marca de Flotas. Se reemplazó la
 identidad visual aislada de C-Locater Flotas por el sistema C-Flotas: wordmark
 `C-` + cápsula negra `FLOTAS` + firma `by COMSATEL`, e isotipo `C-` + cápsula

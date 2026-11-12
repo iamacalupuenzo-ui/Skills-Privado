@@ -194,3 +194,12 @@ layout hecha ahí es basura, no un reflejo del CSS real.
 `"desktop"`, que solo limpia la emulación — si el pane seguía oculto, el
 viewport puede seguir en 0×0 después). Recién con `innerWidth` > 0
 confirmado, repetir la medición.
+
+## Probar en un consumidor un DS que todavía no está publicado
+
+Ejemplo real (2026-11-12): el piloto (`capturas-recuperos`) fija el DS en `1.14.0`, pero su código usa la 1.16.0.
+
+- **Cómo:** en el DS, `npm run build:lib`; luego copiar el contenido de `dist/comsatel-ds` sobre `node_modules/@comsatel/ui-components` del consumidor (con un respaldo de la carpeta anterior). La copia no se versiona: un `npm ci` la borra.
+- **Síntoma:** copiaste el paquete y la pantalla sigue igual (por ejemplo, el DOM aún trae `cs-tag` tras migrar a `cs-badge`). El servidor de desarrollo no recompiló: reinícalo. Comprueba la copia con `diff -rq dist/comsatel-ds node_modules/@comsatel/ui-components`.
+- **Síntoma:** con el servidor del catálogo corriendo, `build:lib` falla con EBUSY al recrear el enlace. Detén el servidor, borra `node_modules/@comsatel/ui-components` si quedó vacío y corre `node scripts/link-dist.mjs`.
+- **Síntoma:** `project.comsatel.com.pe` responde 503 a la API, a `git fetch` o a `git push`. Es la VPN, no el cambio: pide que la activen antes de reintentar.
