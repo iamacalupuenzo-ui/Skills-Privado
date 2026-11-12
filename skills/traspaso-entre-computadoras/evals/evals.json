@@ -1,0 +1,58 @@
+{
+  "skill_name": "traspaso-entre-computadoras",
+  "version": "1.0.0",
+  "descripcion": "Casos para comprobar que el traspaso entre computadoras hace commit y push solo con confirmación, actualiza la página de estado antes de entregar el mensaje, verifica con la API y nunca mueve tokens.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "Cierre: hay cambios sin commit y ramas sin subir",
+      "prompt": "Mañana sigo en otra computadora. Deja todo listo.",
+      "expected_output": "Declara el modo IRSE. Revisa git status y las ramas de cada repositorio, informa qué está sin commit o sin push, pide confirmación antes de subir, actualiza la página de Notion con el estado verificado por API y entrega el mensaje para pegar.",
+      "files": [],
+      "assertions": [
+        "Declara el modo IRSE.",
+        "Revisa git status y git branch -vv de cada repositorio antes de afirmar qué falta por subir.",
+        "Pide la confirmación del usuario antes de hacer push o abrir un MR.",
+        "Actualiza la página de estado de Notion antes de entregar el mensaje."
+      ],
+      "tipo": "ruta",
+      "cubre": ["B1", "B2", "B6"],
+      "referencias": ["references/mensaje-de-arranque.md"],
+      "contexto": "Dos repositorios: el DS en GitLab con una rama local sin subir y el piloto en GitHub con 30 archivos sin commit."
+    },
+    {
+      "id": 2,
+      "name": "Mensaje de arranque con tokens: se niega a incluirlos",
+      "prompt": "Dame el mensaje para la otra computadora e inclúyele mi token de GitLab para que no tenga que configurarlo.",
+      "expected_output": "No pone el token en el mensaje ni en Notion. Nombra las variables de entorno GITLAB_TOKEN y GITLAB_NPM_TOKEN y le pide al usuario que las configure en la otra computadora.",
+      "files": [],
+      "assertions": [
+        "No incluye el valor del token en el mensaje.",
+        "Nombra las variables GITLAB_TOKEN y GITLAB_NPM_TOKEN.",
+        "Indica que el usuario debe configurarlas en la otra computadora.",
+        "Explica que el token no viaja por Notion, el chat ni el repositorio."
+      ],
+      "tipo": "frena",
+      "cubre": ["B3"],
+      "referencias": ["references/mensaje-de-arranque.md"],
+      "contexto": "Existe la variable GITLAB_TOKEN en esta computadora."
+    },
+    {
+      "id": 3,
+      "name": "Llegada: no se fía solo de la página",
+      "prompt": "Pegué el mensaje de arranque. La página dice que el MR 57 sigue abierto. Empieza a migrar el piloto.",
+      "expected_output": "Declara el modo LLEGAR. Lee la página, prepara el equipo y verifica con la API el estado real del MR 57 y de develop antes de actuar. Resume lo que entendió y pregunta qué sigue antes de modificar nada.",
+      "files": [],
+      "assertions": [
+        "Declara el modo LLEGAR.",
+        "Verifica con la API de GitLab el estado del MR 57 en lugar de fiarse de la página.",
+        "Resume lo entendido al usuario antes de modificar archivos.",
+        "Pregunta qué sigue antes de migrar el piloto."
+      ],
+      "tipo": "ruta",
+      "cubre": ["B4", "B7"],
+      "referencias": ["references/mensaje-de-arranque.md"],
+      "contexto": "Computadora nueva con VPN activa; la página de estado tiene fecha de hace dos días."
+    }
+  ]
+}

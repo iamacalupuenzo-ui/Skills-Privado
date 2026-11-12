@@ -9,7 +9,7 @@ description: >
   productos" o "despliega a QA". No cambia el DS (usa flujo-ds) ni construye la pantalla desde
   cero (usa angular-product-builder).
 metadata:
-  version: "1.0.2"
+  version: "1.0.4"
 ---
 
 # Flujo de producto
@@ -62,6 +62,7 @@ desplegar y comprobar.
 - **B6 — Tras fusionar se comprueba el despliegue**: jobs del pipeline de `develop` y QA en vivo, no solo «MR fusionado».
 - **B7 — Un fallo de infraestructura se distingue de uno de código** leyendo el registro del job.
 - **B8 — Nunca imprimir tokens.**
+- **B9 — El estado de `develop` se lee de la API, no de la copia local.** Antes de ramificar, de versionar o de escribir en un MR qué tiene `develop`, se compara su último commit con el de la API; tras abrir el MR se comprueba `has_conflicts` y `diverged_commits_count` (`publicar-con-mr.md`).
 
 ## Racionalizaciones comunes
 
@@ -72,6 +73,7 @@ desplegar y comprobar.
 | «Subo solo la micro UI, el Shell después» | Con DS distinto el remoto no carga (B4). |
 | «La suite del módulo basta para publicar» | La completa corre antes de publicar (B3). |
 | «Pongo el hex aquí y lo cambio luego» | Los hex sueltos no pasan la revisión; usar el token. |
+| «Hice `git fetch`, `develop` está al día» | En algunos clones el `fetch` trae una sola rama y `origin/develop` queda viejo; traerlo explícito y compararlo con la API (B9). |
 
 ## Señales de alerta
 
@@ -79,6 +81,7 @@ desplegar y comprobar.
 - Un MR de pareja se abre sin enlazar al otro.
 - `grep` encuentra la versión vieja del DS en README, docs o specs.
 - El servidor local muestra 404 de chunks del DS: reiniciar tras `ng test` o `ng build`.
+- Un MR recién abierto con `has_conflicts: true` o `diverged_commits_count` mayor que 0: la rama partió de un `develop` viejo.
 
 ## Formato de respuesta
 

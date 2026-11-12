@@ -22,7 +22,7 @@ Para armar o cambiar una pantalla, el orden es: tipo de pantalla → patrón (`g
 - Casi todos los componentes son controlados: los eventos (`closed`, `dismiss`, `valueChange`) solo avisan; cerrar, ocultar o actualizar el valor lo hace el producto.
 - Propiedades booleanas y numéricas **con binding** (`[disabled]="true"`). Escritas como atributo, Angular pasa texto y el componente las ignora.
 - Tamaño de campo: el `size` del `cs-form-field` debe coincidir con el `fieldSize` del control.
-- `cs-tag` admite `rounded`; `cs-radio` tiene `size` sm/md/lg; `cs-toast` con acción usa `appearance="subtle"` si la acción debe verse como enlace.
+- La etiqueta es `cs-badge` (`icon` al inicio, `pill` para el radio completo; `aria-live` y `aria-label` son atributos del elemento); `cs-tag` es obsoleto desde la 1.16 y se retira en la 2.0. `cs-radio` tiene `size` sm/md/lg; `cs-toast` con acción usa `appearance="subtle"` si la acción debe verse como enlace.
 
 ## Cuando falta algo
 

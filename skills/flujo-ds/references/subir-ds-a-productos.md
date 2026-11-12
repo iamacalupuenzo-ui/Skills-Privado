@@ -24,6 +24,7 @@ Deben fusionarse juntas y desplegarse juntas.
 
 - **Una mitad desplegada con el DS nuevo y la otra con el viejo.** El error de la consola lo dice: `@comsatel/ui-components/banner@1.9.2 Is not compatible with existing …@1.9.1 requiredRange '1.9.1'`, y el remoto muestra «No se pudo cargar». Ocurrió cuando el despliegue del Shell de flotas falló (Docker Hub) y el de la micro UI sí pasó. Solución: reintentar el job `deploy to qa` que falló; mientras tanto avisar que la pareja está rota.
 - **Mi token no puede reintentar jobs de despliegue (403).** Los jobs `deploy to qa` los reintenta quien tenga rol de despliegue: Retry en el job, o «Run pipeline» sobre `develop`.
+- **El producto no compila con la versión fijada.** Su código ya usa un DS sin publicar (ejemplo: el piloto usa la 1.16.0 con la 1.14.0 fijada). Se construye el DS (`npm run build:lib`) y se copia `dist/comsatel-ds` sobre `node_modules/@comsatel/ui-components`. Si la pantalla no cambia, el servidor no recompiló: se reinicia. Comprueba con `diff -rq` que la copia es igual al `dist`.
 - **Etiqueta `-qa` ya publicada.** Si no se subió la versión del producto, QA conserva la imagen vieja.
 
 ## Comprobar al terminar

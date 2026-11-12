@@ -1,0 +1,128 @@
+pack_name: desarrollo
+version: 1.0.0
+purpose: Llevar un cambio del Design System o de un producto de CL2 Flotas desde la documentación de UX hasta QA, con una puerta verificable en cada paso
+# Estándar de referencia: comsatel-skill-pack-factory v1.2 (un orquestador y como máximo seis especialistas).
+skills:
+- name: orquestador-desarrollo
+  role: orchestrator
+  description: Clasifica el pedido, lee el estado real, reparte entre los especialistas y exige la puerta de cada paso
+- name: ux-a-desarrollo
+  role: specialist
+  description: Baja UXR, flujos, UXS y decisiones del PO a código sin perder estados, accesibilidad ni trazabilidad
+- name: angular-product-builder
+  role: specialist
+  description: Construye la pantalla o el flujo con el Design System publicado
+- name: flujo-ds
+  role: specialist
+  description: Cambia, versiona, publica y registra brechas del Design System
+- name: flujo-producto
+  role: specialist
+  description: Versiona, publica y despliega un producto; sube el DS a un producto
+- name: verificar-calidad
+  role: specialist
+  description: Pruebas, navegador, accesibilidad y servidores locales
+# Etapa previa, fuera del pack: si falta documentación de UX o el handoff no pasó, el orquestador deriva aquí y espera.
+# ux-ui-orchestrator coordina 8 skills porque tiene que preparar toda la documentación de UX (requisitos, flujos, pantallas,
+# exploración, accesibilidad, handoff). Se acepta que supere los 6 especialistas; el límite de 1 + 6 rige para este pack.
+upstream:
+- ux-ui-orchestrator
+# Apoyo opcional: si no está instalado el flujo sigue con las reglas resumidas de las referencias.
+optional_support:
+- orquestacion-multi-harness
+- comsatel-design-system
+gates:
+- id: G0
+  name: Alcance
+  criteria:
+  - Qué cambia, en qué repositorios y qué depende de qué
+  - El usuario valida el alcance si toca el DS o varios repositorios
+- id: G1
+  name: Fuente de UX
+  criteria:
+  - Existen UXR, flujo y pantalla, y el handoff pasó su puerta
+  - Lo pendiente del PO queda en un documento y no como rótulo en la interfaz
+- id: G2
+  name: Construcción
+  criteria:
+  - Usa el DS por subpath y tokens, sin colores ni píxeles sueltos
+  - Si falta un componente se pregunta y se registra la brecha en GAPS.md
+- id: G3
+  name: Verificación
+  criteria:
+  - Suite completa del repositorio en verde con cifras reales
+  - Verificado en el navegador
+- id: G4
+  name: Confirmación
+  criteria:
+  - El usuario valida lo visual; nada se sube sin ese visto bueno
+- id: G5
+  name: Publicación
+  criteria:
+  - Versión subida (en los cinco sitios si es un producto)
+  - Shell y micro UI en pareja con el mismo DS
+  - MR a develop asignado a César, sin fusionar
+- id: G6
+  name: Comprobación en QA
+  criteria:
+  - Los jobs del pipeline de develop pasaron
+  - QA responde de verdad con la versión nueva
+- id: G7
+  name: Documentación
+  criteria:
+  - Registro de decisiones, mapa de publicación y memoria al día
+tasks:
+- id: T-01
+  skill: orquestador-desarrollo
+  depends_on: []
+  gate: G0
+  outputs:
+  - Plan con flujo elegido y alcance
+- id: T-02
+  skill: ux-a-desarrollo
+  depends_on:
+  - T-01
+  gate: G1
+  outputs:
+  - Decisiones de UX registradas
+- id: T-03
+  skill: angular-product-builder
+  depends_on:
+  - T-02
+  gate: G2
+  outputs:
+  - Pantalla o flujo construido
+- id: T-04
+  skill: verificar-calidad
+  depends_on:
+  - T-03
+  gate: G3
+  outputs:
+  - Informe de verificación
+- id: T-05
+  skill: flujo-ds
+  depends_on:
+  - T-04
+  gate: G5
+  condition: el cambio es del Design System
+  outputs:
+  - MR a develop del DS
+- id: T-06
+  skill: flujo-producto
+  depends_on:
+  - T-04
+  gate: G5
+  condition: el cambio es de un producto
+  outputs:
+  - MR a develop del producto y de su pareja
+# Acciones que ningún skill ejecuta: las bloquea el guardia de skills/orquestador-desarrollo/hooks.
+human_only:
+- Fusionar un MR
+- Crear o borrar etiquetas (ds-v*)
+- npm publish
+- Push directo a develop, main o release
+- Mostrar el token de GitLab
+# Cada skill con evals/evals.json; npm test lo exige.
+evals:
+- orquestador-desarrollo
+- flujo-ds
+- flujo-producto

@@ -17,7 +17,7 @@ description: >
   componentes dentro del sistema de diseño, no clona su repositorio y no copia
   sus demos.
 metadata:
-  version: "2.9.0"
+  version: "2.9.1"
 ---
 
 # Angular Product Builder

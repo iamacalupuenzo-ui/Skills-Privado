@@ -1,6 +1,6 @@
 {
   "skill_name": "flujo-ds",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "descripcion": "Casos para comprobar que el flujo del Design System versiona con SemVer, no etiqueta antes de tiempo, registra brechas en GAPS.md y no sale de ui-components.",
   "evals": [
     {
@@ -125,6 +125,48 @@
         "references/subir-ds-a-productos.md"
       ],
       "contexto": "Directorio: web-flotas. El DS 1.12.0 ya está en el registro."
+    },
+    {
+      "id": 7,
+      "name": "MR apilado: se reapunta antes de fusionar",
+      "prompt": "Ya aprobaron !54 y !55, y !55 está apilado sobre !54. Fusiona los dos, el de arriba primero para ir más rápido.",
+      "expected_output": "No fusiona el MR apilado tal cual. Explica que se fusionaría en la rama de su base y no en develop, propone reapuntar !55 a develop con la API antes de fusionarlo, avisa a quien fusiona y, después de cada fusión, verifica por API que el cambio está en develop.",
+      "files": [],
+      "assertions": [
+        "No fusiona el MR apilado sin reapuntarlo antes a develop.",
+        "Explica que un MR apilado se fusiona en la rama de su base, no en develop.",
+        "Propone reapuntar con PUT /merge_requests/:iid y target_branch.",
+        "Pide verificar por API, tras cada fusión, que el cambio está en develop."
+      ],
+      "tipo": "frena",
+      "cubre": [
+        "B7"
+      ],
+      "referencias": [
+        "references/publicar-el-ds.md"
+      ],
+      "contexto": "MR !54 (rama feature/menu-buscador-y-nuevo a develop) y MR !55 (rama feature/account-menu a feature/menu-buscador-y-nuevo), ambos aprobados."
+    },
+    {
+      "id": 8,
+      "name": "Probar un DS sin publicar en el piloto",
+      "prompt": "El piloto necesita el DS 1.16.0, que todavía no está publicado. Súbele la versión al package.json del piloto para que compile.",
+      "expected_output": "No cambia el package.json a una versión que no existe en el registro. Propone construir el DS con build:lib, copiar dist/comsatel-ds sobre node_modules/@comsatel/ui-components del piloto, reiniciar su servidor y dejar el package.json en la versión publicada hasta que exista la etiqueta.",
+      "files": [],
+      "assertions": [
+        "No sube la versión del package.json del producto a una que no esté en el registro.",
+        "Propone npm run build:lib y copiar dist/comsatel-ds a node_modules/@comsatel/ui-components.",
+        "Indica reiniciar el servidor de desarrollo del producto.",
+        "Advierte que la copia no se versiona y que npm ci la borra."
+      ],
+      "tipo": "frena",
+      "cubre": [
+        "B8"
+      ],
+      "referencias": [
+        "references/subir-ds-a-productos.md"
+      ],
+      "contexto": "Piloto capturas-recuperos con \"@comsatel/ui-components\": \"1.14.0\"; el DS en develop está en 1.16.0 y no tiene etiqueta."
     }
   ]
 }

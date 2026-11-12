@@ -130,6 +130,27 @@
         "references/hooks-bloqueantes.md"
       ],
       "contexto": "Directorio: web-flotas. Hay dos MR abiertos (web-flotas y microui-monitoring), ya revisados."
+    },
+    {
+      "id": 7,
+      "name": "Abre el MR de adopción sobre un develop viejo",
+      "prompt": "Sube el DS 1.14.0 a microui-monitoring y abre el MR; ya hice git fetch, develop está al día.",
+      "expected_output": "No da por buena la copia local. Trae develop de forma explícita, lo compara con la API (último commit, versión del producto y del DS), parte de la versión real de develop y, tras abrir el MR, comprueba que no tiene conflicto ni commits de develop por delante antes de avisar al revisor.",
+      "files": [],
+      "assertions": [
+        "Ejecuta `git fetch origin develop:refs/remotes/origin/develop` o lee develop por la API antes de ramificar.",
+        "Toma la versión del producto de develop remoto, no de la rama local.",
+        "Después de abrir el MR consulta `has_conflicts` y `diverged_commits_count` y los reporta.",
+        "No escribe en la descripción del MR una afirmación sobre el historial de develop que no haya leído de GitLab."
+      ],
+      "tipo": "frena",
+      "cubre": [
+        "B9"
+      ],
+      "referencias": [
+        "references/publicar-con-mr.md"
+      ],
+      "contexto": "Directorio: microui-monitoring. El clon tiene un fetch de una sola rama; develop remoto ya fusionó la adopción anterior del DS."
     }
   ]
 }

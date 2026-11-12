@@ -4,9 +4,10 @@ Todo paso de subida pide la confirmación del usuario (B1). Orden:
 
 ## 1. Preparar
 
-1. `git fetch`; mirar `develop` remoto: versión que tiene y los MR recientes. Si `develop` avanzó, **rebasar**: `git rebase origin/develop`. Un conflicto de README o de documentación suele ser de adiciones por ambos lados: conservar las dos.
-2. Commitear lo pendiente en commits temáticos. La versión va en su propio commit.
-3. Crear la rama de publicación `feature/<tema>` desde ahí (si la rama actual ya se fusionó en otro MR, no reutilizarla).
+1. **Leer `develop` remoto de verdad, no la copia local.** Algunos clones tienen un `fetch` de una sola rama (pasa en `microui-monitoring`): `git fetch origin` termina sin error y `origin/develop` sigue viejo. Traerlo explícito: `git fetch origin develop:refs/remotes/origin/develop`, y comprobar contra la API (`GET /projects/:id/repository/branches/develop`) que el último commit coincide y qué versión de producto y de DS fija su `package.json`. Con eso se parte de la versión correcta (la del producto sube desde la de `develop`, no desde la de la rama).
+2. Mirar los MR recientes. Si `develop` avanzó, **rebasar**: `git rebase origin/develop`. Un conflicto de README o de documentación suele ser de adiciones por ambos lados: conservar las dos.
+3. Commitear lo pendiente en commits temáticos. La versión va en su propio commit.
+4. Crear la rama de publicación `feature/<tema>` desde ahí (si la rama actual ya se fusionó en otro MR, no reutilizarla).
 
 ## 2. Versión y suite
 
@@ -19,6 +20,7 @@ Todo paso de subida pide la confirmación del usuario (B1). Orden:
 1. `git push -u origin <rama>`.
 2. MR a `develop` por la API: título en ASCII, cuerpo en un archivo JSON UTF-8. Descripción con: qué cambia, contrato propuesto (si lo hay), **pareja** con enlace, verificación con cifras, lo no verificado y la versión.
 3. Abrir la pareja y editar ambas descripciones para enlazarse entre sí.
+4. **Comprobar el MR recién abierto** antes de avisar al revisor: `GET /projects/:id/merge_requests/:iid?include_diverged_commits_count=true` debe dar `has_conflicts: false` y `diverged_commits_count: 0`. Si no, arreglarlo primero (fusionar `develop` en la rama y rehacer la versión) y corregir la descripción. Revisar también cada afirmación de la descripción contra GitLab: no escribir que algo «nunca se subió» sin haberlo leído.
 
 ## 4. Después de la fusión
 

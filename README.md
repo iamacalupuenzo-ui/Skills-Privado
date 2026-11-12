@@ -37,6 +37,7 @@ La decisión y evidencia que justifican la CLI están documentadas en
 | `flujo-producto` | Activo | Claude Code |
 | `ux-a-desarrollo` | Activo | Claude Code |
 | `verificar-calidad` | Activo | Claude Code |
+| `traspaso-entre-computadoras` | Activo | Claude Code |
 | `ux-ui-orchestrator` | Activo | Claude Code |
 | `ux-requirements-analyzer` | Activo | Claude Code |
 | `user-flow-designer` | Activo | Claude Code |

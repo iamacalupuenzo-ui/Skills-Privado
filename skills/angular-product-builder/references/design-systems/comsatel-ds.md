@@ -37,7 +37,7 @@ privadas ni solicita un token con alcance `repo` para inferir una composición.
 ## Instalación permitida
 
 El paquete `@comsatel/ui-components` vive en el Package Registry de GitLab
-corporativo (desde 2026-10-01; el paquete `@iamacalupuenzo-ui/comsatel-ds` de
+corporativo (desde 2026-10-01; el paquete anterior de
 GitHub Packages quedó congelado). El repositorio consumidor versiona un `.npmrc`
 que declara el registro y referencia el token por variable de entorno, sin
 guardar su valor:

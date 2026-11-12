@@ -17,7 +17,7 @@ inventa (B4).
 | Menú de navegación | `menu.md`; `cs-menu` ya trae su margen lateral de 12 px | No añadir relleno propio alrededor |
 | Tokens | `guidelines/design-tokens.md` | Nunca hex, px sueltos ni z-index numéricos |
 
-## 2. Reglas de UI ya decididas (Enzo, 2026-10-08)
+## 2. Reglas de UI ya decididas (responsable de diseño, 2026-10-08)
 
 1. **El scroll va en la página, no dentro de la tabla.** La tabla abre con 10
    filas (opciones 10, 25, 50, 100: el valor por defecto de `cs-table-footer`).
@@ -37,7 +37,7 @@ inventa (B4).
    X» (con filtros, ícono `search` y botón «Limpiar filtros» con ícono `x`).
 6. **Error de carga solo en la tabla** (`error` y `(retry)`), nunca como toast, y
    sin pie con «0 registros»: un error no es un vacío.
-8. **Tablas dentro de modales y paneles laterales (Enzo, 2026-10-09):** misma tarjeta que el piloto (borde fino, radio y superficie por tokens) con menú de tres puntos por fila (`cs-table-row-actions`), columna de acciones de 72 px centrada y fija al final, anchos en px. Son **5 filas por página y el tamaño no se puede cambiar**: sin selector de filas. `cs-table-footer` siempre trae el selector, así que en modales se usa un pie de resumen («1–5 de 7 contactos») con `cs-pagination`, que aparece solo con más de 5 filas. Brecha del DS: pie de tabla sin selector de filas.
+8. **Tablas dentro de modales y paneles laterales (responsable de diseño, 2026-10-09):** misma tarjeta que el piloto (borde fino, radio y superficie por tokens) con menú de tres puntos por fila (`cs-table-row-actions`), columna de acciones de 72 px centrada y fija al final, anchos en px. Son **5 filas por página y el tamaño no se puede cambiar**: sin selector de filas. `cs-table-footer` siempre trae el selector, así que en modales se usa un pie de resumen («1–5 de 7 contactos») con `cs-pagination`, que aparece solo con más de 5 filas. Brecha del DS: pie de tabla sin selector de filas.
 7. **Lo que no existe en el DS se construye con componentes existentes**; si no
    alcanza, se reporta la brecha (`gap:report`) y se pregunta. No se inventan
    contenedores ni texto de relleno.
@@ -52,7 +52,7 @@ acceso la de Samsara (jerarquía: marca, título, descripción, campos, acción
 principal y la vía alterna como enlace de nivel bajo). La práctica se extrae; el aspecto no se copia (ver
 `referencias-visuales.md` §2).
 
-### Regla de acceso (Enzo, 2026-10-08)
+### Regla de acceso (responsable de diseño, 2026-10-08)
 
 Antes de diseñar un login se **entiende la lógica real**: qué credenciales pide
 cada población, qué contrato las recibe y qué pide el backend. Un código de
@@ -80,7 +80,7 @@ distribuidor por sí solo no es un ingreso: hace falta usuario y contraseña.
 2. **Decisión abierta = rótulo visible «PENDIENTE <ID>».** Se construye lo más simple y
    reversible, el ID se verifica contra los UXR/FLW/DUD, los textos provisionales se rotulan y la
    bandera que los muestra vive en un solo lugar. Un banner por decisión satura: se usa un rótulo
-   compacto (`cs-tag` + texto) agrupado.
+   compacto (`cs-badge` + texto) agrupado.
 3. **Todo endpoint o clave nueva del mock es «contrato propuesto solo del mock»**: se comenta
    en el código, se lista en el README y se avisa a Arquitectura. No se reutilizan URLs de
    recursos reales con otro cuerpo.

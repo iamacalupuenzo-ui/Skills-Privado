@@ -8,7 +8,7 @@ description: >
   servidores", "revisa en el navegador", "¿pasa todo?" o antes de publicar. No escribe el
   cambio (usa angular-product-builder) ni lo publica (usa flujo-producto o flujo-ds).
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # Verificar la calidad
@@ -20,6 +20,7 @@ de pruebas, una medida del navegador o una respuesta de QA. Lo que no se pudo ob
 
 - `references/servidores-locales.md` — levantar, reiniciar y comprobar los servidores. Leer al iniciar y después de `ng test` o `ng build`.
 - `references/navegador-y-accesibilidad.md` — verificación en navegador, accesibilidad y contraste. Leer al verificar UI.
+- `references/axe-movil-y-teclado.md` — cómo medir con axe, en móvil a 390 px y con el teclado en un combobox, con navegador visible y cifras. Leer antes de afirmar «sin violaciones» o «el teclado funciona».
 
 ## GUARD — verificar contexto
 
@@ -47,6 +48,7 @@ Salida siempre **filtrada**: solo conteos (`Test Files`, `Tests`, `pass`, `fail`
 - **B4 — Lo visual se verifica en el navegador** y se compara con el piloto o con la captura del responsable de diseño.
 - **B5 — Lo no verificado se declara** (por ejemplo: no hay `helm` ni Docker, el BFF real no ofrece el contrato).
 - **B6 — Un fallo se diagnostica antes de reintentar**: leer el mensaje; un spec que dependía de algo que cambió se actualiza, no se borra.
+- **B7 — «Sin violaciones» y «el teclado funciona» llevan su medida**: axe por regla y por tema, ancho de ventana, y la tecla y el efecto observado (`axe-movil-y-teclado.md`). Lo no medido se declara.
 
 ## Racionalizaciones comunes
 
@@ -56,6 +58,8 @@ Salida siempre **filtrada**: solo conteos (`Test Files`, `Tests`, `pass`, `fail`
 | «Los servidores siguen arriba» | Un puerto que escucha no prueba que sirva el código nuevo (B2). |
 | «El test falla por un cambio mío, lo borro» | Se actualiza al nuevo comportamiento (B6). |
 | «La captura se ve bien» | Medir con estilos computados (B4). |
+| «En escritorio se ve bien, en móvil será igual» | Medir a 390 px: desborde del documento y axe (B7). |
+| «La tecla no hizo nada, el componente falla» | Leer cómo se diseñó el componente antes de concluir; el `Autocomplete` abre al teclear, no con la flecha (B7). |
 
 ## Señales de alerta
 

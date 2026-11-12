@@ -9,7 +9,7 @@ description: >
   el DS a los productos". No construye pantallas de producto (usa flujo-producto) ni audita
   tokens (usa comsatel-design-system).
 metadata:
-  version: "1.0.1"
+  version: "1.0.2"
 ---
 
 # Flujo del Design System
@@ -46,6 +46,7 @@ tiempo.
 - Cada guía declara «Disponible desde X.Y». Las marcas Nuevo/Actualizado solo cubren la versión actual y la anterior (`npm run check:versions` lo hace cumplir).
 - Un cambio de API o de distribución exige `docs/releases/<versión>.md` con resumen, impacto para consumidores y verificación.
 - Ramas que cambian la librería van en cadena, no en paralelo: cada una con su versión.
+- **Retirar un componente es en dos pasos.** Primero se marca obsoleto en una versión menor (`@deprecated` en el código, aviso en su guía con la tabla de equivalencias, y en el catálogo la marca «Obsoleto» con `deprecated: true` en `nav.ts`, que no caduca como «Nuevo»). Se retira en la mayor siguiente, después de confirmar con el arquitecto qué productos lo usan. Ejemplo: `Tag` quedó obsoleto en la 1.16 a favor de `Badge`.
 
 ## Controles que deben pasar antes de dar un cambio por terminado
 
@@ -66,6 +67,8 @@ Si falta un componente o variante, no se inventa un envoltorio: se pregunta, y s
 - **B4 — La versión de los productos se fija exacta** (`"1.9.2"`, sin `^`): el DS es singleton compartido entre Shell y micro UIs.
 - **B5 — Los cambios al DS no se publican sin confirmación del usuario.**
 - **B6 — Un fallo de infraestructura del pipeline** (timeout al bajar una imagen de Docker Hub) se reintenta; no se interpreta como error del cambio.
+- **B7 — Los MR apilados no se fusionan sin reapuntar.** Un MR apilado se fusiona en la rama de su base, no en `develop`: si la base ya se fusionó, el cambio no llega. Antes de fusionar el de arriba se reapunta a `develop` (`PUT /merge_requests/:iid` con `target_branch`), se avisa a quien fusiona, y tras cada fusión se verifica por API que el cambio está en `develop` (un archivo nuevo con 200 en `ref=develop` y la versión en `package.json`). Ocurrió con !55 el 11-nov-2026: se fusionó en la rama de !54 cuando !54 ya estaba en `develop` y hubo que abrir !56.
+- **B8 — Una versión sin publicar no se fija en un producto.** Para probarla se copia `dist/comsatel-ds` sobre `node_modules/@comsatel/ui-components` del producto y se reinicia su servidor; el `package.json` del producto sigue en la versión publicada hasta que exista la etiqueta. La copia no se versiona y un `npm ci` la borra.
 
 ## Racionalizaciones comunes
 
@@ -81,8 +84,9 @@ Si falta un componente o variante, no se inventa un envoltorio: se pregunta, y s
 - `check:release-notes` no encuentra la nota de la versión.
 - `release` y la etiqueta apuntan a commits distintos.
 - Un producto fija un DS que no existe en el registro.
+- La API de GitLab, `git fetch` o `git push` responden 503: es la VPN, no el cambio; se pide que la activen y no se reintenta en bucle.
 - `npm run build:lib` falla con EBUSY: hay un `ng serve` del 4200 corriendo; detenerlo y reparar el enlace de `node_modules/@comsatel/ui-components`.
 
 ## Formato de respuesta
 
-Declarar el modo. Cerrar con: qué cambió, qué controles corrieron (cifras), en qué paso del camino está (`develop`, `release`, etiqueta, `main`) y qué falta.
+Declarar el modo. Cerrar con: qué cambió, qué controles corrieron (cifras), en qué paso del camino está (`develop`, `release`, etiqueta, `main`) y qué falta. Si el cambio se ve en pantalla, dejar la captura (ruta y enlace) y la URL del componente en el catálogo.

@@ -29,7 +29,7 @@ de la recomendación Y"). Ejemplos reales ya resueltos así:
 
 | Recomendación general | Regla del repositorio | Resultado |
 |---|---|---|
-| Ejecutar `ng build` tras generar código | Nunca correr build, `tsc` ni tests sin que Enzo lo pida | No se ejecutan; se verifica leyendo el código, los logs del servidor de desarrollo y el navegador |
+| Ejecutar `ng build` tras generar código | Nunca correr build, `tsc` ni tests sin que el usuario lo pida | No se ejecutan; se verifica leyendo el código, los logs del servidor de desarrollo y el navegador |
 | `templateUrl` y `styleUrl` separados (default del CLI) | `template` y `styles` siempre inline en el `.ts` | Inline |
 | Un servicio por feature con todo dentro | Servicio de pantalla + servicio de transiciones | Dos servicios |
 
