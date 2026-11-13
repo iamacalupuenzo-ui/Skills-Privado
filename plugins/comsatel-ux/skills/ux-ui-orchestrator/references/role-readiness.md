@@ -4,6 +4,7 @@ La UXS emite un veredicto por consumidor para decidir si ya se puede ejecutar la
 
 ## Contenido
 - Regla general de veredicto
+- Claude Design → `claude-design-orchestrator`
 - Stitch → `stitch-ui-generator`
 - Figma → `figma-design-validator`
 - Desarrollo → `ux-development-handoff`
@@ -17,9 +18,21 @@ La UXS emite un veredicto por consumidor para decidir si ya se puede ejecutar la
 - **CONDITIONAL:** los mínimos están, pero hay preguntas abiertas que afectan parte del trabajo. Lista cada una y qué decisión pospone.
 - **NOT READY:** falta un mínimo o hay un bloqueante en su alcance.
 
+## Claude Design → `claude-design-orchestrator`
+
+Es el consumidor de exploración visual del equipo. Su entrada es la UXS del paquete (el UX Context Pack) y las pantallas con su flujo.
+
+Mínimos:
+- SCR con `flow`, `requirements`, `required_states`, `a11y_requirements`, componentes y tokens.
+- FLW que lista el SCR y UXR con lineage a US/AC.
+- Design System identificado.
+- La UXS del paquete (compuerta GU).
+
+El Intent Brief lo redacta el propio skill: su ausencia no bloquea. **CONDITIONAL** si hay preguntas abiertas que pueden cambiar textos o condiciones; **NOT READY** si algún SCR no cumple los mínimos.
+
 ## Stitch → `stitch-ui-generator`
 
-Necesita una especificación que lo haga no inventar.
+Hoy no se usa en el equipo (la exploración es en Claude Design). Sigue disponible: necesita una especificación que lo haga no inventar.
 
 Mínimos:
 - SCR con `flow`, `requirements`, `required_states`, `responsive`, `a11y_requirements`, `components` y `tokens`.
@@ -44,7 +57,9 @@ Riesgo típico de un CONDITIONAL: divergencia Stitch↔Figma sin DD; el SCR qued
 
 ## Desarrollo → `ux-development-handoff` → `development-handoff-builder`
 
-Necesita diseño gobernado y sin ambigüedad que el agente tendría que resolver solo.
+Hay dos vías. El gate formal necesita diseño gobernado y sin ambigüedad que el agente tendría que resolver solo. La **vía directa a front end** (escenario H) construye desde los SCR, el Design System y las decisiones, y gobierna el diseño con el prototipo validado al terminar de construir.
+
+Veredicto en la UXS: **NOT READY** para el gate formal si no hay `governed_design`; **CONDITIONAL** para construir directo cuando los SCR están completos y ninguna pregunta abierta bloquea una pantalla. Hoy el gate solo reconoce Figma o Stitch como diseño gobernado: admitir el prototipo en código es una decisión humana pendiente y pide ajustar el validador.
 
 Mínimos (gate `DESIGN_READY_FOR_DEV`):
 - `governed_design` por SCR, con `file_ref`, `node_ref` y `version` reales y no obsoletos.

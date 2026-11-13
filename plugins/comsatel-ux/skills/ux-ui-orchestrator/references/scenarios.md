@@ -10,6 +10,7 @@ Cada escenario indica la ruta mínima. "Mínima" importa: ejecutar fases que no 
 - E. Diseño gobernado
 - F. Auditoría y gate
 - G. Decisión humana recibida
+- H. Construcción directa en front end
 - Combinaciones y conflictos
 
 ## A. Iniciativa nueva de diseño
@@ -18,7 +19,7 @@ Cada escenario indica la ruta mínima. "Mínima" importa: ejecutar fases que no 
 
 **Entradas mínimas:** historias del alcance, reglas y glosario vigentes, y el Design System o `TKN-SET-*` disponible (si no existe, es pregunta abierta, no se inventa). Si el veredicto UX/UI de la RQS es NOT READY, no arranques: vuelve a `af-requirements-orchestrator`.
 
-**Ruta:** UXR → FLW → SCR/CMP/TKN → (a11y de la spec) → exploración → accesibilidad → Figma gobernado → handoff → auditoría → UXS.
+**Ruta:** UXR → FLW → SCR/CMP/TKN → (a11y de la spec) → **UXS (compuerta GU)** → exploración en Claude Design → diseño gobernado (Claude Design con DD humano, o el prototipo validado al terminar de construir) → handoff → auditoría.
 
 **Salida:** ciclo completo. Es normal que la primera pasada deje CONDITIONAL: prioriza que las preguntas abiertas estén bien dirigidas, no que todo pase el gate. Las fases 4–7 solo se ejecutan para los SCR cuya especificación pasó el preflight.
 
@@ -42,7 +43,7 @@ Cada escenario indica la ruta mínima. "Mínima" importa: ejecutar fases que no 
 
 ## D. Exploración visual
 
-**Señal:** SCR especificados con preflight READY; falta exploración en Stitch o Claude Design.
+**Señal:** SCR especificados con la UXS del paquete armada; falta explorar en Claude Design (o en Stitch, si se usa).
 
 **Entradas mínimas:** SCR con su FLW y lineage; `STP-*` activo o autorización humana explícita para crearlo.
 
@@ -77,6 +78,16 @@ Cada escenario indica la ruta mínima. "Mínima" importa: ejecutar fases que no 
 **Ruta:** localizar las preguntas que cierra (por ID: UXR-NNN-Qn, FLW-Qn, SCR-Qn, ARP-Qn) → registrar la decisión con el skill dueño (DD vía `claude-design-orchestrator`; `governed_design` vía `figma-design-validator`; gate vía `ux-development-handoff`) → propagar a los artefactos afectados → re-evaluar los veredictos. Si la respuesta cambia una regla o un término de negocio, escálala a `af-requirements-orchestrator`.
 
 **Atención:** cerrar una pregunta deja la fila con estado `Cerrada — <fuente>`; no la borres. La aprobación solo se marca si el usuario la nombra explícitamente.
+
+## H. Construcción directa en front end
+
+**Señal:** se construye la pantalla directo en el micro UI o el producto, a partir de los SCR, el Design System y las decisiones, sin exploración previa en Claude Design.
+
+**Entradas mínimas:** SCR completos del paquete (con `flow`, `requirements`, `required_states` y `a11y_requirements`) y las decisiones (DEC) que los corrigen.
+
+**Ruta:** SCR → **UXS (compuerta GU)** → construcción (`orquestador-desarrollo`) → validación del prototipo al terminar de construir. La vía directa **salta la exploración y el handoff formal, no la UXS**: el paquete se consolida igual, con `ux-context-builder`, antes de subir la rama de diseño.
+
+**Atención:** el diseño se gobierna con el prototipo validado (capturas de cada estado, URL y MR), pero el gate `DESIGN_READY_FOR_DEV` hoy solo reconoce Figma o Stitch como diseño gobernado: el veredicto de Desarrollo es CONDITIONAL, no READY. Lo que ningún diseño cubre se consulta y se registra en una decisión (DEC), no se improvisa.
 
 ## Combinaciones y conflictos
 

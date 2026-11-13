@@ -1,6 +1,6 @@
 ---
 name: ux-ui-orchestrator
-description: Orquesta los skills UX/UI (ux-requirements-analyzer, user-flow-designer, ui-spec-writer, stitch-ui-generator, claude-design-orchestrator, figma-design-validator, accessibility-reviewer, ux-development-handoff) para llevar User Stories validadas hasta un diseño gobernado y un handoff DESIGN_READY_FOR_DEV, con trazabilidad US→UXR→FLW→SCR→DTM y compuertas humanas. Úsalo siempre que el usuario pida gestionar, completar, auditar o retomar el diseño UX/UI de punta a punta, preparar pantallas para Stitch/Figma/Desarrollo, evaluar si un SCR está listo, resolver una divergencia Stitch↔Figma, o decida qué skill UX/UI ejecutar y en qué orden, aunque no nombre ningún skill.
+description: Orquesta los skills UX/UI (ux-requirements-analyzer, user-flow-designer, ui-spec-writer, stitch-ui-generator, claude-design-orchestrator, figma-design-validator, accessibility-reviewer, ux-context-builder, ux-development-handoff) para llevar User Stories validadas hasta un paquete de diseño consolidado (UXS), un diseño gobernado y un handoff DESIGN_READY_FOR_DEV, con trazabilidad US→UXR→FLW→SCR→UXS→DTM y compuertas humanas. Úsalo siempre que el usuario pida gestionar, completar, auditar o retomar el diseño UX/UI de punta a punta, preparar pantallas para Claude Design/Desarrollo, cerrar un paquete de diseño (la UXS), evaluar si un SCR está listo, resolver una divergencia Stitch↔Figma, o decida qué skill UX/UI ejecutar y en qué orden, aunque no nombre ningún skill.
 ---
 
 # ux-ui-orchestrator
@@ -19,6 +19,7 @@ Es el equivalente de `af-requirements-orchestrator` para la etapa siguiente: aqu
 | `user-flow-designer` | User Flow `FLW-*` (declara `screens`) | `user-flows/` |
 | `ui-spec-writer` | Screen `SCR-*`, Component `CMP-*`, Token `TKN-*`, AC | `screens/`, `components/`, `tokens/`, `acceptance-criteria/` |
 | `web-atomic-component-designer` | Catálogo atómico Angular (opcional, cuando hay librería de componentes) | `components/` |
+| `ux-context-builder` | UXS `UXS-*` (el UX Context Pack del paquete): indexa, mide y emite el veredicto por consumidor | `specs/` |
 | `stitch-ui-generator` | `GEN-*`, `STP-*`, entrada `exploration_design` en el DTM | `generations/`, `projects/`, `traceability/` |
 | `claude-design-orchestrator` | Intent Brief `IB-*`, alternativas, Design Decision `DD-*` | `explorations/` |
 | `figma-design-validator` | Design Validation Report + `governed_design` en el DTM | `traceability/` |
@@ -26,6 +27,8 @@ Es el equivalente de `af-requirements-orchestrator` para la etapa siguiente: aqu
 | `ux-development-handoff` | Handoff `HOF-*` y gate `DESIGN_READY_FOR_DEV` | `handoff/` |
 
 Cada skill gobierna su formato y sus IDs; invócalo con la herramienta Skill y no reescribas su salida aquí.
+
+**Un paquete de diseño no se cierra sin su UXS.** Es lo que leen Claude Design (como UX Context Pack), QA y Desarrollo, y también el paquete que se entrega cuando se construye directo en front end. La compuerta **GU** y sus controles duros están en «Control de cierre de paquete», más abajo.
 
 **Entrada:** User Stories y reglas ya producidas por `af-requirements-orchestrator` (RQS con veredicto UX/UI READY o CONDITIONAL). Sin historias, este skill no arranca: señala `af-requirements-orchestrator`.
 
@@ -61,10 +64,11 @@ Lee además `knowledge-base/index.md`, `changelog.md`, `design/MEMORY.md` si exi
 | A. Iniciativa nueva de diseño | Hay historias READY/CONDITIONAL y no hay UXR/FLW/SCR |
 | B. Cambio sobre diseño existente | Hay artefactos de diseño y cambia una historia, regla o decisión |
 | C. Especificar pantallas | Hay UXR/FLW; faltan SCR/CMP/TKN o están incompletos |
-| D. Exploración visual | SCR especificados y listos; falta Stitch/Claude Design |
-| E. Diseño gobernado | Hay exploración; falta Figma validado, o divergencia Stitch↔Figma |
-| F. Auditoría y gate | Hay que saber si un SCR/flujo está listo para Desarrollo |
+| D. Exploración visual | SCR especificados y listos; falta explorar en Claude Design (o Stitch) |
+| E. Diseño gobernado | Hay exploración; falta gobernar el diseño (Claude Design con DD humano, o el prototipo validado), o divergencia Stitch↔Figma si se usan |
+| F. Auditoría y gate | Hay que saber si un SCR/flujo está listo para Desarrollo, o si un paquete puede cerrarse (UXS) |
 | G. Decisión humana recibida | Un humano respondió preguntas, eligió alternativa o aprobó |
+| H. Construcción directa en front end | Se construye desde los SCR, el Design System y las decisiones sin explorar antes: cierra igual con la UXS y se gobierna con el prototipo validado al terminar de construir |
 
 Si es ambiguo, pregunta una sola cosa concreta (iniciativa/flujo o historia de partida); no adivines el alcance.
 
@@ -85,12 +89,13 @@ Orden canónico (omite lo que el escenario no necesite):
 | 1 Requisitos UX | `ux-requirements-analyzer` | Cada UXR con lineage a US/AC; actor, permisos y estados; vacíos como preguntas |
 | 2 Flujos | `user-flow-designer` | Happy path, excepciones, permisos y estados; `screens` declarado |
 | 3 Especificación | `ui-spec-writer` (+ `web-atomic-component-designer` si hay librería) | `validators/cli.py preflight` sin `BLOCKED`; cada SCR con `flow`, `requirements`, `required_states`, `a11y_requirements` |
-| 4 Exploración | `stitch-ui-generator` y/o `claude-design-orchestrator` | Cada artefacto con SCR→FLW; `register-exploration` sin error; un solo `STP` por iniciativa |
-| 5 Accesibilidad | `accessibility-reviewer` | ARP por SCR; ningún `pass` sin evaluar; `fail`/`inconclusive` visibles |
-| 6 Diseño gobernado | `figma-design-validator` | `governed_design` por SCR; divergencia Stitch↔Figma `none` o `resolved` (con DD humano) |
-| 7 Handoff | `ux-development-handoff` | `validators/cli.py gate` sin `FAILED`/`BLOCKED`; revisión humana pendiente registrada |
+| 3b Consolidación (**GU**) | `ux-context-builder` | `audit_ux.py --exigir-uxs` sin `PAQUETE_SIN_UXS` para el paquete; veredicto por consumidor con su razón; preguntas abiertas con responsable; validación humana pendiente |
+| 4 Exploración | `claude-design-orchestrator` (o `stitch-ui-generator`) | Cada artefacto con SCR→FLW; Intent Brief y DD humano; con Stitch, `register-exploration` sin error y un solo `STP` por iniciativa |
+| 5 Accesibilidad | `accessibility-reviewer` | La accesibilidad se apoya en los componentes del Design System; ARP por SCR cuando el diseño no sale de ellos; ningún `pass` sin evaluar; `fail`/`inconclusive` visibles |
+| 6 Diseño gobernado | Claude Design (DD humano), el prototipo validado al terminar de construir, o `figma-design-validator` | El diseño queda gobernado de alguna de esas formas; con Figma/Stitch, `governed_design` por SCR y divergencia `none` o `resolved` |
+| 7 Handoff | `ux-development-handoff` | `validators/cli.py gate` sin `FAILED`/`BLOCKED`; revisión humana pendiente registrada (hoy el gate solo reconoce Figma o Stitch como diseño gobernado) |
 
-Por qué este orden: el flujo necesita los UXR para listar pantallas; la especificación de pantalla es lo que consume Stitch y evita que invente; la accesibilidad se revisa antes de gobernar para no aprobar lo que ya falla; y el diseño gobernado de Figma, no la exploración, es lo único que entra al handoff. Pasa de fase solo cuando la compuerta se cumple o cuando la pregunta abierta no bloquea (queda registrada, no se esconde).
+Por qué este orden: el flujo necesita los UXR para listar pantallas; la especificación de pantalla es lo que consume la exploración y evita que invente; la UXS cierra el paquete antes de explorar o construir porque es lo que leen Claude Design, QA y Desarrollo; la accesibilidad se apoya en los componentes del Design System y lo propio de cada pantalla se verifica al validar lo construido. La **vía directa a front end** (escenario H) salta la exploración y el handoff formal, **pero no la fase 3b**. Pasa de fase solo cuando la compuerta se cumple o cuando la pregunta abierta no bloquea (queda registrada, no se esconde).
 
 **Paralelización.** Las fases 1–3 se paralelizan por flujo/familia de UXR (p. ej. UXR-028/029/030 son independientes entre sí tras UXR-017). Las fases 4–6 se paralelizan por SCR, **excepto** que todos los SCR de una iniciativa viven en el mismo `STP` (invariante de `stitch-ui-generator`): serializa la creación/resolución del proyecto y paraleliza solo la generación de pantallas dentro de él.
 
@@ -119,23 +124,36 @@ Tope: tres pasadas. Si tras la tercera siguen apareciendo brechas, detente y rep
 
 ### 5. Auditar calidad
 
-1. Ejecuta `audit_ux.py` y corrige todo error imputable a un skill (re-invócalo; no edites a mano lo que genera una herramienta).
+1. Ejecuta `audit_ux.py` y corrige todo error imputable a un skill (re-invócalo; no edites a mano lo que genera una herramienta). Antes de cerrar, córrelo con `--exigir-uxs` (paso 6): un paquete con pantallas y sin UXS es un error, no un detalle.
 2. Ejecuta el preflight (`python "${CLAUDE_SKILL_DIR}/../ux-development-handoff/validators/cli.py" preflight --profile production --kb knowledge-base --initiative <ini> --screens <SCR…>`) y, si ya hay HOF, el `gate`.
 3. Evalúa los atributos de `references/quality-criteria.md` por SCR y a nivel conjunto, citando archivo y sección.
 4. Revisa la trazabilidad cruzada: US → UXR → FLW → SCR → DTM → ARP → HOF, sin huérfanos en ninguna dirección.
 
 ### 6. Consolidar la UXS y emitir veredictos
 
-Crea o actualiza `knowledge-base/design/specs/UXS-NNN-<slug>.md` desde `templates/ux-design-spec-template.md`. La UXS no duplica los artefactos: los indexa, resume calidad, expone la matriz de trazabilidad por pantalla, lista bloqueos y emite veredicto por **etapa/consumidor** según `references/role-readiness.md`:
+**Delega en `ux-context-builder`:** crea o regenera `knowledge-base/design/specs/UXS-NNN-<slug>.md` (con `--actualizar` si el paquete ya tiene una), con su fila en `index.md` y su entrada en `changelog.md`. No la redactes a mano: un archivo a mano no pasa la auditoría ni lo lee el cargador de Notion. El formato es el de `templates/ux-design-spec-template.md`. La UXS no duplica los artefactos: los indexa, resume calidad, expone la matriz de trazabilidad por pantalla, lista bloqueos y emite veredicto por **etapa/consumidor** según `references/role-readiness.md`:
 
 | Consumidor | Qué puede hacer cuando está READY | Skill siguiente |
 |---|---|---|
-| Stitch | Generar exploración sin inventar | `stitch-ui-generator` |
-| Figma | Validar y gobernar el diseño | `figma-design-validator` |
-| Desarrollo (Developer + agente IA) | Implementar con contexto de diseño aprobado | `ux-development-handoff` → `development-handoff-builder` |
+| Claude Design (exploración visual) | Explorar y criticar alternativas sin inventar; la UXS es su UX Context Pack | `claude-design-orchestrator` |
+| Stitch | Generar exploración sin inventar (hoy no se usa) | `stitch-ui-generator` |
+| Figma | Validar y gobernar el diseño (descartado como diseño gobernado el 2026-10-04) | `figma-design-validator` |
+| Desarrollo (Developer + agente IA) | Construir directo en front end desde los SCR, el Design System y las decisiones (CONDITIONAL), o pasar el gate formal con diseño gobernado (READY) | construcción directa; `ux-development-handoff` → `development-handoff-builder` |
 | QA | Derivar casos de UI y accesibilidad | `test-case-generator` |
 
-Cada veredicto es READY, CONDITIONAL o NOT READY, con razón y bloqueos. Actualiza `knowledge-base/index.md` y `changelog.md`.
+Cada veredicto es READY, CONDITIONAL o NOT READY, con razón y bloqueos.
+
+## Control de cierre de paquete (compuerta GU)
+
+Un paquete DSP-NNN con pantallas especificadas **no se cierra, ni se sube su rama de diseño, sin la UXS que lo indexa**. Esto no depende de que alguien lo recuerde: lo comprueban tres controles duros, además de este texto.
+
+| Control | Qué hace | Cuándo corre |
+|---|---|---|
+| `scripts/audit_ux.py --exigir-uxs` | Error `PAQUETE_SIN_UXS` si el paquete tiene SCR y ninguna UXS; aviso `UXS_NO_INDEXA` si la UXS no menciona artefactos del paquete; aviso `ARTEFACTO_SIN_PAQUETE` si hay artefactos sin etiqueta `dsp-NNN`. `--paquetes` o `--desde-rama <base>` lo limitan a lo que toca la rama | En el paso 5, antes de proponer la integración |
+| Hook `hooks/guardia-uxs.mjs` (plugin `comsatel-ux`) | Frena el `git push` de una rama `ux/*` que toca un paquete sin UXS | Al subir la rama, en cualquier sesión con el plugin |
+| Compuerta GU del `pack.yaml` | La consolidación es una tarea y una compuerta del flujo (T-03b), también en la vía directa | Al planificar y al cerrar |
+
+Si el hook frena: arma la UXS con `ux-context-builder`, commitéala en la rama y vuelve a subir. **No rodees el bloqueo** (ni lo apagues con `COMSATEL_UX_GUARDIA`: esa variable la fija una persona, no el agente). Detalle y pruebas en `references/controles-de-cierre.md`.
 
 ### 7. Integrar
 
@@ -154,12 +172,12 @@ Todos los skills UX/UI dejan `status: draft`. Este orquestador mantiene esa lín
 
 - **Actualizar, no reemplazar.** IDs permanentes (UXR, FLW, SCR, CMP, TKN, GEN, STP, DD, ARP, HOF, DTM). Nunca renumeres ni dupliques.
 - **Sin huérfanos.** Todo artefacto de diseño cuelga de FLW/SCR y estos de US/UXR. El DTM es la **única** fuente del vínculo SCR↔Stitch/Figma; no copies referencias externas al SCR.
-- **Exploración ≠ diseño gobernado.** Stitch y Claude Design exploran; solo Figma validado gobierna. Al desarrollo nunca se entrega un artefacto Stitch si existe Figma gobernado.
+- **Exploración ≠ diseño gobernado.** Claude Design (y Stitch, si se usa) exploran. El diseño se gobierna en Claude Design con un DD humano, o con el prototipo construido en código y validado al terminar de construir; Figma gobierna solo si se usa. Al desarrollo nunca se entrega un artefacto Stitch si existe Figma gobernado.
 - **No inventar.** Ante un vacío (permiso, estado, contenido, token), abre pregunta. No aceptes contenido que Stitch inventó; anótalo.
-- **Accesibilidad es evidencia, no una frase.** Que Stitch diga "WCAG AA" no es evidencia; `pass` solo si se evaluó.
+- **Accesibilidad es evidencia, no una frase.** Se apoya en la estructura de los componentes del Design System (el contrato de accesibilidad de cada uno); lo propio de cada pantalla se verifica al validar lo construido. Que una herramienta diga "WCAG AA" no es evidencia; `pass` solo si se evaluó.
 - **Preservar contradicciones** entre fuentes; no elijas por tu cuenta.
 - **Verificar en vivo** las referencias Stitch y Figma antes de usarlas; si no se puede, es pregunta abierta, no un dato.
-- **Fechas y autoría** en frontmatter OKF v0.2: `generated.by` del skill que produjo el archivo (el de la UXS es `ux-ui-orchestrator/1.0`), `generated.at` ISO 8601 con `-05:00`.
+- **Fechas y autoría** en frontmatter OKF v0.2: `generated.by` del skill que produjo el archivo (el de la UXS es `ux-context-builder/1.0`), `generated.at` ISO 8601 con `-05:00`.
 - **Solo diseño.** Si el pedido se desliza a negocio/requerimientos, arquitectura o código, detente y señala el skill de la etapa correspondiente.
 
 ## Informe final al usuario
@@ -171,6 +189,8 @@ Cierra con un resumen breve, en este orden: escenario y ruta ejecutada; artefact
 - `references/scenarios.md` — ruta, entradas y criterio de salida de cada escenario.
 - `references/quality-criteria.md` — atributos de calidad del diseño y cómo evaluarlos.
 - `references/role-readiness.md` — qué necesita cada etapa/consumidor y mapa de códigos de error → skill dueño.
+- `references/controles-de-cierre.md` — los controles duros de cierre de paquete (auditoría, hook y compuerta GU): qué hacen, cómo se prueban y cómo se ajustan.
 - `references/worktree-protocol.md` — aislamiento con git worktree (rama `ux/<slug>`), integración y limpieza.
 - `templates/ux-design-spec-template.md` — plantilla de la UXS.
-- `scripts/audit_ux.py` — auditoría determinista (`--json` para salida estructurada).
+- `scripts/audit_ux.py` — auditoría determinista (`--json` para salida estructurada; `--exigir-uxs` con `--paquetes` o `--desde-rama` para el control de cierre).
+- `hooks/guardia-uxs.mjs` — hook del plugin que frena subir una rama `ux/*` sin la UXS de los paquetes que toca; se prueba con `hooks/probar-guardia-uxs.mjs`.

@@ -12,7 +12,7 @@
     },
     {
       "name": "comsatel-ux",
-      "description": "Documentación de UX/UI de punta a punta: un orquestador y nueve especialistas, de las User Stories al handoff DESIGN_READY_FOR_DEV",
+      "description": "Documentación de UX/UI de punta a punta: un orquestador y diez especialistas, de las User Stories al paquete de diseño (UXS) y al handoff DESIGN_READY_FOR_DEV, con el guardia de la UXS incluido",
       "source": "./plugins/comsatel-ux"
     }
   ]

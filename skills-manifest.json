@@ -26,6 +26,7 @@
     "ui-spec-writer",
     "web-atomic-component-designer",
     "stitch-ui-generator",
+    "ux-context-builder",
     "ux-development-handoff",
     "design-qa",
     "claude-design-orchestrator",

@@ -1,21 +1,32 @@
 # comsatel-ux
 
-Documentación de UX/UI de CL2 Flotas para Claude Code. `ux-ui-orchestrator` coordina a los demás skills y consolida la especificación de diseño (UXS) con un veredicto de preparación por etapa y por consumidor.
+Documentación de UX/UI de CL2 Flotas para Claude Code. `ux-ui-orchestrator` coordina a los demás skills y delega en `ux-context-builder` la consolidación de la especificación de diseño (UXS), con un veredicto de preparación por etapa y por consumidor.
 
 | Skill | Produce |
 |---|---|
-| `ux-ui-orchestrator` | Orquestador. Diagnóstico, plan por fases, auditoría y la UXS |
+| `ux-ui-orchestrator` | Orquestador. Diagnóstico, plan por fases, auditoría y el control de cierre de paquete |
 | `ux-requirements-analyzer` | Requisitos UX (UXR) y preguntas abiertas |
 | `user-flow-designer` | Flujos (FLW) |
 | `ui-spec-writer` | Pantallas (SCR), componentes y tokens |
 | `web-atomic-component-designer` | Catálogo atómico Angular (opcional) |
+| `ux-context-builder` | La UXS (UX Context Pack) de un paquete DSP-NNN: veredicto por consumidor, hallazgos y preguntas abiertas |
 | `stitch-ui-generator` | Exploración en Google Stitch |
-| `claude-design-orchestrator` | Alternativas en Claude Design |
+| `claude-design-orchestrator` | Exploración y alternativas en Claude Design |
 | `accessibility-reviewer` | Informe WCAG 2.2 AA (ARP) |
 | `figma-design-validator` | Diseño gobernado |
 | `ux-development-handoff` | Paquete de entrega y puerta `DESIGN_READY_FOR_DEV` |
 
-Son 1 orquestador y 9 especialistas. Supera los 6 del estándar a propósito: preparar toda la documentación de UX exige estas especialidades (ver `pack.yaml`).
+Son 1 orquestador y 10 especialistas. Supera los 6 del estándar a propósito: preparar toda la documentación de UX exige estas especialidades (ver `pack.yaml`).
+
+## Controles que trae
+
+| Control | Qué hace | Dónde está |
+|---|---|---|
+| **Auditoría de cierre** | `audit_ux.py --exigir-uxs` marca como error un paquete con pantallas especificadas y sin UXS (`PAQUETE_SIN_UXS`) y avisa de artefactos que la UXS no indexa (`UXS_NO_INDEXA`) | `ux-ui-orchestrator/scripts/audit_ux.py` |
+| **Guardia de la UXS (hook)** | Frena el `git push` de una rama `ux/*` que toca un paquete sin UXS. Solo actúa en repositorios de diseño (con `design/specs` y `design/ux-requirements`) | `hooks/hooks.json` y `ux-ui-orchestrator/hooks/guardia-uxs.mjs` |
+| **Compuerta GU** | La consolidación es una compuerta del pack, también en la vía directa a front end | `pack.yaml` |
+
+El guardia necesita Node y Python 3. Se prueba con `node skills/ux-ui-orchestrator/hooks/probar-guardia-uxs.mjs`. Su modo lo fija la persona (no el agente) con la variable de entorno `COMSATEL_UX_GUARDIA`: `bloquea` (por defecto), `aviso` (pide confirmar) u `off`.
 
 ## Instalar
 

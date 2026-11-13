@@ -1,0 +1,17 @@
+{
+  "description": "Guardia de la UXS: no se sube una rama de diseño ux/* si toca un paquete DSP-NNN con pantallas especificadas y ninguna UXS lo indexa",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/skills/ux-ui-orchestrator/hooks/guardia-uxs.mjs\"",
+            "timeout": 60
+          }
+        ]
+      }
+    ]
+  }
+}

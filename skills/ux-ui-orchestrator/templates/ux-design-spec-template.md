@@ -52,7 +52,7 @@ sources:
 
 | SCR | US | UXR | FLW | Estados cubiertos | Exploración | Diseño gobernado | Divergencia | ARP | Preguntas abiertas |
 |---|---|---|---|---|---|---|---|---|---|
-| <SCR-NNN-NN> | | | | | <STP / —> | <Figma ref / —> | none / resolved / open | <pass / fail / inconclusive> | |
+| <SCR-NNN-NN> | | | | | <IB / STP / —> | <Figma ref / —> | none / resolved / open | <pass / fail / inconclusive> | |
 
 Huérfanos detectados: <UXR sin FLW, SCR sin DTM, CMP sin uso, diseños sin SCR — o "ninguno">.
 
@@ -66,9 +66,10 @@ Huérfanos detectados: <UXR sin FLW, SCR sin DTM, CMP sin uso, diseños sin SCR 
 
 | Consumidor | Veredicto | Razón y bloqueos | Skill siguiente |
 |---|---|---|---|
-| Stitch | <READY/CONDITIONAL/NOT READY> | <mínimos no cumplidos, IDs de preguntas> | `stitch-ui-generator` |
+| Claude Design (exploración visual) | <READY/CONDITIONAL/NOT READY> | <mínimos no cumplidos, IDs de preguntas> | `claude-design-orchestrator` |
+| Stitch | | <«no se usa» o sus mínimos> | `stitch-ui-generator` |
 | Figma | | | `figma-design-validator` |
-| Desarrollo | | | `ux-development-handoff` |
+| Desarrollo | | <NOT READY para el gate formal; CONDITIONAL para construir directo en front end> | construcción directa; `ux-development-handoff` si se gobierna el diseño |
 | QA | | | `test-case-generator` |
 
 Para cada CONDITIONAL: qué parte del trabajo del consumidor queda pospuesta si se avanza.
