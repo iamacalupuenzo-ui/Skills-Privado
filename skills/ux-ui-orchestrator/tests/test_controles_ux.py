@@ -137,7 +137,12 @@ class ControlesUX(unittest.TestCase):
         self.assertNotIn("EXPLORACION_SIN_CAPTURA", self.codigos(compuerta="G4"))
 
     def test_cierre_sin_conciliacion_bloquea(self):
-        self.assertIn("CONCILIACION_INCOMPLETA", self.codigos(cerrar=True))
+        if (Path(__file__).parents[1] / "notion").is_dir():
+            self.assertIn("CONCILIACION_INCOMPLETA", self.codigos(cerrar=True))
+        else:
+            # La copia del equipo no trae el módulo de Notion: avisa y no bloquea.
+            self.assertNotIn("CONCILIACION_INCOMPLETA", self.codigos(cerrar=True))
+            self.assertIn("CONCILIACION_NO_DISPONIBLE", {c["codigo"] for c in self.controles(cerrar=True)})
 
     def test_cierre_con_diferencias_bloquea(self):
         self.write("conciliacion.json", json.dumps({"soloLectura": True, "completo": True, "abiertas": 1, "diferencias": [{"tipo": "a"}]}))

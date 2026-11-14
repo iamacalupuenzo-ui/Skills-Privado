@@ -246,7 +246,10 @@ def controlar_iteracion(kb, cerrar=False, paquetes=None, conciliacion=None, comp
                 add("CASCADA_INCOMPLETA", "La cascada no alcanzó una conciliación verificable", cerrar or compuerta == "GC")
         except (OSError, ValueError, TypeError):
             pass
-    if cerrar or compuerta == "GC":
+    modulo_notion = (Path(__file__).resolve().parent.parent / "notion").is_dir()
+    if (cerrar or compuerta == "GC") and not conciliacion and not modulo_notion:
+        add("CONCILIACION_NO_DISPONIBLE", "Esta copia no trae el módulo de Notion; la conciliación KB↔Notion la ejecuta el responsable de UX antes del cierre")
+    elif cerrar or compuerta == "GC":
         try:
             r = json.loads(Path(conciliacion).read_text(encoding="utf-8")) if conciliacion else None
         except (OSError, ValueError, TypeError):

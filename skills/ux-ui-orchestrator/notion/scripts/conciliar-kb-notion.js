@@ -94,6 +94,7 @@ function informeCascada(c) {
     lineas.push('## Comentarios propuestos al analista del DSP', '', `${c.comentariosHU.length} propuestas; ninguna HU se modificó y ningún comentario se envió.`, '');
     for (const p of c.comentariosHU) lineas.push(`### ${p.id} → ${p.historia}`, '', p.propuesta, '', p.condicion, '');
   }
+  if (c.retenidos?.length) lineas.push('## Paquetes que no retroceden', '', 'El alcance lo decide el gestor de proyectos; estos paquetes conservan su estado.', '', ...c.retenidos.map(a => '- ' + a), '');
   lineas.push(...c.avisos.map(a => '- ' + a), '', '¿Qué evidencia falta para que una propuesta de Aprobado sea una aprobación real de Enzo?', '');
   return lineas.join('\n');
 }

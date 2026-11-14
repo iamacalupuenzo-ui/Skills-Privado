@@ -4,7 +4,7 @@ const { normalizar } = require('./kb-preguntas.js');
 const CERRADAS = new Set(['Decidida', 'Diferida', 'Descartada']);
 const CONSTRUIDAS = new Set(['En construcción', 'Validado']);
 function cascada({ documentos, preguntas, paginas = [], huella = {}, construccion = [] }) {
-  const propuestas = [], avisos = [], nodes = new Map(), cambios = new Set(), sinHuella = [];
+  const propuestas = [], avisos = [], retenidos = [], nodes = new Map(), cambios = new Set(), sinHuella = [];
   const paginasId = new Map(paginas.map(p => [normalizar((p.properties?.ID?.rich_text || []).map(t => t.plain_text ?? t.text?.content ?? '').join('')), p]));
   const propiedades = d => paginasId.get(d.id)?.properties || {};
   for (const d of documentos) {
@@ -105,7 +105,7 @@ function cascada({ documentos, preguntas, paginas = [], huella = {}, construccio
       // la cascada nunca hace retroceder un paquete y la entrada a sprint o el cierre solo se proponen.
       const ORDEN_ALCANCE = ['Borrador', 'En preparación', 'Listo para selección de sprint', 'En sprint', 'Cerrado'];
       if (ORDEN_ALCANCE.indexOf(target) < ORDEN_ALCANCE.indexOf(actual)) {
-        avisos.push(`${d.id}: el cálculo daría «${target}», pero el paquete está en «${actual}»; no se propone retroceso porque el alcance lo decide la planificación.`);
+        retenidos.push(`${d.id}: el cálculo daría «${target}», pero el paquete está en «${actual}»; no se propone retroceso porque el alcance lo decide la planificación.`);
       } else {
         const delGestor = ['En sprint', 'Cerrado'].includes(target);
         poner(d, 'Estado del alcance', target, delGestor
@@ -115,6 +115,6 @@ function cascada({ documentos, preguntas, paginas = [], huella = {}, construccio
     }
   }
   if (sinHuella.length) avisos.push(`${sinHuella.length} documentos sin huella verificada: la invalidación descendente tiene cobertura incompleta.`);
-  return { propuestas, avisos, sinHuella, estadosCalculados: Object.fromEntries([...nodes].map(([id, d]) => [id, d.estado])) };
+  return { propuestas, avisos, retenidos, sinHuella, estadosCalculados: Object.fromEntries([...nodes].map(([id, d]) => [id, d.estado])) };
 }
 module.exports = { cascada };
