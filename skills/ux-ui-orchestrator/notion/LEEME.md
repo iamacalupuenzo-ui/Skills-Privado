@@ -23,7 +23,7 @@ Está activo cuando existe este `notion/config.json` con `"activo": true`. Si En
 3. Flujos, pantallas, exploraciones: `lote-diseno.js flw|scr|ib`.
 4. Preguntas: `extraer-preguntas.js` → `lote-preguntas.js --lote=i/4` (cuatro tramos) → `preguntas-refs.js niveles|relaciones|estados` → `respuestas-dec.js` → `subir-respuestas.js` → `vigencia-inicial.js`.
 5. Contexto de cada pregunta: `contexto-entradas.js` → `contexto-codex.sh` (Codex, en lotes de 4) → `contexto-validar.js` → `contexto-lote.js`.
-6. UXS: `historico/cargar-uxs.js` como plantilla (ajustar ids) y `uxs-preguntas.js`.
+6. UXS: `cargar-uxs-paquete.js` (genérico: lee de la propia UXS las relaciones —UXR, flujos, pantallas, historias y preguntas abiertas— y sus veredictos; uso: `NOTION_WORKTREE=<worktree> DESIGN_REF=<rama ya subida> node cargar-uxs-paquete.js design/specs/UXS-00N-….md [--dry-run]`; la rama debe estar subida porque «Enlace GitLab» apunta a ella; el veredicto de Claude Design queda en el cuerpo, no en «Veredicto Stitch»). Prompt para opencode: `prompts-opencode/opencode-uxs-dsp-004-007.md`. `historico/cargar-uxs.js` era de DSP-001. Antes, la UXS se arma con el skill `ux-context-builder`; luego `uxs-preguntas.js`.
 7. Verificación: `notion-sync.js verify`, `comparar-enlaces.js`, `comparar-texto.js`, `tablas-irregulares.js`.
 
 Ejecución: `node scripts/<script>.js` desde cualquier carpeta; usan `NOTION_TRABAJO` y `NOTION_WORKTREE` si están definidas. La subida real se delega en opencode con los textos de `prompts-opencode/`.

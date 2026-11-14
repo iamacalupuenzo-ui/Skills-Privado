@@ -1,4 +1,12 @@
 {
   "descripcion": "Cola de subidas a Notion que no se pudieron hacer (Notion u opencode no disponibles). El orquestador la revisa al empezar cada sesión y sube en orden.",
-  "pendientes": []
+  "pendientes": [
+    {
+      "fase": "Carga inicial de Captura y Recupero (DSP-003) a Notion",
+      "ids": "DSP-003, 24 historias HU-SVR, UXR-046 a UXR-088, FLW-016 a FLW-031, SCR-023 a SCR-036",
+      "script": "prompts-opencode/opencode-carga-cr.md (scripts cargar-paquete-historias-cr.js, lote-doc-cr.js, lote-diseno-cr.js); variables NOTION_WORKTREE=kb-ux-cr, NOTION_PRODUCTO=4051a7d0-6388-81a5-ba3a-d0ad6caa7175, DESIGN_REF=ux/uxr-cr; prueba en seco sin errores el 2026-11-07",
+      "motivo": "opencode: Free usage limit reached (modelo deepseek-v4.1-flash-free); otros modelos gratuitos sin respuesta; git fetch origin develop con 503 (sin VPN), se usa origin/develop del 5-nov",
+      "fecha": "2026-11-07"
+    }
+  ]
 }
