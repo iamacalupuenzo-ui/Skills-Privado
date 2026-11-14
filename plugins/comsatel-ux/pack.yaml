@@ -1,5 +1,5 @@
 pack_name: ux
-version: 1.1.0
+version: 1.2.0
 purpose: Llevar User Stories validadas hasta un paquete de diseño consolidado (UXS), un diseño gobernado y un handoff DESIGN_READY_FOR_DEV, con trazabilidad US → UXR → FLW → SCR → UXS → DTM y compuertas humanas
 # Estándar de referencia: comsatel-skill-pack-factory v1.2 (un orquestador y como máximo seis especialistas).
 # ux-ui-orchestrator coordina 10 skills porque tiene que preparar toda la documentación de UX: requisitos, flujos,
@@ -8,7 +8,7 @@ excepcion_especialistas: Preparar toda la documentación de UX exige estas 10 es
 skills:
 - name: ux-ui-orchestrator
   role: orchestrator
-  description: Diagnostica, planifica por fases, enruta las preguntas entre skills, audita (incluido el control de cierre de paquete: sin UXS no se sube una rama de diseño) y delega la consolidación en ux-context-builder
+  description: "Diagnostica, planifica por fases, enruta las preguntas entre skills, audita (incluido el control de cierre de paquete: sin UXS no se sube una rama de diseño) y delega la consolidación en ux-context-builder"
 - name: ux-requirements-analyzer
   role: specialist
   description: Convierte User Stories y reglas de negocio en requisitos UX (UXR) y preguntas abiertas
@@ -66,27 +66,48 @@ gates:
   criteria:
   - El preflight del handoff sin BLOCKED
   - Cada SCR con flow, requirements, required_states y a11y_requirements
+  - audit_ux.py --compuerta G3 sin SCR_SIN_INV_DEC; el INV y el DEC de la solución existen y citan el SCR antes de cerrarlo
 - id: GU
   name: Consolidación del paquete (UXS)
   criteria:
   - Todo paquete DSP-NNN con pantallas especificadas tiene una UXS que lo indexa (audit_ux.py --exigir-uxs sin PAQUETE_SIN_UXS)
   - La UXS trae el veredicto por consumidor con su razón, las preguntas abiertas con su responsable y la validación humana pendiente
   - Sin UXS no se sube una rama de diseño ux/*; el hook guardia-uxs lo frena y la compuerta se cumple también en la vía directa a front end
+- id: GC
+  name: Conciliación y cierre de paquete
+  criteria:
+  - KB primero; las respuestas, decisiones y estados viven en Open questions de UXR, FLW o SCR y dejan DEC cuando se decide
+  - conciliar-kb-notion.js produce un informe completo de solo lectura y sin diferencias abiertas; una persona decide la aplicación
+  - audit_ux.py --cerrar-paquete --conciliacion <informe.json> sin CONCILIACION_INCOMPLETA, CONCILIACION_PENDIENTE ni CONCILIACION_DESACTUALIZADA
+  - La cascada Pregunta → UXR → FLW/SCR/IB → UXS/Paquete y la invalidación descendente se recalculan; sin CASCADA_PENDIENTE ni CASCADA_INCOMPLETA antes de cerrar
+- id: GI
+  name: Cierre de iteración
+  criteria:
+  - Si cambió lo construido, existe la propuesta de cambios a UXR, FLW, SCR y DEC, con versión y captura
+  - Enzo aprueba la propuesta, la captura y el estado antes de escribir los cambios
+  - Flujos, Pantallas y Exploraciones siguen Borrador → En revisión → En construcción → Validado
+  - Validado exige prueba con Enzo en navegador y captura de la versión probada
+- id: GR
+  name: Investigación de solución en Pantallas
+  criteria:
+  - Antes de cerrar un SCR existen un INV y un DEC que lo citan, enlazados en research.investigation y research.decision
 - id: G4
   name: Exploración
   criteria:
   - Cada artefacto con SCR → FLW
-  - Claude Design, con Intent Brief y DD humano; o Stitch, con register-exploration sin error y un solo STP por iniciativa
+  - Exploración con cualquier herramienta (Claude Design, Figma, código u otra), registrada con Intent Brief, decisión y capturas guardadas
+  - audit_ux.py --compuerta G4 sin EXPLORACION_SIN_CAPTURA; con Stitch se conserva un solo STP por iniciativa
 - id: G5
   name: Accesibilidad
   criteria:
-  - La accesibilidad se apoya en los componentes del Design System (el contrato de accesibilidad de cada componente); ARP por SCR cuando el diseño no sale de esos componentes
+  - La accesibilidad se verifica sobre lo implementado antes de Validado, incluso si usa componentes del Design System y en la vía directa a código
   - Lo propio de cada pantalla (orden de foco, mensajes, nombres accesibles) se verifica al validar lo construido; ningún pass sin evaluar; fail e inconclusive visibles
 - id: G6
   name: Diseño gobernado
   criteria:
   - El diseño se gobierna en Claude Design (con DD humano) o con el prototipo en código validado al terminar de construir; el validador del handoff aún no reconoce el prototipo y se registra como decisión
   - Con Stitch o Figma, governed_design por SCR y divergencia Stitch ↔ Figma en none o resolved, con DD humano
+  - Figma es opcional y no bloquea cuando el código fue validado con Enzo, captura y ARP implementado; audit_ux.py --compuerta G6 comprueba esa vía
 - id: G7
   name: Handoff
   criteria:
@@ -112,7 +133,7 @@ tasks:
   - T-02
   gate: G3
   outputs:
-  - SCR, CMP y TKN
+  - SCR, CMP y TKN; investigación de la solución dentro de Pantallas con INV y DEC antes del cierre de G3
 - id: T-03b
   skill: ux-context-builder
   depends_on:
@@ -127,7 +148,7 @@ tasks:
   depends_on:
   - T-03b
   gate: G4
-  condition: la exploración se hace en Stitch
+  condition: se elige Stitch como herramienta de exploración
   outputs:
   - GEN y STP
 - id: T-05
@@ -135,26 +156,33 @@ tasks:
   depends_on:
   - T-03b
   gate: G4
-  condition: la exploración se hace en Claude Design
+  condition: se explora en Claude Design, Figma, código u otra herramienta y se registra el resultado
   outputs:
-  - Intent Brief, alternativas y DD
+  - Intent Brief, alternativas, decisión y capturas guardadas
 - id: T-06
   skill: accessibility-reviewer
   depends_on:
-  - T-04
-  - T-05
+  - T-03b
   gate: G5
-  condition: el diseño no sale de los componentes del Design System
+  condition: se está construyendo el prototipo en código, incluida la vía directa a front end
   outputs:
-  - ARP
+  - ARP creado y actualizado durante la construcción del prototipo en micro UI, shell y DS, sobre lo implementado
 - id: T-07
   skill: figma-design-validator
   depends_on:
   - T-06
   gate: G6
-  condition: el diseño se gobierna en Figma
+  condition: se eligió gobernar el diseño en Figma; opcional si se validó en código
   outputs:
   - governed_design en el DTM
+- id: T-07b
+  skill: ux-ui-orchestrator
+  depends_on:
+  - T-06
+  gate: G6
+  condition: se valida el diseño sobre el prototipo en código
+  outputs:
+  - Prueba con Enzo en navegador, captura y ARP implementado de la misma versión, sin exigir Figma
 - id: T-08
   skill: ux-development-handoff
   depends_on:
@@ -163,8 +191,36 @@ tasks:
   condition: hay diseño gobernado registrado en el DTM (Figma o Stitch)
   outputs:
   - HOF y gate DESIGN_READY_FOR_DEV
+- id: T-10
+  skill: ux-ui-orchestrator
+  depends_on:
+  - T-03
+  gate: GI
+  condition: terminó una iteración de construcción
+  outputs:
+  - Propuesta de actualización, captura, aprobación de Enzo y estado comprobable
+- id: T-11
+  skill: ux-ui-orchestrator
+  depends_on:
+  - T-03b
+  - T-10
+  gate: GC
+  condition: se propone cerrar un paquete, también en la vía directa a código
+  outputs:
+  - Informe Markdown y JSON de conciliación sin diferencias abiertas y auditoría de cierre
+- id: T-12
+  skill: ux-ui-orchestrator
+  depends_on:
+  - T-03b
+  gate: GI
+  condition: se retoma o concilia un paquete con repositorios de producto disponibles
+  outputs:
+  - Propuesta de En construcción ante código que referencia HU, FLW o SCR, con evidencia de ramas y merges locales
+  - Advertencia ARTEFACTO_BORRADOR_CON_CONSTRUCCION; Validado solo con prueba de Enzo, captura y ARP implementado
 # Decisiones y acciones que ningún skill toma por una persona.
 human_only:
+- Aprobar antes de escribir la propuesta de actualización, captura y estado de cada iteración
+- Aplicar diferencias de conciliación; Propuesta UX se valida solo con Enzo y las propuestas de otros no se remapean
 - Aprobar un diseño, asignar verified o approved, o registrar una validación en nombre de alguien
 - Elegir entre alternativas de diseño
 - Decidir, flujo por flujo, cómo se gobierna el diseño: explorando en Claude Design o con el prototipo en código validado al terminar de construir

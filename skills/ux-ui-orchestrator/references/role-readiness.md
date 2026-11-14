@@ -59,7 +59,7 @@ Riesgo típico de un CONDITIONAL: divergencia Stitch↔Figma sin DD; el SCR qued
 
 Hay dos vías. El gate formal necesita diseño gobernado y sin ambigüedad que el agente tendría que resolver solo. La **vía directa a front end** (escenario H) construye desde los SCR, el Design System y las decisiones, y gobierna el diseño con el prototipo validado al terminar de construir.
 
-Veredicto en la UXS: **NOT READY** para el gate formal si no hay `governed_design`; **CONDITIONAL** para construir directo cuando los SCR están completos y ninguna pregunta abierta bloquea una pantalla. Hoy el gate solo reconoce Figma o Stitch como diseño gobernado: admitir el prototipo en código es una decisión humana pendiente y pide ajustar el validador.
+Veredicto en la UXS: **NOT READY** para el gate formal si no hay `governed_design`; **CONDITIONAL** para empezar a construir cuando los SCR e INV/DEC están completos y no hay preguntas bloqueantes; **READY para la vía en código** después de G5/G6, cierre de iteración y conciliación/cascada sin pendientes, con aprobación de Enzo. La vía en código pasa G5/G6 con prueba de Enzo, captura y ARP implementado de la misma versión; Figma y HOF formal son opcionales en esa ruta. El validador legado del HOF conserva su contrato Figma/Stitch: no lo uses para bloquear la validación del prototipo en código.
 
 Mínimos (gate `DESIGN_READY_FOR_DEV`):
 - `governed_design` por SCR, con `file_ref`, `node_ref` y `version` reales y no obsoletos.

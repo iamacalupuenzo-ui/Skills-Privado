@@ -9,6 +9,7 @@
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
+const { hash } = require('./kb-preguntas.js');
 
 const args = Object.fromEntries(process.argv.slice(3).reduce((acc, a, i, arr) => {
   if (a.startsWith("--")) acc.push([a.slice(2), arr[i + 1] && !arr[i + 1].startsWith("--") ? arr[i + 1] : true]);
@@ -103,6 +104,13 @@ async function findPage(ds, idValue) {
 // relations: { "<propiedad>": { ds: "<data_source_id>", ids: ["HU-01-09", ...] } } -> se resuelven por la propiedad ID.
 async function upsert() {
   const ds = args.ds, meta = JSON.parse(fs.readFileSync(args.meta, "utf8"));
+  if (meta.props?.Respuesta) {
+    const s = meta.props.Respuesta.rich_text.map(t => t.text?.content || '').join('');
+    if (Array.from(s).length > 200) throw new Error('Respuesta excede 200 caracteres; genera el resumen desde el KB.');
+    if (!meta.fingerprint || !meta.expectedEdited || !meta.expectedBodyHash) throw new Error('Las respuestas se cargan desde el KB con subir-respuestas.js y un plan aprobado.');
+    if (['Abierta', 'Propuesta UX', 'Propuesta'].includes(meta.props.Estado?.select?.name) && !s.startsWith('[Confirma: ')) throw new Error('Falta el prefijo [Confirma: X].');
+  }
+  if (args['dry-run']) { console.log(JSON.stringify({ dryRun: true, id: meta.id, propiedades: Object.keys(meta.props || {}) })); return; }
   const props = Object.assign({}, meta.props || {});
   props["Nombre"] = { title: [{ type: "text", text: { content: meta.title } }] };
   props["ID"] = { rich_text: [{ type: "text", text: { content: meta.id } }] };
@@ -120,6 +128,11 @@ async function upsert() {
     // Actualiza solo las propiedades de meta.props; las de meta.ifEmpty se escriben únicamente si la fila las tiene vacías.
     if (!page) { console.log(JSON.stringify({ ok: false, id: meta.id, error: "la fila no existe" })); return; }
     const actual = await api("GET", "/pages/" + page), patch = {}, omitidas = [];
+    if (meta.expectedEdited) {
+      if (meta.page !== page || actual.last_edited_time !== meta.expectedEdited) throw new Error('Notion cambió desde la preparación del plan; concilia y genera otro.');
+      const md = await api('GET', '/pages/' + page + '/markdown');
+      if (md.truncated || hash(md.markdown || '') !== meta.expectedBodyHash) throw new Error('El cuerpo cambió o está truncado; no se aplica el plan.');
+    }
     const vacia = v => !v || (v.select === null) || (v.select === undefined && v.multi_select === undefined && v.rich_text === undefined) || (v.multi_select && !v.multi_select.length) || (v.rich_text && !v.rich_text.length);
     for (const [k, v] of Object.entries(meta.props || {})) {
       if ((meta.ifEmpty || []).includes(k) && !vacia(actual.properties[k])) { omitidas.push(k); continue; }
@@ -128,8 +141,8 @@ async function upsert() {
       if (cond) { const cur = actual.properties[k], nombre = cur && cur.select && cur.select.name; if (nombre && !cond.includes(nombre)) { omitidas.push(k); continue; } }
       patch[k] = v;
     }
-    if (Object.keys(patch).length) await api("PATCH", "/pages/" + page, { properties: patch });
-    console.log(JSON.stringify({ ok: true, id: meta.id, page, soloProps: Object.keys(patch), omitidas }));
+    const actualizado = Object.keys(patch).length ? await api("PATCH", "/pages/" + page, { properties: patch }) : actual;
+    console.log(JSON.stringify({ ok: true, id: meta.id, page, lastEdited: actualizado.last_edited_time, soloProps: Object.keys(patch), omitidas }));
     return;
   }
   if (args["solo-relaciones"]) {
@@ -161,6 +174,7 @@ async function upsert() {
   }
   if (page) {
     delete props["Estado del documento"]; // el estado lo cambia una persona
+    for (const k of ['Estado', 'Respuesta', 'Decidido por', 'Fecha de decisión']) delete props[k];
     await api("PATCH", "/pages/" + page, { properties: props });
   } else {
     const r = await api("POST", "/pages", { parent: { type: "data_source_id", data_source_id: ds }, properties: props });
@@ -188,6 +202,10 @@ async function upsert() {
       (args.loaded ? " Última carga: " + args.loaded + "." : "") + (src ? " Fuente: `" + src + "`" : "") + "\n</callout>\n";
     const content = resumenPrefijo() + callout + toEnhanced(body);
     if (args["dry-run"]) { console.log(JSON.stringify({ dryRun: true, bytes: content.length, esperado: metrics(body) })); return; }
+    if (args['expect-edited']) {
+      const actual = await api('GET', '/pages/' + page);
+      if (actual.last_edited_time !== args['expect-edited']) throw new Error('Notion cambió antes de cargar el cuerpo; no se reemplaza.');
+    }
     await api("PATCH", "/pages/" + page + "/markdown", { type: "replace_content", replace_content: { new_str: content } });
     console.log(JSON.stringify({ ok: true, page, bytes: content.length, esperado: metrics(body) }));
   } else if (cmd === "verify") {
@@ -199,4 +217,4 @@ async function upsert() {
     console.log(JSON.stringify({ ok, esperado: exp, notion: got, truncado: !!r.truncated }));
     process.exitCode = ok ? 0 : 1;
   } else { console.error("comando desconocido"); process.exit(2); }
-})();
+})().catch(e => { console.error(e.message); process.exitCode = 2; });

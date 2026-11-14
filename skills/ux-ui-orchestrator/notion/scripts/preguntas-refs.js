@@ -81,14 +81,17 @@ const resumen = [];
 for (const id of ids) {
   const r = preguntas.find(p => p.id === id), f = id.replace(/[^\w.-]+/g, "_");
   if (fase === "estados") {
-    // Estado «Abierta» solo para las preguntas sin ninguna señal de cierre en su texto; si ya tienen estado, no se toca (ifEmpty).
-    const t = [r.textos.map(x => x.texto).join(" "), r.estadoTexto, r.bloquea, r.dud2 ? r.dud2.respuesta : ""].join(" ").replace(/\*\*/g, "");
-    const e = norm(r.estadoTexto);
-    const señal = /^(Abierta|Respondida|Cerrada|Resuelta)/i.test(e) || /cerrada\s*(\d{4}|\()|resuelta\b|\bresuelto\b/i.test(t) || /sustituida|reformulada|consolidada|absorbe|DEC-00[0-9]/i.test(t);
-    if (señal) { resumen.push({ id, sinCambio: true, motivo: "con señal en el texto" }); continue; }
-    const mF = path.join(out, f + "-estado.json"); fs.writeFileSync(mF, JSON.stringify({ id, title: id, props: { "Estado": { select: { name: "Abierta" } } }, ifEmpty: ["Estado"] }, null, 1));
-    if (dry) { resumen.push({ id, estado: "Abierta" }); continue; }
-    try { resumen.push(JSON.parse(run(["upsert", "--ds", DS.preg, "--meta", mF, "--solo-props"]))); } catch (er) { resumen.push({ id, error: String(er.stderr || er.message).slice(0, 200) }); }
+    // Solo inicializa un estado explícito del KB; nunca remapea propuestas ya existentes.
+    const estado = r.estado;
+    if (!estado || ['Decidida', 'Descartada', 'Diferida'].includes(estado)) {
+      resumen.push({ id, sinCambio: true, motivo: 'Cierre o estado ambiguo: usa el plan canónico de subir-respuestas.js' });
+      continue;
+    }
+    const mF = path.join(out, f + '-estado.json');
+    fs.writeFileSync(mF, JSON.stringify({ id, title: id, props: { Estado: { select: { name: estado } } }, ifEmpty: ['Estado'] }, null, 1));
+    if (dry) { resumen.push({ id, estado }); continue; }
+    try { resumen.push(JSON.parse(run(['upsert', '--ds', DS.preg, '--meta', mF, '--solo-props']))); }
+    catch (er) { resumen.push({ id, error: String(er.stderr || er.message).slice(0, 200) }); }
     continue;
   }
   if (fase === "niveles") {

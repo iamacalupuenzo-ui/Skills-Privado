@@ -9,7 +9,7 @@ description: Orquesta los skills UX/UI (ux-requirements-analyzer, user-flow-desi
 
 Coordinar los skills de la pista UX/UI para que sus artefactos queden **completos, consistentes y trazables entre sí**, y consolidarlos en una **Especificación de Diseño UX/UI (UXS)** con un veredicto de preparación por etapa y por consumidor. Cada skill produce un artefacto correcto por sí mismo; lo que falla en la práctica son las costuras: un SCR cuyo FLW no lo lista, una pantalla generada en Stitch sin DTM, un Figma aprobado con divergencia abierta, un UXR cuya pregunta abierta nadie dirigió al skill que puede cerrarla. Este orquestador cierra esas costuras.
 
-Es el equivalente de `af-requirements-orchestrator` para la etapa siguiente: aquel termina con una RQS lista; este arranca de ella. No redacta contenido propio: delega en cada skill y verifica. No decide por humanos, no aprueba diseños y no escribe código; declara si el diseño está listo para Desarrollo y con qué skill continuar.
+Es el equivalente de `af-requirements-orchestrator` para la etapa siguiente: aquel termina con una RQS lista; este arranca de ella. No redacta contenido propio: delega en cada skill y verifica. No decide por humanos, no aprueba diseños y no escribe código; puede cerrar por delegación de Enzo solo preguntas UX de práctica estándar con benchmarking, DEC, fecha y fuentes; declara si el diseño está listo para Desarrollo y con qué skill continuar.
 
 ## Skills que orquesta
 
@@ -64,7 +64,7 @@ Lee además `knowledge-base/index.md`, `changelog.md`, `design/MEMORY.md` si exi
 | A. Iniciativa nueva de diseño | Hay historias READY/CONDITIONAL y no hay UXR/FLW/SCR |
 | B. Cambio sobre diseño existente | Hay artefactos de diseño y cambia una historia, regla o decisión |
 | C. Especificar pantallas | Hay UXR/FLW; faltan SCR/CMP/TKN o están incompletos |
-| D. Exploración visual | SCR especificados y listos; falta explorar en Claude Design (o Stitch) |
+| D. Exploración visual | SCR especificados y listos; falta explorar con la herramienta elegida (Claude Design, Figma, código u otra), con capturas |
 | E. Diseño gobernado | Hay exploración; falta gobernar el diseño (Claude Design con DD humano, o el prototipo validado), o divergencia Stitch↔Figma si se usan |
 | F. Auditoría y gate | Hay que saber si un SCR/flujo está listo para Desarrollo, o si un paquete puede cerrarse (UXS) |
 | G. Decisión humana recibida | Un humano respondió preguntas, eligió alternativa o aprobó |
@@ -88,11 +88,11 @@ Orden canónico (omite lo que el escenario no necesite):
 |---|---|---|
 | 1 Requisitos UX | `ux-requirements-analyzer` | Cada UXR con lineage a US/AC; actor, permisos y estados; vacíos como preguntas |
 | 2 Flujos | `user-flow-designer` | Happy path, excepciones, permisos y estados; `screens` declarado |
-| 3 Especificación | `ui-spec-writer` (+ `web-atomic-component-designer` si hay librería) | `validators/cli.py preflight` sin `BLOCKED`; cada SCR con `flow`, `requirements`, `required_states`, `a11y_requirements` |
+| 3 Especificación | `ui-spec-writer` (+ `web-atomic-component-designer` si hay librería) | `validators/cli.py preflight` sin `BLOCKED`; cada SCR con `flow`, `requirements`, `required_states`, `a11y_requirements`; investigación dentro de Pantallas con INV y DEC; `audit_ux.py --compuerta G3` sin error |
 | 3b Consolidación (**GU**) | `ux-context-builder` | `audit_ux.py --exigir-uxs` sin `PAQUETE_SIN_UXS` para el paquete; veredicto por consumidor con su razón; preguntas abiertas con responsable; validación humana pendiente |
-| 4 Exploración | `claude-design-orchestrator` (o `stitch-ui-generator`) | Cada artefacto con SCR→FLW; Intent Brief y DD humano; con Stitch, `register-exploration` sin error y un solo `STP` por iniciativa |
-| 5 Accesibilidad | `accessibility-reviewer` | La accesibilidad se apoya en los componentes del Design System; ARP por SCR cuando el diseño no sale de ellos; ningún `pass` sin evaluar; `fail`/`inconclusive` visibles |
-| 6 Diseño gobernado | Claude Design (DD humano), el prototipo validado al terminar de construir, o `figma-design-validator` | El diseño queda gobernado de alguna de esas formas; con Figma/Stitch, `governed_design` por SCR y divergencia `none` o `resolved` |
+| 4 Exploración | Herramienta elegida: Claude Design, Figma, código u otra; registra el IB | SCR→FLW, alternativas, decisión y capturas guardadas; `audit_ux.py --compuerta G4` sin error; con Stitch conserva un solo STP por iniciativa |
+| 5 Accesibilidad durante la construcción | `accessibility-reviewer`, sobre micro UI, shell y DS implementados | ARP creado y actualizado mientras se construye, con accesibilidad evaluada sobre lo implementado antes de Validado; ARP con versión evaluada, resultados y evidencia; ningún `pass` sin evaluar; `fail`/`inconclusive` visibles |
+| 6 Diseño gobernado | Claude Design (DD humano), el prototipo validado al terminar de construir, o `figma-design-validator` | Figma es opcional; código validado con Enzo, captura y ARP permite pasar G6 sin Figma. Con Figma/Stitch, `governed_design` por SCR y divergencia `none` o `resolved` |
 | 7 Handoff | `ux-development-handoff` | `validators/cli.py gate` sin `FAILED`/`BLOCKED`; revisión humana pendiente registrada (hoy el gate solo reconoce Figma o Stitch como diseño gobernado) |
 
 Por qué este orden: el flujo necesita los UXR para listar pantallas; la especificación de pantalla es lo que consume la exploración y evita que invente; la UXS cierra el paquete antes de explorar o construir porque es lo que leen Claude Design, QA y Desarrollo; la accesibilidad se apoya en los componentes del Design System y lo propio de cada pantalla se verifica al validar lo construido. La **vía directa a front end** (escenario H) salta la exploración y el handoff formal, **pero no la fase 3b**. Pasa de fase solo cuando la compuerta se cumple o cuando la pregunta abierta no bloquea (queda registrada, no se esconde).
@@ -159,11 +159,31 @@ Si el hook frena: arma la UXS con `ux-context-builder`, commitéala en la rama y
 
 Con la auditoría limpia, o los errores restantes declarados, cierra según la sección 4 de `references/worktree-protocol.md`: `graphify update .`, resumen de cambios y decisiones pendientes, y propuesta de merge, PR, conservar o descartar. Espera la respuesta; no hagas commit, merge ni borres el worktree por iniciativa propia.
 
+## Construcción y cierre de iteración (Enzo, 2026-11-14)
+
+La investigación de la solución va dentro de Pantallas y deja un INV y un DEC enlazados al SCR antes de cerrarlo: benchmarking, componentes del DS disponibles o faltantes, micro UI de destino y ubicación en el shell. La exploración admite cualquier herramienta y guarda capturas. El ARP se crea y actualiza durante la construcción del prototipo, sobre lo implementado. En cada iteración que cambia lo construido, el agente propone los cambios a UXR, FLW, SCR y DEC, la captura y el estado; Enzo aprueba **antes de escribir**. El registro de evidencia se mantiene en la memoria del proyecto (`design/MEMORY.md`) y en el artefacto, con el contrato de `references/controles-de-cierre.md`.
+
+Flujos, Pantallas y Exploraciones siguen **Borrador → En revisión → En construcción → Validado**. Validado exige prueba con Enzo en el navegador y captura de la versión probada, además de accesibilidad revisada sobre lo implementado. La vía directa a código conserva todos estos controles. `audit_ux.py --cerrar-paquete --conciliacion <informe.json>` bloquea un cierre sin estas evidencias; la auditoría ordinaria avisa de los documentos aún en preparación.
+
+## Verificaciones automáticas antes de avanzar
+
+Ejecuta `scripts/audit_ux.py <kb> --compuerta <G>` antes de dar paso a la siguiente fase. G0 exige la memoria con el plan; G1 UXR y lineage; G2 FLW y screens; G3/GR SCR e INV+DEC; GU UXS; G4 exploración y capturas; G5 ARP implementado; G6 diseño validado en código o gobernado aprobado; G7 HOF (además del gate formal si se usa); GI la propuesta y evidencia de iteración; GC la conciliación completa sin diferencias. El esquema y los códigos están en `references/controles-de-cierre.md`. Un resultado con errores bloquea el avance. La vía directa a código pasa por GU, G3, G5, G6, GI y GC; no depende de Figma ni de un HOF formal.
+
+El hook guardia-uxs impide subir ramas de diseño con UXS faltante, SCR cerrado sin INV/DEC, iteración sin propuesta/captura/aprobación o Validado sin prueba y ARP implementado. La conciliación también advierte ARTEFACTO_BORRADOR_CON_CONSTRUCCION: lee los repositorios de producto autorizados, referencias HU/FLW/SCR en código, ramas CLF_Feature_<US> y merges locales con referencias de MR; propone En construcción, y solo propone Validado con prueba de Enzo, captura y ARP de esa versión. Nunca aplica estados automáticamente ni afirma un estado remoto de MR sin evidencia. Sin repositorios configurados informa el límite.
+
+## Recalcular estados en cadena
+
+Al conciliar, propón cambios en ambos sentidos: preguntas resueltas (Decidida/Diferida/Descartada) → UXR En revisión; si sus flujos ya están En construcción o Validado, UXR Aprobado, solo con aprobación de Enzo y approved_by. Una pantalla En construcción mueve su FLW/IB a En construcción; todas Validadas los llevan a Validado. Un IB con lienzo o capturas pasa a En revisión. La evidencia propia de Validado sigue siendo obligatoria.
+
+Recalcula UXS y paquete desde preguntas, aprobación y validación: En curso → Diseño cerrado → Listo para desarrollo. Para Estado del alcance propone Borrador, En preparación, Listo para selección de sprint, En sprint o Cerrado según su preparación y construcción; la persona confirma el paso operativo. Una aprobación propuesta no cuenta como aprobación real.
+
+Si cambia una fuente del KB, sin importar quién la editó, propón Vigencia = Revisar por cambio de fuente en preguntas, Resumen vigente = Desactualizado en UXR/FLW y retorno de Validado/Aprobado a En revisión. La invalidación se propaga por dependencias y prevalece sobre un avance. Sin huella se declara cobertura incompleta. La conciliación genera las propuestas; Enzo aprueba y primero se actualiza el KB. GC bloquea una cascada pendiente o incompleta.
+
 ## Compuertas humanas
 
-Todos los skills UX/UI dejan `status: draft`. Este orquestador mantiene esa línea:
+Los artefactos nuevos comienzan en Borrador (`status: draft`). El orquestador solo transcribe cambios de estado aprobados y comprobables:
 
-- Nunca asignes `verified`, `approved` ni `human_review.status: approved`, ni registres una validación en nombre de una persona.
+- Nunca inventes `verified`, `approved`, `human_review.status: approved` ni una validación en nombre de una persona. Registra Validado solo tras la prueba de Enzo, su aprobación, captura y revisión de accesibilidad implementada.
 - **Elegir entre alternativas, resolver una divergencia Stitch↔Figma, aprobar `governed_design` y aprobar el gate son decisiones humanas.** Regístralas (quién, cuándo, qué, por qué) solo cuando el usuario las aporte con nombre y rol; sin autor identificable, queda como información del usuario.
 - Crear un proyecto Stitch exige autorización explícita (`--authorized-by human:<id>`).
 - Termina con una lista de **decisiones humanas pendientes**: pregunta, responsable, prioridad y qué desbloquea.
@@ -179,6 +199,17 @@ Todos los skills UX/UI dejan `status: draft`. Este orquestador mantiene esa lín
 - **Verificar en vivo** las referencias Stitch y Figma antes de usarlas; si no se puede, es pregunta abierta, no un dato.
 - **Fechas y autoría** en frontmatter OKF v0.2: `generated.by` del skill que produjo el archivo (el de la UXS es `ux-context-builder/1.0`), `generated.at` ISO 8601 con `-05:00`.
 - **Solo diseño.** Si el pedido se desliza a negocio/requerimientos, arquitectura o código, detente y señala el skill de la etapa correspondiente.
+
+## Comportamientos bloqueantes y lecciones de la sesión (2026-11-14)
+
+- **KB primero y conciliación en ambos sentidos.** Notion refleja el KB. Toda respuesta, decisión y estado se registra primero en Open questions de UXR/FLW/SCR y en DEC cuando se decide; una diferencia se propone y se aprueba antes de aplicarla.
+- **Delegación limitada a UX estándar.** La IA cierra textos, estados vacíos, mensajes, formatos o patrones con benchmarking, fecha, DEC y fuentes, como IA (delegado por Enzo). Nunca cierra negocio, permisos, datos ni alcance.
+- **Propuesta UX es solo para Enzo.** Las propuestas ajenas no se remapean. Si intervienen PO y UX, decide el PO y UX propone. Diferida significa que la función no se construye en este paquete o piloto; se reabre al construirla.
+- **Resumen y detalle tienen lugares distintos.** Respuesta tiene hasta 200 caracteres y [Confirma: X] si está pendiente; el detalle vive en Resolución, con sus cuatro heading_3. Nunca heading_1 en Notion.
+- **Lo construido deja evidencia y mueve sus dependencias.** Nada permanece en Borrador con código detectado. Propón estado, captura y actualización en cadena; Validado requiere prueba con Enzo y ARP implementado. Una fuente modificada devuelve a revisión lo aprobado o validado.
+- **Corrida en seco y aprobación de Enzo antes de escribir en Notion.** Muestra el plan concreto completo; no conviertas una propuesta ni el silencio en aprobación. La escritura masiva usa API REST, no MCP: el cupo del MCP se agota. La conciliación solo lee por REST.
+- **Un plan, un registro por ID.** Deduplica antes de cargar. IDs repetidos con contenido distinto bloquean el plan; campos null, undefined o registros sin ID impiden darlo por completo. Los workers no escriben FIN hasta cubrir todos los registros; los pendientes se explican y nunca se esconden con nulls.
+- **La HU pertenece al analista funcional de su DSP.** Si una respuesta o decisión la afecta, no la edites. Propón un comentario para ese analista: ID de pregunta, qué cambió y AC o regla a revisar. El analista decide el cambio; Enzo aprueba el comentario. Si falta el DSP o el AC exacto, decláralo; no inventes destinatarios. El comentario no se envía automáticamente.
 
 ## Informe final al usuario
 

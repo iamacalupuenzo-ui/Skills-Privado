@@ -3,6 +3,9 @@
 // Uso: NOTION_WORKTREE=<worktree con la UXS> DESIGN_REF=<rama ya subida> node cargar-uxs-paquete.js <ruta de la UXS en el repo> [--dry-run]
 // Requiere que la rama esté subida: «Enlace GitLab» apunta a DESIGN_REF y daría 404 si no existe.
 const fs = require("fs");
+const { registrarDocumento } = require('./registrar-huella.js');
+const { snapshot: snapshotHuella, configuracion: configuracionHuella } = require('./kb-preguntas.js');
+const cfgHuella = configuracionHuella(), kbHuella = snapshotHuella(cfgHuella);
 const path = require("path");
 const { execFileSync } = require("child_process");
 
@@ -81,6 +84,7 @@ try {
   const up = JSON.parse(run(SYNC, ["upsert", "--ds", DS.uxs, "--meta", mF, "--body", cuerpo, "--source", repoPath, "--loaded", hoy]));
   let ver = {};
   try { ver = JSON.parse(run(SYNC, ["verify", "--page", up.page, "--body", cuerpo]).split("\n").filter((l) => l.startsWith("{"))[0]); } catch (e) { ver = { ok: false }; }
+  if (ver.ok) registrarDocumento(cfgHuella, kbHuella, id, txt);
   const res = { ...resumenMeta, creada: up.creada, ok: ver.ok, page: up.page, sinResolver: up.sinResolver || [] };
   fs.writeFileSync(path.join(out, id + "-resumen.json"), JSON.stringify(res, null, 1));
   console.log(JSON.stringify(res));

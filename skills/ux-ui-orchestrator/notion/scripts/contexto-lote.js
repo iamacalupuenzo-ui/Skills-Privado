@@ -1,6 +1,8 @@
 // Carga en Notion las fichas de contexto validadas (preguntas/ctx/fichas.json): título «ID · pregunta», «Quién puede responder» y el cuerpo con la estructura acordada.
 // Uso: node contexto-lote.js [--dry-run] [--lote=i/n] [--only=ID,ID]. No toca Estado, Bloquea ni Prioridad. Conserva el texto original del repo debajo.
 const fs = require("fs");
+const { snapshot, configuracion, resolucion } = require('./kb-preguntas.js');
+const cfgKB = configuracion(), preguntasKB = new Map(snapshot(cfgKB).preguntas.map(q => [q.id, q]));
 const path = require("path");
 const { execFileSync } = require("child_process");
 
@@ -30,25 +32,9 @@ function cuerpo(x) {
   L.push(hayIA ? "## Alternativas posibles (las marcadas IA son propuestas de la IA)" : "## Alternativas posibles");
   for (const a of x.alternativas) L.push("- **" + a.clave + ".** " + una(a.texto) + (a.origen === "IA" ? " (IA)" : "") + " — *Efecto:* " + una(a.efecto));
   L.push("");
-  if (x.cerrada) L.push("## Decisión relacionada en el repo (puede cerrar solo una parte)", una(x.cerrada.por) + ": " + una(x.cerrada.texto), "");
-  L.push("## Propuesta o resolución");
-  const r = x.recomendacion;
-  if (r) {
-    L.push("**Respuesta (IA): " + una(r.respuesta) + " (alternativa " + una(r.opcion) + ").** " + una(r.porque), "");
-    L.push("**Cómo funcionaría**", "");
-    r.como.forEach((p, i) => L.push((i + 1) + ". " + una(p)));
-    L.push("");
-    if (r.diagrama && r.diagrama.trim()) L.push("```mermaid", r.diagrama.trim().replace(/\r/g, ""), "```", "");
-    if (r.evidencia && r.evidencia.length) {
-      L.push("**Evidencia**", "");
-      for (const e of r.evidencia) L.push("- " + una(e.fuente) + ": " + una(e.dato) + " (grado " + una(e.grado) + ")");
-      L.push("");
-    }
-    L.push("**Límites:** " + una(r.limites));
-  } else {
-    const quien = x.quien === "Diseño" ? "una persona del equipo" : x.quien === "Negocio" ? "el Product Owner (o Legal)" : x.quien === "Mixta" ? "el Product Owner y el equipo de diseño" : "Arquitectura o Seguridad";
-    L.push("Sin propuesta de diseño: la decide " + quien + ". El efecto de cada alternativa en el diseño está descrito arriba.");
-  }
+  const q = preguntasKB.get(x.id);
+  if (!q) throw new Error('La ficha no tiene pregunta canónica en el KB: ' + x.id);
+  L.push(resolucion(q, cfgKB));
   return L;
 }
 
@@ -58,7 +44,7 @@ if (lote.length === 2 && lote[1]) ids = ids.filter((_, i) => i % lote[1] === lot
 const run = (script, args) => execFileSync("node", [script, ...args], { encoding: "utf8", env: Object.assign({}, process.env, { DESIGN_REF }) });
 const resumen = [];
 for (const id of ids) {
-  const x = fichas[id], f = id.replace(/[^\w.-]+/g, "_");
+  const x = { ...fichas[id], id }, f = id.replace(/[^\w.-]+/g, "_");
   if (!PAGE[id]) { resumen.push({ id, error: "sin página" }); continue; }
   const baseF = [path.join(S, "preguntas", "resp", f + "-origen2.md"), path.join(S, "preguntas", "lote", f + "-origen.md")].find(p => fs.existsSync(p));
   const base = fs.readFileSync(baseF, "utf8").replace("## Pregunta\n", "## Texto original del repo\n");

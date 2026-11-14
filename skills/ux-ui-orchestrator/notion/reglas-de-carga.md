@@ -4,27 +4,28 @@
 - **El orquestador (Claude)** decide qué subir, prepara los archivos, valida y verifica leyendo Notion.
 - **opencode** ejecuta la subida (instrucciones en `prompts-opencode/`). Esta regla de Enzo es permanente.
 - **Codex** redacta en solo lectura el contexto de las preguntas, en lotes de 4 (`contexto-codex.sh`). Claude valida el resultado con `contexto-validar.js` antes de subirlo.
-- **Una persona** decide: estados de cierre, aprobaciones, elecciones entre alternativas. El agente comprueba indicadores, nunca aprueba ni confirma por nadie.
+- **Una persona** aprueba estados de cierre y elecciones entre alternativas. Excepción: la IA puede cerrar prácticas estándar UX por delegación explícita de Enzo, con DEC, fecha y benchmarking; nunca negocio, permisos, datos o alcance. Propuesta UX se reserva para validación de Enzo; las propuestas de otros no se remapean.
 
 ## Qué no se pisa
 - Campos humanos: Estado, Respuesta, Decidido por, Fecha de decisión, Estado del documento, Aprobado por, Nivel de cierre, Decisión humana.
 - Para filas ya editadas usar solo `notion-sync.js upsert --solo-props` (con `ifEmpty`/`ifValues`) y `--solo-relaciones [--reemplazar]`. Nunca el `upsert` completo sobre Preguntas ya editadas.
-- Las páginas de documentos son espejo de lectura («no se edita aquí»). En Notion solo se editan preguntas, estados, respuestas y comentarios; cualquier cambio de texto lo regenera el agente desde el archivo.
+- Las páginas de documentos son espejo de lectura («no se edita aquí»). Toda respuesta, decisión y estado se registra primero en Open questions del KB (UXR/FLW/SCR), más DEC cuando se decide; después se carga a Notion. Una edición externa en Notion exige conciliación y propuesta al KB antes de recargar.
 - Borrar o archivar bases lo hace Enzo.
 
 ## Antes de cada carga
-1. `git fetch origin develop` en el worktree. Historias, paquete y decisiones (RCP-001: ARQ/DH) salen de `origin/develop`; el worktree puede estar atrasado.
-2. Comparar con la huella de la última carga y marcar *Vigencia = Revisar por cambio de fuente* donde cambió la fuente.
-3. Revisar `pendientes.json`.
+1. Lee la rama configurada del KB y concilia con `conciliar-kb-notion.js --informe <salida.md>`; el script no hace fetch, checkout ni escritura remota.
+2. Compara con la huella de última carga verificada, incluyendo fuentes de PO, Arquitectura e Infraestructura. Propón Vigencia = Revisar por cambio de fuente; una persona decide la aplicación y el estado.
+3. Revisa pendientes.json y aprueba los cambios en el KB antes de preparar el plan. No cierres el paquete con diferencias abiertas ni cobertura incompleta.
 
 ## Contenido de cada página
 - Cuerpo = copia fiel del archivo del repo, sin frontmatter, con enlaces absolutos al repo (`prepare-body.js`) y las referencias BR/DH/ARQ/HU enlazadas. Los resúmenes «En 30 segundos» solo viven en Notion y se redactan para todos los documentos de las historias nuevas.
 - Texto de IA siempre rotulado «(IA)», sin nombrar el modelo.
+- Respuesta: resumen de hasta 200 caracteres con [Confirma: X] si está pendiente; cuerpo desde el KB con sección ## Resolución y ### Respuesta, ### Fuentes y evidencia, ### Quién decide y ### Impacto. Nunca heading_1. El plan de subir-respuestas.js conserva lo demás y comprueba precondiciones antes de escribir.
 - Pregunta: título = `ID · pregunta completa`; contexto, qué se evalúa, alternativas, propuesta o resolución (con cómo funcionaría, diagrama Mermaid si es un flujo, evidencia con grado D/I y límites); debajo, el texto original.
 - No inventar identificadores, reglas ni enlaces: `contexto-validar.js` comprueba que cada BR/DH/ARQ/HU citado exista en `origin/develop`.
 
 ## Después de cada carga
-Verificar leyendo Notion (conteos, relaciones, una muestra de páginas). No dar una carga por buena solo con el informe del ejecutor. Recalcular los indicadores de bloqueo (se recalculan solos al cambiar estados).
+Verificar leyendo Notion (conteos, relaciones, una muestra de páginas). No dar una carga por buena solo con el informe del ejecutor. Recalcular los indicadores de bloqueo (se recalculan solos al cambiar estados). Solo después de verificar se guarda la huella externa. Situación: Propuesta UX → Por validar (UX), Propuesta → Por confirmar; Pendiente de confirmar (ID) cuenta solo Propuesta.
 
 ## Límites de la API de Notion
 - Una relación admite como máximo 100 elementos por petición: para más, enlazar desde el lado de la pregunta (`uxs-preguntas.js`).

@@ -9,7 +9,7 @@ description: >
   pantalla?" o "compara con el piloto". No diseña (usa ux-ui-orchestrator), no construye la
   pantalla (usa angular-product-builder) ni publica (usa flujo-producto).
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # De UX a desarrollo
@@ -36,7 +36,7 @@ donde corresponde: en un documento, nunca como rótulo en la interfaz.
 | Modo | Señales | Acción |
 |---|---|---|
 | `BAJAR` | «construye según el flujo/UXR» | Extraer estados, reglas y copy; plan de pantalla; construir con `angular-product-builder` |
-| `ITERAR` | capturas con ajustes de espacio, tamaño, orden | `iteracion-visual.md`; pequeñas directas, grandes delegadas |
+| `ITERAR` | capturas con ajustes de espacio, tamaño, orden | `iteracion-visual.md`; propuesta documental y captura para aprobación de Enzo antes de escribir |
 | `REGISTRAR` | «anota esta decisión», «esto se aparta del UXR» | `registro-de-decisiones.md` |
 | `ESTADOS` | «¿qué estados tiene?», «¿qué falta?» | `estados-de-pantalla.md` |
 
@@ -48,6 +48,25 @@ donde corresponde: en un documento, nunca como rótulo en la interfaz.
 - **B4 — El texto provisional se marca en el documento**, no en la pantalla, y no inventa reglas de negocio.
 - **B5 — Antes de cambiar un componente del DS se explica el cambio con evidencia** (ver `flujo-ds`).
 - **B6 — Lo que se construye se verifica en el navegador contra el piloto**, no solo con pruebas.
+
+## Cierre de cada iteración
+
+Construye el prototipo con micro UI, shell y componentes del DS. La investigación de la solución vive dentro de Pantallas y deja INV y DEC antes de cerrar el SCR; incluye benchmarking, componentes disponibles o faltantes, micro UI y ubicación en el shell. La exploración puede hacerse en Claude Design, Figma o código y siempre guarda capturas.
+
+Mientras construyes, invoca accessibility-reviewer y crea o actualiza el ARP **sobre lo implementado**; no lo pospongas al cierre ni lo sustituyas con una revisión de Figma. Cada cambio en lo construido produce una propuesta de actualización de UXR, FLW, SCR y DEC, con captura, versión y estado. Enzo aprueba antes de escribir esos cambios. Toda respuesta y estado de pregunta se registra primero en Open questions del KB y luego se carga a Notion; las propuestas de otros responsables no se remapean a Propuesta UX.
+
+Flujos, Pantallas y Exploraciones siguen Borrador → En revisión → En construcción → Validado. Hay código que referencia su HU/FLW/SCR: propone En construcción; no lo dejes en Borrador. Una rama CLF_Feature_<US> o un merge aislado son evidencia a revisar, no prueba de validación. Validado solo con prueba de Enzo en el navegador, captura y ARP implementado de la misma versión. Figma es opcional cuando el diseño se validó en código.
+
+## Compuertas automáticas
+
+Ejecuta el audit_ux.py instalado con ux-ui-orchestrator, sin copiarlo al producto:
+
+- Antes de cerrar el SCR: --compuerta G3; sin INV y DEC vinculados no avanza.
+- Durante la construcción y antes de Validado: --compuerta G5 y --compuerta G6; sin captura, prueba de Enzo o ARP implementado no pasa.
+- Antes de cerrar la iteración: --compuerta GI; sin propuesta de actualización de UXR/FLW/SCR/DEC, captura y aprobación no pasa.
+- Antes de cerrar el paquete: --cerrar-paquete --conciliacion <informe.json>; diferencias abiertas, falta de huella o informe de otra revisión bloquean.
+
+El hook guardia-uxs del orquestador también impide subir una rama de diseño con esos errores de evidencia. La memoria del proyecto y el contrato de evidencia del orquestador conservan las rutas a propuesta, documentos, captura, versión, prueba y ARP. La auditoría verifica que existan; no suplanta el juicio ni la aprobación de Enzo.
 
 ## Racionalizaciones comunes
 

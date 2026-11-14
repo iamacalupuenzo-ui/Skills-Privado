@@ -1,6 +1,10 @@
 // Carga en Notion flujos, pantallas y exploraciones del worktree: propiedades + relaciones + cuerpo.
 // Uso: node lote-diseno.js <flw|scr|ib> [--only=ID,ID] [--dry-run]
 const fs = require("fs");
+const { registrarDocumento } = require('./registrar-huella.js');
+const { snapshot: snapshotHuella, configuracion: configuracionHuella } = require('./kb-preguntas.js');
+const cfgHuella = configuracionHuella(), kbHuella = snapshotHuella(cfgHuella);
+const { propiedadesDocumento } = require('./contrato-documentos.js');
 const path = require("path");
 const crypto = require("crypto");
 const { execFileSync } = require("child_process");
@@ -25,7 +29,7 @@ const dry = process.argv.includes("--dry-run");
 const out = path.join(S, tipo);
 fs.mkdirSync(out, { recursive: true });
 
-const RES_FILE = "C:/Users/emacalupu/.claude/notion/resumenes-" + tipo + ".json";
+const RES_FILE = path.join(S, "resumenes-" + tipo + ".json");
 const RESUMENES = fs.existsSync(RES_FILE) ? JSON.parse(fs.readFileSync(RES_FILE, "utf8")) : {};
 
 const leer = f => fs.readFileSync(path.join(WT, f), "utf8").replace(/\r\n/g, "\n");
@@ -50,7 +54,7 @@ function documentos() {
         relations: { "Requerimientos UX": { ds: DS.uxr, ids: lista(fm, "requirements").filter(x => /^UXR-\d+$/.test(x)) } }, props: {} });
     } else if (tipo === "ib") {
       const url = (cuerpo.match(/Lienzo[^|\n]*\|\s*(https:\/\/claude\.ai\/artifact\/[A-Za-z0-9]+)/) || [])[1];
-      const props = { "Fidelidad": { select: { name: "Alta" } }, "Decisión humana": { select: { name: "Pendiente" } } };
+      const props = { "Fidelidad": { select: { name: "Alta" } } };
       if (url) props["Enlace del lienzo"] = { url };
       docs.push({ id: campo(fm, "id"), title: campo(fm, "title"), repoPath, cuerpo,
         relations: { "Pantallas": { ds: DS.scr, ids: lista(fm, "screens") } }, props });
@@ -99,7 +103,7 @@ for (const d of documentos()) {
       "Enlace GitLab": { url: REPO_URL + DESIGN_REF + "/" + d.repoPath },
       "Última carga": { date: { start: hoy } },
       "Producto": { relation: [{ id: PRODUCTO }] },
-    }, d.props),
+    }, d.props, propiedadesDocumento(partir(leer(d.repoPath)).fm, d.cuerpo, tipo)),
     relations: d.relations,
   };
   let resumenArgs = [];
@@ -119,6 +123,7 @@ for (const d of documentos()) {
     const up = JSON.parse(run(SYNC, ["upsert", "--ds", DS[tipo], "--meta", metaF, "--body", cuerpo, "--source", d.repoPath, "--loaded", hoy, ...resumenArgs]));
     let ver = {};
     try { ver = JSON.parse(run(SYNC, ["verify", "--page", up.page, "--body", cuerpo]).split("\n").filter(l => l.startsWith("{"))[0]); } catch (e) { ver = { ok: false }; }
+    if (ver.ok) registrarDocumento(cfgHuella, kbHuella, d.id, leer(d.repoPath));
     resumen.push({ id: d.id, creada: up.creada, ok: ver.ok, sinResolver: up.sinResolver, esperado: up.esperado, enNotion: ver.notion, page: up.page });
   } catch (e) { resumen.push({ id: d.id, error: "upsert: " + String(e.stderr || e.message).slice(0, 220) }); }
 }

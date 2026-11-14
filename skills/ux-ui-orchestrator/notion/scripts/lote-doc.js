@@ -2,6 +2,9 @@
 // Uso: node lote-doc.js <tipo> [--only UXR-001,UXR-002] [--dry-run]
 //   tipo: uxr
 const fs = require("fs");
+const { registrarDocumento } = require('./registrar-huella.js');
+const { snapshot: snapshotHuella, configuracion: configuracionHuella } = require('./kb-preguntas.js');
+const cfgHuella = configuracionHuella(), kbHuella = snapshotHuella(cfgHuella);
 const path = require("path");
 const { execFileSync } = require("child_process");
 
@@ -108,6 +111,7 @@ for (const f of files) {
     const up = JSON.parse(run(SYNC, ["upsert", "--ds", tipo.ds, "--meta", metaF, "--body", cuerpo, "--source", repoPath, "--loaded", hoy, ...resumenArgs]));
     let ver = {};
     try { ver = JSON.parse(run(SYNC, ["verify", "--page", up.page, "--body", cuerpo]).split("\n").filter(l => l.startsWith("{"))[0]); } catch (e) { ver = { ok: false, error: "verify" }; }
+    if (ver.ok) registrarDocumento(cfgHuella, kbHuella, fm.id, text.replace(/\r\n/g, "\n"));
     resumen.push({ id: fm.id, creada: up.creada, ok: ver.ok, sinResolver: up.sinResolver, esperado: up.esperado, enNotion: ver.notion, historias: hu.length, paquetes: dsp.length, page: up.page });
   } catch (e) {
     resumen.push({ id: fm.id, error: "upsert: " + String(e.stderr || e.message).slice(0, 220) });
