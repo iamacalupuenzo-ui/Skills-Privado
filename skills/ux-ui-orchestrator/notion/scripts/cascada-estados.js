@@ -101,9 +101,17 @@ function cascada({ documentos, preguntas, paginas = [], huella = {}, construccio
     else {
       const actual = propiedades(d)['Estado del alcance']?.select?.name || 'Borrador';
       let target = validado ? 'Cerrado' : cierreDiseno ? 'Listo para selección de sprint' : pantallas.some(n => CONSTRUIDAS.has(n.estado)) ? 'En sprint' : deps.length ? 'En preparación' : 'Borrador';
-      // Un paquete ya En sprint no vuelve a selección si está pendiente la validación.
-      if (actual === 'En sprint' && target === 'Listo para selección de sprint') target = 'En sprint';
-      poner(d, 'Estado del alcance', target, 'Propuesta de estado de alcance derivada de la preparación y construcción del paquete.');
+      // El alcance lo planifica el gestor de proyectos (sprint en GitLab), no este cálculo:
+      // la cascada nunca hace retroceder un paquete y la entrada a sprint o el cierre solo se proponen.
+      const ORDEN_ALCANCE = ['Borrador', 'En preparación', 'Listo para selección de sprint', 'En sprint', 'Cerrado'];
+      if (ORDEN_ALCANCE.indexOf(target) < ORDEN_ALCANCE.indexOf(actual)) {
+        avisos.push(`${d.id}: el cálculo daría «${target}», pero el paquete está en «${actual}»; no se propone retroceso porque el alcance lo decide la planificación.`);
+      } else {
+        const delGestor = ['En sprint', 'Cerrado'].includes(target);
+        poner(d, 'Estado del alcance', target, delGestor
+          ? 'Propuesta derivada del avance del diseño; la confirma el gestor de proyectos con el sprint de GitLab.'
+          : 'Propuesta de estado de alcance derivada de la preparación y construcción del paquete.');
+      }
     }
   }
   if (sinHuella.length) avisos.push(`${sinHuella.length} documentos sin huella verificada: la invalidación descendente tiene cobertura incompleta.`);

@@ -215,3 +215,9 @@ test('planes: deduplica un ID idéntico y bloquea conflicto o null', () => {
   assert.throws(() => deduplicarPlan([{ id: 'Q-901', texto: 'Uno' }, { id: 'Q-901', texto: 'Dos' }]));
   assert.throws(() => deduplicarPlan([{ id: 'Q-901', dato: null }]));
 });
+test('cascada: un paquete En sprint no retrocede por cálculo; el sprint lo decide la planificación', () => {
+  const pagina = (id, alcance) => ({ properties: { ID: { rich_text: [{ plain_text: id }] }, 'Estado del alcance': { select: { name: alcance } } } });
+  const r = calcular([doc('DSP-901', { referencias: ['UXR-901'] }), doc('UXR-901')], [q({ estado: 'Abierta' })], { paginas: [pagina('DSP-901', 'En sprint')] });
+  assert.ok(!r.propuestas.some(p => p.id === 'DSP-901' && p.propiedad === 'Estado del alcance'));
+  assert.ok(r.avisos.some(a => /DSP-901.*no se propone retroceso/.test(a)));
+});
