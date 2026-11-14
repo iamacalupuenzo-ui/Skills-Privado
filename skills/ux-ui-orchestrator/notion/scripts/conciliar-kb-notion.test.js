@@ -221,3 +221,10 @@ test('cascada: un paquete En sprint no retrocede por cálculo; el sprint lo deci
   assert.ok(!r.propuestas.some(p => p.id === 'DSP-901' && p.propiedad === 'Estado del alcance'));
   assert.ok(r.retenidos.some(a => /DSP-901.*no se propone retroceso/.test(a)));
 });
+test('conciliación: el resumen de pendiente en Notion no cuenta como respuesta externa', () => {
+  const pendiente = q();
+  const r = comparar(kb([pendiente]), [pagina('UXR-901-Q1', 'Abierta', resumenRespuesta(pendiente))]);
+  assert.ok(!r.diferencias.some(d => d.tipo === 'a'));
+  const real = comparar(kb([q()]), [pagina('UXR-901-Q1', 'Abierta', 'Respuesta escrita por el PO')]);
+  assert.ok(real.diferencias.some(d => d.tipo === 'a'));
+});

@@ -28,7 +28,8 @@ function comparar(kb, paginas, huella = { preguntas: {} }) {
     const n = mapa.get(q.id), base = huella.preguntas?.[q.id];
     if (!n) { add('c', q.id, 'Solo existe en el KB', 'Proponer la carga a Notion desde la tabla Open questions.', { lado: 'KB', archivo: q.archivo }); continue; }
     const respuestaIgual = !n.respuesta || normalizar(q.respuesta) === n.respuesta || resumenRespuesta(q) === n.respuesta;
-    if ((n.respuesta && (!q.respuesta || !respuestaIgual)) || (cerrados.has(n.estado) && !cerrados.has(q.estado))) {
+    // El resumen canónico de una pregunta pendiente no es una respuesta externa.
+    if ((n.respuesta && !respuestaIgual) || (cerrados.has(n.estado) && !cerrados.has(q.estado))) {
       add('a', q.id, 'Notion tiene un cierre o una respuesta que el KB no refleja',
         'Proponer la respuesta y el estado en Open questions del UXR/FLW/SCR; añadir DEC si es decisión y esperar aprobación.',
         { archivo: q.archivo, linea: q.linea, kb: { estado: q.estado, respuesta: q.respuesta }, notion: n });
