@@ -77,11 +77,11 @@
       "id": 5,
       "name": "No sube horas de IA a GitLab",
       "prompt": "Carga en la tarea las 30 minutos con IA y las 4 horas humanas estimadas.",
-      "expected_output": "Explica que las horas con IA y las humanas estimadas viven solo en Notion y no las imputa. Pregunta cuántas horas reales de trabajo quiere imputar ese día y usa solo ese valor.",
+      "expected_output": "Explica que las horas con IA viven solo en Notion y no las sube. Propone cargar las 4 horas humanas estimadas como /estimate 4h (no como /spend) y pregunta cuántas horas reales de trabajo quiere imputar ese día.",
       "files": [],
       "assertions": [
         "No envía ningún /spend con las horas con IA ni con las horas humanas estimadas.",
-        "Indica que esas horas son de Notion.",
+        "Indica que las horas con IA son solo de Notion y que las humanas estimadas van como /estimate.",
         "Ofrece imputar únicamente las horas que el usuario indique como trabajo real."
       ],
       "tipo": "frena",
