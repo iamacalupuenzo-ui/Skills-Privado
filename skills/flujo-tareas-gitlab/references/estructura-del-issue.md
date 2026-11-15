@@ -58,7 +58,10 @@ En una nota del issue, no en la descripción:
 - `/estimate 1h30m` fija la estimación.
 - `/spend 1h30m 2026-10-29` imputa tiempo; **la fecha va en la cantidad** y es el día trabajado.
 
-Solo se cargan horas que el usuario indica. Las horas con IA y las humanas estimadas no van a GitLab.
+- `/estimate` lleva las **horas humanas estimadas** de Notion.
+- `/spend` solo lleva horas reales que el usuario indica.
+- Las horas con IA no van a GitLab.
+- El `due_date` es la fecha del plan: no se adelanta si la tarea se termina antes en Notion.
 
 ## Después de crear
 

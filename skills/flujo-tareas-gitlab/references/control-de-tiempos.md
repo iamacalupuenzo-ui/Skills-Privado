@@ -50,4 +50,4 @@ GitLab 14.2 no permite editar un registro de tiempo. Se corrige con la acción r
 
 ## Qué no va a GitLab
 
-Las horas con IA y las horas humanas estimadas viven solo en Notion (B3). Aquí van únicamente las horas reales de trabajo que el usuario indica.
+Las horas con IA viven solo en Notion (B3). Las horas humanas estimadas van como `/estimate`, no como `/spend`. Con `/spend` van únicamente las horas reales de trabajo que el usuario indica.

@@ -25,8 +25,8 @@
     {
       "id": 2,
       "name": "Cambio solo de CSS sin subir versión",
-      "prompt": "Es solo un ajuste de color en web-backoffice, no hace falta tocar la versión. Sube esto a develop.",
-      "expected_output": "Explica que sin versión nueva QA conserva la imagen anterior y que la versión debe subir y coincidir en los cinco sitios (package.json, package-lock.json líneas 3 y 9, Dockerfile, chart/Chart.yaml, chart/values.yaml). Verifica con grep. Pide confirmación antes de subir la rama.",
+      "prompt": "Es solo un ajuste de color en web-backoffice, no hace falta tocar la versión. Súbelo a DEV.",
+      "expected_output": "Explica que sin versión nueva DEV conserva la imagen anterior y que la versión debe subir y coincidir en los cinco sitios (package.json, package-lock.json líneas 3 y 9, Dockerfile, chart/Chart.yaml, chart/values.yaml). Verifica con grep. Pide confirmación antes de subir la rama.",
       "files": [],
       "assertions": [
         "Afirma que todo cambio desplegable sube de versión.",
@@ -48,13 +48,13 @@
       "id": 3,
       "name": "MR de una micro UI sin su pareja",
       "prompt": "Abre el MR de microui-bo-tenants a develop. El del Shell lo hacemos mañana.",
-      "expected_output": "Identifica a web-backoffice como la pareja. Avisa que un MR sin su pareja rompe la carga si el DS difiere, pide verificar que ambos fijan el mismo DS y propone enlazar los dos MR y fusionarlos y desplegarlos juntos. El MR se asigna a César.",
+      "expected_output": "Identifica a web-backoffice como la pareja. Avisa que un MR sin su pareja rompe la carga si el DS difiere, pide verificar que ambos fijan el mismo DS y propone enlazar los dos MR y fusionarlos y desplegarlos juntos. Corrige el destino: nuestros MR de producto van a integration (DEV), con Luis de revisor, nunca a develop.",
       "files": [],
       "assertions": [
         "Nombra a web-backoffice como pareja de microui-bo-tenants.",
         "Avisa del riesgo de publicar un lado sin el otro.",
         "Verifica o pide verificar que ambos fijan el mismo DS exacto.",
-        "El MR va a develop y se asigna a César, sin fusionarlo."
+        "El MR va a integration (no a develop), con Luis (lrodriguez) de revisor, sin fusionarlo."
       ],
       "tipo": "ruta",
       "cubre": [

@@ -23,6 +23,8 @@ const casos = [
   ['deny', 'npm publish'],
   ['deny', 'git push origin develop'],
   ['deny', 'git push origin HEAD:main'],
+  ['deny', 'git push origin integration'],
+  ['deny', 'curl -X POST --data-binary {"source_branch":"integration","target_branch":"develop"} https://project.comsatel.com.pe/api/v4/projects/9/merge_requests'],
   ['deny', 'git push origin feature/x:release'],
   ['deny', 'git push --force origin feature/x'],
   ['deny', 'git push -f'],
@@ -35,6 +37,7 @@ const casos = [
   ['deny', 'curl -H "PRIVATE-TOKEN: glpat-abcdefghijklmnopqrst" https://x/api/v4/user'],
   // Piden confirmación
   ['ask', 'git push -u origin feature/mejora-mapa'],
+  ['ask', 'git push -u origin CLF_Feature_108'],
   ['ask', 'git -c credential.helper= push origin feature/ds-1-9-3'],
   ['ask', 'curl -X POST -H "PRIVATE-TOKEN: $t" --data-binary @mr.json https://project.comsatel.com.pe/api/v4/projects/9/merge_requests'],
   // Pasan sin ruido

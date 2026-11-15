@@ -18,9 +18,12 @@ Registry responda con esa versión exacta.
 
 - **Quien desarrolla:** rama `feature/*` → merge request a `develop`. El
   pipeline `verify` corre en cada MR. No crea tags ni publica.
-- **Quien libera (Cesar Quevedo hoy):** fusiona `develop` → `release`, crea el
-  tag `ds-v<versión>` sobre un commit de `release` y el job `publish` del
-  pipeline publica con `CI_JOB_TOKEN`. No hay token personal de escritura.
+- **Desde la 1.15 cada rama publica su prerelease** (`feature/*` → `-dev.N`,
+  `develop` → `-qa.N`, `release` → `-pre.N`) y `main` publica la estable con el
+  job **manual** `publish`; el job `tag ds` crea `ds-v<versión>`. Nadie crea
+  tags a mano. Enzo fusiona a `develop` y `release`; Cesar Quevedo fusiona
+  `release` → `main` y ejecuta `publish`. Publica con `CI_JOB_TOKEN`. Detalle
+  en el skill `flujo-ds`, `references/publicar-el-ds.md`.
 - **Consumidor:** lee el registro de instancia
   `https://project.comsatel.com.pe/api/v4/packages/npm/` con un token propio
   (`read_package_registry` o `read_api`) en la variable de entorno
@@ -41,9 +44,10 @@ Registry responda con esa versión exacta.
 
 ## Publicación y evidencia
 
-La publica el pipeline al subir el tag; no se ejecuta `npm publish` a mano. El
-job verifica que el tag coincida con la versión del `package.json` y que apunte
-a un commit de `release`. Luego confirmar desde una máquina consumidora:
+La publica el pipeline (prereleases solas; la estable con `publish` en `main`);
+no se ejecuta `npm publish` a mano. El job de `main` falla si `main` no contiene
+la punta de `release` o si la versión ya existe como estable. Luego confirmar
+desde una máquina consumidora:
 
 ```powershell
 npm view @comsatel/ui-components@<version> version --registry=https://project.comsatel.com.pe/api/v4/packages/npm/
