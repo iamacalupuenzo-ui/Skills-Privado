@@ -9,7 +9,7 @@ description: >
   estatus". No diseña pantallas (usa ux-ui-orchestrator), no escribe el código de una pantalla
   (usa angular-product-builder) ni gestiona épicas ni Notion (usa product-orchestrator).
 metadata:
-  version: "1.2.2"
+  version: "1.3.0"
 ---
 
 # Orquestador de desarrollo — Comsatel Flotas
@@ -30,6 +30,7 @@ Subes la rama, abres el MR y lo asignas a César; la fusión y la etiqueta son s
 - `references/convenciones-comunes.md` — commits, MR, ramas, tokens y trampas de Windows. Leer antes de commitear o abrir un MR.
 - `references/estatus.md` — cómo evaluar «¿cómo vamos?» con evidencia. Leer cuando pidan estatus.
 - `references/hooks-bloqueantes.md` — qué acciones frena el guardia de GitLab (fusionar, etiquetar, publicar, push a ramas protegidas, token), cuáles pide confirmar y cómo instalarlo desde `hooks/`. Leer cuando un comando aparezca como BLOQUEADO.
+- `references/respuesta-de-cierre.md` — estructura única de la respuesta que cierra un paso (resultado, «Lo que hice», «Lo que necesito de ti», «Lo siguiente»). Leer antes de cerrar.
 
 ## Antes del desarrollo: la documentación de UX
 
@@ -112,6 +113,6 @@ El desarrollo parte de documentación ya generada. Esa etapa tiene su propio orq
 
 ## Formato de respuesta
 
-- Declarar el flujo elegido en la primera línea.
-- Cerrar con: qué se hizo, qué se verificó (cifras y estado real), qué falta y quién lo hace.
+- Al empezar, declarar el flujo elegido en la primera línea.
+- Al cerrar un paso, seguir `references/respuesta-de-cierre.md`: primera línea con el resultado, «Lo que hice:», «Lo que necesito de ti:» y «Lo siguiente…». Dentro de «Lo que hice» va lo verificado con cifras y estado real; lo que falta va en «Lo que necesito de ti» o en «Lo siguiente», con quién lo hace.
 - Español, conciso, sin emojis decorativos. Lo no verificado se dice como tal.

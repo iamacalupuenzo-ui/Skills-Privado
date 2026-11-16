@@ -17,7 +17,7 @@ description: >
   componentes dentro del sistema de diseño, no clona su repositorio y no copia
   sus demos.
 metadata:
-  version: "2.9.1"
+  version: "2.10.0"
 ---
 
 # Angular Product Builder
@@ -52,6 +52,9 @@ Este skill diseña y construye. Versionar, publicar, desplegar y comprobar QA no
 
 ## Referencias
 
+- `references/respuesta-de-cierre.md` — estructura única de la respuesta que cierra
+  un paso (resultado, «Lo que hice», «Lo que necesito de ti», «Lo siguiente»).
+  Leer antes de cerrar INICIAR, CONSTRUIR o ACTUALIZAR.
 - `references/design-system-contract.md` — leer siempre antes de instalar,
   iniciar o importar un sistema de diseño. Reglas que valen para cualquier
   sistema y cómo registrar la elección.
@@ -369,7 +372,9 @@ evaluar, no se edita.
 - Cierre de PLANIFICAR: plan, decisiones pendientes y no-ediciones.
 - Cierre de AUDITAR: informe con evidencia, backlog priorizado, decisiones
   conscientes y qué necesita aprobación; sin ediciones de código.
-- Cierre de INICIAR/CONSTRUIR/ACTUALIZAR: archivos, sistema de diseño y
+- Cierre de INICIAR/CONSTRUIR/ACTUALIZAR: seguir `references/respuesta-de-cierre.md`
+  (resultado en la primera línea, «Lo que hice:», «Lo que necesito de ti:» y
+  «Lo siguiente…»). Dentro de «Lo que hice», según aplique: archivos, sistema de diseño y
   versión, componentes públicos usados, estados verificados, comandos
   ejecutados (o no ejecutados por regla del repositorio), reglas del
   repositorio aplicadas y cualquier caso en que una regla del repositorio se

@@ -8,7 +8,7 @@ description: >
   servidores", "revisa en el navegador", "¿pasa todo?" o antes de publicar. No escribe el
   cambio (usa angular-product-builder) ni lo publica (usa flujo-producto o flujo-ds).
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # Verificar la calidad
@@ -21,6 +21,7 @@ de pruebas, una medida del navegador o una respuesta de QA. Lo que no se pudo ob
 - `references/servidores-locales.md` — levantar, reiniciar y comprobar los servidores. Leer al iniciar y después de `ng test` o `ng build`.
 - `references/navegador-y-accesibilidad.md` — verificación en navegador, accesibilidad y contraste. Leer al verificar UI.
 - `references/axe-movil-y-teclado.md` — cómo medir con axe, en móvil a 390 px y con el teclado en un combobox, con navegador visible y cifras. Leer antes de afirmar «sin violaciones» o «el teclado funciona».
+- `references/respuesta-de-cierre.md` — estructura única de la respuesta que cierra un paso (resultado, «Lo que hice», «Lo que necesito de ti», «Lo siguiente»). Leer antes de cerrar.
 
 ## GUARD — verificar contexto
 
@@ -70,4 +71,4 @@ Salida siempre **filtrada**: solo conteos (`Test Files`, `Tests`, `pass`, `fail`
 
 ## Formato de respuesta
 
-Cerrar con una línea por verificación: qué se corrió, cifra (`N de N`), y si quedó algo sin verificar.
+Al cerrar un paso, seguir `references/respuesta-de-cierre.md`: primera línea con el resultado, «Lo que hice:», «Lo que necesito de ti:» y «Lo siguiente…». En «Lo que hice» va una línea por verificación: qué se corrió, cifra (`N de N`) y si quedó algo sin verificar.

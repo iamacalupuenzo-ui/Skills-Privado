@@ -40,6 +40,7 @@ const warnings = [];
 const SHARED_REFERENCES = [
   ['orquestador-desarrollo/references/hooks-bloqueantes.md', 'flujo-ds/references/hooks-bloqueantes.md', 'flujo-producto/references/hooks-bloqueantes.md'],
   ['orquestador-desarrollo/references/mapa-de-repos.md', 'flujo-producto/references/mapa-de-repos.md'],
+  ['orquestador-desarrollo/references/respuesta-de-cierre.md', 'ux-a-desarrollo/references/respuesta-de-cierre.md', 'flujo-producto/references/respuesta-de-cierre.md', 'flujo-ds/references/respuesta-de-cierre.md', 'verificar-calidad/references/respuesta-de-cierre.md', 'angular-product-builder/references/respuesta-de-cierre.md'],
 ];
 
 // Skills que ya son instalables solos: un `../otro-skill/` aquí rompe. En el resto, aviso.

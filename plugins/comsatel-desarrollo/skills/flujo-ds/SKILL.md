@@ -9,7 +9,7 @@ description: >
   el DS a los productos". No construye pantallas de producto (usa flujo-producto) ni audita
   tokens (usa comsatel-design-system).
 metadata:
-  version: "1.0.2"
+  version: "1.1.0"
 ---
 
 # Flujo del Design System
@@ -23,6 +23,7 @@ tiempo.
 - `references/publicar-el-ds.md` — los pasos exactos de `develop` a `main`, con cómo verificar cada uno. Leer al publicar.
 - `references/subir-ds-a-productos.md` — cómo se consume una versión nueva en los cuatro productos. Leer después de publicar.
 - `references/hooks-bloqueantes.md` — qué frena el guardia (etiquetas `ds-v*`, `npm publish`, push a ramas protegidas) y por qué: las etiquetas y la publicación del DS las ejecuta César, no el agente.
+- `references/respuesta-de-cierre.md` — estructura única de la respuesta que cierra un paso (resultado, «Lo que hice», «Lo que necesito de ti», «Lo siguiente»). Leer antes de cerrar.
 
 ## GUARD — verificar contexto
 
@@ -89,4 +90,4 @@ Si falta un componente o variante, no se inventa un envoltorio: se pregunta, y s
 
 ## Formato de respuesta
 
-Declarar el modo. Cerrar con: qué cambió, qué controles corrieron (cifras), en qué paso del camino está (`develop`, `release`, etiqueta, `main`) y qué falta. Si el cambio se ve en pantalla, dejar la captura (ruta y enlace) y la URL del componente en el catálogo.
+Declarar el modo. Declarar el modo al empezar. Al cerrar un paso, seguir `references/respuesta-de-cierre.md`: primera línea con el resultado, «Lo que hice:», «Lo que necesito de ti:» y «Lo siguiente…». En «Lo que hice» van los controles que corrieron (cifras) y en qué paso del camino está (`develop`, `release`, etiqueta, `main`); lo que falta va en «Lo siguiente». Si el cambio se ve en pantalla, dejar la captura (ruta y enlace) y la URL del componente en el catálogo.

@@ -9,7 +9,7 @@ description: >
   productos" o "despliega a QA". No cambia el DS (usa flujo-ds) ni construye la pantalla desde
   cero (usa angular-product-builder).
 metadata:
-  version: "1.0.4"
+  version: "1.1.0"
 ---
 
 # Flujo de producto
@@ -26,6 +26,7 @@ desplegar y comprobar.
 - `references/diagnostico-qa.md` — cómo saber qué falta cuando QA no carga. Leer ante un error en QA.
 - `references/bff-de-prueba.md` — el BFF de prueba de flotas y sus cuentas. Leer al tocar Web Cliente en QA.
 - `references/hooks-bloqueantes.md` — qué frena el guardia (fusionar, etiquetar, push a `develop`, token) y qué pide confirmar (subir la rama, abrir el MR). El agente sube la rama, abre el MR y lo asigna a César; la fusión es de él.
+- `references/respuesta-de-cierre.md` — estructura única de la respuesta que cierra un paso (resultado, «Lo que hice», «Lo que necesito de ti», «Lo siguiente»). Leer antes de cerrar.
 
 ## GUARD — verificar contexto
 
@@ -85,4 +86,4 @@ desplegar y comprobar.
 
 ## Formato de respuesta
 
-Declarar el modo. Cerrar con: qué cambió, versión, MR (con pareja), suites con cifras, estado del despliegue en QA y lo pendiente por responsable.
+Declarar el modo. Declarar el modo al empezar. Al cerrar un paso, seguir `references/respuesta-de-cierre.md`: primera línea con el resultado, «Lo que hice:», «Lo que necesito de ti:» y «Lo siguiente…». En «Lo que hice» van la versión, el MR (con su pareja), las suites con cifras y el estado del despliegue en QA; lo pendiente va por responsable en «Lo que necesito de ti» o «Lo siguiente».

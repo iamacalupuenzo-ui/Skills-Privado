@@ -9,7 +9,7 @@ description: >
   pantalla?" o "compara con el piloto". No diseña (usa ux-ui-orchestrator), no construye la
   pantalla (usa angular-product-builder) ni publica (usa flujo-producto).
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # De UX a desarrollo
@@ -23,6 +23,7 @@ donde corresponde: en un documento, nunca como rótulo en la interfaz.
 - `references/estados-de-pantalla.md` — los estados que toda pantalla debe cubrir y cómo se muestran. Leer antes de construir.
 - `references/registro-de-decisiones.md` — cómo registrar decisiones del responsable de diseño, desvíos de la fuente y brechas. Leer al decidir o desviarse.
 - `references/iteracion-visual.md` — cómo iterar con capturas, comparar con el piloto y verificar en el navegador. Leer al aplicar mejoras de diseño.
+- `references/respuesta-de-cierre.md` — estructura única de la respuesta que cierra un paso (resultado, «Lo que hice», «Lo que necesito de ti», «Lo siguiente»). Leer antes de cerrar.
 
 ## GUARD — verificar contexto
 
@@ -67,4 +68,4 @@ donde corresponde: en un documento, nunca como rótulo en la interfaz.
 
 ## Formato de respuesta
 
-Declarar el modo. Cerrar con: qué se bajó (estados y reglas), qué quedó registrado como decisión o desvío, qué se verificó en el navegador y qué falta de validación.
+Declarar el modo. Declarar el modo al empezar. Al cerrar un paso, seguir `references/respuesta-de-cierre.md`: primera línea con el resultado, «Lo que hice:», «Lo que necesito de ti:» y «Lo siguiente…». En «Lo que hice» van qué se bajó (estados y reglas), qué quedó registrado como decisión o desvío y qué se verificó en el navegador; lo que falta de validación va en «Lo que necesito de ti».
