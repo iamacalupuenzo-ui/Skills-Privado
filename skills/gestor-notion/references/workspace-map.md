@@ -77,6 +77,23 @@ Este espacio es la fuente de verdad para el seguimiento operativo de encargos, c
 
 ---
 
+## Base Pantallas — contenido en Notion
+
+**Collection ID:** `collection://a101a7d0-6388-8200-ace3-0747fc33b0fb` · [Pantallas](https://app.notion.com/p/c5a1a7d06388839b8eea015f0818ebce).
+Criterio propio de Enzo, aprobado el 2026-11-16; verificar el schema vivo antes de escribir.
+
+La propiedad select **Contenido en Notion** distingue tres niveles según el cuerpo:
+
+- **Solo ficha (ver KB):** propiedades y enlace al KB, con el cuerpo vacío.
+- **Resumen:** pregunta previa, «En 30 segundos» (máximo tres líneas), qué muestra, estados requeridos explicados, preguntas abiertas con ID si existen y enlace al KB.
+- **Completa:** estructura de construcción como [SCR-086](https://app.notion.com/p/4161a7d063888176b832f3c8a69c2cd9): pregunta previa, «En 30 segundos», cómo funciona, capturas, Recursos con INV y DEC, y estado.
+
+Una pantalla nueva arranca como **Solo ficha (ver KB)** o **Resumen** y pasa a **Completa** al entrar en construcción, cuando tiene esa estructura. El nivel describe el cuerpo real; no equivale a aprobar o validar la pantalla. No marcar Completa solo por cambiar el estado del documento.
+
+El **KB es la fuente**: en Notion se resume y se enlaza, sin copiar el texto completo, porque las copias se separan con el tiempo. INV, DEC y anexos van como **subpáginas dentro de Recursos de la misma pantalla**, justo debajo de la pregunta previa; nunca como registros sueltos en una base aparte. En Notion usar encabezados 2 y 3, nunca 1.
+
+---
+
 ## Ambiente 2 — Process OS
 
 **Hub:** https://app.notion.com/p/3a4a01dc169a8027b9b5d5e0bd0eb7e0
