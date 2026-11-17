@@ -59,6 +59,16 @@ El instalador copia el guardia a `~/.claude/hooks/` (así `skils update` no lo b
 solo hook `PreToolUse` para Bash y PowerShell, deja copia de respaldo de `settings.json` y no
 toca los demás hooks. Ábrelo en una sesión nueva para que se cargue.
 
+## Si hay que reescribir una rama ya subida
+
+El push forzado sigue bloqueado aunque el usuario lo autorice en el chat. Tampoco se rodea:
+borrar la rama remota y volver a subirla es lo mismo que forzar. Lo que sí se hace:
+
+1. Comprobar con `git ls-remote origin <rama>` que el remoto sigue en el SHA que subiste tú.
+2. Darle al usuario el comando para que lo ejecute él, con `!` en Claude Code:
+   `git push --force-with-lease=<rama>:<sha-esperado> origin <rama> -o ci.skip`
+3. Prevenirlo: separar las historias en ramas antes del primer push.
+
 ## Cómo identificar qué hooks tienes
 
 - Los de **Orca** ejecutan `~\.orca\agent-hooks\claude-hook.cmd`: solo informan el estado del

@@ -9,7 +9,7 @@ description: >
   el DS a los productos". No construye pantallas de producto (usa flujo-producto) ni audita
   tokens (usa comsatel-design-system).
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # Flujo del Design System
@@ -69,7 +69,8 @@ Si falta un componente o variante, no se inventa un envoltorio: se pregunta, y s
 - **B5 — Los cambios al DS no se publican sin confirmación del usuario.**
 - **B6 — Un fallo de infraestructura del pipeline** (timeout al bajar una imagen de Docker Hub) se reintenta; no se interpreta como error del cambio.
 - **B7 — Un MR apilado no se fusiona después de su base sin reapuntarlo.** Un MR apilado se fusiona en la rama de su base, no en `develop`. Hay dos órdenes seguros: (1) fusionar primero el de arriba (cae en la rama base) y después la base, que lleva ambos a `develop`; (2) fusionar la base y, **antes** de fusionar el de arriba, reapuntarlo a `develop` (`PUT /merge_requests/:iid` con `target_branch`), o borrar la rama de la base al fusionarla para que GitLab lo reapunte solo. Lo que falla es fusionar la base y luego el de arriba sin reapuntar: el cambio queda en una rama que ya se fusionó y no llega a `develop`. Se avisa a quien fusiona, y tras cada fusión se verifica por API que el cambio está en `develop` (un archivo nuevo con 200 en `ref=develop` y la versión en `package.json`). Ocurrió con !55 el 11-nov-2026: se fusionó en la rama de !54 cuando !54 ya estaba en `develop` y hubo que abrir !56.
-- **B8 — Una versión sin publicar no se fija en un producto.** Para probarla se copia `dist/comsatel-ds` sobre `node_modules/@comsatel/ui-components` del producto y se reinicia su servidor; el `package.json` del producto sigue en la versión publicada hasta que exista la etiqueta. La copia no se versiona y un `npm ci` la borra.
+- **B8 — Una versión sin publicar no se fija en un producto.** Para probarla se copia `dist/comsatel-ds` sobre `node_modules/@comsatel/ui-components` del producto y se reinicia su servidor; el `package.json` del producto sigue en la versión publicada hasta que exista la etiqueta. La copia no se versiona y un `npm ci` la borra. Antes de subir el producto, se listan las ramas del DS sin publicar de las que depende y se suben también (rama `feature/*`, sin MR), para que otra computadora pueda compilarlas; la verificación del producto se hace en un worktree aparte con `npm ci` y la copia del `dist` en **su** `node_modules`.
+- **B9 — Otro agente en el mismo repositorio del DS se coordina, no se pisa.** Si dos ramas tocan el mismo archivo (por ejemplo, dos ramas de brechas sobre `GAPS.md`), se respalda la ajena (`respaldo/<rama>-<fecha>`), se apila sobre la tuya y el conflicto se resuelve conservando las filas de ambas. Los MR a `develop` llevan el orden en el título. Se le pide al usuario que avise al otro agente que su rama fue reescrita y que no vuelva a subir la versión anterior.
 
 ## Racionalizaciones comunes
 
@@ -84,6 +85,8 @@ Si falta un componente o variante, no se inventa un envoltorio: se pregunta, y s
 
 - `check:release-notes` no encuentra la nota de la versión.
 - `release` y la etiqueta apuntan a commits distintos.
+- La etiqueta `ds-vX.Y.Z` existe, pero `npm view @comsatel/ui-components@X.Y.Z version` (desde una carpeta con `.npmrc`) no devuelve la versión: no está publicada.
+- Un producto compila en local pero no en un worktree limpio con `npm ci`: usa algo que solo existe en una rama local del DS (B8).
 - Un producto fija un DS que no existe en el registro.
 - La API de GitLab, `git fetch` o `git push` responden 503: es la VPN, no el cambio; se pide que la activen y no se reintenta en bucle.
 - `npm run build:lib` falla con EBUSY: hay un `ng serve` del 4200 corriendo; detenerlo y reparar el enlace de `node_modules/@comsatel/ui-components`.

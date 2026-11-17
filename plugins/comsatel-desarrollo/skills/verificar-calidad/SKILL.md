@@ -8,7 +8,7 @@ description: >
   servidores", "revisa en el navegador", "¿pasa todo?" o antes de publicar. No escribe el
   cambio (usa angular-product-builder) ni lo publica (usa flujo-producto o flujo-ds).
 metadata:
-  version: "1.2.0"
+  version: "1.3.0"
 ---
 
 # Verificar la calidad
@@ -35,8 +35,8 @@ de pruebas, una medida del navegador o una respuesta de QA. Lo que no se pudo ob
 | Quién / cuándo | Qué corre | Qué no |
 |---|---|---|
 | Un agente delegado (Codex) durante el desarrollo | Los specs del módulo tocado y el test del mock correspondiente; reporta conteos y fallos | Nunca la suite completa ni `ng build` |
-| Quien construye, tras cada iteración | Specs del módulo (`ng test --watch=false --include <ruta>`) y lint de lo cambiado | — |
-| Quien **publica**, antes de subir | Suite completa: `lint`, `test:ci`, `test:mock`, `test:rules` si existen y `build` | — |
+| Quien construye, tras cada iteración | Specs del módulo (`ng test --watch=false --include <ruta>`), `lint` y `test:rules` si existe | Dejar `lint` y `test:rules` para el final |
+| Quien **publica**, antes de subir | Suite completa: `lint`, `test:ci`, `test:mock`, `test:rules` si existen y `build`, en un worktree aparte con `npm ci` | `ng build` en el worktree del `ng serve` |
 | El DS | `check:docs`, `test:ci`, `check:release-notes` si va a etiquetarse | — |
 
 Salida siempre **filtrada**: solo conteos (`Test Files`, `Tests`, `pass`, `fail`) y los fallos.
@@ -55,6 +55,7 @@ Salida siempre **filtrada**: solo conteos (`Test Files`, `Tests`, `pass`, `fail`
 
 | Excusa | Realidad |
 |---|---|
+| «`test:ci` está en verde, terminé la iteración» | Pasaron 227 pruebas con 2 errores de lint y 9 incumplimientos de `test:rules` (px sueltos, `::ng-deep`, `100vw`). Se corren en cada iteración. |
 | «Pasó el módulo, publico» | La suite completa puede romperse en otro lugar (B3). |
 | «Los servidores siguen arriba» | Un puerto que escucha no prueba que sirva el código nuevo (B2). |
 | «El test falla por un cambio mío, lo borro» | Se actualiza al nuevo comportamiento (B6). |

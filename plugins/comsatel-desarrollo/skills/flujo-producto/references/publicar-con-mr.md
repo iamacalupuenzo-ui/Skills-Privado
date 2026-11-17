@@ -1,6 +1,6 @@
 # Publicar un cambio de producto con MR
 
-Todo paso de subida pide la confirmación del usuario (B1). Orden:
+Todo paso de subida pide la confirmación del usuario (B1). Si el cambio depende de un DS sin publicar o el usuario pide subir sin fusionar, no abras MR: sigue `subir-sin-fusionar.md` y, para el orden en que se fusiona después, `orden-de-fusion-ds-sin-publicar.md`. Orden:
 
 ## 1. Preparar
 
@@ -13,7 +13,8 @@ Todo paso de subida pide la confirmación del usuario (B1). Orden:
 
 1. Subir la versión en los cinco sitios (`version-en-cinco-sitios.md`).
 2. Suite completa con salida filtrada: `npm run lint`, `npm run test:ci`, `npm run test:mock` y `npm run test:rules` si existen, y `npm run build`. Anotar las cifras.
-3. Reiniciar los servidores locales después (`ng test` y `ng build` los rompen).
+3. Correrla en un worktree aparte con `npm ci` (`git worktree add ../publicar-ds <rama>`), no en el del `ng serve`: así se detecta lo que solo compila gracias a una copia local del DS en `node_modules` (B10). Si lo corriste en el worktree del servidor, reinícialo después (`ng test` y `ng build` lo rompen).
+4. Si trajiste `package.json` de otra rama (`git checkout <sha> -- package.json`), compara su `version` con la de `origin/develop`: puede haber bajado. Corrige `package.json` y el lock.
 
 ## 3. Subir y abrir el MR
 

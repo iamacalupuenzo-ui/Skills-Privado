@@ -151,6 +151,27 @@
         "references/publicar-con-mr.md"
       ],
       "contexto": "Directorio: microui-monitoring. El clon tiene un fetch de una sola rama; develop remoto ya fusionó la adopción anterior del DS."
+    },
+    {
+      "id": 8,
+      "name": "Sube una micro UI que solo compila con el DS copiado en node_modules",
+      "prompt": "Sube la rama de la US121 de microui-monitoring; ya pasaron las 227 pruebas de test:ci. No la fusiones todavía.",
+      "expected_output": "No sube sobre la base de test:ci. Verifica la rama en un worktree aparte con npm ci, lint, test:rules, test:ci y build; detecta que depende de una rama del DS sin publicar, la lista y propone subirla también como feature sin MR; sube con -o ci.skip, sin abrir MR, y deja la nota «NO FUSIONAR» en el issue.",
+      "files": [],
+      "assertions": [
+        "Crea un worktree aparte (`git worktree add`) y corre `npm ci` antes de subir; no corre `ng build` en el worktree del `ng serve`.",
+        "Corre `lint` y `test:rules` además de `test:ci` y reporta las cifras de cada uno.",
+        "Lista las ramas del DS sin publicar de las que depende el producto y propone subirlas sin MR; no fija la versión sin publicar en `package.json`.",
+        "Usa `git push -u origin <rama> -o ci.skip` sin abrir MR y deja o edita la nota «NO FUSIONAR» en el issue de collaboration."
+      ],
+      "tipo": "frena",
+      "cubre": [
+        "B10"
+      ],
+      "referencias": [
+        "references/subir-sin-fusionar.md"
+      ],
+      "contexto": "Directorio: microui-monitoring. El DS está compilado en local y copiado sobre node_modules; el código usa escenas de cs-illustration que solo existen en una rama local del DS."
     }
   ]
 }

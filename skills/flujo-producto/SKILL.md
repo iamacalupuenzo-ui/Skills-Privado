@@ -9,7 +9,7 @@ description: >
   productos" o "despliega a QA". No cambia el DS (usa flujo-ds) ni construye la pantalla desde
   cero (usa angular-product-builder).
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # Flujo de producto
@@ -23,6 +23,8 @@ desplegar y comprobar.
 - `references/uso-del-ds.md` — reglas de uso del DS en el producto. Leer antes de escribir UI.
 - `references/version-en-cinco-sitios.md` — dónde sube la versión y por qué. Leer antes de publicar.
 - `references/publicar-con-mr.md` — pasos de rama, suite, commit, push y MR en pareja. Leer al publicar.
+- `references/subir-sin-fusionar.md` — verificar en un worktree limpio, subir sin MR con `-o ci.skip`, nota «NO FUSIONAR», estructura de ramas `feature/ds-<versión>` y reescritura sin push forzado. Leer cuando el trabajo depende de un DS sin publicar o piden subir sin fusionar.
+- `references/orden-de-fusion-ds-sin-publicar.md` — las tres fases (DS, productos en pareja a `integration`, DEV) y cómo verificar que la versión está en el registro. Leer antes de planear la fusión de ese trabajo.
 - `references/diagnostico-qa.md` — cómo saber qué falta cuando QA no carga. Leer ante un error en QA.
 - `references/bff-de-prueba.md` — el BFF de prueba de flotas y sus cuentas. Leer al tocar Web Cliente en QA.
 - `references/hooks-bloqueantes.md` — qué frena el guardia (fusionar, etiquetar, push a `develop`, token) y qué pide confirmar (subir la rama, abrir el MR). El agente sube la rama, abre el MR y lo asigna a César; la fusión es de él.
@@ -41,6 +43,7 @@ desplegar y comprobar.
 |---|---|---|
 | `MEJORA` | «aplica», «cambia», «mejora» una pantalla | UI con el DS (`uso-del-ds.md`); pequeñas directas, grandes delegadas; verificar en el navegador |
 | `PUBLICAR` | «sube», «abre el MR», «publica» | `version-en-cinco-sitios.md` y `publicar-con-mr.md`; solo con confirmación |
+| `SUBIR SIN FUSIONAR` | «súbelo sin fusionar», «deja las ramas arriba», el código usa un DS sin publicar | `subir-sin-fusionar.md`; el orden posterior, `orden-de-fusion-ds-sin-publicar.md` |
 | `DS` | «sube el DS a los productos» | Rama `feature/ds-*`, `npm install` con el token, suite, MR en pareja (detalle en `flujo-ds`) |
 | `QA` | «no carga», «verifica QA», «despliega» | `diagnostico-qa.md` |
 
@@ -64,6 +67,8 @@ desplegar y comprobar.
 - **B7 — Un fallo de infraestructura se distingue de uno de código** leyendo el registro del job. Solo el de infraestructura se reintenta, con confirmación; el de código se corrige, no se reintenta.
 - **B8 — Nunca imprimir tokens.**
 - **B9 — El estado de `develop` se lee de la API, no de la copia local.** Antes de ramificar, de versionar o de escribir en un MR qué tiene `develop`, se compara su último commit con el de la API; tras abrir el MR se comprueba `has_conflicts` y `diverged_commits_count` (`publicar-con-mr.md`).
+- **B10 — Antes de subir o abrir un MR, cada rama se verifica en un worktree aparte con `npm ci`** (`lint`, `test:rules`, `test:ci`, `build`), sin tocar el worktree del `ng serve`. Una copia local del DS en `node_modules` oculta lo que no está publicado: las ramas del DS de las que depende se listan y se suben también (`subir-sin-fusionar.md`).
+- **B11 — Una rama ya subida no se reescribe con push forzado ni borrándola y volviéndola a subir**, aunque el usuario lo autorice: el guardia lo bloquea y rodearlo cuenta como violarlo. Se verifica el SHA remoto con `git ls-remote` y se le da al usuario el comando `--force-with-lease` para que lo ejecute él con `!`.
 
 ## Racionalizaciones comunes
 
@@ -74,6 +79,9 @@ desplegar y comprobar.
 | «Subo solo la micro UI, el Shell después» | Con DS distinto el remoto no carga (B4). |
 | «La suite del módulo basta para publicar» | La completa corre antes de publicar (B3). |
 | «Pongo el hex aquí y lo cambio luego» | Los hex sueltos no pasan la revisión; usar el token. |
+| «Pasaron las 227 pruebas de `test:ci`, está listo» | Había 2 errores de lint y 9 incumplimientos de `test:rules`; se corren en cada iteración (B3, B10). |
+| «Compila en mi máquina» | Compilaba porque el DS estaba copiado sobre `node_modules`; en un worktree limpio con `npm ci` falló (B10). |
+| «El usuario autorizó el push forzado» | El guardia lo bloquea igual; se le da el comando para que lo ejecute él (B11). |
 | «Hice `git fetch`, `develop` está al día» | En algunos clones el `fetch` trae una sola rama y `origin/develop` queda viejo; traerlo explícito y compararlo con la API (B9). |
 
 ## Señales de alerta
@@ -82,6 +90,8 @@ desplegar y comprobar.
 - Un MR de pareja se abre sin enlazar al otro.
 - `grep` encuentra la versión vieja del DS en README, docs o specs.
 - El servidor local muestra 404 de chunks del DS: reiniciar tras `ng test` o `ng build`.
+- `git checkout <sha> -- package.json` cambió la `version` de la app: compararla con `origin/develop`.
+- La etiqueta `ds-vX.Y.Z` existe, pero `npm view @comsatel/ui-components@X.Y.Z version` no la encuentra: no está publicada.
 - Un MR recién abierto con `has_conflicts: true` o `diverged_commits_count` mayor que 0: la rama partió de un `develop` viejo.
 
 ## Formato de respuesta
