@@ -32,7 +32,7 @@ def build(kb_root, screen: str, profile: str = "production") -> dict:
         "status": "READY", "screen": screen, "handoff": hof.id, "authoritative_design": "governed_design",
         "flow": entry["flow"], "requirements": entry["requirements"],
         "governed_design": {k: gov.get(k) for k in ("tool", "file_ref", "node_ref", "project_ref", "artifact_ref", "version", "approved_by",
-                                                     "states_covered", "responsive_covered")},
+                                                     "states_covered", "responsive_covered", "decision_ref", "evidence_refs", "approved_at", "build_commit")},
         "exploration_lineage": {"authoritative": gov.get("tool") == "stitch", "tool": exp.get("tool"),
                                 "project_ref": exp.get("project_ref"), "artifact_ref": exp.get("artifact_ref"),
                                 "status": exp.get("status")} if exp else None,
@@ -45,6 +45,8 @@ def build(kb_root, screen: str, profile: str = "production") -> dict:
         "human_review": gate.human_review, "gate_result": gate.result, "codes": [], "findings": [],
         "rules": (["Implement the approved governed_design (an approved Stitch artifact); there is no Figma file for this screen."]
                   if gov.get("tool") == "stitch" else
+                  ["Implement only the artifact/version and evidence approved in the human DD; do not substitute another build."]
+                  if gov.get("tool") in {"claude-design", "prototype"} else
                   ["Implement governed_design only; do not use Stitch as the source of truth."]) + [
                   "Do not invent missing states or substitute components; ask (BLOCKED) instead."],
     }

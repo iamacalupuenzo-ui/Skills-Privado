@@ -149,6 +149,7 @@ for (const name of manifest.skills) {
     for (const file of listFiles(dir)) {
       if (!file.endsWith('.md')) continue;
       const body = readFileSync(join(dir, file), 'utf8');
+      if (body.includes("\0")) errors.push(`${name}/${file}: contiene bytes NUL; guardar como UTF-8`);
       if (ENLACE_A_OTRO_SKILL.test(body)) {
         const msg = `${name}/${file}: apunta a otro skill con ../ (copia el recurso dentro del skill)`;
         (AUTONOMOS.includes(name) ? errors : warnings).push(msg);
@@ -277,6 +278,12 @@ for (const entry of readdirSync(skillsDir)) {
   }
 }
 
+for (const area of ['docs', 'research']) {
+  const dir = join(root, area);
+  if (existsSync(dir)) for (const file of listFiles(dir)) {
+    if (file.endsWith('.md') && readFileSync(join(dir, file), 'utf8').includes('\0')) errors.push(area + '/' + file + ': contiene bytes NUL; guardar como UTF-8');
+  }
+}
 for (const w of warnings) console.warn(`AVISO  ${w}`);
 for (const e of errors) console.error(`ERROR  ${e}`);
 console.log(`${manifest.skills.length} skills revisados: ${errors.length} errores, ${warnings.length} avisos`);

@@ -44,9 +44,7 @@ Hay dos formas de gobernar el diseño, y las dos se validan al terminar de const
 1. **En Claude Design**: exploración registrada y elección entre alternativas por una persona (DD).
 2. **Con el prototipo en código**: se construye directo desde los SCR, el Design System y las decisiones, y se valida al terminar.
 
-El gate formal `DESIGN_READY_FOR_DEV` de `ux-development-handoff` hoy solo reconoce Figma o Stitch como `governed_design`: por eso el veredicto es
-**NOT READY para el gate** y **CONDITIONAL para construir directo en front end** (si los SCR están completos y ninguna pregunta bloquea una pantalla).
-**NOT READY** a secas si hay pantallas incompletas. Admitir el prototipo como diseño gobernado en el validador es una decisión humana pendiente.
+El gate formal admite Figma, Stitch, Claude Design y prototipo con sus contratos explícitos. Claude Design/prototipo requieren DD humana, versión exacta y evidencia comprobada. Solo un PASSED real de producción que cubra todas las pantallas permite READY formal; registrar un diseño no basta. Sin esa prueba, mantener NOT READY formal y, si se cumplen sus mínimos, CONDITIONAL para construir directo.
 
 ## QA, skill `test-case-generator`
 

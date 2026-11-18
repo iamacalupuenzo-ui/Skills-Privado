@@ -9,7 +9,7 @@ description: >
   pantallas (usa ux-requirements-analyzer, user-flow-designer y ui-spec-writer), no explora diseño (usa claude-design-orchestrator)
   ni aprueba nada: la UXS nace en draft.
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # ux-context-builder

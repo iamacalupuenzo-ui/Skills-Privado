@@ -2,7 +2,7 @@
 name: ux-ui-orchestrator
 description: Orquesta los skills UX/UI (ux-requirements-analyzer, user-flow-designer, ui-spec-writer, stitch-ui-generator, claude-design-orchestrator, figma-design-validator, accessibility-reviewer, ux-context-builder, ux-development-handoff) para llevar User Stories validadas hasta un paquete de diseño consolidado (UXS), un diseño gobernado y un handoff DESIGN_READY_FOR_DEV, con trazabilidad US→UXR→FLW→SCR→UXS→DTM y compuertas humanas. Úsalo siempre que el usuario pida gestionar, completar, auditar o retomar el diseño UX/UI de punta a punta, preparar pantallas para Claude Design/Desarrollo, cerrar un paquete de diseño (la UXS), evaluar si un SCR está listo, resolver una divergencia Stitch↔Figma, o decida qué skill UX/UI ejecutar y en qué orden, aunque no nombre ningún skill.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # ux-ui-orchestrator
@@ -151,7 +151,7 @@ Orden canónico (omite lo que el escenario no necesite):
 | 4b Consolidación (**GU**): la UXS agrupa todo, exploración incluida | `ux-context-builder` | `audit_ux.py --exigir-uxs` sin `PAQUETE_SIN_UXS` para el paquete; veredicto por consumidor con su razón; preguntas abiertas con responsable; validación humana pendiente |
 | 5 Accesibilidad durante la construcción | `accessibility-reviewer`, sobre micro UI, shell y DS implementados | ARP creado y actualizado mientras se construye, con accesibilidad evaluada sobre lo implementado antes de Validado; ARP con versión evaluada, resultados y evidencia; ningún `pass` sin evaluar; `fail`/`inconclusive` visibles |
 | 6 Diseño gobernado | Claude Design (DD humano), el prototipo validado al terminar de construir, o `figma-design-validator` | Figma es opcional; código validado con Enzo, captura y ARP permite pasar G6 sin Figma. Con Figma/Stitch, `governed_design` por SCR y divergencia `none` o `resolved` |
-| 7 Handoff | `ux-development-handoff` | `validators/cli.py gate` sin `FAILED`/`BLOCKED`; revisión humana pendiente registrada (hoy el gate solo reconoce Figma o Stitch como diseño gobernado) |
+| 7 Handoff | `ux-development-handoff` | `validators/cli.py gate` sin `FAILED`/`BLOCKED`; revisión humana pendiente registrada (Claude Design/prototipo requieren DD humana y evidencia de la versión exacta; ver ux-development-handoff) |
 
 Por qué este orden: el flujo necesita los UXR para listar pantallas; la especificación de pantalla es lo que consume la exploración y evita que invente; la exploración lee las pantallas y su lista preliminar de componentes, no la UXS (Enzo, 2026-11-26); la UXS va después porque agrupa todo el paquete, exploración y brechas incluidas, y es lo que leen QA y Desarrollo; las brechas que salen en desarrollo vuelven a la SCR y a GAPS.md; la accesibilidad se apoya en los componentes del Design System y lo propio de cada pantalla se verifica al validar lo construido. La **vía directa a front end** (escenario H) salta la exploración y el handoff formal, **pero no la fase 3b**. Pasa de fase solo cuando la compuerta se cumple o cuando la pregunta abierta no bloquea (queda registrada, no se esconde).
 

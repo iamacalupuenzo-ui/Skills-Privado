@@ -7,6 +7,8 @@ El orquestador mantiene el ciclo; cada especialista conserva sus formatos y deci
 
 ## GUARD y responsabilidades
 
+Antes de lanzar otro agente, buscar el último informe y comprobar si cumple las condiciones de reutilización del punto 4. Si las cumple, usarlo; no repetir el análisis solo por cambiar de skill. Una nueva referencia, decisión o alcance requiere revisión del delta por el agente independiente. Esto conserva B1.
+
 1. Identificar proyecto, alcance (historias, pantallas, tareas), repos de front, backend,
    BFF y KB, bases de Notion y último informe. Leer README, AGENTS.md/CLAUDE.md y reglas
    de capas; no deducir destinos por nombres. Conservar cambios ajenos.

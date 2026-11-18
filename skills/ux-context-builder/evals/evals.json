@@ -1,6 +1,6 @@
 {
   "skill_name": "ux-context-builder",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "descripcion": "Casos de comportamiento del constructor de la UXS: cuándo se arma, qué pide a una persona, qué hallazgos no esconde y dónde se detiene.",
   "evals": [
     {

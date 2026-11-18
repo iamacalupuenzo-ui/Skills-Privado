@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from pathlib import Path
 import sys
 from pathlib import Path
 
@@ -55,6 +56,14 @@ def main(argv=None) -> int:
     p.add_argument("--approved-by", help="human:<id>; without it the design stays a candidate")
     p.add_argument("--states", nargs="*", default=[]); p.add_argument("--breakpoints", nargs="*", default=[])
 
+    p = sub.add_parser("register-governed-artifact")
+    p.add_argument("--kb", required=True)
+    p.add_argument("--tool", choices=["claude-design", "prototype"], required=True)
+    for field in ("dtm", "screen", "artifact-ref", "version", "decision-ref", "approved-by", "approved-at", "evidence"):
+        p.add_argument("--" + field, required=True)
+    p.add_argument("--build-commit")
+    p.add_argument("--states", nargs="*", default=[])
+    p.add_argument("--breakpoints", nargs="*", default=[])
     a = ap.parse_args(argv)
     try:
         if a.cmd == "preflight":
@@ -71,6 +80,15 @@ def main(argv=None) -> int:
             registry.register_governed_stitch(a.kb, a.dtm, a.screen, a.artifact_ref, a.version, a.approved_by,
                                               a.states, a.breakpoints)
             out, key = {"status": "READY", "registered": a.screen}, "READY"
+        elif a.cmd == "register-governed-artifact":
+            try:
+                evidence = json.loads(Path(a.evidence).read_text(encoding="utf-8-sig"))
+            except (OSError, ValueError) as exc:
+                raise registry.RegistryError("cannot read evidence manifest: " + str(exc)) from exc
+            registry.register_governed_artifact(a.kb, a.dtm, a.screen, a.tool, a.artifact_ref,
+                                               a.version, a.decision_ref, a.approved_by, a.approved_at,
+                                               evidence, a.states, a.breakpoints, a.build_commit)
+            out, key = {"status": "READY", "registered": a.screen, "gate": "not evaluated"}, "READY"
         else:
             registry.register_governed(a.kb, a.dtm, a.screen, a.file_ref, a.node_ref, a.version, a.approved_by,
                                        a.decision_ref, a.states, a.breakpoints, a.divergence)

@@ -106,8 +106,11 @@ function evaluar(cmd, cwd) {
   }
   const imprime = /(\becho\b|write-host|write-output|\bprintenv\b|\bcat\b|\btype\b|out-file|set-content|add-content|\btee\b|\bprint\b|console\.log)[^|;\r\n]*GITLAB(_NPM)?_TOKEN/i;
   const volcado = /(get-childitem|gci|\bdir\b|\bls\b)\s+env:|\bprintenv\b\s*($|[|;&])|\benv\b\s*($|\|)/i;
-  if (imprime.test(todo) || (volcado.test(todo) && /token|gitlab/i.test(todo))) {
-    return ['deny', 'Mostrar el valor del token',
+  const volcadoDotNet = /\[(?:System\.)?Environment\]::GetEnvironmentVariables\s*\(/i;
+  const tokenSuelto = sentencias(todo).some((s) => /^(?:\(\s*|")*\$env:GITLAB(?:_NPM)?_TOKEN(?:\.ToString\(\))?(?:"|\s*\))*$/i.test(s));
+  const tokenDotNetSuelto = sentencias(todo).some((s) => /^\[(?:System\.)?Environment\]::GetEnvironmentVariable\s*\(\s*["']GITLAB(?:_NPM)?_TOKEN["'][^)]*\)\s*$/i.test(s));
+  if (imprime.test(todo) || volcado.test(todo) || volcadoDotNet.test(todo) || tokenSuelto || tokenDotNetSuelto) {
+    return ['deny', 'Mostrar secretos o volcar variables de entorno',
       'El token da acceso a tu cuenta de GitLab; si se imprime queda en el historial y en la conversación.',
       'Para comprobar que existe, pide su longitud o prueba una llamada a la API (`/api/v4/user`) sin mostrarlo.'];
   }

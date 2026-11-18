@@ -188,7 +188,7 @@ tasks:
   depends_on:
   - T-07
   gate: G7
-  condition: hay diseño gobernado registrado en el DTM (Figma o Stitch)
+  condition: hay diseño gobernado en el DTM (Figma, Stitch, Claude Design o prototipo validado, con su contrato y aprobación humana)
   outputs:
   - HOF y gate DESIGN_READY_FOR_DEV
 - id: T-10

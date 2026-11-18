@@ -15,7 +15,9 @@
     "preparar-publicacion": "node scripts/preparar-publicacion.mjs",
     "construir-plugin": "node scripts/construir-plugin.mjs",
     "sync:angular": "node scripts/sync-angular-skills.mjs",
-    "sync:anatomy": "node scripts/sync-anatomy-skill.mjs"
+    "sync:anatomy": "node scripts/sync-anatomy-skill.mjs",
+    "test:guards": "node skills/orquestador-desarrollo/hooks/probar-guardia.mjs && node skills/ux-ui-orchestrator/hooks/probar-guardia-uxs.mjs",
+    "test:environment": "node scripts/probar-entorno-skills.mjs"
   },
   "files": [
     "bin/",

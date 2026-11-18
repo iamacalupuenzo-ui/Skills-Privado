@@ -9,7 +9,7 @@ description: >
   estatus". No diseña pantallas (usa ux-ui-orchestrator), no escribe el código de una pantalla
   (usa angular-product-builder) ni gestiona épicas ni Notion (usa product-orchestrator).
 metadata:
-  version: "1.5.0"
+  version: "1.6.0"
 ---
 
 # Orquestador de desarrollo — Comsatel Flotas
@@ -25,6 +25,9 @@ la secuencia, pedir la confirmación que corresponda y cerrar con lo verificado.
 **Lo que NO haces:** diseñar la UX, escribir la pantalla, ni fusionar, etiquetar o desplegar.
 Subes la rama, abres el MR y lo asignas a César; la fusión y la etiqueta son suyas.
 ## Referencias disponibles
+
+- references/modelo-por-tarea.md — selección provisional por tarea, límites y escalamiento; no modifica el modelo automáticamente.
+- scripts/comprobar-apoyos.mjs — leer y ejecutar en el GUARD contra el destino instalado.
 
 - `references/mapa-de-repos.md` — repos, rutas GitLab, puertos locales, parejas y quién fusiona. Leer al iniciar.
 - `references/convenciones-comunes.md` — commits, MR, ramas, tokens y trampas de Windows. Leer antes de commitear o abrir un MR.
@@ -46,13 +49,15 @@ El desarrollo parte de documentación ya generada. Esa etapa tiene su propio orq
 | `flujo-producto` | Versionar, publicar y desplegar un producto; subir el DS a un producto | skill |
 | `flujo-ds` | Cambiar, versionar, publicar o registrar brechas del DS | skill |
 | `verificar-calidad` | Pruebas, navegador, accesibilidad, servidores locales | skill |
-| `orquestacion-multi-harness` | **Opcional:** repartir trabajo entre agentes por Orca, si el entorno lo tiene | skill (puede no estar en este repositorio) |
+| `orquestacion-multi-harness` | **Opcional:** repartir trabajo entre agentes por Orca, si el entorno lo tiene | skill opcional del catálogo |
 
 ## Skills de apoyo que pueden no estar instalados
 
-`angular-developer`, `angular-new-app`, `comsatel-design-system`, `orquestacion-multi-harness` y `product-orchestrator` apoyan este flujo pero no viven en este repositorio. Si faltan, el flujo sigue: se usan las reglas resumidas en las referencias y se avisa de lo que no se pudo apoyar.
+`angular-developer`, `angular-new-app`, `comsatel-design-system`, `orquestacion-multi-harness` y `product-orchestrator` forman parte del catálogo de este repositorio; eso no garantiza que estén instalados en el cliente activo. Comprueba el destino instalado antes de derivar. Una dependencia obligatoria ausente bloquea su ruta; un apoyo opcional ausente se declara y solo permite continuar con lo que no depende de él.
 
 ## GUARD — verificar contexto
+
+0. Ejecutar scripts/comprobar-apoyos.mjs --route <producto|ds|estatus> contra la carpeta de skills del cliente activo (--root si difiere de la del script). Antes de empezar, primera línea: ruta, obligatorios faltantes y apoyos opcionales faltantes. Exit 2 bloquea esa ruta; no sustituir un skill obligatorio por el resumen.
 
 1. Identificar el repositorio destino y leer su `AGENTS.md` o `CLAUDE.md`: sus reglas mandan sobre las de este skill.
 2. Leer el estado real: rama, `git status`, MR abiertos, pipelines y, si aplica, QA en vivo. No asumir lo que dice una conversación anterior. **Las lecturas no piden confirmación**: `git status`, `git fetch`, las consultas GET a la API de GitLab y los `curl` de sondeo a QA se ejecutan antes de responder. Solo se pregunta antes de escribir (subir, abrir un MR, editar).
@@ -134,6 +139,6 @@ Cuando UX o Enzo revisan lo que construyó Desarrollo, se levanta en local Shell
 
 ## Formato de respuesta
 
-- Al empezar, declarar el flujo elegido en la primera línea.
+- Al empezar, declarar en la primera línea el flujo elegido y los resultados de disponibilidad del GUARD.
 - Al cerrar un paso, seguir `references/respuesta-de-cierre.md`: primera línea con el resultado, «Lo que hice:», «Lo que necesito de ti:» y «Lo siguiente…». Dentro de «Lo que hice» va lo verificado con cifras y estado real; lo que falta va en «Lo que necesito de ti» o en «Lo siguiente», con quién lo hace.
 - Español, conciso, sin emojis decorativos. Lo no verificado se dice como tal.

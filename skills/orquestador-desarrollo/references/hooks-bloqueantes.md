@@ -59,12 +59,12 @@ asignado a César.
 
 ```
 node skills/orquestador-desarrollo/hooks/probar-guardia.mjs
-node skills/orquestador-desarrollo/hooks/instalar-hooks.mjs
-node skills/orquestador-desarrollo/hooks/instalar-hooks.mjs --quitar
+node skills/orquestador-desarrollo/hooks/instalar-hooks.mjs --dry-run
+node skills/orquestador-desarrollo/hooks/instalar-hooks.mjs --apply
+node skills/orquestador-desarrollo/hooks/instalar-hooks.mjs --quitar --apply
 ```
 
-El instalador copia el guardia a `~/.claude/hooks/` (así `skils update` no lo borra), agrega un
-solo hook `PreToolUse` para Bash y PowerShell, deja copia de respaldo de `settings.json` y no
+El instalador muestra una propuesta sin escribir por defecto. Tras confirmar --apply registra ambos guardias (GitLab y UXS); --settings permite indicar el archivo de un perfil concreto. Copia los guardias y el auditor UXS a `~/.claude/hooks/` (así `skils update` no lo borra), agrega registros idempotentes de `PreToolUse` para Bash y PowerShell, conserva los hooks ajenos (incluido Orca), deja copia de respaldo única de `settings.json` y no
 toca los demás hooks. Ábrelo en una sesión nueva para que se cargue.
 
 ## Si hay que reescribir una rama ya subida

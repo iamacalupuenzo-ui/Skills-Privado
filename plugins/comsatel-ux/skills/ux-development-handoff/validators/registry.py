@@ -139,3 +139,28 @@ def register_governed_stitch(kb_root, dtm_id: str, screen: str, artifact_ref: st
         "latest_known_version": version}
     entry["stitch_figma"] = {"divergence": "none"}
     dump_concept(dtm.path, dtm.fm, dtm.body)
+
+
+def register_governed_artifact(kb_root, dtm_id, screen, tool, artifact_ref, version, decision_ref,
+                               approved_by, approved_at, evidence_refs, states_covered,
+                               responsive_covered, build_commit=None):
+    """Transcribe a recorded human DD; never create the DD or approve on behalf of a human."""
+    from . import governed_artifacts
+    if tool not in governed_artifacts.TOOLS:
+        raise RegistryError("unsupported governed_design tool")
+    if approved_by is not None and not governed_artifacts._human(approved_by):
+        raise RegistryError("approval must name a human; agents cannot approve")
+    kb = load_kb(kb_root)
+    dtm, entry = _dtm_entry(kb, dtm_id, screen)
+    gov = {"tool": tool, "artifact_ref": artifact_ref, "version": version,
+           "decision_ref": decision_ref, "approved_by": approved_by, "approved_at": approved_at,
+           "evidence_refs": evidence_refs, "states_covered": list(states_covered),
+           "responsive_covered": list(responsive_covered), "latest_known_version": version,
+           "status": "approved" if approved_by else "candidate"}
+    if tool == "prototype":
+        gov["build_commit"] = build_commit
+    findings = governed_artifacts.check(kb, screen, gov)
+    if findings:
+        raise RegistryError("; ".join(f.code + ": " + f.message for f in findings))
+    entry["governed_design"] = gov
+    dump_concept(dtm.path, dtm.fm, dtm.body)

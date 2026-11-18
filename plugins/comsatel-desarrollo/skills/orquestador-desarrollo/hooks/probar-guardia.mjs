@@ -34,6 +34,20 @@ const casos = [
   ['deny', 'Write-Host $env:GITLAB_TOKEN'],
   ['deny', 'printenv GITLAB_TOKEN'],
   ['deny', 'curl -H "PRIVATE-TOKEN: glpat-abcdefghijklmnopqrst" https://x/api/v4/user'],
+  // Volcados completos y expresiones que PowerShell imprime implícitamente.
+  ['deny', 'env'],
+  ['deny', 'printenv'],
+  ['deny', 'Get-ChildItem Env:'],
+  ['deny', 'gci env:'],
+  ['deny', '[Environment]::GetEnvironmentVariables()'],
+  ['deny', '[System.Environment]::GetEnvironmentVariables()'],
+  ['deny', '$env:GITLAB_TOKEN'],
+  ['deny', '"$env:GITLAB_TOKEN"'],
+  ['deny', '($env:GITLAB_TOKEN)'],
+  ['deny', '$env:GITLAB_NPM_TOKEN | Out-String'],
+  ['deny', '[Environment]::GetEnvironmentVariable("GITLAB_TOKEN", "User")'],
+  ['allow', '$headers = @{"PRIVATE-TOKEN"=$env:GITLAB_TOKEN}; Invoke-RestMethod -Uri "https://x/api/v4/user" -Headers $headers'],
+  ['allow', 'git commit -m "bloquea Get-ChildItem Env: y env"'],
   // Piden confirmación
   ['ask', 'git push -u origin feature/mejora-mapa'],
   ['ask', 'git -c credential.helper= push origin feature/ds-1-9-3'],
@@ -73,9 +87,10 @@ function decision(cmd, tool = 'Bash', cwd = cwdSeguro) {
   return { tipo: 'allow', texto: '' };
 }
 
-let fallos = 0;
+let fallos = 0, ejecutados = 0, omitidos = 0;
 for (const [esperado, cmd, cwd] of casos) {
-  if (cwd && !existsSync(cwd)) { console.log(`OMITE  ${cmd.slice(0, 60)} (no existe ${cwd})`); continue; }
+  if (cwd && !existsSync(cwd)) { omitidos++; console.log(`OMITE  ${cmd.slice(0, 60)} (no existe ${cwd})`); continue; }
+  ejecutados++;
   const { tipo, texto } = decision(cmd, 'Bash', cwd);
   const ok = tipo === esperado;
   if (!ok) fallos++;
@@ -83,8 +98,10 @@ for (const [esperado, cmd, cwd] of casos) {
   if (ok && tipo !== 'allow' && !/Motivo:/.test(texto)) { fallos++; console.log('FALLA  el bloqueo no explica el motivo'); }
 }
 // Herramientas que no son de comandos no deben afectarse.
+ejecutados++;
 const otra = spawnSync('node', [guardia], { input: JSON.stringify({ tool_name: 'Read', tool_input: { file_path: 'x' } }), encoding: 'utf8' });
 if (otra.status !== 0) { fallos++; console.log('FALLA  Read no debería evaluarse'); }
+ejecutados++;
 const ps = decision('git push origin develop', 'PowerShell');
 if (ps.tipo !== 'deny') { fallos++; console.log('FALLA  PowerShell debería evaluarse igual'); }
 
@@ -122,6 +139,7 @@ const avisos = (() => {
     rmSync(dir, { recursive: true, force: true });
   }
 })();
+ejecutados++;
 for (const f of avisos) { fallos++; console.log(`FALLA  ${f}`); }
 if (!avisos.length) console.log('OK    avisos de push (prerelease y choques con integration) sin bloquear');
 

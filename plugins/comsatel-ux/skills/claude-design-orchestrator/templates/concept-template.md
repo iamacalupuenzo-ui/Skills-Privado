@@ -22,3 +22,7 @@ decided_by: human:<id>
 ## Contexto y alternativas
 ## Decisión y justificación
 ## Preguntas abiertas
+
+## Registro opcional de diseño validado
+
+Si esta DD valida un diseño de Claude Design o un prototipo, registrar decided_at con zona y el bloque governed_design según el contrato de ux-development-handoff (references/governed-artifacts.md de ese skill). Debe identificar alternativa/build, versión, evidencia y cobertura exactas; el agente transcribe la decisión humana y mantiene status: draft. Sin esos datos, sigue pendiente: no inferir aprobación por la existencia de una DD.

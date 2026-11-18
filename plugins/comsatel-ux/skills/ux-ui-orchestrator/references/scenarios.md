@@ -81,7 +81,7 @@ Cada escenario indica la ruta mínima. "Mínima" importa: ejecutar fases que no 
 
 **Ruta:** SCR con INV/DEC y G3 → **UXS (compuerta GU)** → construcción (`orquestador-desarrollo`) → ARP actualizado durante la implementación → propuesta documental/captura/estado aprobada por Enzo → validación del prototipo y conciliación/cascada sin diferencias. La vía directa **salta la exploración y el handoff formal, no la UXS**: el paquete se consolida igual, con `ux-context-builder`, antes de subir la rama de diseño.
 
-**Atención:** el diseño se gobierna con el prototipo validado (capturas de cada estado, URL y MR), y pasa G5/G6 sin Figma; no se exige el HOF formal en esta vía. El validador legado DESIGN_READY_FOR_DEV conserva su contrato propio y no sustituye estas compuertas. Lo que ningún diseño cubre se consulta y se registra en una decisión (DEC), no se improvisa.
+**Atención:** el diseño se gobierna con el prototipo validado (capturas de cada estado, URL y MR), y el gate `DESIGN_READY_FOR_DEV` admite esa vía con la DD humana y evidencia de la versión exacta según ux-development-handoff. Sin un PASSED real de producción, Desarrollo sigue CONDITIONAL para la vía directa y no READY formal. Lo que ningún diseño cubre se consulta y se registra en una decisión (DEC), no se improvisa.
 
 ## Combinaciones y conflictos
 

@@ -1,5 +1,7 @@
 # Design-to-Code contract and DESIGN_READY_FOR_DEV (ux-development-handoff 2.0)
 
+Claude Design y prototipo validado se registran según `references/governed-artifacts.md`; la evidencia y aprobación del diseño no sustituyen human_review del gate.
+
 ## HOF sections (A–N)
 Each section is required; write **references and only the facts that live nowhere else** (interaction rules, handoff-specific decisions).
 

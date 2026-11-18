@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from . import codes as C
+from . import governed_artifacts
 from .codes import Finding
 from .okf import KB, OKF_CHECKED_TYPES, OKF_REQUIRED, is_placeholder
 
@@ -117,11 +118,17 @@ def check_design_entry(kb: KB, scr_id: str, entry: dict, initiative: str) -> lis
             out.append(Finding(C.STALE_STITCH_REFERENCE, scr_id, "Stitch reference is stale"))
 
     gov = entry.get("governed_design") or {}
-    from_stitch = gov.get("tool") == "stitch"
+    tool = gov.get("tool")
+    from_stitch = tool == "stitch"
+    if tool not in {"figma", "stitch", *governed_artifacts.TOOLS}:
+        out.append(Finding(C.MISSING_GOVERNED_DESIGN, scr_id, "unsupported governed_design tool"))
+        return out
     if gov.get("status") != "approved":
         out.append(Finding(C.MISSING_GOVERNED_DESIGN, scr_id, "no approved governed_design (Figma or Stitch) for this screen"))
         return out
-    if from_stitch:
+    if tool in governed_artifacts.TOOLS:
+        out += governed_artifacts.check(kb, scr_id, gov)
+    elif from_stitch:
         # The governed design is an approved Stitch artifact: it must be the registered exploration artifact itself.
         if not all(gov.get(k) for k in ("project_ref", "artifact_ref", "version")) or                 not str(gov.get("approved_by", "")).startswith("human:"):
             out.append(Finding(C.MISSING_GOVERNED_DESIGN, scr_id,
@@ -143,7 +150,7 @@ def check_design_entry(kb: KB, scr_id: str, entry: dict, initiative: str) -> lis
     miss = sorted(set(_list(s.get("responsive"))) - set(_list(gov.get("responsive_covered"))))
     if miss:
         out.append(Finding(C.MISSING_RESPONSIVE_RULE, scr_id, f"governed design lacks breakpoints: {', '.join(miss)}"))
-    if exp and not from_stitch:
+    if exp and tool == "figma":
         sf = entry.get("stitch_figma") or {}
         div = sf.get("divergence")
         if div not in ("none", "resolved"):

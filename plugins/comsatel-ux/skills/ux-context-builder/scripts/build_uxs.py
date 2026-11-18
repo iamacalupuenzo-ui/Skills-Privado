@@ -160,6 +160,35 @@ def preflight(kb, paquete, pantallas):
         return {"status": "sin_resultado", "findings": []}
 
 
+def gate_del_paquete(kb, pantallas):
+    """Only a real production gate can declare formal development readiness."""
+    wanted = set(pantallas)
+    covered, results = set(), []
+    if not VALIDADOR.exists():
+        return {"result": "sin_ejecutar", "findings": []}
+    for path in sorted((kb / "design" / "handoff").glob("HOF-*.md")):
+        fm = frontmatter(path)
+        scope = wanted.intersection(listify(fm.get("screens")))
+        if not scope or not fm.get("id"):
+            continue
+        process = subprocess.run([sys.executable, str(VALIDADOR), "gate", "--profile", "production",
+                                  "--kb", str(kb), "--hof", fm["id"]], capture_output=True,
+                                  text=True, encoding="utf-8", timeout=120)
+        try:
+            result = json.loads(process.stdout)
+        except ValueError:
+            return {"result": "sin_resultado", "findings": []}
+        results.append(result)
+        if process.returncode == 0 and result.get("result") == "PASSED":
+            covered.update(scope)
+    if wanted and covered == wanted and all(r.get("result") == "PASSED" for r in results):
+        return {"result": "PASSED", "findings": [], "screens": sorted(covered)}
+    findings = [f for r in results for f in r.get("findings", [])]
+    status = "FAILED" if any(r.get("result") == "FAILED" for r in results) else "BLOCKED"
+    return {"result": status if results else "sin_HOF", "findings": findings,
+            "pending_screens": sorted(wanted - covered)}
+
+
 # ---------------------------------------------------------------- redacción
 def rel_enlace(rel):
     return "../" + rel.replace("design/", "", 1)
@@ -222,6 +251,7 @@ def construir(kb, paquete, a):
     corte = a.corte or f"las {len(d['scr'])} pantallas del paquete"
     historias = sorted({h for x in d["flw"] for h in x["reqs"] if h.startswith("HU-")} | {h for s in d["scr"] for h in s["reqs"] if h.startswith("HU-")})
     pf = preflight(kb, paquete, [s["id"] for s in d["scr"]])
+    gate_real = gate_del_paquete(kb, [s["id"] for s in d["scr"]])
     codigos = {}
     for f in pf.get("findings", []):
         codigos[f["code"]] = codigos.get(f["code"], 0) + 1
@@ -312,8 +342,8 @@ def construir(kb, paquete, a):
     p()
     p("## 3. Resultado de la auditoría")
     p()
-    p(f"- **Herramientas:** `audit_ux.py` sobre todo el KB; pantallas de este paquete sin entrada en el DTM: {len(sin_dtm)} de {len(d['scr'])}. "
-      f"Preflight (la verificación de Stitch) sobre {len(d['scr'])} pantallas: {pf_texto}. Gate: no aplica (no hay HOF).")
+    p(f"- **Herramientas:** audit_ux.py no se ejecut? en este generador; pantallas de este paquete sin entrada en el DTM: {len(sin_dtm)} de {len(d['scr'])}. "
+      f"Preflight (la verificación de Stitch) sobre {len(d['scr'])} pantallas: {pf_texto}. Gate formal de producción: {gate_real['result']}.")
     p("- **Hallazgos de juicio (references/quality-criteria.md):**")
     p()
     p("| ID | Hallazgo | Severidad | Artefacto y sección | Skill dueño | Estado |")
@@ -364,12 +394,17 @@ def construir(kb, paquete, a):
         hus = [r for r in s["reqs"] if r.startswith("HU-")]
         qs = [x["id"].replace("UXR-", "") for x in abiertas if any(x["id"].startswith(u + "-") for u in uxrs)]
         preg_txt = f"{len(qs)} por validar ({', '.join(qs)})" if qs else "ninguna"
-        p(f"| {s['id']} | {', '.join(hus)} | {', '.join(uxrs)} | {s['flow']} | {s['estados']} estados | — | — | — | — | {preg_txt} |")
+        entry = d["dtm"].get(s["id"], {})
+        exp, gov = entry.get("exploration_design") or {}, entry.get("governed_design") or {}
+        governed_text = (str(gov.get("tool", "sin tipo")) + ": " + str(gov.get("version", "sin versión"))) if gov else "—"
+        exploration_text = str(exp.get("artifact_ref", "—"))
+        divergence = str((entry.get("stitch_figma") or {}).get("divergence", "no aplica / no registrado"))
+        p(f"| {s['id']} | {', '.join(hus)} | {', '.join(uxrs)} | {s['flow']} | {s['estados']} estados | {exploration_text} | {governed_text} | {divergence} | Revisar HOF | {preg_txt} |")
     p()
-    p("Las columnas de exploración, diseño gobernado y divergencia están vacías porque ese trabajo no existe todavía para este paquete. La de accesibilidad (ARP) también: "
+    p("Las columnas muestran el DTM registrado; su presencia no acredita validación. Consultar el resultado del gate y sus ARP: "
       f"la accesibilidad se apoya en los componentes del Design System y lo propio de cada pantalla se verifica al validar lo construido ({refs['a11y']}).")
     p()
-    p("**Huérfanos detectados:** ninguno. Cada SCR declara su flujo y cada flujo lista sus pantallas; los avisos de «sin entrada en ningún DTM» son esperados.")
+    p("**Huérfanos:** consultar los hallazgos reales del preflight y del gate; no se declara ausencia por generación de esta tabla.")
     p()
     p("## 5. Preguntas abiertas y decisiones humanas pendientes")
     p()
@@ -386,7 +421,7 @@ def construir(kb, paquete, a):
     for x in borradores:
         p(f"| {x['id']} | Confirmar o corregir las decisiones del borrador | {resp} | Media | No | Cierra el registro de decisiones de este paquete |")
     p(f"| {refs['ib']} | Decidir, flujo por flujo, cómo se gobierna el diseño: explorando en Claude Design (Intent Brief y elección entre alternativas) o pasando directo a front end y validando el prototipo al terminar de construir. "
-      f"El gate de `ux-development-handoff` hoy solo reconoce Figma o Stitch como diseño gobernado: admitir el prototipo en código es decisión de {resp} y pide ajustar el skill | {resp} | Media | Claude Design | Diseño gobernado y el handoff formal |")
+      f"El gate admite Claude Design o prototipo con una DD humana de la versión exacta y evidencia comprobada; resultado de producción: {gate_real['result']} | {resp} | Media | Claude Design | Diseño gobernado y el handoff formal |")
     if "hu" in refs:
         p(f"| {refs['hu']} | Elegir cómo se resuelve el id canónico de las historias (citar `CL2-US-NNN` o ajustar el validador a `legacy_id`) | {resp} y quien mantiene el validador | Media | El preflight de todos los paquetes y la entrada de Claude Design | Que el preflight deje de dar `FAILED` |")
     p()
@@ -410,7 +445,8 @@ def construir(kb, paquete, a):
         p(f"| Stitch | **{sv}** | Preflight: {pf_texto} | `stitch-ui-generator` |")
     else:
         p("| Stitch | **NOT READY** | No hay proyecto Stitch gobernado y el preflight está BLOCKED; crear uno exige autorización explícita. No se usa en este paquete | `stitch-ui-generator` |")
-    fv = "READY" if gobernado else "NOT READY"
+    figma_completo = all(d["dtm"].get(s["id"], {}).get("governed_design", {}).get("tool") == "figma" for s in d["scr"])
+    fv = "READY" if figma_completo and gate_real["result"] == "PASSED" else "NOT READY"
     p(f"| Figma | **{fv}** | {'Todas las pantallas tienen diseño gobernado en el DTM' if gobernado else 'Sin exploración registrada, sin entrada en el DTM, sin acceso ni nodo Figma y sin Accessibility Report. El repositorio descartó Figma como diseño gobernado el 2026-10-04 (decisión de `human:ianache`)'} | `figma-design-validator` |")
     sin_info = a.construido.startswith("Sin información")
     construido = "Todavía no hay información de lo construido de este paquete." if sin_info else (
@@ -419,10 +455,13 @@ def construir(kb, paquete, a):
     if incompletas:
         dev = "**NOT READY**"
         dev_razon = f"Hay pantallas incompletas ({', '.join(incompletas[:6])}); sin ellas no se construye ni se pasa el gate."
+    elif gate_real["result"] == "PASSED":
+        dev = "**READY**"
+        dev_razon = "Gate formal de producción PASSED para todas las pantallas, con su revisión humana y evidencia. Esto no acredita merge ni despliegue."
     else:
         dev = "**CONDITIONAL** (prototipo en código, que gobierna el diseño y se valida al terminar de construir); **NOT READY** para el gate formal `DESIGN_READY_FOR_DEV`"
         dev_razon = ("La vía directa (SCR, Design System y decisiones) es viable porque " + ("ninguna pregunta abierta bloquea una pantalla" if not bloqueantes else "las preguntas bloqueantes afectan solo al backend, no a la pantalla")
-                     + f" y la accesibilidad se apoya en los componentes del Design System. {construido} El gate formal hoy solo reconoce Figma o Stitch como diseño gobernado ({refs['ib']}). "
+                     + f" y la accesibilidad se apoya en los componentes del Design System. {construido} Gate formal de producción: {gate_real['result']}; registrar la DD y evidencia exacta no sustituye ejecutar y aprobar el gate. "
                        "Queda pospuesto: la validación del prototipo al terminar de construir, los textos provisionales y lo que respondan Arquitectura, el PO y Seguridad")
     p(f"| Desarrollo | {dev} | {dev_razon} | construcción directa; `ux-development-handoff` si se registra el diseño gobernado |")
     total_estados = sum(s["estados"] for s in d["scr"])
@@ -437,8 +476,8 @@ def construir(kb, paquete, a):
     p()
     p("| Pasada | Skill | Artefactos creados o actualizados | Resultado de su verificación |")
     p("|---|---|---|---|")
-    p(f"| 1 | `ux-requirements-analyzer`, `user-flow-designer`, `ui-spec-writer` | {rango([x['id'] for x in d['uxr']]) if d['uxr'] else '—'}; {rango(flujos)}; {rango([s['id'] for s in d['scr']])} | Sin pasar por la consolidación; `audit_ux.py`: 0 errores |")
-    p(f"| 2 | `ux-context-builder` | {numero} | Preflight: {pf_texto}; sin gate |")
+    p(f"| 1 | `ux-requirements-analyzer`, `user-flow-designer`, `ui-spec-writer` | {rango([x['id'] for x in d['uxr']]) if d['uxr'] else '—'}; {rango(flujos)}; {rango([s['id'] for s in d['scr']])} | Sin pasar por la consolidación; audit_ux.py no se ejecut? en este generador; consultar su informe |")
+    p(f"| 2 | `ux-context-builder` | {numero} | Preflight: {pf_texto}; gate formal: {gate_real['result']} |")
     p()
     p("**Aislamiento:** rama `ux/<slug>` en un worktree propio. **Efectos externos:** ninguno (no se creó ningún proyecto Stitch, no se usó Claude Design ni se tocó Figma).")
     p()

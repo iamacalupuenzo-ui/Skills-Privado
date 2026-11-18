@@ -2,7 +2,7 @@
 name: ux-development-handoff
 description: Usar cuando un diseño UX/UI aprobado deba entregarse a Desarrollo (Developer + agente IA + Superpowers), cuando se pida evaluar DESIGN_READY_FOR_DEV, o cuando Superpowers pida el contexto de diseño para implementar un SCR-*.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # ux-development-handoff
@@ -12,7 +12,7 @@ Convertir el diseño aprobado en un **contrato Design-to-Code** verificable: qu�
 
 ## Input contract
 - DTM (Design Traceability Map) con una entrada por SCR; SCR, FLW, UXR, US/AC, CMP/TKN, DD y Accessibility Reports aprobados.
-- `governed_design` en Figma (lo registra `figma-design-validator`).
+- `governed_design` registrado: Figma/Stitch o Claude Design/prototipo según `references/governed-artifacts.md`.
 - MUST receive a governed Context Pack or canonical source artifacts.
 
 ## Output contract
@@ -28,11 +28,13 @@ Cada SCR del alcance tiene entrada DTM, FLW y lineage; ver el DTM en `references
 ## Invariants
 - Se entrega a Dev el `governed_design`. Nunca se selecciona un artefacto Stitch cuando existe Figma gobernado; Stitch solo aparece como `exploration_lineage` no autoritativa.
 - **Stitch como diseño gobernado (decisión de `human:ianache`, 2026-10-04: Figma descartado en este repositorio).** Un `governed_design` puede ser `tool: stitch` si es el **mismo artefacto** ya registrado como `exploration_design` de ese SCR, con `project_ref`, `artifact_ref`, `version` y un aprobador humano (`human:<id>`). Se registra con `python validators/cli.py register-governed-stitch --kb knowledge-base --dtm <DTM> --screen <SCR> --artifact-ref <ref> --version <v> --approved-by human:<id> --states … --breakpoints …`; sin `--approved-by` queda `candidate` y el gate no pasa. El agente nunca aporta la aprobación. Si el SCR tiene gobierno de Stitch no se exige la comparación Stitch↔Figma; si hay Figma gobernado, rige Figma.
-- Sin `governed_design` identificable → no hay handoff.
+- Sin `governed_design` identificable → no hay handoff. Los formatos Claude Design y prototipo requieren su DD humana y evidencia de la versión exacta.
 - La aprobación del gate es humana: el validador nunca escribe `human_review.status: approved`.
 - `PASSED` = comprobaciones automáticas superadas, pendiente de revisión humana.
 
 ## Workflow
+
+Para Claude Design o prototipo validado, leer `references/governed-artifacts.md` y registrar la DD y evidencia con register-governed-artifact antes del gate. Se acepta solo la versión aprobada por una persona; el agente no crea su aprobación.
 1. `python validators/cli.py gate --kb knowledge-base --hof <HOF> [--profile production]`.
 2. Si `FAILED`/`BLOCKED`: no emitir contexto; reportar códigos, SCR y responsable. Corregir upstream; no parchear aquí.
 3. Redactar/actualizar HOF (A–N) por referencias. Registrar `gate` y dejar `human_review: {status: pending}`.

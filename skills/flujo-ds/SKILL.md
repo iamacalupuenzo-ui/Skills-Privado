@@ -9,7 +9,7 @@ description: >
   el DS a los productos". No construye pantallas de producto (usa flujo-producto) ni audita
   tokens (usa comsatel-design-system).
 metadata:
-  version: "1.3.0"
+  version: "1.3.1"
 ---
 
 # Flujo del Design System
