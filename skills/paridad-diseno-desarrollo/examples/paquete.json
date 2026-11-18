@@ -1,0 +1,136 @@
+{
+  "schema_version": 1,
+  "package": "DEMO-001",
+  "screens": [
+    "SCR-001"
+  ],
+  "sources": {
+    "kb": {
+      "root": "./kb",
+      "role": "kb",
+      "ref": "origin/develop"
+    },
+    "code": {
+      "root": "./front",
+      "role": "code",
+      "ref": "WORKTREE"
+    }
+  },
+  "checks": [
+    {
+      "id": "components",
+      "screen": "SCR-001",
+      "dimension": "components",
+      "kb": [
+        {
+          "source": "kb",
+          "file": "SCR-001.md",
+          "artifact_type": "SCR",
+          "region": "BEGIN\\n(?P<body>[\\s\\S]*?)END",
+          "pattern": "(?P<value>cs-[\\w-]+)"
+        }
+      ],
+      "code": [
+        {
+          "source": "code",
+          "file": "screen.html",
+          "region": "\\A(?P<body>[\\s\\S]*)\\Z",
+          "pattern": "<(?P<value>cs-[\\w-]+)\\b",
+          "format": "angular-template"
+        }
+      ]
+    },
+    {
+      "id": "fields",
+      "screen": "SCR-001",
+      "dimension": "fields",
+      "kb": [
+        {
+          "source": "kb",
+          "file": "UXR-001.md",
+          "artifact_type": "UXR",
+          "region": "BEGIN\\n(?P<body>[\\s\\S]*?)END",
+          "pattern": "^(?P<value>name)$"
+        }
+      ],
+      "code": [
+        {
+          "source": "code",
+          "file": "screen.html",
+          "region": "\\A(?P<body>[\\s\\S]*)\\Z",
+          "pattern": "name=\"(?P<value>[^\\\"]+)\"",
+          "format": "angular-template"
+        }
+      ]
+    },
+    {
+      "id": "navigation",
+      "screen": "SCR-001",
+      "dimension": "navigation",
+      "kb": [
+        {
+          "source": "kb",
+          "file": "FLW-001.md",
+          "artifact_type": "FLW",
+          "region": "BEGIN\\n(?P<body>[\\s\\S]*?)END",
+          "pattern": "^(?P<value>/[^\\s]+)$"
+        }
+      ],
+      "code": [
+        {
+          "source": "code",
+          "file": "routes.ts",
+          "region": "\\A(?P<body>[\\s\\S]*)\\Z",
+          "pattern": "'(?P<value>/[^']+)'",
+          "format": "typescript"
+        }
+      ]
+    },
+    {
+      "id": "texts",
+      "screen": "SCR-001",
+      "dimension": "texts",
+      "kb": [
+        {
+          "source": "kb",
+          "file": "UXS-001.md",
+          "artifact_type": "UXS",
+          "region": "BEGIN\\n(?P<body>[\\s\\S]*?)END",
+          "pattern": "^(?P<value>Guardar)$"
+        }
+      ],
+      "code": [
+        {
+          "source": "code",
+          "file": "screen.html",
+          "region": "\\A(?P<body>[\\s\\S]*)\\Z",
+          "pattern": ">(?P<value>Guardar)<",
+          "format": "angular-template"
+        }
+      ]
+    },
+    {
+      "id": "decision-text",
+      "screen": "SCR-001",
+      "dimension": "texts",
+      "kb": [
+        {
+          "source": "kb",
+          "file": "DEC-001.md",
+          "artifact_type": "DEC",
+          "region": "BEGIN\\n(?P<body>[\\s\\S]*?)END",
+          "pattern": "^(?P<value>Guardar)$"
+        }
+      ],
+      "code": [
+        {
+          "source": "code",
+          "file": "screen.html",
+          "region": "\\A(?P<body>[\\s\\S]*)\\Z",
+          "pattern": ">(?P<value>Guardar)<",
+          "format": "angular-template"
+        }
+      ]
+    }
+  ]
+}

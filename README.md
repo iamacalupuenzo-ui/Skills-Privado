@@ -71,6 +71,12 @@ El dueño es `ux-ui-orchestrator`: su [protocolo canónico](skills/ux-ui-orchest
 
 ## Convención de actualización
 
+La paridad estática KB–código es obligatoria en el cierre de front/documentación y antes
+del MR: `paridad-diseno-desarrollo`, modo `KB-CODIGO`, mantiene el
+[comparador declarativo y su contrato](skills/paridad-diseno-desarrollo/references/paridad-kb-codigo.md).
+El ciclo de retroalimentación lo invoca; los consumidores están en `skills-manifest.json`.
+Un MATCH cubre las proyecciones declaradas y no reemplaza revisión semántica o visual.
+
 1. Actualizar el skill y sus `references/` en este repositorio.
 2. Revisar los cambios y validar que toda referencia citada exista.
 3. Publicar el commit en `main`.

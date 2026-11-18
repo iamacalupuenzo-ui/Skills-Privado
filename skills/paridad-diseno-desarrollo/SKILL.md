@@ -8,9 +8,11 @@ description: >
   diseño", "dev implementó mal este componente", "compara el componente con Figma", "está usando
   el token o lo hardcodeó", "extrae los estilos de este componente", "el espaciado en dev no
   coincide", "revisa todos los botones de la app", "documenta esto en Figma", "arma la página de
-  QA de este componente".
+  QA de este componente". También verifica paridad estática KB-código con configuración
+  declarativa por paquete (componentes, campos, navegación y textos), al cerrar tareas de
+  front/documentación y antes de abrir un MR; modo KB-CODIGO sin Figma ni navegador.
 metadata:
-  version: "1.2.0"
+  version: "1.3.0"
 ---
 
 # Paridad diseño–desarrollo — QA de componentes implementados
@@ -40,14 +42,17 @@ diseño, la auditoría de componentes y el handoff. Ese skill opera sobre compon
 instancias vivas y tiene 21 bloqueantes protegiéndolos. Este no lo invoca ni lo reemplaza, y
 sobre todo **no escribe donde escribe él**.
 
-**Tampoco es** un auditor de UX completo. Solo ve estilos computados: no ve copy, no ve flujo
-entre pantallas, no ve lógica de negocio. Ver `references/handoff.md`, sección final.
+**No es** un auditor de UX completo ni decide reglas de negocio. Los modos visuales miden
+render y copy con referencia; `KB-CODIGO` compara componentes, campos, navegación y textos
+declarados entre fuentes. Ninguno demuestra comportamiento dinámico completo. Ver
+`references/handoff.md` y `references/paridad-kb-codigo.md`.
 
 ---
 
 ## Referencias disponibles
 
-- `references/setup.md` — instalación desde cero de las 3 herramientas externas que este skill necesita
+- `references/paridad-kb-codigo.md` — modo KB-CODIGO y su comparador declarativo obligatorio
+- `references/setup.md` — instalación de las 3 herramientas externas para los modos visuales
 - `references/probe.md` — la sonda completa y las siete trampas que la hacen mentir
 - `references/verdicts.md` — matriz de decisión: de veredicto crudo a hallazgo con severidad
 - `references/handoff.md` — contrato de salida: tabla, evidencia, borrador del Comment, validación
@@ -58,8 +63,9 @@ entre pantallas, no ve lógica de negocio. Ver `references/handoff.md`, sección
 - `references/runbook.md` — conexión reproducible, extracción de capturas, reemplazo seguro,
   estados, validación de posiciones y compatibilidad de nombres entre Claude/GPT y OpenCode
 
-**LEER UNA VEZ, EN MÁQUINA NUEVA O SI EL GUARD FALLA:** `references/setup.md`.
-**LEER SIEMPRE AL INICIAR:** `references/probe.md` y `references/verdicts.md`.
+**KB-CODIGO:** leer `references/paridad-kb-codigo.md`; no cargar las guías de Figma.
+**MODOS VISUALES, EN MÁQUINA NUEVA O SI EL GUARD FALLA:** `references/setup.md`.
+**MODOS VISUALES, SIEMPRE AL INICIAR:** `references/probe.md` y `references/verdicts.md`.
 **LEER SEGÚN EL MODO:** INSPECT y SWEEP → `references/handoff.md`. DOCUMENTAR →
 `references/figma-build.md` y `references/runbook.md` **completos**, y `references/versioning.md`
 si hay una versión histórica que mapear. Cualquier navegación → `references/engine.md` y el
@@ -69,17 +75,22 @@ apartado de conexión de `references/runbook.md`.
 
 ## Prerrequisitos
 
-Este skill no funciona solo con Claude Code: depende de Playwright MCP, del servidor
+Los modos visuales dependen de Playwright MCP, del servidor
 figma-console (o figma-console-local, el nombre varía por máquina) con su plugin de Desktop
 Bridge, y de un servidor HTTP local con CORS para insertar capturas dentro de Figma.
 
-**Si es la primera vez que se usa en esta máquina, o el GUARD de abajo falla, leer
+**En modos visuales, si es la primera vez que se usa en esta máquina o el GUARD falla, leer
 `references/setup.md` completo antes de seguir.** Ahí está la instalación de las tres piezas
 paso a paso y cómo verificar cada una.
 
 ---
 
 ## GUARD
+
+Para **KB-CODIGO**, leer `references/paridad-kb-codigo.md`: verificar Python 3.10+, Git,
+configuración versionada, cobertura del paquete y repos/refs. Ejecutar el comando del
+protocolo; no requiere Figma, Playwright ni el Paso 0 visual. Si faltan, bloquear el cierre.
+Los requisitos siguientes aplican solo a los modos visuales:
 
 Verificar que el engine está disponible antes de prometer nada:
 
@@ -172,6 +183,7 @@ Declarar el modo en la primera línea de cada respuesta.
 
 | Modo | Señales del usuario | Output |
 |------|--------------------|--------|
+| **KB-CODIGO** | Cierre de front o documentación; antes de MR; «compara la KB con lo construido» | Informe determinista, hashes, valores, archivo/línea KB y código; exit 0/1/2, según `references/paridad-kb-codigo.md` |
 | **INSPECT** | Da URL + nodo de Figma. "revisa el Button", "compara esto con el diseño" | Tabla de hallazgos comparada, con evidencia |
 | **EXTRACT** | Da URL sin nodo. "extrae los estilos", "qué tiene este componente", "usa el token o no" | `codeSpec` crudo con los 3 veredictos, sin comparar |
 | **SWEEP** | Plural o alcance de pantalla. "revisa todos los botones", "audita esta pantalla completa" | Tabla consolidada + inconsistencias entre instancias |
@@ -353,6 +365,12 @@ REST expirado, export agotado—, decir cuántos y cuáles. No dar por buena una
 ---
 
 ## Comportamientos bloqueantes
+
+- **B44 — Paridad KB-código obligatoria.** En cada cierre de front o documentación del
+  producto y antes de abrir su MR, ejecutar `scripts/paridad_kb_codigo.py` conforme a
+  `references/paridad-kb-codigo.md`. Sin configuración/cobertura suficiente, sin fuentes,
+  con exit distinto de cero o con divergencias semánticas pendientes, no cerrar ni abrir
+  el MR. No modificar decisiones ni omitir comparaciones para obtener MATCH.
 
 - **B43 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
 - **B1 — Nunca escribir credenciales.** Ni con `browser_type`, ni con `browser_fill_form`, ni
@@ -590,6 +608,7 @@ REST expirado, export agotado—, decir cuántos y cuáles. No dar por buena una
 
 | Racionalización | Realidad |
 |---|---|
+| «Actualicé el SCR, ya coincide; es solo documentación» | Ejecutar el comparador sobre KB sincronizada y código final; una contradicción documentada también bloquea. El alcance de MATCH es el de la configuración revisada (B44). |
 | «Es solo un cambio pequeño o un análisis; sincronizo después» | El inicio y el cierre del protocolo canónico son obligatorios; un pendiente de sincronización impide declarar terminado (B43). |
 | "Se ve igual en el screenshot, no hace falta leer el CSSOM" | Un token bien aplicado y un valor hardcodeado idéntico se ven exactamente iguales en pantalla — la diferencia solo aparece leyendo los estilos computados. Es la razón de ser de este skill (B3). |
 | "La URL parece de login, mejor freno la inspección" | La señal correcta es que el selector objetivo dejó de existir, no el patrón de la URL — hay componentes que viven dentro del flujo de autenticación (B10, verificado en corrida real). |
@@ -673,6 +692,9 @@ Siguiente paso opcional: /documentacion-handoff → modo REPORTE con la tabla va
 ---
 
 ## Referencias
+
+- `references/paridad-kb-codigo.md` — protocolo canónico del modo KB-CODIGO, configuración
+  JSON, ejecución obligatoria, cobertura, límites y regresiones reales; sin Figma.
 
 - `references/setup.md` — instalación desde cero de Playwright MCP, figma-console(-local) +
   Desktop Bridge, y el servidor de capturas; checklist de verificación por componente

@@ -222,10 +222,12 @@ copy puede estar bien escrito pero verse mal → `references/probe.md`, T7.
 
 ## Lo que este contrato NO cubre
 
-`paridad-diseno-desarrollo` no ve, y por lo tanto no reporta:
+Los modos visuales no certifican por sí solos lo siguiente. `KB-CODIGO` compara las
+proyecciones estáticas declaradas según `references/paridad-kb-codigo.md`; no reemplaza
+la navegación ni la validación de negocio:
 
-- Copy y mensajes de error → los estilos no contienen el texto aprobado
-- Flujo entre pantallas → requiere navegar el producto con criterio de negocio
+- Copy sin referencia → comparar exige texto aprobado o fuente canónica
+- Comportamiento del flujo entre pantallas → requiere navegar con criterio de negocio
 - Comportamiento de interacción más allá de los estados que se pueden provocar y medir
 - Contenido dinámico que depende de datos reales del usuario
 

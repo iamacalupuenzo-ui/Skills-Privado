@@ -112,6 +112,7 @@ gates:
   name: Handoff
   criteria:
   - El gate del handoff sin FAILED ni BLOCKED
+  - Paridad KB-CODIGO obligatoria por paridad-diseno-desarrollo: documentación sincronizada, código final y exit 0 antes del cierre y del MR
   - Revisión humana pendiente registrada
 tasks:
 - id: T-01

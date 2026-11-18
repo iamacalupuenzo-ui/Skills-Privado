@@ -1,0 +1,149 @@
+[
+  {
+    "id": "SCR-055-peso",
+    "kb_repo": "knowledge-base",
+    "kb_ref": "e7670ed4ad27cdf180e3563c5827b21c383beb73",
+    "code_repo": "microui-bo-tenants",
+    "code_ref": "4487a0bd201106c168b40db7b446973e1bdb2ca4",
+    "kb_selector": {
+      "source": "kb",
+      "file": "design/screens/SCR-055-056-configuracion-del-distribuidor.md",
+      "artifact_type": "SCR",
+      "region": "^\\| Unidades de medida /[^\\n]*(?P<body>Distancia[^\\n]*)$",
+      "pattern": "(?P<value>Distancia|volumen|temperatura|velocidad|peso|área)",
+      "aliases": {
+        "distancia": "distanceUnit",
+        "volumen": "volumeUnit",
+        "temperatura": "temperatureUnit",
+        "velocidad": "speedUnit",
+        "peso": "weightUnit",
+        "área": "areaUnit"
+      }
+    },
+    "code_selector": {
+      "source": "code",
+      "file": "src/app/tenants/settings/settings-regional.component.ts",
+      "region": "const UNIT_KEYS:[^=]*=\\s*\\[(?P<body>[^\\]]+)\\];",
+      "pattern": "'(?P<value>[^']+)'",
+      "format": "typescript"
+    },
+    "kb_excerpt": {
+      "text": "| Unidades de medida / `ruler` | Distancia, volumen, temperatura, velocidad y área en el piloto | Cinco `cs-input-dropdown` | Nombre y símbolo, solo unidades activas |\n",
+      "original_line": 62
+    },
+    "code_excerpt": {
+      "text": "const UNIT_KEYS: readonly SettingsKey[] = ['distanceUnit', 'volumeUnit', 'temperatureUnit', 'speedUnit', 'weightUnit', 'areaUnit'];",
+      "original_line": 23
+    },
+    "updated_kb_ref": "a0300f0239ffd5b59a57a45192c18d754f015cd1",
+    "updated_kb_excerpt": {
+      "text": "| Unidades de medida / `ruler` | Distancia, volumen, temperatura, velocidad, peso y área | Seis `cs-input-dropdown`, en tres columnas | Nombre y símbolo, solo unidades activas |\n",
+      "original_line": 62
+    },
+    "updated_kb_selector": {
+      "source": "kb",
+      "file": "design/screens/SCR-055-056-configuracion-del-distribuidor.md",
+      "artifact_type": "SCR",
+      "region": "^\\| Unidades de medida /[^\\n]*(?P<body>Distancia[^\\n]*)$",
+      "pattern": "(?P<value>Distancia|volumen|temperatura|velocidad|peso|área)",
+      "aliases": {
+        "distancia": "distanceUnit",
+        "volumen": "volumeUnit",
+        "temperatura": "temperatureUnit",
+        "velocidad": "speedUnit",
+        "peso": "weightUnit",
+        "área": "areaUnit"
+      }
+    }
+  },
+  {
+    "id": "SCR-053-estructura",
+    "kb_repo": "knowledge-base",
+    "kb_ref": "e7670ed4ad27cdf180e3563c5827b21c383beb73",
+    "code_repo": "microui-bo-tenants",
+    "code_ref": "f6ca4fc64c0fd550ef96647c5efb114862bca0f4",
+    "kb_selector": {
+      "source": "kb",
+      "file": "design/screens/SCR-051-054-catalogos-regionales.md",
+      "artifact_type": "SCR",
+      "region": "^## SCR-053[^\\n]*\\n(?P<body>[\\s\\S]*?)(?=^## SCR-054)",
+      "pattern": "(?P<value>cs-accordion)",
+      "aliases": {}
+    },
+    "code_selector": {
+      "source": "code",
+      "file": "src/app/regional-catalogs/measurement-units-page.component.ts",
+      "region": "template:\\s*`(?P<body>[\\s\\S]*?)`,",
+      "pattern": "<(?P<value>cs-accordion)\\b",
+      "format": "typescript",
+      "allow_empty": true
+    },
+    "kb_excerpt": {
+      "text": "## SCR-053 — Pestaña Unidades de medida\n\n### Estructura\n\n1. Misma página, pestañas y encabezado que SCR-051; la acción principal es «Registrar magnitud».\n2. Barra de filtros con búsqueda por símbolo o nombre de unidad. Sin filtro de estado por magnitud: las magnitudes **sí se pueden inactivar** si no están en uso (decisión de Enzo Macalupu, UX/UI, 2026-11-18; antes este SCR decía que no se inactivan). Si una magnitud inactiva sigue visible o se oculta, y si el filtro de estado vuelve: por definir (UXR-114-Q5).\n3. **Una sección por magnitud** con `cs-accordion` (CMP-DS-016), todas abiertas al entrar. Cabecera: nombre de la magnitud, «Unidad base: {nombre} ({símbolo})», la acción secundaria «Registrar unidad» y la acción **Inactivar** de la magnitud: habilitada si ninguna Unidad la usa; deshabilitada con el motivo visible como texto si está en uso. Depende del dato «en uso» del backend (UXR-114-Q3) y de que el contrato incluya la inactivación de magnitudes (UXR-114-Q4: hoy el OAS-CAND solo la trae para unidades; no confundir con `409 BASE_UNIT_IMMUTABLE`, que es de la unidad base).\n4. Dentro de cada sección, una tabla (CMP-DS-012): Símbolo · Nombre · Conversión · Estado · En uso · Acciones.\n   - **Conversión:** «1 km = 0.621371 mi»; la fila de la unidad base dice «Unidad base».\n   - **En uso:** «En uso» o «Sin uso» mientras la API no dé el conteo (UXR-114-Q3).\n\n### Estados\n\n| Estado | Qué se ve | Fuente |\n|---|---|---|\n| default | Seis secciones precargadas, abiertas | UXR-114 |\n| loading | Skeleton de secciones | UXR-111 |\n| empty / error | Igual que SCR-051 | UXR-111 |\n| sin-resultados | Solo quedan las secciones con coincidencias; si no hay ninguna, el estado vacío de SCR-051 | UXR-111 |\n| unidad-base | Fila sin acción Inactivar; editar permite solo el nombre. UXR-114-Q1 cerrada: unidad base fija (PO, DH-1418; Arquitectura, R11-18, `409 BASE_UNIT_IMMUTABLE`) | UXR-114 |\n| en-uso | Inactivar deshabilitado con «En uso: no se puede inactivar.» en la unidad y, desde 2026-11-18, también en la **magnitud** si alguna de sus Unidades la usa (texto de la magnitud por definir: UXR-114-Q5) | UXR-114; Enzo, 2026-11-18 |\n| inactivar-magnitud | Magnitud sin uso: Inactivar en la cabecera, con confirmación y textos por definir (UXR-114-Q5). Magnitud en uso: bloqueada con el motivo visible. Si se vuelve «en uso» al confirmar, aplica el bloqueo de SCR-051 | UXR-114; Enzo, 2026-11-18; contrato por confirmar (UXR-114-Q4) |\n| confirmar-inactivar / exito | Igual que SCR-051 | UXR-111 |\n| sin-escritura | Sin «Registrar magnitud», «Registrar unidad» ni Acciones | UXR-111 |\n\n### Interacción y accesibilidad\n\n- Cada cabecera de sección es un botón con `aria-expanded`; las flechas se mueven entre secciones.\n- La conversión se lee como texto completo («1 kilómetro equivale a 0.621371 millas») mediante un nombre accesible.\n\n## SCR-054 — Panel para registrar una magnitud o registrar y editar una unidad\n",
+      "original_line": 145
+    },
+    "code_excerpt": {
+      "text": "template: `\n    <cs-page-template>\n      @if (routeMagnitude()) {\n        <cs-breadcrumb breadcrumb [items]=\"breadcrumb()\" />\n      }\n      <cs-page-header header titleId=\"bo-units-title\" [title]=\"heading()\" [description]=\"description()\">\n        @if (canWrite() && magnitudes()) {\n          @if (!routeMagnitude()) {\n            <cs-button variant=\"primary\" size=\"sm\" (click)=\"list()?.openRegister()\"\n              ><cs-icon name=\"plus\" [size]=\"16\" aria-hidden=\"true\" />Registrar magnitud</cs-button\n            >\n          } @else if (current()?.status === 'ACTIVE') {\n            <cs-button variant=\"primary\" size=\"sm\" (click)=\"list()?.openRegister()\"\n              ><cs-icon name=\"plus\" [size]=\"16\" aria-hidden=\"true\" />Registrar unidad</cs-button\n            >\n          }\n        }\n      </cs-page-header>\n\n      @if (loadError()) {\n        <cs-empty-state class=\"bo-units__state\" illustration=\"load-error\" title=\"No pudimos cargar las unidades.\" description=\"Inténtalo de nuevo.\">\n          <cs-button variant=\"default\" size=\"sm\" (click)=\"load()\">Reintentar</cs-button>\n        </cs-empty-state>\n      } @else if (!magnitudes()) {\n        <div aria-busy=\"true\" aria-label=\"Cargando unidades\"><cs-skeleton width=\"100%\" height=\"var(--layout-size-2xl)\" /></div>\n      } @else if (!routeMagnitude()) {\n        <bo-catalog-list [config]=\"magnitudesConfig\" [canWrite]=\"canWrite()\" />\n      } @else if (current(); as magnitude) {\n        @if (baseOf(magnitude); as base) {\n          <p class=\"bo-units__base\">\n            Unidad base: <strong>{{ base.name }} ({{ base.symbol }})</strong>. Las demás unidades se convierten desde ella.\n            @if (magnitude.status === 'INACTIVE') {\n              La magnitud está inactiva: los Distribuidores no la ven y no se registran unidades nuevas.\n            }\n          </p>\n        }\n        <bo-catalog-list [config]=\"configFor(magnitude.code)\" [canWrite]=\"canWrite()\" />\n      } @else {\n        <cs-empty-state class=\"bo-units__state\" icon=\"ruler\" title=\"No encontramos esa magnitud.\" description=\"Puede que el enlace esté mal escrito.\">\n          <cs-button variant=\"default\" size=\"sm\" (click)=\"backToList()\">Ver las magnitudes</cs-button>\n        </cs-empty-state>\n      }\n    </cs-page-template>\n  `,",
+      "original_line": 36
+    },
+    "updated_kb_ref": "a0300f0239ffd5b59a57a45192c18d754f015cd1",
+    "updated_kb_excerpt": {
+      "text": "## SCR-053 — Unidades de medida: tabla de magnitudes y detalle de cada una\n\n### Estructura\n\n1. **Dos vistas en maestro-detalle** (decisión de Enzo Macalupu (UX/UI), 2026-11-17). Página propia «Unidades de medida» (`/unidades-de-medida`), hija de «Catálogos regionales» en el menú (decisión de Enzo Macalupu (UX/UI), 2026-11-16), con la Funcionalidad de Unidades de medida.\n2. **Vista de magnitudes** (`/unidades-de-medida`): encabezado (CMP-DS-003) con el título «Unidades de medida», la descripción «Las unidades se agrupan por magnitud. Entra a una para ver y registrar sus unidades.» y la acción principal «Registrar magnitud». Tabla (CMP-DS-012), la misma de los catálogos: Magnitud · Unidad base · Unidades · Estado · En uso. El nombre de la magnitud y «Ver unidades» en el menú de la fila llevan al detalle; ese menú permite también cambiar el nombre e inactivar o activar la magnitud.\n   - Sin filtro de estado por magnitud: las magnitudes **sí se pueden inactivar** si no están en uso (decisión de Enzo Macalupu, UX/UI, 2026-11-18; antes este SCR decía que no se inactivan). Si una magnitud inactiva sigue visible o se oculta, y si el filtro de estado vuelve: por definir (UXR-114-Q5). Si una magnitud inactiva sigue visible o se oculta, y si el filtro de estado vuelve: por definir (UXR-114-Q5).\n   - **Inactivar** una magnitud: habilitada si ninguna Unidad la usa; deshabilitada con el motivo visible como texto si está en uso. Depende del dato «en uso» del backend (UXR-114-Q3) y del contrato de inactivar (UXR-114-Q4).\n3. **Vista de detalle de una magnitud** (`/unidades-de-medida/{magnitud}`): breadcrumb «Catálogos regionales › Unidades de medida» para volver; título «Unidades de {magnitud}» (decisión de Enzo Macalupu (UX/UI), 2026-11-17); descripción «Unidades que los Distribuidores pueden elegir para esta magnitud.»; «Unidad base: {nombre} ({símbolo}). Las demás unidades se convierten desde ella.»; y la acción principal «Registrar unidad», visible con escritura y con la magnitud activa.\n4. **Tabla estándar de las unidades de la magnitud**, con paginación (CMP-DS-012): Símbolo · Nombre · Conversión · Estado · En uso · Acciones.\n   - **Conversión:** «1 km = 0.621371 mi»; con desplazamiento, también «0 °C = 32 °F»; la fila de la unidad base dice «Unidad base».\n   - **En uso:** «En uso» o «Sin uso» mientras la API no dé el conteo (UXR-114-Q3).\n\n### Estados\n\n| Estado | Qué se ve | Fuente |\n|---|---|---|\n| default | Vista de magnitudes con las seis precargadas; detalle con la tabla de sus unidades | UXR-114 |\n| loading | Skeleton mientras carga la lista de magnitudes o la tabla | UXR-111 |\n| empty / error | Igual que SCR-051 | UXR-111 |\n| sin-resultados | La tabla sin coincidencias muestra el estado vacío de SCR-051 | UXR-111 |\n| unidad-base | Fila sin acción Inactivar; editar permite solo el nombre. UXR-114-Q1 cerrada: unidad base fija (PO, DH-1418; Arquitectura, R11-18, `409 BASE_UNIT_IMMUTABLE`) | UXR-114 |\n| en-uso | Inactivar deshabilitado con «En uso: no se puede inactivar.» en la unidad y, desde 2026-11-18, también en la **magnitud** si alguna de sus Unidades la usa (texto de la magnitud por definir: UXR-114-Q5) | UXR-114; Enzo, 2026-11-18 |\n| inactivar-magnitud | Magnitud sin uso: Inactivar en la cabecera, con confirmación y textos por definir (UXR-114-Q5). Magnitud en uso: bloqueada con el motivo visible. Si se vuelve «en uso» al confirmar, aplica el bloqueo de SCR-051 | UXR-114; Enzo, 2026-11-18; contrato por confirmar (UXR-114-Q4) |\n| confirmar-inactivar / exito | Igual que SCR-051 | UXR-111 |\n| sin-escritura | Sin «Registrar magnitud», «Registrar unidad» ni Acciones | UXR-111 |\n\n### Interacción y accesibilidad\n\n- El nombre de la magnitud es un enlace al detalle; el breadcrumb permite volver. Cada vista tiene un único encabezado `h1`.\n- La conversión se lee como texto completo («1 kilómetro equivale a 0.621371 millas») mediante un nombre accesible.\n\n## SCR-054 — Panel para registrar una magnitud o registrar y editar una unidad\n",
+      "original_line": 145
+    },
+    "updated_kb_selector": {
+      "source": "kb",
+      "file": "design/screens/SCR-051-054-catalogos-regionales.md",
+      "artifact_type": "SCR",
+      "region": "^## SCR-053[^\\n]*\\n(?P<body>[\\s\\S]*?)(?=^## SCR-054)",
+      "pattern": "(?P<value>cs-accordion)",
+      "aliases": {},
+      "allow_empty": true
+    }
+  },
+  {
+    "id": "UXR-111-Q1-menu",
+    "kb_repo": "knowledge-base",
+    "kb_ref": "e7670ed4ad27cdf180e3563c5827b21c383beb73",
+    "code_repo": "web-backoffice",
+    "code_ref": "54b6470bda293b64c7683d56284fbf99db6c9b80",
+    "kb_selector": {
+      "source": "kb",
+      "file": "design/ux-requirements/UXR-111-mantenimiento-comun-de-los-catalogos-regionales.md",
+      "artifact_type": "UXR",
+      "region": "^### Resolución UXR-111-Q1\\n(?P<body>[\\s\\S]*?)(?=^\\*\\*Fuentes y evidencia\\*\\*)",
+      "pattern": "(?P<value>Una entrada «Catálogos regionales»)",
+      "aliases": {
+        "Una entrada «Catálogos regionales»": "catalogos-unificados"
+      }
+    },
+    "code_selector": {
+      "source": "code",
+      "file": "dev/mock-bff/data.mjs",
+      "region": "(?P<body>    \\{ feature: 'BO_REGIONAL_CATALOGS'[^\\n]*\\n    \\{ feature: 'BO_REGIONAL_UNITS'[^\\n]*)",
+      "pattern": "label: '(?P<value>[^']+)'",
+      "format": "typescript"
+    },
+    "kb_excerpt": {
+      "text": "### Resolución UXR-111-Q1\n\n**Estado conciliado:** Cerrada.\n\n**Respuesta**\n\nUna entrada «Catálogos regionales» en el menú del BackOffice con una pestaña por catálogo (Idiomas, Monedas, Unidades de medida); cada pestaña aparece solo con su Funcionalidad.\n\n**Fuentes y evidencia**\n",
+      "original_line": 148
+    },
+    "code_excerpt": {
+      "text": "    { feature: 'BO_REGIONAL_CATALOGS', label: 'Idiomas y monedas', group: 'Plataforma', parent: 'Catálogos regionales' },\n    { feature: 'BO_REGIONAL_UNITS', label: 'Unidades de medida', group: 'Plataforma', parent: 'Catálogos regionales' },",
+      "original_line": 82
+    },
+    "updated_kb_ref": "a0300f0239ffd5b59a57a45192c18d754f015cd1",
+    "updated_kb_excerpt": {
+      "text": "### Resolución UXR-111-Q1\n\n**Estado conciliado:** Cerrada.\n\n**Respuesta**\n\nUna opción «Catálogos regionales» en el menú del BackOffice que se despliega en «Idiomas y monedas» (una pestaña por catálogo) y «Unidades de medida» (maestro-detalle); cada página aparece solo con su Funcionalidad.\n\n**Fuentes y evidencia**\n",
+      "original_line": 148
+    },
+    "updated_kb_selector": {
+      "source": "kb",
+      "file": "design/ux-requirements/UXR-111-mantenimiento-comun-de-los-catalogos-regionales.md",
+      "artifact_type": "UXR",
+      "region": "^### Resolución UXR-111-Q1\\n(?P<body>[\\s\\S]*?)(?=^\\*\\*Fuentes y evidencia\\*\\*)",
+      "pattern": "«(?P<value>Idiomas y monedas|Unidades de medida)»",
+      "aliases": {}
+    }
+  }
+]

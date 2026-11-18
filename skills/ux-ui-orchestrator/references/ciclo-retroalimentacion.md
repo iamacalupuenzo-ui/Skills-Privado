@@ -103,6 +103,16 @@ haya merge. No declarar «terminado» sin comprobar KB, Preguntas, Tareas y evid
    Conservar el antecedente aprobado y registrar contradicciones como pendientes del
    responsable; no fabricar consenso ni aprobación. Ejecutar los validadores reales
    de la KB y reportar cifras y fallos. Push, MR y merge conservan su autorización propia.
+   **Paridad obligatoria, también en tareas de documentación:** después de sincronizar
+   y regenerar los artefactos, ejecutar el modo KB-CODIGO de `paridad-diseno-desarrollo`
+   siguiendo su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/paridad-diseno-desarrollo/references/paridad-kb-codigo.md).
+   Resolverlo instalado o en la fuente central; si falta, bloquear. Comparar el commit de
+   KB sincronizada con el código final de micro UI y Shell. Exigir configuración versionada,
+   cobertura revisada de pantallas/componentes/campos/navegación/textos, informe y exit 0.
+   Repetir antes de abrir el MR y si cambian fuentes/configuración. Una divergencia
+   preservada como pendiente sigue bloqueando cierre y MR; no decidir por Enzo ni dar
+   por buena una diferencia porque esté escrita. MATCH no sustituye revisión semántica
+   ni visual: tampoco cerrar con contradicciones fuera de las proyecciones comprobadas.
 2. **Notion Preguntas.** Consultar schema vivo y localizar por ID antes de crear.
    Cerrar o actualizar cada pregunta cuya respuesta ya exista en la KB o se haya decidido
    en la sesión, citando fuente y quién decidió con su rol. Transcribir una decisión

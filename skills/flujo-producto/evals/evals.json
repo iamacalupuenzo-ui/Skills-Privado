@@ -1,6 +1,6 @@
 {
   "skill_name": "flujo-producto",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "descripcion": "Casos para comprobar que el flujo de producto usa el DS sin salirse de él, sube la versión en los cinco sitios, publica en pareja y distingue fallos de infraestructura de fallos de código.",
   "evals": [
     {

@@ -1,5 +1,5 @@
 pack_name: desarrollo
-version: 1.0.0
+version: 1.1.0
 purpose: Llevar un cambio del Design System o de un producto de CL2 Flotas desde la documentación de UX hasta QA, con una puerta verificable en cada paso
 # Estándar de referencia: comsatel-skill-pack-factory v1.2 (un orquestador y como máximo seis especialistas).
 skills:
@@ -51,6 +51,7 @@ gates:
   criteria:
   - Suite completa del repositorio en verde con cifras reales
   - Verificado en el navegador
+  - Paridad KB-CODIGO obligatoria por paridad-diseno-desarrollo: configuración revisada, fuentes finales y exit 0 antes del cierre y del MR
 - id: G4
   name: Confirmación
   criteria:

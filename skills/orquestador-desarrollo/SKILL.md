@@ -9,7 +9,7 @@ description: >
   estatus". No diseña pantallas (usa ux-ui-orchestrator), no escribe el código de una pantalla
   (usa angular-product-builder) ni gestiona épicas ni Notion (usa product-orchestrator).
 metadata:
-  version: "1.6.0"
+  version: "1.7.0"
 ---
 
 # Orquestador de desarrollo — Comsatel Flotas
@@ -116,11 +116,17 @@ Cuando UX o Enzo revisan lo que construyó Desarrollo, se levanta en local Shell
 
 - **B9 — Se desarrolla donde trabaja el equipo.** Antes de abrir una rama se revisan `integration` y las ramas de los demás; si el equipo trabaja en `integration`, la rama sale de ahí, y lo ya hecho se integra con `git merge` (nunca rebase ni push forzado, `flujo-producto` B13). El 17-nov-2026 se construyó sobre `develop` la misma página que Gabriel ya tenía en `integration` y la simulación dio 6, 7 y 13 choques en monitoring.
 - **B10 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
+- **B11 — Paridad KB-código obligatoria.** En cada cierre de front/documentación y antes
+  del MR, invocar `paridad-diseno-desarrollo`, modo KB-CODIGO, siguiendo su
+  [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/paridad-diseno-desarrollo/references/paridad-kb-codigo.md).
+  Exigir ejecución sobre fuentes finales, configuración/cobertura revisada y exit 0;
+  sin ello o con contradicciones pendientes, bloquear cierre y apertura del MR.
 
 ## Racionalizaciones comunes
 
 | Excusa | Realidad |
 |---|---|
+| «Pasó la suite; la KB se revisa después» | La suite no compara documentación y código; sin paridad comprobada se bloquean cierre y MR (B11). |
 | «Es solo un cambio pequeño o un análisis; sincronizo después» | El inicio y el cierre del protocolo canónico son obligatorios; un pendiente de sincronización impide declarar terminado (B10). |
 | «El usuario dijo "subimos", ya puedo fusionar y etiquetar» | Subir una rama no autoriza fusionar ni publicar (B1). |
 | «El pipeline pasó, QA ya está bien» | Un job de despliegue puede fallar aparte; comprobar QA en vivo y los jobs. |

@@ -9,7 +9,7 @@ description: >
   productos", "despliega a QA" o "integra con integration". No cambia el DS (usa flujo-ds) ni construye la pantalla desde
   cero (usa angular-product-builder).
 metadata:
-  version: "1.4.1"
+  version: "1.5.0"
 ---
 
 # Flujo de producto
@@ -84,10 +84,17 @@ Cuando UX o Enzo revisan lo que construyó Desarrollo, se levanta en local Shell
 - **B14 — `scripts/revisar_ds.py` pasa antes de cada commit que toca dependencias o UI.** Versión exacta, sin prerelease superada por una estable, lock alineado, pareja con la misma versión y sin piezas que la versión publicada no tiene. Las ramas de DSP-006 fijaban `1.17.0-pre.157` con la `1.17.0` publicada y usaban `variant="neutral"` y escenas que solo existían en una rama del DS: compilaban en local porque se copiaba el `dist` en `node_modules`.
 - **B15 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
 
+- **B16 — Paridad KB-código obligatoria.** Antes de abrir el MR y al cerrar tareas de
+  front/documentación, invocar `paridad-diseno-desarrollo`, modo KB-CODIGO, siguiendo su
+  [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/paridad-diseno-desarrollo/references/paridad-kb-codigo.md).
+  Configuración/cobertura incompleta, falta de ejecución final, exit distinto de cero
+  o contradicciones pendientes bloquean cierre y apertura; no usar un informe antiguo.
+
 ## Racionalizaciones comunes
 
 | Excusa | Realidad |
 |---|---|
+| «El MR solo publica lo ya probado» | Antes de abrirlo se repite KB-CODIGO con los commits finales de KB, Shell y micro UI; las pruebas funcionales no sustituyen paridad (B16). |
 | «Es solo un cambio pequeño o un análisis; sincronizo después» | El inicio y el cierre del protocolo canónico son obligatorios; un pendiente de sincronización impide declarar terminado (B15). |
 | «El MR se fusionó, ya está en QA» | El job `deploy to qa` puede haber fallado; comprobar (B6). |
 | «Cambia un color, no hace falta versión» | Sin versión QA conserva la imagen (B2). |

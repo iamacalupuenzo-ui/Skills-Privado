@@ -70,6 +70,16 @@
         "accessibility-reviewer",
         "design-qa"
       ]
+    },
+    "paridad-kb-codigo": {
+      "owner": "paridad-diseno-desarrollo",
+      "path": "references/paridad-kb-codigo.md",
+      "command": "scripts/paridad_kb_codigo.py",
+      "consumers": [
+        "ux-ui-orchestrator",
+        "orquestador-desarrollo",
+        "flujo-producto"
+      ]
     }
   }
 }

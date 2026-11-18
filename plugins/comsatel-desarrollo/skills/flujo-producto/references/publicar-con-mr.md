@@ -18,6 +18,11 @@ Todo paso de subida pide la confirmación del usuario (B1). Si el cambio depende
 
 ## 3. Subir y abrir el MR
 
+Antes de abrir el MR, cumplir B16: ejecutar KB-CODIGO con `paridad-diseno-desarrollo`
+conforme a su `references/paridad-kb-codigo.md`, sobre KB sincronizada y los commits
+exactos de las ramas de producto/Shell. Sin configuración versionada, cobertura revisada
+y exit 0, o con contradicciones pendientes, detenerse; no escribir «paridad verificada».
+
 1. `git push -u origin <rama>`.
 2. MR a `develop` por la API: título en ASCII, cuerpo en un archivo JSON UTF-8. Descripción con: qué cambia, contrato propuesto (si lo hay), **pareja** con enlace, verificación con cifras, lo no verificado y la versión.
 3. Abrir la pareja y editar ambas descripciones para enlazarse entre sí.

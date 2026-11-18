@@ -2,7 +2,7 @@
 name: ux-ui-orchestrator
 description: Orquesta los skills UX/UI (ux-requirements-analyzer, user-flow-designer, ui-spec-writer, stitch-ui-generator, claude-design-orchestrator, figma-design-validator, accessibility-reviewer, ux-context-builder, ux-development-handoff) para llevar User Stories validadas hasta un paquete de diseño consolidado (UXS), un diseño gobernado y un handoff DESIGN_READY_FOR_DEV, con trazabilidad US→UXR→FLW→SCR→UXS→DTM y compuertas humanas. Úsalo siempre que el usuario pida gestionar, completar, auditar o retomar el diseño UX/UI de punta a punta, preparar pantallas para Claude Design/Desarrollo, cerrar un paquete de diseño (la UXS), evaluar si un SCR está listo, resolver una divergencia Stitch↔Figma, o decida qué skill UX/UI ejecutar y en qué orden, aunque no nombre ningún skill.
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # ux-ui-orchestrator
@@ -53,11 +53,17 @@ Leer también `references/mejoras-del-proceso.md` al iniciar el paso 0 y, al cer
 - **B1 — Inicio sin verificación previa, bloqueado.** No iniciar sin el informe de solo lectura de un agente distinto de quien construye y la comprobación de fuentes que exige `references/ciclo-retroalimentacion.md`; si faltan acceso o agente, declarar el bloqueo.
 - **B2 — Cierre sin sincronización, bloqueado.** No declarar terminado un desarrollo, mejora, análisis o definición sin ejecutar y comprobar el cierre de `references/ciclo-retroalimentacion.md`. Un destino pendiente se reporta como cierre BLOQUEADO, nunca como completado.
 - **B3 — Estado de tareas atrasado respecto del hecho.** Al fusionarse un MR, entregarse un paquete (handoff y pase vivo) o descartarse un trabajo, actualizar la tarea de Notion en ese momento según la sección C de `references/ciclo-retroalimentacion.md`, con evidencia y sin dejar `Completada` con `Resultado = Pendiente`. Un paquete no se da por entregado sin sus dos recursos.
+- **B4 — Paridad KB-código obligatoria.** En cada cierre de front/documentación y antes
+  de abrir su MR, invocar `paridad-diseno-desarrollo`, modo KB-CODIGO, y su
+  [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/paridad-diseno-desarrollo/references/paridad-kb-codigo.md).
+  Sin ejecución sobre fuentes finales, cobertura suficiente y exit 0, o con contradicciones
+  pendientes, bloquear cierre/MR. El comparador no otorga aprobación humana.
 
 ## Racionalizaciones comunes
 
 | Racionalización | Realidad |
 |---|---|
+| «La KB ya menciona la diferencia; puedo cerrar» | La contradicción preservada no es paridad. Ejecutar KB-CODIGO y resolver la divergencia con su responsable antes del cierre/MR (B4). |
 | «La KB local o mi memoria bastan para empezar» | La revisión independiente contrasta referencias remotas frescas, código y Notion antes de avanzar (B1). |
 | «El build pasó; actualizaré los artefactos cuando termine la sesión» | Cada trabajo termina con sincronización comprobada; build o merge no sustituyen ese cierre (B2). |
 

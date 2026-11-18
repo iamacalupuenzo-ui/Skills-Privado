@@ -128,6 +128,27 @@ if (!cycle || cycle.owner !== 'ux-ui-orchestrator' || cycle.path !== 'references
     }
   }
 }
+const parity = manifest.protocols?.['paridad-kb-codigo'];
+if (!parity || parity.owner !== 'paridad-diseno-desarrollo' ||
+    parity.path !== 'references/paridad-kb-codigo.md' || parity.command !== 'scripts/paridad_kb_codigo.py') {
+  errors.push('manifest: falta dueño/ruta/comando canónicos de paridad KB-código');
+} else {
+  for (const path of [parity.path, parity.command]) {
+    if (!listed.has(parity.owner) || !existsSync(join(skillsDir, parity.owner, path))) {
+      errors.push(`paridad: recurso no resoluble ${path}`);
+    }
+  }
+  if (!Array.isArray(parity.consumers) || !parity.consumers.length || new Set(parity.consumers).size !== parity.consumers.length) {
+    errors.push('paridad: consumidores ausentes o duplicados');
+  } else for (const name of parity.consumers) {
+    const file = join(skillsDir, name, 'SKILL.md');
+    if (!listed.has(name) || !existsSync(file) ||
+        !/\*\*B\d+ — Paridad KB-código obligatoria\./.test(readFileSync(file, 'utf8')) ||
+        !readFileSync(file, 'utf8').includes(`/skills/${parity.owner}/${parity.path}`)) {
+      errors.push(`paridad: ${name} sin bloqueante/enlace al dueño`);
+    }
+  }
+}
 for (const name of manifest.skills) {
   const dir = join(skillsDir, name);
   const skillFile = join(dir, 'SKILL.md');
