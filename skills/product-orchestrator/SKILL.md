@@ -12,7 +12,7 @@ description: >
   stack y el sistema de diseño del proyecto. No implementa componentes ni reemplaza
   los skills que coordina.
 metadata:
-  version: "2.0.2"
+  version: "2.1.0"
 ---
 
 # Product Orchestrator
@@ -187,6 +187,7 @@ que no estén bloqueadas.
 
 ## Bloqueantes
 
+- **B10 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
 - **B1 — Dos ciclos, dos destinos.** Nunca modificar un sistema de diseño al
   construir una aplicación consumidora, ni construir producto dentro del
   sistema. Mezclarlos oculta releases y rompe el contrato de consumo.
@@ -233,6 +234,7 @@ que no estén bloqueadas.
 
 | Racionalización | Realidad |
 | --- | --- |
+| «Es solo un cambio pequeño o un análisis; sincronizo después» | El inicio y el cierre del protocolo canónico son obligatorios; un pendiente de sincronización impide declarar terminado (B10). |
 | “Casi todo es de Comsatel, lo asumo.” | El orquestador sirve para proyectos personales y de otros clientes; el sistema y el destino se leen o se preguntan (B1a). |
 | “Puedo revisar `node_modules` para saber cómo armarlo.” | El consumidor depende de la API pública; los internals no son contrato y no se copian. |
 | “La pantalla luce bien, por lo que ya está lista.” | La dirección visual no verifica flujo crítico, errores, foco, teclado ni responsive. |

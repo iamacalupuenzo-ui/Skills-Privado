@@ -34,5 +34,39 @@
     "accessibility-reviewer",
     "anatomy",
     "traspaso-entre-computadoras"
-  ]
+  ],
+  "protocols": {
+    "ciclo-retroalimentacion": {
+      "owner": "ux-ui-orchestrator",
+      "path": "references/ciclo-retroalimentacion.md",
+      "consumers": [
+        "orquestador-desarrollo",
+        "flujo-producto",
+        "flujo-ds",
+        "ux-a-desarrollo",
+        "verificar-calidad",
+        "angular-product-builder",
+        "ux-development-handoff",
+        "paridad-diseno-desarrollo",
+        "documentacion-handoff",
+        "gestion-proyectos",
+        "gestor-notion",
+        "traspaso-entre-computadoras",
+        "flujo-tareas-gitlab",
+        "product-orchestrator",
+        "comsatel-design-system",
+        "epica-a-plan-desarrollo",
+        "ux-requirements-analyzer",
+        "user-flow-designer",
+        "ui-spec-writer",
+        "web-atomic-component-designer",
+        "ux-context-builder",
+        "stitch-ui-generator",
+        "claude-design-orchestrator",
+        "figma-design-validator",
+        "accessibility-reviewer",
+        "design-qa"
+      ]
+    }
+  }
 }

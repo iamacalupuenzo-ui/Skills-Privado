@@ -1,6 +1,8 @@
 ---
 name: claude-design-orchestrator
 description: Usar cuando haya que explorar y criticar alternativas de diseño en Claude Design para pantallas SCR-* de un flujo FLW-*, o cuando una decisión humana deba elegir entre Stitch y Figma.
+metadata:
+  version: "1.0.0"
 ---
 
 # claude-design-orchestrator
@@ -49,3 +51,13 @@ Todo artefacto con FLW/SCR; decisiones humanas explícitas; sin pregunta crític
 
 ## Definition of Done
 Intent Brief, alternativas y DD con lineage `FLW → SCR`, decisión humana explícita y revisión humana pendiente.
+
+## Comportamientos bloqueantes
+
+- **B1 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
+
+## Racionalizaciones comunes
+
+| Racionalización | Realidad |
+|---|---|
+| «Es solo un artefacto o una revisión; sincronizo después» | Invocar al orquestador conserva su autoridad y exige las dos compuertas también en encargos directos (B1). |

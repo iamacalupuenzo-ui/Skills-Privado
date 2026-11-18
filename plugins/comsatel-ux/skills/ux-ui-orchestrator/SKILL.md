@@ -1,6 +1,8 @@
 ---
 name: ux-ui-orchestrator
 description: Orquesta los skills UX/UI (ux-requirements-analyzer, user-flow-designer, ui-spec-writer, stitch-ui-generator, claude-design-orchestrator, figma-design-validator, accessibility-reviewer, ux-context-builder, ux-development-handoff) para llevar User Stories validadas hasta un paquete de diseño consolidado (UXS), un diseño gobernado y un handoff DESIGN_READY_FOR_DEV, con trazabilidad US→UXR→FLW→SCR→UXS→DTM y compuertas humanas. Úsalo siempre que el usuario pida gestionar, completar, auditar o retomar el diseño UX/UI de punta a punta, preparar pantallas para Claude Design/Desarrollo, cerrar un paquete de diseño (la UXS), evaluar si un SCR está listo, resolver una divergencia Stitch↔Figma, o decida qué skill UX/UI ejecutar y en qué orden, aunque no nombre ningún skill.
+metadata:
+  version: "1.0.0"
 ---
 
 # ux-ui-orchestrator
@@ -30,13 +32,29 @@ Cada skill gobierna su formato y sus IDs; invócalo con la herramienta Skill y n
 
 **Un paquete de diseño no se cierra sin su UXS.** Es lo que leen Claude Design (como UX Context Pack), QA y Desarrollo, y también el paquete que se entrega cuando se construye directo en front end. La compuerta **GU** y sus controles duros están en «Control de cierre de paquete», más abajo.
 
-**Entrada:** User Stories y reglas ya producidas por `af-requirements-orchestrator` (RQS con veredicto UX/UI READY o CONDITIONAL). Sin historias, este skill no arranca: señala `af-requirements-orchestrator`.
+**Entrada del flujo completo (el ciclo transversal no exige una RQS para coordinar su diagnóstico):** User Stories y reglas ya producidas por `af-requirements-orchestrator` (RQS con veredicto UX/UI READY o CONDITIONAL). Sin historias, el flujo completo no arranca: señala `af-requirements-orchestrator`.
 
 ## Cuándo no usarlo
 
-- Una tarea que toca un solo artefacto sin afectar a los demás (p. ej. "revisa la accesibilidad de SCR-016"): invoca directamente el skill.
+- Para un único artefacto, invoca al especialista para producirlo; este orquestador mantiene únicamente las compuertas del ciclo obligatorio, sin desplegar todo el flujo.
 - Gestionar requerimientos, historias o glosario: es `af-requirements-orchestrator`.
 - Implementar el diseño en código: es `development-handoff-builder` y Superpowers, después del gate.
+
+## Ciclo obligatorio de retroalimentación
+
+Leer y ejecutar `references/ciclo-retroalimentacion.md` al inicio y al cierre de cada desarrollo, mejora, análisis o definición, también en la vía directa a front end y cuando se invoque un especialista aislado. Este orquestador es el único dueño: coordina la verificación previa independiente y la actualización por los especialistas de cada artefacto. Esta obligación no depende de la activación del módulo Notion ni de que el usuario diga «sesión finalizada».
+
+## Comportamientos bloqueantes
+
+- **B1 — Inicio sin verificación previa, bloqueado.** No iniciar sin el informe de solo lectura de un agente distinto de quien construye y la comprobación de fuentes que exige `references/ciclo-retroalimentacion.md`; si faltan acceso o agente, declarar el bloqueo.
+- **B2 — Cierre sin sincronización, bloqueado.** No declarar terminado un desarrollo, mejora, análisis o definición sin ejecutar y comprobar el cierre de `references/ciclo-retroalimentacion.md`. Un destino pendiente se reporta como cierre BLOQUEADO, nunca como completado.
+
+## Racionalizaciones comunes
+
+| Racionalización | Realidad |
+|---|---|
+| «La KB local o mi memoria bastan para empezar» | La revisión independiente contrasta referencias remotas frescas, código y Notion antes de avanzar (B1). |
+| «El build pasó; actualizaré los artefactos cuando termine la sesión» | Cada trabajo termina con sincronización comprobada; build o merge no sustituyen ese cierre (B2). |
 
 ## Flujo
 
@@ -50,6 +68,8 @@ Cada skill gobierna su formato y sus IDs; invócalo con la herramienta Skill y n
 8. **Integrar**: proponer incorporación y esperar la decisión (paso 7).
 
 ### 1. Diagnosticar
+
+Primero completar la compuerta B1; el informe independiente es la entrada de este diagnóstico. Para leer fuentes de la KB, usar `git show origin/develop:<ruta>` según el protocolo, nunca un worktree sucio.
 
 Haz un inventario antes de decidir, porque la ruta depende de lo que ya existe:
 
@@ -157,6 +177,8 @@ Si el hook frena: arma la UXS con `ux-context-builder`, commitéala en la rama y
 
 ### 7. Integrar
 
+Antes de emitir el cierre, completar B2 y reportar cada destino comprobado o pendiente. Integrar o publicar conserva sus permisos propios.
+
 Con la auditoría limpia, o los errores restantes declarados, cierra según la sección 4 de `references/worktree-protocol.md`: `graphify update .`, resumen de cambios y decisiones pendientes, y propuesta de merge, PR, conservar o descartar. Espera la respuesta; no hagas commit, merge ni borres el worktree por iniciativa propia.
 
 ## Compuertas humanas
@@ -178,13 +200,15 @@ Todos los skills UX/UI dejan `status: draft`. Este orquestador mantiene esa lín
 - **Preservar contradicciones** entre fuentes; no elijas por tu cuenta.
 - **Verificar en vivo** las referencias Stitch y Figma antes de usarlas; si no se puede, es pregunta abierta, no un dato.
 - **Fechas y autoría** en frontmatter OKF v0.2: `generated.by` del skill que produjo el archivo (el de la UXS es `ux-context-builder/1.0`), `generated.at` ISO 8601 con `-05:00`.
-- **Solo diseño.** Si el pedido se desliza a negocio/requerimientos, arquitectura o código, detente y señala el skill de la etapa correspondiente.
+- **Solo diseño.** Coordinar la retroalimentación del desarrollo está incluido; escribir su código no. Si el pedido se desliza a negocio/requerimientos, arquitectura o código, detente y señala el skill de la etapa correspondiente.
 
 ## Informe final al usuario
 
-Cierra con un resumen breve, en este orden: escenario y ruta ejecutada; artefactos creados/actualizados; resultado de auditoría, preflight y gate (errores restantes); veredictos por consumidor; decisiones humanas pendientes; siguiente skill recomendado. Declara lo que no se pudo verificar u omitió (p. ej. Stitch/Figma inaccesibles).
+Incluye siempre el informe de inicio y la matriz de sincronización de `references/ciclo-retroalimentacion.md`. Cierra con un resumen breve, en este orden: escenario y ruta ejecutada; artefactos creados/actualizados; resultado de auditoría, preflight y gate (errores restantes); veredictos por consumidor; decisiones humanas pendientes; siguiente skill recomendado. Declara lo que no se pudo verificar u omitió (p. ej. Stitch/Figma inaccesibles).
 
 ## Referencias
+
+- `references/ciclo-retroalimentacion.md` — obligatorio al inicio y al cierre de todo desarrollo, mejora, análisis o definición.
 
 - `references/scenarios.md` — ruta, entradas y criterio de salida de cada escenario.
 - `references/quality-criteria.md` — atributos de calidad del diseño y cómo evaluarlos.

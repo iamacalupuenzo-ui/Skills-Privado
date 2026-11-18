@@ -1,6 +1,8 @@
 ---
 name: figma-design-validator
 description: Usar cuando un diseño en Figma deba validarse contra el bundle OKF y registrarse como diseño gobernado de un SCR-*, o cuando Stitch y Figma difieran para una misma pantalla.
+metadata:
+  version: "1.0.0"
 ---
 
 # figma-design-validator
@@ -58,3 +60,13 @@ El SCR existe con `flow`, requisitos, `required_states`, `responsive`, component
 
 ## Definition of Done
 Reporte de validación y entradas DTM `governed_design`/`stitch_figma` por SCR, con referencias Figma reales, divergencias resueltas por decisión humana o declaradas `open`, y revisión humana pendiente.
+
+## Comportamientos bloqueantes
+
+- **B1 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
+
+## Racionalizaciones comunes
+
+| Racionalización | Realidad |
+|---|---|
+| «Es solo un artefacto o una revisión; sincronizo después» | Invocar al orquestador conserva su autoridad y exige las dos compuertas también en encargos directos (B1). |

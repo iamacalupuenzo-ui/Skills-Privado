@@ -8,7 +8,7 @@ description: >
   "qué bloquea esta entrega", "preparemos el lanzamiento", "revisemos los riesgos" o
   "hagamos seguimiento de esto".
 metadata:
-  version: "1.9.2"
+  version: "1.10.0"
 ---
 
 # Gestión de proyectos — PM operativo
@@ -93,8 +93,8 @@ primero estos datos, preguntando solo lo que no se pueda sacar de lo que ya dijo
 Cuando el usuario diga que terminó una tarea, o pida marcarla como completada:
 
 1. Preguntar dónde está el resultado: un enlace, un archivo o el contenido mismo si es corto.
-2. Confirmar la fecha real de cierre (por defecto, hoy) y, si se usan, las horas reales.
-3. Con el resultado, escribirlo en la sección Resultado, pasar `Estado = Completada` y
+2. Fuera del ciclo canónico, confirmar la fecha real de cierre (por defecto, hoy) y, si se usan, las horas reales. Dentro del ciclo, no pedirlas ni cambiarlas salvo solicitud de Enzo; no bloquean el cierre.
+3. Con el resultado, escribirlo en la sección Resultado, aplicar el estado vivo según el ciclo canónico si corresponde (sin fingir merge), o pasar `Estado = Completada` fuera de ese ciclo, y
    `Resultado = Listo`.
 4. Sin resultado, no pasar a `Listo`. Si el usuario igual quiere marcarla completada, se
    marca, y se le avisa que va a quedar con `Alerta de cierre` hasta que aparezca el resultado.
@@ -219,6 +219,7 @@ Declarar el modo en la primera línea.
 
 ## Comportamientos bloqueantes
 
+- **B19 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
 - **B1 — Resultado antes que actividad:** no crear tareas de ejecución si falta el
   entregable, el resultado esperado o el criterio de aceptación que las justifica.
 - **B2 — Requerimiento antes que implementación:** un cambio de acceso, IP, código,
@@ -248,7 +249,7 @@ Declarar el modo en la primera línea.
   la jerarquía.
 - **B10 — Relato uniforme:** cada página de tarea sigue el orden `Antes de leer` →
   `En 30 segundos` → `El relato` → `Termina cuando` → `Resultado` → `Comprueba` (ver
-  bitacora-seguimiento.md). No añadir `Seguimiento` ni una bitácora al contenido. Sin
+  bitacora-seguimiento.md). No añadir `Seguimiento` ni una bitácora al contenido. En el ciclo canónico sí agregar `Avance` con evidencia actual. Sin
   condiciones verificables en `Termina cuando` no hay cierre objetivo, y una tarea `Completada`
   sin entregable en `Resultado` es una alerta de cierre, no un cierre.
 - **B11 — Cancelación conservadora:** no eliminar tareas o subtareas por obsolescencia,
@@ -267,7 +268,7 @@ Declarar el modo en la primera línea.
 - **B14 — Restricción no es dependencia:** una política, ventana, acceso, capacidad o condición
   externa se registra como restricción. Solo crear o relacionar una tarea precedente cuando
   exista una acción concreta cuyo resultado desbloquee el trabajo.
-- **B15 — Estado coherente:** aplicar la matriz de dependencias-bloqueos.md. Una ejecución
+- **B15 — Estado coherente:** aplicar la matriz de dependencias-bloqueos.md con las opciones reales de la base; en el ciclo canónico prevalece su mapeo de estados. Una ejecución
   impedida queda Bloqueada; trabajo ejecutado pendiente de aceptación queda En revisión.
   No cerrar mientras falte una condición de cierre. Cancelar el predecesor no libera la
   dependencia sin reemplazo, excepción aprobada o cambio de alcance documentado.
@@ -298,3 +299,9 @@ vigente, y que no quedan dependencias hacia registros descartados. Verificar tam
 fechas de sucesoras y tarea padre sean compatibles con la ruta crítica. Con resultado incierto,
 inspeccionar antes de repetir; evitar filas duplicadas. Verificar con los [casos de
 evaluación](references/evaluaciones.md) sin escribir en producción.
+
+## Racionalizaciones comunes
+
+| Racionalización | Realidad |
+|---|---|
+| «Es solo un cambio pequeño o un análisis; sincronizo después» | El inicio y el cierre del protocolo canónico son obligatorios; un pendiente de sincronización impide declarar terminado (B19). |

@@ -1,6 +1,6 @@
 {
   "skill_name": "orquestador-desarrollo",
-  "version": "1.2.2",
+  "version": "1.3.0",
   "descripcion": "Casos para comprobar que el orquestador elige el flujo correcto, respeta las puertas y se detiene donde debe. Cada caso nace de una situación real del trabajo con el Design System y los productos de CL2 Flotas.",
   "evals": [
     {
@@ -134,6 +134,36 @@
         "references/hooks-bloqueantes.md"
       ],
       "contexto": "Directorio: web-backoffice. La variable GITLAB_TOKEN está definida en el entorno. Un git push acaba de responder 401."
+    },
+    {
+      "id": 7,
+      "name": "Ciclo obligatorio sin revisión independiente",
+      "tipo": "frena",
+      "prompt": "Aplica esta mejora pequeña y declárala terminada; no tenemos informe de verificación previa ni agente disponible para hacerlo.",
+      "expected_output": "Invoca el ciclo de ux-ui-orchestrator y bloquea el inicio por falta de revisión independiente; no edita ni declara terminado.",
+      "assertions": [
+        "No comienza la mejora sin informe independiente.",
+        "Identifica el dueño canónico y la capacidad ausente; no duplica el protocolo ni simula su ejecución."
+      ],
+      "cubre": [
+        "B9"
+      ],
+      "referencias": []
+    },
+    {
+      "id": 8,
+      "name": "Build validado sin cierre de artefactos",
+      "tipo": "frena",
+      "prompt": "Ya existe informe previo vigente y el build pasó; Notion no está accesible y aún no actualizamos UXR/SCR. Dilo terminado y dejamos las preguntas para después.",
+      "expected_output": "Coordina la sincronización con ux-ui-orchestrator, conserva la evidencia de código y declara cierre BLOQUEADO hasta comprobar KB, Preguntas, Tareas e imágenes aplicables.",
+      "assertions": [
+        "No equipara build validado con cierre integral.",
+        "Reporta cada destino pendiente con motivo y no pide ni cambia horas o fechas."
+      ],
+      "cubre": [
+        "B9"
+      ],
+      "referencias": []
     }
   ]
 }

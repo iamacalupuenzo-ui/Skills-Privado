@@ -1,6 +1,8 @@
 ---
 name: ux-development-handoff
 description: Usar cuando un diseño UX/UI aprobado deba entregarse a Desarrollo (Developer + agente IA + Superpowers), cuando se pida evaluar DESIGN_READY_FOR_DEV, o cuando Superpowers pida el contexto de diseño para implementar un SCR-*.
+metadata:
+  version: "1.0.0"
 ---
 
 # ux-development-handoff
@@ -57,3 +59,14 @@ Resultado `BLOCKED` (falta una decisión o dato: Figma gobernado, divergencia si
 
 ## Definition of Done
 HOF con A–N completos por referencia; `gate.result` registrado con evidencia; si `PASSED`, revisión humana solicitada con reviewer identificado; contexto de Dev solo con `governed_design`; todo trazable US → UXR → FLW → SCR → diseño → CMP/TKN → handoff.
+
+## Comportamientos bloqueantes
+
+- **B1 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
+
+
+## Racionalizaciones comunes
+
+| Racionalización | Realidad |
+|---|---|
+| «Es solo un cambio pequeño o un análisis; sincronizo después» | El inicio y el cierre del protocolo canónico son obligatorios; un pendiente de sincronización impide declarar terminado (B1). |

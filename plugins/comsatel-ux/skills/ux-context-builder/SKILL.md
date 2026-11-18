@@ -9,7 +9,7 @@ description: >
   pantallas (usa ux-requirements-analyzer, user-flow-designer y ui-spec-writer), no explora diseño (usa claude-design-orchestrator)
   ni aprueba nada: la UXS nace en draft.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # ux-context-builder
@@ -37,7 +37,7 @@ la evidencia permite afirmar y dejar a la vista lo que falta.
 
 1. Estás en un worktree de la knowledge-base (`design/` y `requirements/`). Si trabajas escribiendo archivos, la rama es `ux/<slug>`.
 2. El paquete existe: tiene scope pack en `requirements/scope-packs/` y artefactos con la etiqueta `dsp-NNN` en su frontmatter.
-3. `git fetch origin develop` y lee el estado real: no asumas lo de una conversación anterior.
+3. Usar la fuente fresca comprobada por el ciclo canónico (B8); no asumir el estado de una conversación anterior.
 
 ## Cómo se arma
 
@@ -69,6 +69,7 @@ validación humana. Es el formato que lee el cargador de Notion del orquestador 
 
 ## Comportamientos bloqueantes
 
+- **B8 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
 - **B1 — Sin pantallas no hay UXS.** Un paquete sin SCR con su etiqueta `dsp-NNN` no se consolida: el script se detiene y dice qué producir antes. No se rellena con UXR sueltos.
 - **B2 — No se inventa lo que no está en los artefactos.** Lo construido, quién decide y el corte de la entrega los dice una persona; sin ese dato queda «sin información». Los veredictos salen de la evidencia, no de la impresión.
 - **B3 — Una UXS existente no se pisa.** Regenerar exige `--actualizar` y conserva número y archivo; nunca se crea una segunda UXS para el mismo paquete.
@@ -81,6 +82,7 @@ validación humana. Es el formato que lee el cargador de Notion del orquestador 
 
 | Excusa | Realidad |
 |---|---|
+| «Es solo un artefacto o una revisión; sincronizo después» | Invocar al orquestador conserva su autoridad y exige las dos compuertas también en encargos directos (B8). |
 | «Ya lo construimos y funciona, la UXS sobra» | La UXS es lo que lee Claude Design, QA y quien continúe el paquete; la vía directa también se cierra con ella (B1 y gatillador). |
 | «Los UXR y flujos ya dicen todo» | Sin matriz por pantalla ni veredicto por consumidor nadie sabe qué falta ni quién responde. |
 | «Pongo CONDITIONAL y listo» | Un CONDITIONAL sin la pregunta, el responsable y lo pospuesto no sirve (B7). |

@@ -9,7 +9,7 @@ description: >
   estatus". No diseña pantallas (usa ux-ui-orchestrator), no escribe el código de una pantalla
   (usa angular-product-builder) ni gestiona épicas ni Notion (usa product-orchestrator).
 metadata:
-  version: "1.2.2"
+  version: "1.3.0"
 ---
 
 # Orquestador de desarrollo — Comsatel Flotas
@@ -84,6 +84,7 @@ El desarrollo parte de documentación ya generada. Esa etapa tiene su propio orq
 
 ## Comportamientos bloqueantes
 
+- **B9 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
 - **B1 — Nada se sube sin confirmación.** Subir ramas, abrir MR, fusionar, etiquetar y desplegar son acciones separadas; cada una pide su autorización, y la de una no cubre la siguiente.
 - **B2 — El DS no se toca sin confirmación.** Explicar qué cambia y por qué, con evidencia, y esperar el visto bueno.
 - **B3 — Shell y micro UI van en pareja con el mismo DS.** El DS es singleton en la federación: si un lado queda en 1.9.1 y el otro en 1.9.2, el remoto no carga. Fusionar y desplegar las parejas juntas.
@@ -97,6 +98,7 @@ El desarrollo parte de documentación ya generada. Esa etapa tiene su propio orq
 
 | Excusa | Realidad |
 |---|---|
+| «Es solo un cambio pequeño o un análisis; sincronizo después» | El inicio y el cierre del protocolo canónico son obligatorios; un pendiente de sincronización impide declarar terminado (B9). |
 | «El usuario dijo "subimos", ya puedo fusionar y etiquetar» | Subir una rama no autoriza fusionar ni publicar (B1). |
 | «El pipeline pasó, QA ya está bien» | Un job de despliegue puede fallar aparte; comprobar QA en vivo y los jobs. |
 | «Solo cambia el CSS, no hace falta versión» | Sin versión QA no despliega la imagen nueva (B4). |

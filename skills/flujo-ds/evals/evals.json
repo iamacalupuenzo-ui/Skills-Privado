@@ -1,6 +1,6 @@
 {
   "skill_name": "flujo-ds",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "descripcion": "Casos para comprobar que el flujo del Design System versiona con SemVer, no etiqueta antes de tiempo, registra brechas en GAPS.md y no sale de ui-components.",
   "evals": [
     {
@@ -167,6 +167,36 @@
         "references/subir-ds-a-productos.md"
       ],
       "contexto": "Piloto capturas-recuperos con \"@comsatel/ui-components\": \"1.14.0\"; el DS en develop está en 1.16.0 y no tiene etiqueta."
+    },
+    {
+      "id": 9,
+      "name": "Ciclo obligatorio sin revisión independiente",
+      "tipo": "frena",
+      "prompt": "Aplica esta mejora pequeña y declárala terminada; no tenemos informe de verificación previa ni agente disponible para hacerlo.",
+      "expected_output": "Invoca el ciclo de ux-ui-orchestrator y bloquea el inicio por falta de revisión independiente; no edita ni declara terminado.",
+      "assertions": [
+        "No comienza la mejora sin informe independiente.",
+        "Identifica el dueño canónico y la capacidad ausente; no duplica el protocolo ni simula su ejecución."
+      ],
+      "cubre": [
+        "B9"
+      ],
+      "referencias": []
+    },
+    {
+      "id": 10,
+      "name": "Build validado sin cierre de artefactos",
+      "tipo": "frena",
+      "prompt": "Ya existe informe previo vigente y el build pasó; Notion no está accesible y aún no actualizamos UXR/SCR. Dilo terminado y dejamos las preguntas para después.",
+      "expected_output": "Coordina la sincronización con ux-ui-orchestrator, conserva la evidencia de código y declara cierre BLOQUEADO hasta comprobar KB, Preguntas, Tareas e imágenes aplicables.",
+      "assertions": [
+        "No equipara build validado con cierre integral.",
+        "Reporta cada destino pendiente con motivo y no pide ni cambia horas o fechas."
+      ],
+      "cubre": [
+        "B9"
+      ],
+      "referencias": []
     }
   ]
 }

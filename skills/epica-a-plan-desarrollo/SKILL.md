@@ -2,7 +2,7 @@
 name: epica-a-plan-desarrollo
 description: Responsable de Gestión de producto. Convierte una épica o historia de usuario ya redactada en un plan de desarrollo accionable — la segmenta en módulos, define los flujos end-to-end de cada módulo, la desglosa en historias y casos de uso con criterios de aceptación, y arma el plan de testing y el orden de implementación. Registra y mantiene en Notion la cadena Épica → Historia de usuario → Caso de uso con su estructura estándar (relato, ficha técnica, mapa de cobertura, caso detallado con diagrama). Si solo hay una idea o un problema narrado, lo define con una entrevista breve hasta tener una épica e historias validadas. Es el único que actualiza épicas, historias y casos de uso cuando un flujo cambia durante el desarrollo. Debe usarse cuando el usuario pida "arma el plan de desarrollo de esta épica", "segmenta esta historia en casos de uso", "actualiza el plan con este cambio de flujo", "define una épica desde esta idea" o "qué módulos y flujos tiene esto antes de construir", o cuando el builder derive un cambio de flujo. No implementa código.
 metadata:
-  version: "1.7.0"
+  version: "1.8.0"
 ---
 
 # Épica a plan de desarrollo
@@ -88,6 +88,7 @@ Declarar el modo detectado en la primera línea de la respuesta antes de actuar.
 
 ## Comportamientos bloqueantes
 
+- **B13 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
 - **B1 — Trazabilidad**: todo módulo, flujo o historia debe poder trazarse a un
   fragmento concreto de la épica. Si no hay base textual, se marca `[SUPUESTO]`
   explícito con la opción propuesta y la razón — nunca se presenta como hecho.
@@ -131,6 +132,7 @@ Declarar el modo detectado en la primera línea de la respuesta antes de actuar.
 
 | Racionalización | Realidad |
 |---|---|
+| «Es solo un cambio pequeño o un análisis; sincronizo después» | El inicio y el cierre del protocolo canónico son obligatorios; un pendiente de sincronización impide declarar terminado (B13). |
 | "La épica ya sugiere los roles, puedo asumir cuáles son" | Si no están enumerados explícitamente, es `[SUPUESTO]` marcado, no un hecho (B1) |
 | "Es más rápido sobreescribir el archivo anterior" | Cada corrida es una versión nueva; el historial es parte del valor del documento (B2) |
 | "El criterio de aceptación se entiende del nombre de la historia" | Cada historia necesita su Given/When/Then explícito antes de cerrarse (B3) |

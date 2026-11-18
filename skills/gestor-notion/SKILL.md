@@ -6,7 +6,7 @@ description: >
   "busca en Notion", "relaciona estas páginas" o "crea una plantilla". Para gestionar
   tareas, dependencias, avances o seguimiento PM, usar gestion-proyectos.
 metadata:
-  version: "1.2.3"
+  version: "1.3.0"
 ---
 
 # Gestor de Notion — Operador del workspace
@@ -284,6 +284,7 @@ Relaciones entre ambientes:
 
 ## Comportamientos bloqueantes
 
+- **B16 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
 - **B1 — Sin flujo genérico**: nunca usar un flujo único para todos los tipos. Cada tipo tiene su protocolo en registration-flows.md — cargarlo antes de preguntar.
 - **B2 — Verificar duplicados**: siempre buscar antes de crear. No crear dos items con el mismo nombre sin confirmación.
 - **B3 — Una pregunta por turno**: en la entrevista, nunca hacer más de una pregunta por turno. Esperar respuesta.
@@ -320,3 +321,9 @@ Relaciones entre ambientes:
 - `../../docs/sistema-skills-notion.md` — catálogo canónico de Skills, capacidades, estados y sincronización
 - `references/process-modeling.md` — modelo de dos ejes (Flujo vs Proceso), diagnóstico de estructuras rotas, duplicación intencional vs basura, límites de la API de Notion, orden de trabajo para reestructurar
 - `references/template-authoring.md` — construcción de plantillas: fuentes de investigación, anatomía, patrón de variantes, doble destino, relación con el paso, inventario actual
+
+## Racionalizaciones comunes
+
+| Racionalización | Realidad |
+|---|---|
+| «Es solo un cambio pequeño o un análisis; sincronizo después» | El inicio y el cierre del protocolo canónico son obligatorios; un pendiente de sincronización impide declarar terminado (B16). |

@@ -1,6 +1,6 @@
 ---
 name: design-qa
-version: 3.0.0
+version: "3.1.0"
 description: >
   QA y documentación de diseño en Figma. Documenta inconsistencias entre el diseño aprobado y
   el desarrollo actual con el componente Comment, audita component sets y construye páginas de
@@ -10,6 +10,8 @@ description: >
 argument-hint: "[observación, componente a documentar, nodo de Figma o imagen de desarrollo]"
 allowed-tools: Read, Bash, mcp__figma-console-local__figma_execute, mcp__figma-console-local__figma_take_screenshot, mcp__figma-console-local__figma_capture_screenshot, mcp__figma-console-local__figma_get_status, mcp__figma-console-local__figma_get_selection, mcp__figma-console-local__figma_list_open_files, mcp__figma-console-local__figma_navigate
 effort: medium
+metadata:
+  version: "3.1.0"
 ---
 
 # Design QA — Orquestador
@@ -146,6 +148,7 @@ Por categoría:
 
 ## Comportamientos Bloqueantes
 
+- **B22 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
 - **B1** Sin descripción del usuario → no crear obs autónomamente
 - **B2** Sin nodo y sin frame numerado → pedir URL o nombre del frame
 - **B3** Nodo falla → declarar el error, no reportar ninguna medida
@@ -191,3 +194,9 @@ y las flechas mal apuntadas no se ven en el screenshot completo.
 - Sin emojis. Sin "¡Perfecto!" ni relleno
 - Si algo falla en Figma: una línea declarando el error + acción pedida al usuario
 - Reportar valores como **token + hex**, no solo hex. Un color sin token es un hallazgo
+
+## Racionalizaciones comunes
+
+| Racionalización | Realidad |
+|---|---|
+| «Es solo un artefacto o una revisión; sincronizo después» | Invocar al orquestador conserva su autoridad y exige las dos compuertas también en encargos directos (B22). |

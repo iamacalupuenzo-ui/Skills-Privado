@@ -10,7 +10,7 @@ description: >
   continuar». No construye ni versiona nada del Design System (usa flujo-ds) ni de un
   producto (usa flujo-producto): solo garantiza que el trabajo y su contexto viajen.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # Traspaso entre computadoras
@@ -62,6 +62,7 @@ Reglas de trabajo con el usuario; dónde está cada cosa (repos, ramas, puertos,
 
 ## Comportamientos bloqueantes
 
+- **B8 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
 - **B1 — No se da el cierre por hecho sin commit y push.** Lo que solo está en el disco se declara como tal y se pide autorización para subirlo.
 - **B2 — Nada se sube sin la confirmación del usuario** (push, MR, etiqueta). `release`, las etiquetas y `main` son del arquitecto.
 - **B3 — Los tokens no viajan por Notion, por el chat ni por archivos del repositorio.** Se nombran las variables de entorno y se le pide al usuario que las ponga.
@@ -74,6 +75,7 @@ Reglas de trabajo con el usuario; dónde está cada cosa (repos, ramas, puertos,
 
 | Dices | Realidad |
 |---|---|
+| «Es solo un cambio pequeño o un análisis; sincronizo después» | El inicio y el cierre del protocolo canónico son obligatorios; un pendiente de sincronización impide declarar terminado (B8). |
 | «Está todo en la rama, no hace falta cerrar» | Si hay cambios sin commit o sin push, no está. Se revisa `git status`. |
 | «La página ya lo dice, no verifico» | Envejece. Se consulta la API y se escribe la fecha. |
 | «Pego el token para que funcione allá» | Nunca. Se pide que el usuario cree las variables de entorno. |

@@ -10,7 +10,7 @@ description: >
   coincide", "revisa todos los botones de la app", "documenta esto en Figma", "arma la página de
   QA de este componente".
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # Paridad diseño–desarrollo — QA de componentes implementados
@@ -354,6 +354,7 @@ REST expirado, export agotado—, decir cuántos y cuáles. No dar por buena una
 
 ## Comportamientos bloqueantes
 
+- **B43 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
 - **B1 — Nunca escribir credenciales.** Ni con `browser_type`, ni con `browser_fill_form`, ni
   leyéndolas de un `.env`, ni aunque el usuario las pegue en el chat. El login lo hace el
   usuario en la ventana del browser. El perfil persistente hace que sea una vez, no una por corrida.
@@ -589,6 +590,7 @@ REST expirado, export agotado—, decir cuántos y cuáles. No dar por buena una
 
 | Racionalización | Realidad |
 |---|---|
+| «Es solo un cambio pequeño o un análisis; sincronizo después» | El inicio y el cierre del protocolo canónico son obligatorios; un pendiente de sincronización impide declarar terminado (B43). |
 | "Se ve igual en el screenshot, no hace falta leer el CSSOM" | Un token bien aplicado y un valor hardcodeado idéntico se ven exactamente iguales en pantalla — la diferencia solo aparece leyendo los estilos computados. Es la razón de ser de este skill (B3). |
 | "La URL parece de login, mejor freno la inspección" | La señal correcta es que el selector objetivo dejó de existir, no el patrón de la URL — hay componentes que viven dentro del flujo de autenticación (B10, verificado en corrida real). |
 | "`tokenCount` da 0 en varias propiedades, voy a listar cada una como hardcodeada" | `tokenCount === 0` cambia el eje de comparación una sola vez —a coincidencia con Figma— y no multiplica los hallazgos de hardcode (B5). |

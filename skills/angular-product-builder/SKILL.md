@@ -17,7 +17,7 @@ description: >
   componentes dentro del sistema de diseño, no clona su repositorio y no copia
   sus demos.
 metadata:
-  version: "2.9.1"
+  version: "2.10.0"
 ---
 
 # Angular Product Builder
@@ -239,6 +239,7 @@ evaluar, no se edita.
 
 ## Bloqueantes
 
+- **B20 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
 - **B0 — Sistema de diseño elegido, no supuesto.** Antes de instalar o
   componer, el sistema de diseño está confirmado por el repositorio o por el
   usuario. Asumir Comsatel DS (u otro) por costumbre mezcla contratos y obliga a
@@ -392,3 +393,9 @@ evaluar, no se edita.
 - `references/logistics-patterns.md`
 - `references/feature-delivery.md`
 - `references/verification.md`
+
+## Racionalizaciones comunes
+
+| Racionalización | Realidad |
+|---|---|
+| «Es solo un cambio pequeño o un análisis; sincronizo después» | El inicio y el cierre del protocolo canónico son obligatorios; un pendiente de sincronización impide declarar terminado (B20). |

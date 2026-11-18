@@ -105,6 +105,29 @@ function frontmatter(text) {
 }
 
 const listed = new Set(manifest.skills);
+// Un único dueño del protocolo transversal; el registro no instala dependencias.
+const cycle = manifest.protocols?.['ciclo-retroalimentacion'];
+if (!cycle || cycle.owner !== 'ux-ui-orchestrator' || cycle.path !== 'references/ciclo-retroalimentacion.md') {
+  errors.push('manifest: falta el dueño/ruta canónicos del ciclo de retroalimentación');
+} else {
+  if (!listed.has(cycle.owner) || !existsSync(join(skillsDir, cycle.owner, cycle.path))) {
+    errors.push('manifest: el protocolo de retroalimentación no es resoluble');
+  }
+  if (!Array.isArray(cycle.consumers) || new Set(cycle.consumers).size !== cycle.consumers.length) {
+    errors.push('manifest: consumidores del ciclo ausentes o duplicados');
+  } else for (const name of cycle.consumers) {
+    const file = join(skillsDir, name, 'SKILL.md');
+    if (!listed.has(name) || !existsSync(file)) {
+      errors.push(`ciclo: consumidor ${name} no distribuible`);
+      continue;
+    }
+    const body = readFileSync(file, 'utf8');
+    if (!/\*\*B\d+ — Ciclo de retroalimentación obligatorio\./.test(body) ||
+        !body.includes(`/skills/${cycle.owner}/${cycle.path}`)) {
+      errors.push(`ciclo: ${name} sin bloqueante/enlace al dueño canónico`);
+    }
+  }
+}
 for (const name of manifest.skills) {
   const dir = join(skillsDir, name);
   const skillFile = join(dir, 'SKILL.md');

@@ -60,6 +60,10 @@ La decisión y evidencia que justifican la CLI están documentadas en
 La correspondencia entre los nombres vigentes y los registros históricos de Notion está
 en [`notion-registry.md`](notion-registry.md).
 
+## Ciclo obligatorio de producto y diseño
+
+El dueño es `ux-ui-orchestrator`: su [protocolo canónico](skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) exige verificación previa independiente y sincronización de cierre en cada desarrollo, mejora, análisis o definición. Los consumidores se registran en `skills-manifest.json` → `protocols`; ese registro documenta el contrato, no instala dependencias automáticamente. Resolver el dueño instalado o en la fuente central; si falta, detenerse. El detalle no se copia entre skills.
+
 ## Convención de actualización
 
 1. Actualizar el skill y sus `references/` en este repositorio.

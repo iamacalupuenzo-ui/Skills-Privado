@@ -1,6 +1,8 @@
 ---
 name: accessibility-reviewer
 description: Usar cuando una especificación (SCR-*), HTML o nodo Figma deba evaluarse contra WCAG 2.2 AA y registrar hallazgos sin autocorregir decisiones de producto; también cuando el gate DESIGN_READY_FOR_DEV necesite el informe de accesibilidad de un SCR.
+metadata:
+  version: "1.0.0"
 ---
 
 # accessibility-reviewer
@@ -50,3 +52,13 @@ Informe por SCR con `result` explícito; `DESIGN_READY_FOR_DEV` exige `pass` par
 
 ## Definition of Done
 Informe por SCR con `a11y_review` legible, hallazgos con evidencia, vacíos como preguntas abiertas y revisión humana pendiente.
+
+## Comportamientos bloqueantes
+
+- **B1 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
+
+## Racionalizaciones comunes
+
+| Racionalización | Realidad |
+|---|---|
+| «Es solo un artefacto o una revisión; sincronizo después» | Invocar al orquestador conserva su autoridad y exige las dos compuertas también en encargos directos (B1). |

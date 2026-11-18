@@ -9,7 +9,7 @@ description: >
   pantalla?" o "compara con el piloto". No diseña (usa ux-ui-orchestrator), no construye la
   pantalla (usa angular-product-builder) ni publica (usa flujo-producto).
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # De UX a desarrollo
@@ -42,6 +42,7 @@ donde corresponde: en un documento, nunca como rótulo en la interfaz.
 
 ## Comportamientos bloqueantes
 
+- **B7 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
 - **B1 — Lo pendiente del PO no se pinta en la UI.** Nada de «PENDIENTE» ni rótulos de decisión en pantalla: va en el registro de decisiones.
 - **B2 — Una decisión que contradice la fuente se registra, no se resuelve.** Se escribe como «decisión del responsable de diseño, pendiente del PO».
 - **B3 — Todo estado se cubre:** cargando, error con reintento, vacío, sin permiso, solo lectura, éxito, y el caso de acceso perdido.
@@ -53,6 +54,7 @@ donde corresponde: en un documento, nunca como rótulo en la interfaz.
 
 | Excusa | Realidad |
 |---|---|
+| «Es solo un cambio pequeño o un análisis; sincronizo después» | El inicio y el cierre del protocolo canónico son obligatorios; un pendiente de sincronización impide declarar terminado (B7). |
 | «Lo dejo con un rótulo "pendiente" mientras tanto» | Los rótulos van al documento (B1). |
 | «El diseño lo pide, no hace falta registrar el desvío» | Sin registro el PO no sabe qué cambió (B2). |
 | «El estado vacío es obvio, lo hago después» | Un estado sin construir es un hueco para quien prueba (B3). |
