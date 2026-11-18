@@ -45,6 +45,10 @@ Antes de editar, en este orden:
    de la feature concreta.
 3. Correr `git status` y anotar qué archivos ya tienen cambios sin commitear:
    pueden ser trabajo de otra persona o de otro agente (ver sección 6).
+   Si el repositorio no lleva `CLAUDE.md` ni `AGENTS.md`, las reglas pueden
+   vivir en el README: leer su estructura de carpetas y sus dependencias, y
+   buscar en las otras ramas si alguien ya construyó lo mismo, según
+   `capas-y-trabajo-existente.md`.
 4. Si el repositorio **no** tiene archivo de reglas, no decidir en silencio:
    proponer el patrón de la sección 3 como punto de partida, pedir
    confirmación y, una vez aceptado, dejarlo escrito en un `CLAUDE.md` del

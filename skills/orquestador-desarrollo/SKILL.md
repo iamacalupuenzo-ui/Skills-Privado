@@ -5,11 +5,11 @@ description: >
   (cambio en el Design System o en un producto: Shell, micro UI, BFF de prueba), en qué orden
   se construye, verifica, sube, versiona, despliega y documenta, y exige la puerta de cada
   paso. Úsalo cuando pidan "vamos a construir esta mejora", "sube esto", "publica el DS",
-  "súbelo a DEV", "¿qué falta para publicar?", "¿en qué orden lo subimos?", "¿cómo nombro la
-  rama?" o "evaluemos el estatus". No diseña pantallas (usa ux-ui-orchestrator), no escribe el código de una pantalla
+  "despliega a QA", "¿qué falta para publicar?", "¿en qué orden lo subimos?" o "evaluemos el
+  estatus". No diseña pantallas (usa ux-ui-orchestrator), no escribe el código de una pantalla
   (usa angular-product-builder) ni gestiona épicas ni Notion (usa product-orchestrator).
 metadata:
-  version: "1.3.1"
+  version: "1.5.0"
 ---
 
 # Orquestador de desarrollo — Comsatel Flotas
@@ -23,25 +23,14 @@ puertas.
 **Lo que haces:** clasificar el pedido, leer el estado real (git, MR, pipelines, QA), proponer
 la secuencia, pedir la confirmación que corresponda y cerrar con lo verificado.
 **Lo que NO haces:** diseñar la UX, escribir la pantalla, ni fusionar, etiquetar o desplegar.
-Subes la rama y abres el MR con su revisor: Luis en los productos (MR a `integration`), César
-en el DS y el knowledge-base (MR a `develop`). La fusión es de quien revisa.
-
-## Nuestro tramo en CL2 (desde 2026-11-12)
-
-Enzo es UX Engineering y apoya en el frontend. Nuestro tramo termina en **DEV**:
-
-1. Una rama por historia, `CLF_Feature_<n>` (n = IID del issue en collaboration), desde `develop`. Shell y micro UI con la misma rama.
-2. MR hacia `integration` con Luis de revisor. Al fusionarse, `integration` despliega en DEV.
-3. Desarrollo toma nuestra rama, conecta el backend real y lleva la historia a `develop` (QA) con su propio MR. `integration` nunca se mezcla hacia `develop`.
-4. Si la micro UI que corresponde existe solo con README, la empezamos nosotros con el estándar de César de las otras micro UI.
-
-El DS tiene su camino: `feature/<tema>` → `develop` (`-qa`) → `release` (`-pre`) → `main`, donde César ejecuta el job manual `publish` y el pipeline crea la etiqueta. Detalle en `flujo-ds`.
+Subes la rama, abres el MR y lo asignas a César; la fusión y la etiqueta son suyas.
 ## Referencias disponibles
 
 - `references/mapa-de-repos.md` — repos, rutas GitLab, puertos locales, parejas y quién fusiona. Leer al iniciar.
-- `references/convenciones-comunes.md` — commits, MR, nombres de rama (`CLF_Feature_<n>`), tokens y trampas de Windows. Leer antes de crear una rama, commitear o abrir un MR.
+- `references/convenciones-comunes.md` — commits, MR, ramas, tokens y trampas de Windows. Leer antes de commitear o abrir un MR.
 - `references/estatus.md` — cómo evaluar «¿cómo vamos?» con evidencia. Leer cuando pidan estatus.
 - `references/hooks-bloqueantes.md` — qué acciones frena el guardia de GitLab (fusionar, etiquetar, publicar, push a ramas protegidas, token), cuáles pide confirmar y cómo instalarlo desde `hooks/`. Leer cuando un comando aparezca como BLOQUEADO.
+- `references/respuesta-de-cierre.md` — estructura única de la respuesta que cierra un paso (resultado, «Lo que hice», «Lo que necesito de ti», «Lo siguiente»). Leer antes de cerrar.
 
 ## Antes del desarrollo: la documentación de UX
 
@@ -66,10 +55,11 @@ El desarrollo parte de documentación ya generada. Esa etapa tiene su propio orq
 ## GUARD — verificar contexto
 
 1. Identificar el repositorio destino y leer su `AGENTS.md` o `CLAUDE.md`: sus reglas mandan sobre las de este skill.
-2. Leer el estado real: rama, `git status`, MR abiertos, pipelines y, si aplica, DEV o QA en vivo. No asumir lo que dice una conversación anterior. **Las lecturas no piden confirmación**: - `git status`, `git fetch`, las consultas GET a la API de GitLab y los `curl` de sondeo a DEV o QA se ejecutan antes de responder. Solo se pregunta antes de escribir (subir, abrir un MR, editar).
+2. Leer el estado real: rama, `git status`, MR abiertos, pipelines y, si aplica, QA en vivo. No asumir lo que dice una conversación anterior. **Las lecturas no piden confirmación**: `git status`, `git fetch`, las consultas GET a la API de GitLab y los `curl` de sondeo a QA se ejecutan antes de responder. Solo se pregunta antes de escribir (subir, abrir un MR, editar).
 3. Confirmar la versión del DS que cada producto fija (exacta) antes de planear cualquier cambio de UI.
 4. Si el pedido toca el DS, pararse en la confirmación del usuario antes de editar (bloqueante B2).
 5. Si falta acceso (token, permisos de GitLab), decirlo y detener solo esa operación.
+6. **Dónde está trabajando el equipo.** Antes de proponer la rama, `git fetch` y revisar `integration` y las ramas de los demás desarrolladores (`cl2_feature_us_*`). Si el equipo ya trabaja en `integration`, el trabajo nuevo sale de `origin/integration`; si ya hay ramas nuestras, `simular_fusion.py` (de `flujo-producto`) dice cuánto chocan (B9).
 
 ## Detección de ruta
 
@@ -80,19 +70,19 @@ El desarrollo parte de documentación ya generada. Esa etapa tiene su propio orq
 | Falta UXR, flujo, pantalla (SCR) o el handoff no pasó la puerta | `ux-ui-orchestrator` primero; no se construye sin ese paquete |
 | Hay UXR, flujo, UXS o una decisión del PO por bajar | `ux-a-desarrollo` y luego construir |
 | Falta un componente del DS | Construir en el producto con una API migrable, registrar la brecha (`flujo-producto`) y subirlo al DS por olas (`flujo-ds`) |
-| Subir el DS a los productos | `flujo-ds` hasta que el paquete esté en el registro; después `flujo-producto` en pareja, dentro de la rama de la historia que lo necesita |
-| Una rama mezcla dos historias, o hay que nombrar la rama | `flujo-producto`, modo `RAMAS` |
+| Subir el DS a los productos | `flujo-ds` hasta que el paquete esté en el registro; después `flujo-producto` en pareja |
 | «¿Cómo vamos?» o «evaluemos el estatus» | `references/estatus.md` |
 
 ## Secuencia canónica y sus puertas
 
 1. **Alcance.** Qué cambia, en qué repos, qué depende de qué. Puerta: el usuario valida el alcance si toca el DS o varios repos.
+1b. **Dónde se desarrolla.** Rama nueva desde `origin/integration` cuando el equipo ya trabaja ahí (si no, desde `origin/develop`), en un worktree propio que no sea el del `ng serve`. Datos sin interfaz en `core/`, UI reutilizable en `shared/`, pantalla en `features/` (`angular-product-builder`, B20 a B24). Puerta: `simular_fusion.py` sin choques o con la integración decidida, y la búsqueda de trabajo existente hecha.
 2. **Fuente de UX.** `ux-a-desarrollo` si hay decisiones por bajar. Puerta: lo pendiente del PO queda en un documento, nunca como rótulo en la UI.
 3. **Construcción.** `angular-product-builder` (o `flujo-ds` si es el DS). Mejoras pequeñas, directas; grandes, delegadas.
-4. **Verificación.** `verificar-calidad`. Puerta: módulo verde y verificado en el navegador.
+4. **Verificación.** `verificar-calidad`. Puerta: `puertos_libres.py` antes de levantar; módulo verde, `lint` y `test:rules` en cada iteración, y verificado en el navegador. Antes de cada commit: `revisar_capas.py` (`angular-product-builder`) y `revisar_ds.py` (`flujo-producto`).
 5. **Confirmación.** El usuario valida lo visual. Nada se sube sin ese visto bueno.
-6. **Publicación.** `flujo-producto` o `flujo-ds`. Puerta: suite completa verde, versión subida, mezcla de prueba sin conflictos; MR a `integration` (productos, revisa Luis) o a `develop` (DS y KB, revisa César).
-7. **Comprobación en DEV.** El pipeline de `integration` desplegó y DEV responde de verdad. QA (`develop`) es el tramo de desarrollo.
+6. **Publicación.** `flujo-producto` o `flujo-ds`. Puerta: `puertas.py` (`verificar-calidad`) en verde sobre cada punta, con lo que ya fallaba separado; `simular_fusion.py` sin choques con la rama destino; `revisar_ds.py` sin hallazgos y la pareja con la misma versión; versión subida; MR a `develop` o a `integration` (con Luis de revisor) según dónde trabaje el equipo. Una pieza que depende de una rama del DS sin publicar no va a MR (`flujo-ds`, B10).
+7. **Comprobación en QA.** El pipeline de `develop` desplegó y QA responde de verdad.
 8. **Documentación.** Registro de decisiones, mapa de publicación y memoria al día.
 
 ## Comportamientos bloqueantes
@@ -100,34 +90,35 @@ El desarrollo parte de documentación ya generada. Esa etapa tiene su propio orq
 - **B1 — Nada se sube sin confirmación.** Subir ramas, abrir MR, fusionar, etiquetar y desplegar son acciones separadas; cada una pide su autorización, y la de una no cubre la siguiente.
 - **B2 — El DS no se toca sin confirmación.** Explicar qué cambia y por qué, con evidencia, y esperar el visto bueno.
 - **B3 — Shell y micro UI van en pareja con el mismo DS.** El DS es singleton en la federación: si un lado queda en 1.9.1 y el otro en 1.9.2, el remoto no carga. Fusionar y desplegar las parejas juntas.
-- **B4 — Lo desplegable sube de versión.** Sin versión nueva, DEV y QA conservan la imagen vieja (las etiquetas `-dev` y `-qa` son inmutables). Detalle en `flujo-producto`.
-- **B9 — Nuestro MR de producto va a `integration`, nunca a `develop`, e `integration` nunca va a `develop`.** Una rama por historia, `CLF_Feature_<n>`. El guardia bloquea el MR de `integration` a `develop`.
-- **B5 — Las etiquetas del DS no se crean a mano y ninguna prerelease llega a `integration`.** La estable sale con `publish` en `main` y su etiqueta la crea el pipeline. Detalle en `flujo-ds`.
+- **B4 — Lo desplegable sube de versión.** Sin versión nueva, QA conserva la imagen vieja (la etiqueta `-qa` es inmutable). Detalle en `flujo-producto`.
+- **B5 — Una etiqueta del DS nunca va antes de fusionar a `release`.** Detalle en `flujo-ds`.
 - **B6 — Un permiso denegado se informa, no se rodea.** Si GitLab responde 403 o el entorno bloquea una fusión, detenerse y decir quién puede hacerla.
 - **B7 — Un fallo de infraestructura no es un fallo de código.** Leer el registro del job antes de culpar al cambio; un timeout de Docker Hub se reintenta.
 - **B8 — Nunca imprimir tokens.** Se usan por cabecera o variable de entorno, sin mostrarlos.
+
+- **B9 — Se desarrolla donde trabaja el equipo.** Antes de abrir una rama se revisan `integration` y las ramas de los demás; si el equipo trabaja en `integration`, la rama sale de ahí, y lo ya hecho se integra con `git merge` (nunca rebase ni push forzado, `flujo-producto` B13). El 17-nov-2026 se construyó sobre `develop` la misma página que Gabriel ya tenía en `integration` y la simulación dio 6, 7 y 13 choques en monitoring.
 
 ## Racionalizaciones comunes
 
 | Excusa | Realidad |
 |---|---|
 | «El usuario dijo "subimos", ya puedo fusionar y etiquetar» | Subir una rama no autoriza fusionar ni publicar (B1). |
-| «El pipeline pasó, DEV ya está bien» | Un job de despliegue puede fallar aparte; comprobar DEV en vivo y los jobs. |
-| «Lo mandamos directo a `develop` para que QA lo vea» | QA es el tramo de desarrollo; el nuestro termina en DEV (B9). |
+| «El pipeline pasó, QA ya está bien» | Un job de despliegue puede fallar aparte; comprobar QA en vivo y los jobs. |
 | «Solo cambia el CSS, no hace falta versión» | Sin versión QA no despliega la imagen nueva (B4). |
 | «Subo primero un lado de la pareja» | Con DS distinto el mapa deja de cargar (B3). |
-| «Creo la etiqueta para que se publique» | Las etiquetas ya no publican; la estable la publica César con `publish` en `main` (B5). |
+| «Parto de `develop` como siempre» | Si el equipo trabaja en `integration`, partir de `develop` duplica trabajo y genera choques (B9). |
+| «Creo la etiqueta ya y fusiono después» | La etiqueta quedaría sobre el commit viejo (B5). |
 
 ## Señales de alerta
 
 - Un producto fija un DS distinto del de su Shell o de su micro UI.
 - Un MR pasa a fusionarse sin pipeline en verde o con conflictos.
-- Una versión nueva que no cambió en los cinco sitios.
-- Una rama de producto que no se llama `CLF_Feature_<n>` o que mezcla dos historias.
+- Una versión nueva con `-qa` que no cambió en los cinco sitios.
 - Se asume el estado de una rama sin leer GitLab.
+- Se abre una rama sin haber mirado `integration` ni las ramas de los demás desarrolladores.
 
 ## Formato de respuesta
 
-- Declarar el flujo elegido en la primera línea.
-- Cerrar con: qué se hizo, qué se verificó (cifras y estado real), qué falta y quién lo hace.
+- Al empezar, declarar el flujo elegido en la primera línea.
+- Al cerrar un paso, seguir `references/respuesta-de-cierre.md`: primera línea con el resultado, «Lo que hice:», «Lo que necesito de ti:» y «Lo siguiente…». Dentro de «Lo que hice» va lo verificado con cifras y estado real; lo que falta va en «Lo que necesito de ti» o en «Lo siguiente», con quién lo hace.
 - Español, conciso, sin emojis decorativos. Lo no verificado se dice como tal.

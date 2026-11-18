@@ -49,7 +49,7 @@ confirmar está en `references/tablero-y-compromiso.md`, sección «Sigue por co
 | Modo | Señales | Acción |
 |---|---|---|
 | `CREAR` | «sube estas tareas», «crea el issue» | Construir cada issue con `estructura-del-issue.md`; corrida en seco y confirmación |
-| `CLICKUP` | «súbelas a ClickUp» | Padre de ClickUp = tarea padre; subtarea = tarea. Descripción con la estructura del issue y solo su enlace de GitLab, sin mencionar Notion. Corrida en seco, confirmación y enlace guardado en el campo «ClickUp» de Notion |
+| `CLICKUP` | «súbelas a ClickUp» | Padre de ClickUp = tarea padre; subtarea = tarea. Título «PRODUCTO: título», prioridad y etiquetas de producto y actividad (formato en el mapeo). Descripción que empieza con «Nombre en GitLab:» y con la estructura del issue y solo su enlace de GitLab, sin mencionar Notion. Corrida en seco, confirmación y enlace guardado en el campo «ClickUp» de Notion |
 | `ACTIVIDAD` | «registra la reunión», «la entrega», «la ayuda que di» | Tareas cortas también se registran (B12): en GitLab con `Actividad :: Reuniones` u otra lista de Recurrentes; en ClickUp como subtarea del frente o como padre si no tiene frente |
 | `COMPROMETER` | «inicia el día», «¿qué toca hoy?» | Proponer lo de hoy, confirmar y mover a `Task :: In Compromise` |
 | `MOVER` | «pasa a En progreso», «mueve a revisión» | Cambiar etiquetas por la API; solo las que el usuario indica |

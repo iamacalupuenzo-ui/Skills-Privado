@@ -15,6 +15,10 @@ Para armar o cambiar una pantalla, el orden es: tipo de pantalla → patrón (`g
 - Color, espaciado, radio, tipografía, sombra, movimiento y `z-index` salen de tokens. Escala de espaciado: gap y padding `2xs…4xl` (2, 4, 6, 8, 12, 16, 20, 24, 32 px; padding sigue hasta 6xl: 40, 48). Para ancho o alto fijos, `--layout-size-*`.
 - Un valor que no existe como token se pregunta, no se inventa. Un cálculo con tokens (`calc(var(--layout-size-3xl) * 2)`) es aceptable; un `px` suelto, no.
 - Sin `::ng-deep`, `!important` ni estilos globales para tocar el interior de un componente del DS. La excepción documentada es una regla global del Shell con un comentario que explique por qué (por ejemplo, `scrollbar-gutter`).
+- `npm run test:rules` hace cumplir estas reglas: córrelo en cada iteración, junto con `lint`, no solo antes de publicar. Al corregir sus incumplimientos:
+  - un `px` suelto se cambia por el token **del mismo valor**: no cambia lo visual;
+  - quitar un `::ng-deep` o un `100vw` sí cambia lo visual: se muestra con captura, se espera la aprobación y, si el DS no ofrece la alternativa, se registra como brecha.
+- Lint de accesibilidad: un `(keydown)` en un `div` falla `interactive-supports-focus`. Si el teclado aplica a todo el componente, muévelo al `host` (`host: { '(keydown)': '…' }`) en lugar de volver enfocable el `div`.
 
 ## Componentes
 

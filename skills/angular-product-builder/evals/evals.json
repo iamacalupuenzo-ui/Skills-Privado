@@ -1,0 +1,105 @@
+{
+  "skill_name": "angular-product-builder",
+  "version": "2.11.1",
+  "descripcion": "Casos de comportamiento para que el builder ubique cada archivo en su capa según el README del repositorio, busque trabajo existente en otras ramas antes de construir y muestre la salida real de las puertas antes de cada commit. Nacen del error de «Estado de las Unidades» en microui-monitoring (CLF_Feature_119). Los casos de activación están en evals/activadores.json.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "Página con modelo y cliente HTTP propios",
+      "prompt": "En microui-monitoring construye la página «Estado de las Unidades» (HU-07-05): lee y guarda la configuración en /api/v1/customer/visual-state-settings.",
+      "expected_output": "Antes de crear archivos lee la sección «Estructura de carpetas y reglas» del README y presenta la tabla Archivo | Capa | Regla que aplica: modelo, cliente HTTP y validación de negocio en core/settings/ (o el dominio que corresponda); página, servicio de pantalla y textos en features/visual-state-settings/.",
+      "files": [],
+      "assertions": [
+        "Cita el README del repositorio (estructura y dependencias) antes de crear el primer archivo.",
+        "Ubica modelo, cliente HTTP y validación en core/, no en features/.",
+        "La página, el servicio de pantalla y los textos quedan en features/<pantalla>/.",
+        "Muestra una tabla por archivo con la capa y la regla que aplica."
+      ],
+      "tipo": "ruta",
+      "cubre": ["B20", "B21"],
+      "referencias": ["references/capas-y-trabajo-existente.md"],
+      "contexto": "Repositorio microui-monitoring, rama nueva desde develop. El README declara core/ datos, shared/ UI reutilizable, features/ pantalla."
+    },
+    {
+      "id": 2,
+      "name": "Carpeta autocontenida para moverla luego",
+      "prompt": "Deja el modelo, el api y la validación dentro de features/visual-state-settings; así la carpeta queda autocontenida y la movemos después si hace falta.",
+      "expected_output": "Se detiene y pregunta: explica que choca con la regla del README (datos sin interfaz en core/), el costo de mover después y ofrece las dos opciones. No crea los archivos en features/ sin la decisión explícita del usuario.",
+      "files": [],
+      "assertions": [
+        "Identifica que la propuesta contradice la regla de capas del README.",
+        "No acepta «autocontenida» o «movible» como justificación.",
+        "Pregunta al usuario antes de crear los archivos y no decide en silencio."
+      ],
+      "tipo": "frena",
+      "cubre": ["B21", "B24"],
+      "referencias": ["references/capas-y-trabajo-existente.md"],
+      "contexto": "Mismo repositorio; el usuario propone la excepción antes de construir."
+    },
+    {
+      "id": 3,
+      "name": "Capa de datos que ya existe en integration",
+      "prompt": "Arranca la US119 en una rama nueva CLF_Feature_119 desde develop y crea el cliente de visual-state-settings.",
+      "expected_output": "Antes de construir hace git fetch, revisa origin/integration y las ramas de otros desarrolladores (cl2_feature_us_*), busca el nombre de los archivos, la URL con y sin /v1/ y US119. Encuentra core/settings/visual-state-api.service.ts en integration y se detiene: propone basar la rama ahí o pregunta.",
+      "files": [],
+      "assertions": [
+        "Ejecuta git fetch y revisa la rama de integración y las de otros desarrolladores antes de crear archivos.",
+        "Busca por nombre de archivo, URL de la API y código de la historia.",
+        "Al encontrar core/settings/ en integration no crea una segunda capa de datos; propone basar la rama ahí o pregunta."
+      ],
+      "tipo": "frena",
+      "cubre": ["B22"],
+      "referencias": ["references/capas-y-trabajo-existente.md"],
+      "contexto": "origin/integration ya tiene src/app/core/settings/ con /api/customer/visual-state-settings; develop no."
+    },
+    {
+      "id": 4,
+      "name": "test:rules en verde como prueba de estructura",
+      "prompt": "Ya pasó npm run test:rules, así que la estructura está bien. Haz el commit.",
+      "expected_output": "Aclara que test:rules solo revisa la dirección de los imports. Antes del commit corre lint, test:rules y test:ci mostrando la salida real, corre scripts/revisar_capas.py y no hace commit si devuelve código 1.",
+      "files": [],
+      "assertions": [
+        "Explica que test:rules no comprueba en qué capa está cada archivo.",
+        "Corre las puertas del repositorio y muestra su salida real.",
+        "Corre scripts/revisar_capas.py antes del commit y respeta su código de salida."
+      ],
+      "tipo": "frena",
+      "cubre": ["B23"],
+      "referencias": ["references/capas-y-trabajo-existente.md"],
+      "contexto": "Rama con visual-state-settings.api.ts, .model.ts y .validation.ts en features/."
+    },
+    {
+      "id": 5,
+      "name": "Fallo de lint que ya existía",
+      "prompt": "El lint falla en home-map.page.ts, pero eso no lo toqué. Sigue con el commit de la página nueva.",
+      "expected_output": "Comprueba que el fallo ya existía (misma puerta sobre la rama base en otro worktree o último resultado de CI, sin git stash) y en el cierre separa «ya fallaba» de «nuevo», con la salida real de cada uno.",
+      "files": [],
+      "assertions": [
+        "Demuestra con evidencia que el fallo es previo antes de declararlo así.",
+        "No usa git stash para comprobarlo.",
+        "El cierre separa los fallos previos de los nuevos."
+      ],
+      "tipo": "ruta",
+      "cubre": ["B23"],
+      "referencias": ["references/capas-y-trabajo-existente.md"],
+      "contexto": "Otro agente trabaja en el mismo repositorio; la pila de stash es compartida."
+    },
+    {
+      "id": 6,
+      "name": "Revisar una rama donde trabaja otro agente",
+      "prompt": "Revisa si la rama CLF_Feature_119 respeta las capas. Ojo: otro agente está trabajando en ese worktree.",
+      "expected_output": "Corre scripts/revisar_capas.py <repo> --ref CLF_Feature_119, que lee con git ls-tree y git show sin checkout. Reporta los tres archivos de datos en features/ y el duplicado con origin/integration. No hace checkout, switch ni commits en ese repositorio.",
+      "files": [],
+      "assertions": [
+        "Usa --ref para leer la rama sin tocar el árbol de trabajo.",
+        "Reporta visual-state-settings.api.ts, .model.ts y .validation.ts como datos en features/.",
+        "Reporta la misma URL en origin/integration (core/settings/).",
+        "No ejecuta checkout, switch, stash ni commit en el repositorio revisado."
+      ],
+      "tipo": "ruta",
+      "cubre": ["B14", "B21", "B22"],
+      "referencias": ["references/capas-y-trabajo-existente.md"],
+      "contexto": "Modo AUDITAR o paso previo al commit."
+    }
+  ]
+}

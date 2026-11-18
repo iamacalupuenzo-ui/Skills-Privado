@@ -10,7 +10,7 @@ description: >
   continuar». No construye ni versiona nada del Design System (usa flujo-ds) ni de un
   producto (usa flujo-producto): solo garantiza que el trabajo y su contexto viajen.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # Traspaso entre computadoras
@@ -46,6 +46,7 @@ una página de estado; la que llega la lee y retoma.
 3. **Actualizar la página de estado** con: estado de cada MR verificado con la API y con fecha; ramas y commits; qué se hizo; qué quedó sin comprobar en pantalla; pendientes en orden.
 4. **Anotar lo que no viaja por git**: capturas, memoria local, copias dentro de `node_modules`, servidores levantados, variables de entorno. Y avisar si un consumidor necesita una versión del DS que aún no está publicada.
 5. **Actualizar la memoria local** y entregar al usuario el mensaje listo para pegar (`references/mensaje-de-arranque.md`), con enlaces e imágenes de lo trabajado.
+6. **Si hubo una subida de ramas** (con o sin MR), el paquete de traspaso es obligatorio en ese mismo cierre y lleva, por repositorio: la rama, `git fetch` y `git switch <rama>`, y `npm ci` con `GITLAB_NPM_TOKEN`. Si el producto depende de un DS sin publicar, también la rama del DS que hay que compilar (`npm run build:lib`) y copiar en el `node_modules` de la micro UI y del Shell. Y los servidores con sus puertos y la URL de entrada (caso real: `web-flotas` en 4401, `microui-monitoring` en 4202, `http://localhost:4401/monitoring`). Termina con el mensaje listo para pegar.
 
 ## LLEGAR — arranque
 
@@ -69,6 +70,7 @@ Reglas de trabajo con el usuario; dónde está cada cosa (repos, ramas, puertos,
 - **B5 — Lo que no viaja por git se anota explícitamente** en la página.
 - **B6 — La página se actualiza antes de entregar el mensaje.** Un mensaje que apunta a una página vieja manda al agente siguiente en una dirección equivocada.
 - **B7 — Al llegar no se empieza a trabajar sin resumir y preguntar.**
+- **B8 — Ninguna subida de ramas se da por cerrada sin el paquete de traspaso** (paso 6 de IRSE). Sin él, la otra computadora no sabe qué rama del DS compilar y el producto no compila allá.
 
 ## Racionalizaciones comunes
 
@@ -76,6 +78,7 @@ Reglas de trabajo con el usuario; dónde está cada cosa (repos, ramas, puertos,
 |---|---|
 | «Está todo en la rama, no hace falta cerrar» | Si hay cambios sin commit o sin push, no está. Se revisa `git status`. |
 | «La página ya lo dice, no verifico» | Envejece. Se consulta la API y se escribe la fecha. |
+| «Ya subí las ramas, el traspaso lo armo después» | La otra computadora no sabe qué DS sin publicar compilar; el paquete va en el mismo cierre (B8). |
 | «Pego el token para que funcione allá» | Nunca. Se pide que el usuario cree las variables de entorno. |
 
 ## Formato de respuesta

@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 // Pruebas del guardia: cada caso envía un evento PreToolUse y comprueba la decisión.
 // Uso: node probar-guardia.mjs   (sale con código 1 si algún caso falla)
-import { spawnSync } from 'node:child_process';
-import { existsSync } from 'node:fs';
+import { execFileSync, spawnSync } from 'node:child_process';
+import { existsSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -23,8 +24,6 @@ const casos = [
   ['deny', 'npm publish'],
   ['deny', 'git push origin develop'],
   ['deny', 'git push origin HEAD:main'],
-  ['deny', 'git push origin integration'],
-  ['deny', 'curl -X POST --data-binary {"source_branch":"integration","target_branch":"develop"} https://project.comsatel.com.pe/api/v4/projects/9/merge_requests'],
   ['deny', 'git push origin feature/x:release'],
   ['deny', 'git push --force origin feature/x'],
   ['deny', 'git push -f'],
@@ -37,7 +36,6 @@ const casos = [
   ['deny', 'curl -H "PRIVATE-TOKEN: glpat-abcdefghijklmnopqrst" https://x/api/v4/user'],
   // Piden confirmación
   ['ask', 'git push -u origin feature/mejora-mapa'],
-  ['ask', 'git push -u origin CLF_Feature_108'],
   ['ask', 'git -c credential.helper= push origin feature/ds-1-9-3'],
   ['ask', 'curl -X POST -H "PRIVATE-TOKEN: $t" --data-binary @mr.json https://project.comsatel.com.pe/api/v4/projects/9/merge_requests'],
   // Pasan sin ruido
@@ -90,5 +88,42 @@ if (otra.status !== 0) { fallos++; console.log('FALLA  Read no debería evaluars
 const ps = decision('git push origin develop', 'PowerShell');
 if (ps.tipo !== 'deny') { fallos++; console.log('FALLA  PowerShell debería evaluarse igual'); }
 
-console.log(`\n${casos.length + 2} casos, ${fallos} fallos`);
+// Avisos de un push a un producto: DS en prerelease y choques con origin/integration. No bloquean:
+// la decisión sigue siendo «ask» y los avisos se suman al motivo.
+const avisos = (() => {
+  const dir = mkdtempSync(join(tmpdir(), 'guardia-avisos-'));
+  const g = (...a) => execFileSync('git', ['-C', dir, '-c', 'user.name=p', '-c', 'user.email=p@x', ...a], { stdio: 'ignore' });
+  try {
+    g('init', '-q', '-b', 'develop');
+    g('remote', 'add', 'origin', 'https://project.comsatel.com.pe/clocator2/microui-demo.git');
+    writeFileSync(join(dir, 'package.json'), JSON.stringify({ dependencies: { '@comsatel/ui-components': '1.17.0-pre.157' } }));
+    writeFileSync(join(dir, 'a.txt'), 'base\n');
+    g('add', '-A'); g('commit', '-q', '-m', 'base');
+    g('checkout', '-q', '-b', 'integration');
+    writeFileSync(join(dir, 'a.txt'), 'integration\n');
+    g('commit', '-q', '-am', 'integration');
+    g('update-ref', 'refs/remotes/origin/integration', 'integration');
+    g('checkout', '-q', '-b', 'CLF_Feature_1', 'develop');
+    writeFileSync(join(dir, 'a.txt'), 'nuestra\n');
+    g('commit', '-q', '-am', 'nuestra');
+    const conAvisos = decision('git push origin HEAD:refs/heads/CLF_Feature_1', 'Bash', dir);
+    const r = [];
+    if (conAvisos.tipo !== 'ask') r.push(`push con avisos: esperado ask, obtenido ${conAvisos.tipo}`);
+    if (!/prerelease/.test(conAvisos.texto)) r.push('push con avisos: falta el aviso de prerelease');
+    if (!/choca con origin\/integration en 1 archivos/.test(conAvisos.texto)) r.push('push con avisos: falta el aviso de choques');
+    // Sin prerelease ni choques: «ask» sin avisos.
+    writeFileSync(join(dir, 'package.json'), JSON.stringify({ dependencies: { '@comsatel/ui-components': '1.17.0' } }));
+    g('checkout', '-q', '-b', 'limpia', 'integration');
+    g('commit', '-q', '-am', 'estable');
+    const limpia = decision('git push origin HEAD:refs/heads/limpia', 'Bash', dir);
+    if (limpia.tipo !== 'ask' || /Avisos antes de subir/.test(limpia.texto)) r.push('push limpio: no debería llevar avisos');
+    return r;
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+})();
+for (const f of avisos) { fallos++; console.log(`FALLA  ${f}`); }
+if (!avisos.length) console.log('OK    avisos de push (prerelease y choques con integration) sin bloquear');
+
+console.log(`\n${casos.length + 3} casos, ${fallos} fallos`);
 process.exit(fallos ? 1 : 0);

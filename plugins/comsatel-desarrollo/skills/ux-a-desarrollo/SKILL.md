@@ -23,6 +23,7 @@ donde corresponde: en un documento, nunca como rótulo en la interfaz.
 - `references/estados-de-pantalla.md` — los estados que toda pantalla debe cubrir y cómo se muestran. Leer antes de construir.
 - `references/registro-de-decisiones.md` — cómo registrar decisiones del responsable de diseño, desvíos de la fuente y brechas. Leer al decidir o desviarse.
 - `references/iteracion-visual.md` — cómo iterar con capturas, comparar con el piloto y verificar en el navegador. Leer al aplicar mejoras de diseño.
+- `references/respuesta-de-cierre.md` — estructura única de la respuesta que cierra un paso (resultado, «Lo que hice», «Lo que necesito de ti», «Lo siguiente»). Leer antes de cerrar.
 
 ## GUARD — verificar contexto
 
@@ -36,7 +37,7 @@ donde corresponde: en un documento, nunca como rótulo en la interfaz.
 | Modo | Señales | Acción |
 |---|---|---|
 | `BAJAR` | «construye según el flujo/UXR» | Extraer estados, reglas y copy; plan de pantalla; construir con `angular-product-builder` |
-| `ITERAR` | capturas con ajustes de espacio, tamaño, orden | `iteracion-visual.md`; propuesta documental y captura para aprobación de Enzo antes de escribir |
+| `ITERAR` | capturas con ajustes de espacio, tamaño, orden | `iteracion-visual.md`; pequeñas directas, grandes delegadas |
 | `REGISTRAR` | «anota esta decisión», «esto se aparta del UXR» | `registro-de-decisiones.md` |
 | `ESTADOS` | «¿qué estados tiene?», «¿qué falta?» | `estados-de-pantalla.md` |
 
@@ -48,27 +49,6 @@ donde corresponde: en un documento, nunca como rótulo en la interfaz.
 - **B4 — El texto provisional se marca en el documento**, no en la pantalla, y no inventa reglas de negocio.
 - **B5 — Antes de cambiar un componente del DS se explica el cambio con evidencia** (ver `flujo-ds`).
 - **B6 — Lo que se construye se verifica en el navegador contra el piloto**, no solo con pruebas.
-
-## Cierre de cada iteración
-
-Construye el prototipo con micro UI, shell y componentes del DS. La investigación de la solución vive dentro de Pantallas y deja INV y DEC antes de cerrar el SCR; incluye benchmarking, componentes disponibles o faltantes, micro UI y ubicación en el shell. La exploración puede hacerse en Claude Design, Figma o código y siempre guarda capturas.
-
-Mientras construyes, invoca accessibility-reviewer y crea o actualiza el ARP **sobre lo implementado**; no lo pospongas al cierre ni lo sustituyas con una revisión de Figma. Cada cambio en lo construido produce una propuesta de actualización de UXR, FLW, SCR y DEC, con captura, versión y estado. Enzo aprueba antes de escribir esos cambios. Toda respuesta y estado de pregunta se registra primero en Open questions del KB y luego se carga a Notion; las propuestas de otros responsables no se remapean a Propuesta UX.
-
-Cada paso verificado en el navegador deja su evidencia en Notion en ese momento: capturas de cada estado y una explicación breve de cómo funciona en la tarea FRONT; la bitácora de construcción y la página de servidores solo marcan y enlazan (`flujo-producto/references/evidencia-de-avance.md`, regla de Enzo del 2026-11-15).
-
-Flujos, Pantallas y Exploraciones siguen Borrador → En revisión → En construcción → Validado. Hay código que referencia su HU/FLW/SCR: propone En construcción; no lo dejes en Borrador. Una rama CLF_Feature_<US> o un merge aislado son evidencia a revisar, no prueba de validación. Validado solo con prueba de Enzo en el navegador, captura y ARP implementado de la misma versión. Figma es opcional cuando el diseño se validó en código.
-
-## Compuertas automáticas
-
-Ejecuta el audit_ux.py instalado con ux-ui-orchestrator, sin copiarlo al producto:
-
-- Antes de cerrar el SCR: --compuerta G3; sin INV y DEC vinculados no avanza.
-- Durante la construcción y antes de Validado: --compuerta G5 y --compuerta G6; sin captura, prueba de Enzo o ARP implementado no pasa.
-- Antes de cerrar la iteración: --compuerta GI; sin propuesta de actualización de UXR/FLW/SCR/DEC, captura y aprobación no pasa.
-- Antes de cerrar el paquete: --cerrar-paquete --conciliacion <informe.json>; diferencias abiertas, falta de huella o informe de otra revisión bloquean.
-
-El hook guardia-uxs del orquestador también impide subir una rama de diseño con esos errores de evidencia. La memoria del proyecto y el contrato de evidencia del orquestador conservan las rutas a propuesta, documentos, captura, versión, prueba y ARP. La auditoría verifica que existan; no suplanta el juicio ni la aprobación de Enzo.
 
 ## Racionalizaciones comunes
 
@@ -88,4 +68,4 @@ El hook guardia-uxs del orquestador también impide subir una rama de diseño co
 
 ## Formato de respuesta
 
-Declarar el modo. Cerrar con: qué se bajó (estados y reglas), qué quedó registrado como decisión o desvío, qué se verificó en el navegador y qué falta de validación.
+Declarar el modo. Declarar el modo al empezar. Al cerrar un paso, seguir `references/respuesta-de-cierre.md`: primera línea con el resultado, «Lo que hice:», «Lo que necesito de ti:» y «Lo siguiente…». En «Lo que hice» van qué se bajó (estados y reglas), qué quedó registrado como decisión o desvío y qué se verificó en el navegador; lo que falta de validación va en «Lo que necesito de ti».

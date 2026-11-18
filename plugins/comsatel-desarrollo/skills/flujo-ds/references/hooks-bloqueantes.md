@@ -18,34 +18,41 @@ garantiza los pocos casos donde un error no se puede deshacer.
 
 | Acción | Resultado | Por qué | Quién la hace |
 |---|---|---|---|
-| Fusionar un MR (`/merge`, `glab mr merge`) | Bloquea | El agente no fusiona; fusiona quien revisa | Luis en productos (`integration`); César en DS y KB (`develop`) |
-| Crear o borrar etiquetas (`git tag`, `--tags`, API de tags) | Bloquea | La etiqueta `ds-vX.Y.Z` la crea el job `tag ds` al publicar la estable; una creada a mano no publica y ocupa la del pipeline | Nadie a mano: el pipeline de `main` |
-| `npm publish` | Bloquea | Publicar un paquete es irreversible; cada rama del DS publica su prerelease sola | César, con el job manual `publish` de `main` (la estable) |
-| `git push` a `develop`, `integration`, `main` o `release` | Bloquea | Están protegidas: solo entran por MR | Quien revisa, tras el MR |
-| MR de `integration` hacia `develop` | Bloquea | `integration` junta el trabajo de todos para DEV; cada rama llega a `develop` por su lado | Desarrollo, rama por rama |
+| Fusionar un MR (`/merge`, `glab mr merge`) | Bloquea | El agente no fusiona; revisa y fusiona César | César (o el responsable del repositorio, en GitLab) |
+| Crear o borrar etiquetas (`git tag`, `--tags`, API de tags) | Bloquea | Una etiqueta `ds-vX.Y.Z` publica el paquete del sistema de diseño | César |
+| `npm publish` | Bloquea | Publicar un paquete es irreversible | César, por etiqueta |
+| `git push` a `develop`, `main` o `release` | Bloquea | Están protegidas: solo entran por MR | César, tras el MR |
 | `git push --force`, `+rama`, `--delete` | Bloquea | Reescribe o borra historia remota | El responsable del repositorio, en su terminal |
 | Mostrar el token o escribirlo en un comando | Bloquea | Queda en el historial y la conversación | Nadie: usa la variable |
-| `git push` de una rama de trabajo (`CLF_Feature_<n>`, `feature/*`) | Pide confirmación | Regla B1: nada se sube sin tu visto bueno | Tú confirmas |
-| Abrir un MR por la API | Pide confirmación | Productos: a `integration`, revisor Luis. DS y KB: a `develop`, revisor César. Enlazado a su pareja | Tú confirmas |
+| `git push` de una rama `feature/*` | Pide confirmación | Regla B1: nada se sube sin tu visto bueno | Tú confirmas |
+| Abrir un MR por la API | Pide confirmación | Debe ir a `develop`, asignado a César y enlazado a su pareja | Tú confirmas |
 | Subir algo desde `ui-components` | Pide confirmación, con aviso | Un cambio en el DS afecta a todos los productos | Tú confirmas |
 
 Pasan sin aviso: `git status`, `fetch`, `log`, `git push --dry-run`, `git tag --list` y las
 consultas de lectura a la API.
 
+## Avisos al subir una rama de producto (no bloquean)
+
+Al confirmar un push a un repo de producto de Comsatel, el guardia suma avisos al motivo, sin
+cambiar la decisión: si `package.json` fija el DS sin versión exacta o en prerelease, y si `HEAD`
+choca con `origin/integration` según `git merge-tree` (sin fetch, con lo que haya en el clon).
+Son lecturas locales de menos de un segundo. La revisión completa sigue siendo de
+`revisar_ds.py` y `simular_fusion.py` (`flujo-producto`); un aviso no reemplaza correrlos.
+
 ## Cómo se ve un bloqueo
 
 ```
 BLOQUEADO: git push a la rama protegida develop
-Motivo: develop, integration, main y release están protegidas: nadie empuja directo, todo
-entra por merge request y lo fusiona quien revisa.
-Qué hacer: Productos: crea CLF_Feature_<historia> desde origin/develop, súbela y abre un MR a
-integration (DEV) con Luis de revisor. DS: rama feature/<tema> y MR a develop con César.
+Motivo: develop, main y release están protegidas: nadie empuja directo, todo entra por
+merge request y lo fusiona César.
+Qué hacer: Crea una rama feature/<tema> desde origin/develop, súbela y abre un MR a develop
+asignado a César.
 ```
 
 ## Archivos (viven en el repo de skills, como base de conocimiento)
 
 - `hooks/guardia-gitlab.mjs` — el guardia (Node, sin dependencias).
-- `hooks/probar-guardia.mjs` — 42 casos: lo que debe bloquear, confirmar y dejar pasar.
+- `hooks/probar-guardia.mjs` — 43 casos (incluye los avisos de un push): lo que debe bloquear, confirmar y dejar pasar.
 - `hooks/instalar-hooks.mjs` — lo instala en tu configuración de Claude Code.
 
 ## Instalar, probar y retirar
@@ -60,6 +67,16 @@ El instalador copia el guardia a `~/.claude/hooks/` (así `skils update` no lo b
 solo hook `PreToolUse` para Bash y PowerShell, deja copia de respaldo de `settings.json` y no
 toca los demás hooks. Ábrelo en una sesión nueva para que se cargue.
 
+## Si hay que reescribir una rama ya subida
+
+El push forzado sigue bloqueado aunque el usuario lo autorice en el chat. Tampoco se rodea:
+borrar la rama remota y volver a subirla es lo mismo que forzar. Lo que sí se hace:
+
+1. Comprobar con `git ls-remote origin <rama>` que el remoto sigue en el SHA que subiste tú.
+2. Darle al usuario el comando para que lo ejecute él, con `!` en Claude Code:
+   `git push --force-with-lease=<rama>:<sha-esperado> origin <rama> -o ci.skip`
+3. Prevenirlo: separar las historias en ramas antes del primer push.
+
 ## Cómo identificar qué hooks tienes
 
 - Los de **Orca** ejecutan `~\.orca\agent-hooks\claude-hook.cmd`: solo informan el estado del
@@ -73,7 +90,7 @@ toca los demás hooks. Ábrelo en una sesión nueva para que se cargue.
 
 - Detecta patrones del texto del comando. Un comando muy disfrazado (variables armadas a
   trozos) podría escaparse; la protección de ramas de GitLab sigue siendo la barrera final.
-- La protección de `develop`, `integration`, `main` y `release` aplica a los remotos de Comsatel. En otros repos (por ejemplo el de skills en GitHub) el push solo pide confirmación.
+- La protección de `develop`, `main` y `release` aplica a los remotos de Comsatel. En otros repos (por ejemplo el de skills en GitHub) el push solo pide confirmación.
 - Ignora el texto de los mensajes de commit (`-m` y heredoc), para no frenar un commit que solo *menciona* una acción bloqueada.
 - Solo cubre Claude Code. Codex tiene otro mecanismo de hooks y no está configurado.
 - El hook no sustituye a los permisos de GitLab: el token debe tener rol que no pueda fusionar.
@@ -81,4 +98,4 @@ toca los demás hooks. Ábrelo en una sesión nueva para que se cargue.
 ## Pregunta de comprobación
 
 Un agente va a ejecutar `git push origin HEAD:release`. ¿Qué pasa y a quién le toca la acción?
-(Respuesta: se bloquea, porque `release` está protegida; la acción entra por MR y la fusiona César, dueño de `release`.)
+(Respuesta: se bloquea, porque `release` está protegida; la acción entra por MR y la fusiona César.)

@@ -1,6 +1,28 @@
 # Servidores locales
 
-Ver puertos y comandos en el mapa de repos del orquestador. Receta de reinicio que funciona en Windows con Git Bash:
+Ver puertos y comandos en el mapa de repos del orquestador.
+
+## Puertos (verificados el 2026-11-17)
+
+Antes de levantar: `python <carpeta del skill>/scripts/puertos_libres.py` (código 1 si alguno está ocupado; dice PID, proceso y comando).
+
+| Puerto | Qué | Trampa |
+|---|---|---|
+| 8082 | Mock del BFF de Web Cliente | — |
+| 4400 | Shell de Web Cliente (4401 en otra copia) | — |
+| 4202 | Micro UI de Monitoreo | El proxy del Shell del Backoffice manda `/mfe/microui-bo-feature-flags` al 4202 |
+| 3000 | Servidor MCP de draw.io | El mock del Backoffice usa el 3000 por defecto: `MOCK_PORT=3001` y `proxy.conf.json` al 3001 solo en local, sin commit (el Shell no acepta `--proxy-config`) |
+| 4200 | Shell del Backoffice | — |
+| 4201 | Micro UI de Distribuidores (bo-tenants) | — |
+| 4203 | Libre para otra micro UI del Backoffice | — |
+
+## Un solo frente a la vez
+
+No corras suites de varios repos en paralelo ni una suite junto a un build del mismo repo: la carga produce fallos falsos. Si una prueba falla con carga, repítela sola; `puertas.py` lo hace y la marca «inestable».
+
+## Receta de reinicio
+
+Receta de reinicio que funciona en Windows con Git Bash:
 
 ```bash
 for p in 4300 4201 8081; do

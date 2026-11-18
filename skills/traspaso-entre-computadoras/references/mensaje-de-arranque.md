@@ -18,7 +18,9 @@ PASO 3. Prepara el equipo:
 
 PASO 4. Descarga el trabajo, en las ramas que indica la página: <repos y ramas>. Luego npm ci en cada uno.
 
-PASO 5. Si el consumidor usa un DS sin publicar, construye el DS (npm run build:lib), copia dist/comsatel-ds sobre node_modules/@comsatel/ui-components del consumidor y reinicia su servidor.
+PASO 5. Si el consumidor usa un DS sin publicar, descarga su rama (<rama del DS>), construye el DS (npm run build:lib), copia dist/comsatel-ds sobre node_modules/@comsatel/ui-components de la micro UI y del Shell, y reinicia sus servidores. Nunca fijes esa versión en package.json.
+Servidores y puertos: <repo: puerto> y la URL de entrada (<por ejemplo, http://localhost:4401/monitoring>).
+Ramas que NO se fusionan todavía: <ramas y motivo; la nota «NO FUSIONAR» del issue lo explica>.
 
 PASO 6. Verifica el estado real con la API de GitLab, sin fiarte solo de la página: <MR y versiones a revisar>.
 

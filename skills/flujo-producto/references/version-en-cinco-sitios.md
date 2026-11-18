@@ -1,8 +1,6 @@
 # La versión del producto, en cinco sitios
 
-La plantilla de CI de las webs despliega la imagen `<versión de package.json>-<sufijo>`. En CL2, la rama `integration` despliega a DEV con `-dev` y `develop` despliega a QA con `-qa`. La etiqueta de imagen se trata como inmutable: si la versión no cambia, el entorno conserva la imagen anterior (`imagePullPolicy: IfNotPresent`). Por eso **todo cambio desplegable sube de versión**. Un cambio solo del mock (`dev/mock-bff`) no se despliega y no sube versión.
-
-**Ramas apiladas:** cada rama sube su propia versión, porque cada una llega a `integration` por separado. Ejemplo: `CLF_Feature_108` lleva la 0.9.0 y `CLF_Feature_111`, que sale de ella, la 0.10.0. Si `develop` o `integration` ya pasaron esa versión, se sube a la siguiente libre.
+La plantilla de CI de las webs despliega a QA la imagen `<versión de package.json>-qa`. La etiqueta de imagen se trata como inmutable: si la versión no cambia, QA conserva la imagen anterior (`imagePullPolicy: IfNotPresent`). Por eso **todo cambio desplegable sube de versión**.
 
 ## Los cinco sitios (deben coincidir)
 
@@ -27,4 +25,4 @@ Comprobar con `grep` que los cinco dicen lo mismo y que ninguno quedó con la an
 - Reemplazos con `sed` por línea (`3s/…/…/`): una expresión regular con `\.` mal escapada deja un sitio sin cambiar. Verificar con `grep`.
 - El nombre del producto aparece en el lock más veces: tocar solo las líneas 3 y 9.
 - `.gitlab-ci.yml` y el `Dockerfile` leen la versión de `package.json` (o de `WEB_HOME/package.json` en repos con el código en una subcarpeta, como `flotas-web-bff/mock`).
-- Una versión ya publicada con `-dev` o `-qa` no se reutiliza: subir otra.
+- Una versión ya publicada con `-qa` no se reutiliza: subir otra.

@@ -12,12 +12,14 @@ description: >
   (angular-developer, angular-new-app) para el framework y audita
   repositorios existentes con evidencia. Conoce la arquitectura de micro UI de
   Flotas (shell, remotos con federación, shared-core, BFF) y pide referencias
-  visuales solo cuando el patrón no existe en el sistema de diseño. Úsalo para “crea un login”, “inicia una app de flota”, “agrega
+  visuales solo cuando el patrón no existe en el sistema de diseño. Antes de
+  crear archivos ubica cada uno en su capa (core, shared, features) según el
+  README del repositorio y busca en las otras ramas si alguien ya lo construyó. Úsalo para “crea un login”, “inicia una app de flota”, “agrega
   el mapa de unidades” o “implementa alertas en esta plataforma”, y para “audita la arquitectura de este proyecto”. No construye
   componentes dentro del sistema de diseño, no clona su repositorio y no copia
   sus demos.
 metadata:
-  version: "2.9.1"
+  version: "2.11.1"
 ---
 
 # Angular Product Builder
@@ -52,6 +54,9 @@ Este skill diseña y construye. Versionar, publicar, desplegar y comprobar QA no
 
 ## Referencias
 
+- `references/respuesta-de-cierre.md` — estructura única de la respuesta que cierra
+  un paso (resultado, «Lo que hice», «Lo que necesito de ti», «Lo siguiente»).
+  Leer antes de cerrar INICIAR, CONSTRUIR o ACTUALIZAR.
 - `references/design-system-contract.md` — leer siempre antes de instalar,
   iniciar o importar un sistema de diseño. Reglas que valen para cualquier
   sistema y cómo registrar la elección.
@@ -70,6 +75,19 @@ Este skill diseña y construye. Versionar, publicar, desplegar y comprobar QA no
   entre reglas, protocolo de entrada, patrón de pantalla (servicio de pantalla
   y de transiciones), brechas del sistema de diseño, trampas reales y trabajo
   concurrente con otros agentes.
+- `references/capas-y-trabajo-existente.md` — leer siempre antes de crear el
+  primer archivo en un repositorio existente y antes de cada commit: cómo leer
+  las capas del README, la tabla para clasificar cada archivo (datos en `core/`,
+  UI reutilizable en `shared/`, pantalla en `features/`), cómo buscar trabajo
+  existente en otras ramas, las puertas del commit y el revisor
+  `scripts/revisar_capas.py`. Nace de un error real (B20 a B24).
+- `scripts/revisar_capas.py` — revisor obligatorio antes de cada commit (solo
+  biblioteca estándar de Python, solo lectura): marca datos sin interfaz dentro
+  de `features/` y trabajo duplicado en las ramas remotas. Uso y códigos de
+  salida en `capas-y-trabajo-existente.md`, sección 4. Sus pruebas:
+  `python -m unittest discover -s scripts/tests` desde la carpeta del skill.
+- `evals/evals.json` y `evals/activadores.json` — casos de comportamiento y de
+  activación; se corren al cambiar reglas o la descripción del skill.
 - `references/arquitectura-microui.md` — leer si el destino es un shell, una
   micro UI o un producto nuevo de Flotas: de qué es dueña cada pieza, qué no va
   en un cambio de UI, receta local y trampas de federación.
@@ -137,6 +155,17 @@ Este skill diseña y construye. Versionar, publicar, desplegar y comprobar QA no
    cierre lo declara. Si el repositorio no tiene reglas, proponer el patrón de
    referencia y pedir confirmación en vez de decidir en silencio. Correr
    `git status` y anotar los archivos con cambios ajenos.
+10. **Resolver las capas.** Leer la estructura de carpetas y la dirección de
+    dependencias que declara el repositorio (`CLAUDE.md`, `AGENTS.md` o el
+    README cuando las reglas viven allí) según `capas-y-trabajo-existente.md`,
+    y anotar archivo y sección. Si no declara capas, proponer las de esa
+    referencia y pedir confirmación. Sin esto no se crea ningún archivo (B20).
+11. **Buscar trabajo existente.** `git fetch`, revisar `integration` (o la rama
+    de integración del repositorio) y las ramas de otros desarrolladores
+    (`cl2_feature_us_*`, `CLF_Feature_*`), y buscar los nombres de archivo, la
+    URL de la API y el código de la historia. Si ya existe la capa de datos o la
+    pantalla, basar la rama ahí con aprobación del usuario o preguntar; no
+    construir una segunda en paralelo (B22).
 
 ## Detección de modo
 
@@ -200,11 +229,23 @@ evaluar, no se edita.
    labels de campos equivalentes con los tokens publicados y preservar la
    anatomía tipográfica encapsulada de cada control. Elegir un tamaño de control
    coherente para todo el grupo según densidad y legibilidad.
-3. Construir flujo principal y todos los estados aplicables antes de declarar
+3. **Clasificar cada archivo antes de crearlo** (B21): datos sin interfaz
+   (modelo, cliente HTTP, validación de negocio, adaptadores) en `core/`;
+   interfaz reutilizable en `shared/`; página, servicio de pantalla y textos en
+   `features/`. El plan incluye la tabla «Archivo | Capa | Regla que aplica»
+   con la cita del README. Si una decisión de diseño choca con una regla del
+   repositorio, detenerse y preguntar (B24).
+4. Construir flujo principal y todos los estados aplicables antes de declarar
    finalizado: carga, vacío, error, permisos, offline, recuperación y móvil.
-4. Para mapas o notificaciones, aplicar `logistics-patterns.md`; su ausencia
+5. Para mapas o notificaciones, aplicar `logistics-patterns.md`; su ausencia
    de requisitos es una decisión pendiente, no licencia para inventar alertas.
-5. Leer `verification.md`, abrir el playground de la aplicación en el
+6. **Antes de cada commit** (B23): correr las puertas del repositorio (por
+   ejemplo `npm run lint`, `npm run test:rules` y `npm run test:ci`) y mostrar
+   su salida real, separando los fallos que ya existían de los nuevos; luego
+   correr `python <carpeta del skill>/scripts/revisar_capas.py <repo>` y no
+   hacer commit con código 1 sin resolverlo o sin que el usuario lo decida.
+   `test:rules` solo ve la dirección de los imports: no reemplaza el paso 3.
+7. Leer `verification.md`, abrir el playground de la aplicación en el
    navegador de validación y ejecutar los comandos reales **solo si las
    reglas del repositorio lo permiten** (si no, verificar por logs del servidor
    de desarrollo y navegador, y declararlo). Revisar el
@@ -326,9 +367,55 @@ evaluar, no se edita.
   el mismo repositorio, el estado del disco es el vigente: no se revierte, no
   se completa su diseño a ciegas y se reporta lo que rompe. Ver
   `arquitectura-proyecto.md`, sección 6.
+- **B20 — Las capas se leen antes de crear archivos.** Antes del primer archivo
+  nuevo se lee la estructura de carpetas y las dependencias que declara el
+  repositorio (README, `CLAUDE.md` o `AGENTS.md`) y se cita qué regla aplica a
+  cada archivo. Crear sin leerla puso el modelo, el cliente HTTP y la
+  validación de «Estado de las Unidades» dentro de `features/`, contra el
+  README de microui-monitoring.
+- **B21 — Cada archivo en su capa.** Datos sin interfaz (modelo, cliente HTTP,
+  validación de negocio, adaptadores) van en `core/<dominio>/`; interfaz
+  reutilizable en `shared/<tema>/`; página, servicio de pantalla y textos en
+  `features/<pantalla>/`. Que la carpeta sea «autocontenida» o «movible» no
+  justifica saltarse la regla: mover después cuesta otro commit y rompe a quien
+  ya importó desde la ruta vieja.
+- **B22 — Buscar antes de construir.** Antes de crear una capa de datos o una
+  pantalla: `git fetch`, revisar la rama de integración y las de otros
+  desarrolladores, y buscar nombres de archivo, la URL de la API y el código de
+  la historia. Si ya existe, se basa la rama ahí o se pregunta. Construir sin
+  buscar duplicó en `CLF_Feature_119` la capa que otro desarrollador ya tenía
+  en `core/settings/` de `integration`, con URLs que ya divergían
+  (`/api/v1/...` frente a `/api/...`).
+- **B23 — Puertas reales antes de cada commit.** Se corren las puertas del
+  repositorio (lint, `test:rules`, pruebas) y `scripts/revisar_capas.py`, se
+  muestra su salida real y se separan los fallos que ya existían de los nuevos.
+  `test:rules` pasó con el error de B21 porque solo revisa la dirección de los
+  imports; declarar «pasa» sin salida, o tomarla como prueba de estructura,
+  deja pasar el error.
+- **B24 — Un choque con una regla del repositorio se pregunta.** Si una
+  decisión de diseño contradice una regla del README o del `CLAUDE.md`, se
+  detiene esa pieza y se pregunta al usuario con las opciones y su costo.
+  Decidir en silencio produce código que la revisión rechaza y que hay que
+  mover.
+
+## Racionalizaciones comunes
+
+| Excusa | Realidad |
+|---|---|
+| «La carpeta es autocontenida para moverla luego» | El README manda; la capa de datos va en `core/` (B21). |
+| «`test:rules` pasa, la estructura está bien» | `test:rules` solo ve la dirección de los imports; la capa de cada archivo se clasifica a mano y con `revisar_capas.py` (B23). |
+| «Nadie más está trabajando en esto» | Se comprueba con `git fetch` y las ramas remotas antes de construir (B22). |
+| «Lo construyo y después lo junto con lo de integración» | Dos capas de datos para la misma URL divergen; se basa la rama en la existente o se pregunta (B22). |
+| «Ese fallo de lint ya estaba» | Se demuestra con la salida sobre la rama base y se declara aparte (B23). |
 
 ## Señales de alerta
 
+- Se crea un archivo en `features/` con nombre `.api.ts`, `.model.ts` o
+  `.validation.ts`, o con `HttpClient`, sin haber citado la regla de capas.
+- Se empieza a construir una pantalla o una capa de datos sin `git fetch` ni
+  revisar la rama de integración y las de otros desarrolladores.
+- Un cierre dice «lint y pruebas pasan» sin mostrar la salida, o usa
+  `test:rules` como prueba de que la estructura es correcta.
 - Se edita un repositorio sin haber leído su `CLAUDE.md`/`AGENTS.md`.
 - Se ejecuta build, `tsc` o pruebas en un repositorio que lo prohíbe, o se
   marca "compila" sin evidencia.
@@ -369,10 +456,15 @@ evaluar, no se edita.
 - Cierre de PLANIFICAR: plan, decisiones pendientes y no-ediciones.
 - Cierre de AUDITAR: informe con evidencia, backlog priorizado, decisiones
   conscientes y qué necesita aprobación; sin ediciones de código.
-- Cierre de INICIAR/CONSTRUIR/ACTUALIZAR: archivos, sistema de diseño y
+- Cierre de INICIAR/CONSTRUIR/ACTUALIZAR: seguir `references/respuesta-de-cierre.md`
+  (resultado en la primera línea, «Lo que hice:», «Lo que necesito de ti:» y
+  «Lo siguiente…»). Dentro de «Lo que hice», según aplique: archivos, sistema de diseño y
   versión, componentes públicos usados, estados verificados, comandos
   ejecutados (o no ejecutados por regla del repositorio), reglas del
-  repositorio aplicadas y cualquier caso en que una regla del repositorio se
+  repositorio aplicadas con la tabla «Archivo | Capa | Regla que aplica» de los
+  archivos nuevos, la salida real de las puertas y de `revisar_capas.py` (con
+  los fallos previos separados), las ramas revisadas en busca de trabajo
+  existente y cualquier caso en que una regla del repositorio se
   impuso a una recomendación de este skill o de Angular, archivos ajenos que
   cambiaron durante la sesión, brechas del Design System registradas y
   pendiente concreto.
@@ -383,6 +475,7 @@ evaluar, no se edita.
 - `references/design-systems/comsatel-ds.md`
 - `references/elegir-en-el-ds.md`
 - `references/arquitectura-proyecto.md`
+- `references/capas-y-trabajo-existente.md`
 - `references/arquitectura-microui.md`
 - `references/referencias-visuales.md`
 - `references/angular-moderno.md`
