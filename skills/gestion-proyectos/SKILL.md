@@ -98,6 +98,11 @@ Cuando el usuario diga que terminó una tarea, o pida marcarla como completada:
    `Resultado = Listo`.
 4. Sin resultado, no pasar a `Listo`. Si el usuario igual quiere marcarla completada, se
    marca, y se le avisa que va a quedar con `Alerta de cierre` hasta que aparezca el resultado.
+5. `Completada` con `Resultado = Pendiente` es una inconsistencia: al cerrar con entregable, la sección
+   Resultado lleva sus enlaces. Un trabajo descartado se renombra con el prefijo «[Descartada]», se cierra
+   explicando quién lo decidió y cuándo, y no se borra. Una tarea madre se cierra cuando todas sus
+   hijas están cerradas o descartadas. El detalle y el barrido de reconciliación están en la sección C
+   del [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) de `ux-ui-orchestrator`.
 
 Al consultar el estado de un proyecto o de la semana, recordar las tareas con `Alerta de
 cierre` y preguntar por su resultado, una por una o en lote, sin repetir la pregunta por la

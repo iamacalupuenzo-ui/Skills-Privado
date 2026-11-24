@@ -43,7 +43,7 @@ una página de estado; la que llega la lee y retoma.
 
 1. **Commit de todo lo trabajado**, incluido lo ajeno a la tarea que esté sin commit. Nada se queda solo en el disco. Cada repositorio lleva su propia revisión de `git status`.
 2. **Push** de las ramas (el DS a GitLab, el piloto a GitHub) y los MR con César de revisor (`reviewer_ids=[91]`), **solo con la confirmación del usuario**. Si algo está apilado sobre un MR sin fusionar, avisar de no fusionar el de arriba antes de reapuntarlo.
-3. **Actualizar la página de estado** con: estado de cada MR verificado con la API y con fecha; ramas y commits; qué se hizo; qué quedó sin comprobar en pantalla; pendientes en orden.
+3. **Actualizar la página de estado** con: estado de cada MR verificado con la API y con fecha; ramas y commits; qué se hizo; qué quedó sin comprobar en pantalla; pendientes en orden. Hay **un pase vivo por paquete de alcance** (DSP-NNN), además del handoff del KB: un paquete se entrega con esos dos recursos. Si el paquete no tiene su pase, se crea en este paso.
 4. **Anotar lo que no viaja por git**: capturas, memoria local, copias dentro de `node_modules`, servidores levantados, variables de entorno. Y avisar si un consumidor necesita una versión del DS que aún no está publicada.
 5. **Actualizar la memoria local** y entregar al usuario el mensaje listo para pegar (`references/mensaje-de-arranque.md`), con enlaces e imágenes de lo trabajado.
 
@@ -70,6 +70,7 @@ Reglas de trabajo con el usuario; dónde está cada cosa (repos, ramas, puertos,
 - **B5 — Lo que no viaja por git se anota explícitamente** en la página.
 - **B6 — La página se actualiza antes de entregar el mensaje.** Un mensaje que apunta a una página vieja manda al agente siguiente en una dirección equivocada.
 - **B7 — Al llegar no se empieza a trabajar sin resumir y preguntar.**
+- **B9 — El estado de las tareas sigue al hecho.** Al actualizar la página, comprobar con la API qué MR ya se fusionaron y qué entregas ya se enviaron, y actualizar las tareas de Notion del paquete según la sección C del protocolo canónico de `ux-ui-orchestrator`. Una tarea no queda en `Finalizada - falta merge` ni `En curso` cuando su MR ya está fusionado o su entrega ya se envió.
 
 ## Racionalizaciones comunes
 

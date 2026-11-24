@@ -48,6 +48,7 @@ Leer y ejecutar `references/ciclo-retroalimentacion.md` al inicio y al cierre de
 
 - **B1 — Inicio sin verificación previa, bloqueado.** No iniciar sin el informe de solo lectura de un agente distinto de quien construye y la comprobación de fuentes que exige `references/ciclo-retroalimentacion.md`; si faltan acceso o agente, declarar el bloqueo.
 - **B2 — Cierre sin sincronización, bloqueado.** No declarar terminado un desarrollo, mejora, análisis o definición sin ejecutar y comprobar el cierre de `references/ciclo-retroalimentacion.md`. Un destino pendiente se reporta como cierre BLOQUEADO, nunca como completado.
+- **B3 — Estado de tareas atrasado respecto del hecho.** Al fusionarse un MR, entregarse un paquete (handoff y pase vivo) o descartarse un trabajo, actualizar la tarea de Notion en ese momento según la sección C de `references/ciclo-retroalimentacion.md`, con evidencia y sin dejar `Completada` con `Resultado = Pendiente`. Un paquete no se da por entregado sin sus dos recursos.
 
 ## Racionalizaciones comunes
 

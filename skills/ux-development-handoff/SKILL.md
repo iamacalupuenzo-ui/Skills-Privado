@@ -58,11 +58,12 @@ Resultado `BLOCKED` (falta una decisión o dato: Figma gobernado, divergencia si
 - No fabricar `verified`, aprobaciones, evidencia a11y ni referencias Stitch/Figma.
 
 ## Definition of Done
-HOF con A–N completos por referencia; `gate.result` registrado con evidencia; si `PASSED`, revisión humana solicitada con reviewer identificado; contexto de Dev solo con `governed_design`; todo trazable US → UXR → FLW → SCR → diseño → CMP/TKN → handoff.
+HOF con A–N completos por referencia; `gate.result` registrado con evidencia; si `PASSED`, revisión humana solicitada con reviewer identificado; contexto de Dev solo con `governed_design`; todo trazable US → UXR → FLW → SCR → diseño → CMP/TKN → handoff. En CL2 Flotas el paquete se entrega con **dos recursos**: este handoff (la UXS y el documento de entrega, que Desarrollo consulta en el KB) y el pase vivo del paquete (`traspaso-entre-computadoras`); la tarea «Paquete de entrega» se cierra con ambos enlazados en su Resultado.
 
 ## Comportamientos bloqueantes
 
 - **B1 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
+- **B2 — Un paquete no se da por entregado con un solo recurso.** Antes de cerrar la tarea «Paquete de entrega», comprobar que existen el handoff y el pase vivo de ese paquete y que el Resultado de la tarea los enlaza; si falta uno, declarar cuál y no cerrar (sección C del protocolo canónico).
 
 
 ## Racionalizaciones comunes

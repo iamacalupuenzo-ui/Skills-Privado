@@ -143,6 +143,56 @@ Inicio: informe y SHA / Cierre: completo o BLOQUEADO, con siguiente acción.
 Horas/fechas de tareas: sin cambios, salvo solicitud explícita identificada.
 ```
 
+## C. Cierre continuo: el estado de Notion sigue al hecho
+
+Aprendizaje del 24-nov-2026, al revisar los paquetes DSP-004 a DSP-007: 22 tareas seguían
+en `Finalizada - falta merge`, `En curso` o `Por hacer` cuando su trabajo ya estaba fusionado
+o entregado, y 17 estaban `Completada` con `Resultado = Pendiente`. El estado se actualiza
+cuando ocurre el hecho que lo cierra, no en un barrido final. Cada actualización cita su
+evidencia (MR, página, archivo) y se verifica; el orquestador la hace o la delega.
+
+1. **Disparadores.** Un hecho verificado actualiza la tarea que le corresponde:
+
+   | Hecho verificado | Qué se actualiza |
+   |---|---|
+   | MR de código fusionado (API: `state: merged`) | Tarea de construcción: `Finalizada - falta merge` pasa a `Completada`, con enlace al MR y a la fusión |
+   | Handoff publicado (KB y Notion) y pase vivo creado | Tarea «Paquete de entrega»: `Completada`, `Resultado = Listo`, con los dos enlaces |
+   | El usuario confirma que el paquete y el pase se enviaron | Tarea «Entrega de la micro UI a Desarrollo»: `Completada`, con sección «Documento de entrega» |
+   | Todas las hijas cerradas o descartadas | Tarea madre: `Completada`, y se retiran del cuerpo las frases «sigue En curso» |
+
+   La fecha real de cierre y las horas siguen la regla B.5: solo a petición explícita de
+   Enzo (por ejemplo, «cierra las tareas» o «revisa los estados»).
+2. **Un paquete se entrega con dos recursos:** el *handoff* (la UXS y el documento de
+   entrega, que Desarrollo consulta en el KB) y el *pase vivo* (`traspaso-entre-computadoras`),
+   uno por paquete de alcance. Antes de cerrar su tarea de entrega, comprobar que existen
+   los dos para ese paquete; si falta uno, declarar cuál y no cerrar.
+3. **`Completada` con `Resultado = Pendiente` es una inconsistencia.** `Listo` exige la
+   sección Resultado con el entregable o su enlace (UXR, FLW, SCR, UXS, MR). Al cerrar, se
+   escriben los enlaces; no basta cambiar el estado.
+4. **Descartar sin borrar.** El estado no tiene variante «Descartada». Renombrar con el
+   prefijo «[Descartada]», pasar a `Completada` para sacarla de las activas, escribir en
+   Resultado la decisión, quién la tomó y la fecha, y dejar `Resultado = Pendiente` (no
+   hay entregable). No eliminar la tarea: se conserva la trazabilidad.
+5. **Cuándo no cerrar.** Una subtarea que no se pudo verificar (por ejemplo, comunicar una
+   decisión al PO) deja abierta a su madre, con el motivo declarado. La evidencia
+   indirecta (el archivo existe, el MR está fusionado) se escribe como tal en la tarea:
+   no se afirma una revisión del contenido que no se hizo.
+6. **Verificar después de escribir.** El índice de las consultas SQL de Notion se actualiza
+   con retraso: tras una escritura, comprobar con la consulta de filas (`mode: rows`) o con
+   un fetch de la página, y no concluir que falló por una consulta SQL inmediata. En
+   `insert_content` y `replace_content` el markdown va crudo (comillas dobles normales en
+   `<mention url="...">`); solo dentro de `content_updates` (JSON) se escapan.
+7. **Barrido de reconciliación.** Al cerrar un paquete, o a petición, listar las tareas del
+   paquete con `Estado` distinto de `Completada` o `Resultado = Pendiente` (filtrar por la
+   relación «Paquetes de alcance») y contrastar cada una con GitLab (los MR por rama de
+   origen, `state=all`) y con el KB. Los pipelines de un MR se leen en
+   `/merge_requests/<iid>/pipelines`: al listar por rama no aparecen. Reportar qué se
+   cerró con evidencia y qué sigue abierto, con la decisión que falta.
+8. **CI desde el primer MR.** Un repositorio sin `.gitlab-ci.yml` corre el pipeline genérico
+   de Auto DevOps y falla en el runner (no encuentra el servicio docker): no es un fallo del
+   código. Toda micro UI nueva lleva un CI de verificación (instalar, lint, pruebas con
+   cobertura y build) desde su primer MR; la entrega y el despliegue se suman después.
+
 ## Ejemplos de aplicación y límites
 
 - Pregunta abierta con respuesta RSP-ARQ: A la reporta sin escribir; B transcribe la
