@@ -50,6 +50,10 @@ La decisión y evidencia que justifican la CLI están documentadas en
 | `accessibility-reviewer` | Activo | Claude Code |
 | `design-qa` | Activo | Claude Code |
 | `anatomy` | Activo (de terceros, sin modificar) | Claude Code |
+| `micro-interactions` | Activo (de terceros, MIT, sin modificar): microinteracciones, movimiento y haptics | Claude Code |
+| `m3-expressive` | Activo (de terceros, MIT, copia parcial de solo texto, sin modificar): Material 3 Expressive | Claude Code |
+
+Los skills de terceros llevan su `LICENSE` original, un `LICENSE-UPSTREAM.md` y un `UPSTREAM.json` con el commit del que salieron. Solo se copian los que declaran licencia; los que no la declaran no se vendorizan: ver [`docs/skills-de-terceros-sin-licencia.md`](docs/skills-de-terceros-sin-licencia.md).
 
 ### Skills de documentación de UX y desarrollo
 

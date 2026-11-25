@@ -33,7 +33,9 @@
     "figma-design-validator",
     "accessibility-reviewer",
     "anatomy",
-    "traspaso-entre-computadoras"
+    "traspaso-entre-computadoras",
+    "micro-interactions",
+    "m3-expressive"
   ],
   "protocols": {
     "ciclo-retroalimentacion": {

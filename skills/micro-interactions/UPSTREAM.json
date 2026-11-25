@@ -1,0 +1,14 @@
+{
+  "repository": "https://github.com/solinkz/micro-interactions-skill",
+  "skill": "micro-interactions",
+  "path": "skills/micro-interactions",
+  "commit": "3796c3e5c2762989b6ff4d761b88224c6a94b418",
+  "syncedAt": "2026-11-25",
+  "license": "MIT (Copyright (c) 2026 solinkz)",
+  "nota": "Copia del directorio del skill (un solo archivo, SKILL.md), sin modificar.",
+  "files": {
+    "SKILL.md": "65fe325d9213d8666f623e36d2a8ba5e521247184ecc5ae575bbb562d67ccc8a",
+    "LICENSE": "f958eeb9265a5f858bea6426636c83a6f2fbf866878af566553924134febca68",
+    "LICENSE-UPSTREAM.md": "bc3bacbcc0d1ed09b6a0bea02cb457313fa53b72b48b701a043eeb8b99009398"
+  }
+}
