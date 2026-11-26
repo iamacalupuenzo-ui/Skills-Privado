@@ -27,7 +27,8 @@ Cada vez que una corrida del orquestador encuentra un hueco (algo manual, un err
 | UXR-139 quedaba en DSP-001 porque cita HU-01-09 | Validación | Si el UXR nombra su paquete en `sources`, solo cuentan ese paquete y sus historias |
 | UXR reutilizado por un paquete nuevo | Regla | Se mueve al paquete y producto nuevos y conserva el anterior (`--confirmar-producto=nuevo`) |
 | HU-01-09 y HU-01-14 se enlazaban con sus duplicados SVR | Validación | Las historias se resuelven por ID y Catálogo «RCP-001 CL2 Flotas»; la carga suma relaciones, no quita |
-| `lote-diseno.js` (flujos, pantallas) fijaba el producto Piloto | Validación | Toma el producto del paquete que el documento nombra en `sources`; si no lo nombra, queda como duda y no se carga |
+| `lote-diseno.js` (flujos, pantallas) fijaba el producto Piloto | Validación | Toma el producto del paquete que el documento nombra en `sources`, en formato de bloque o de una línea; si no lo nombra, queda como duda y no se carga |
+| Las tareas IDV-UX · 01 y · 02 seguían «Por hacer» con sus MR ya fusionados | Regla | SKILL.md: AVANCE al abrir cada MR y CIERRE al fusionarlo, en el mismo turno; se aplicó a · 01 a · 04 el 2026-11-26 |
 | La rama de la KB se subió sin darle el MR a Enzo | Regla | Toda entrega cierra con una tabla: MR, qué trae y orden de merge |
 | Tras el merge, los enlaces de Notion apuntaban a una rama borrada | Regla | Después del merge se recargan los UXR y las preguntas con `DESIGN_REF=develop` y se corrigen las notas de GitLab |
 
@@ -46,4 +47,5 @@ Cada vez que una corrida del orquestador encuentra un hueco (algo manual, un err
 | Una tabla partida por líneas en blanco (historial de UXR-024, desde octubre) hizo fallar la verificación en Notion: 6 tablas en la KB, 5 en Notion | Validación | `audit_ux.py` avisa de las filas de tabla separadas por líneas en blanco; se corrigió UXR-024 en !549 |
 | UXR-139 y UXR-140 se fusionaron sin su fila en `index.md`; se notó al hacer los flujos | Validación | `audit_ux.py` avisa si un UXR, FLW o SCR no tiene fila en `index.md` |
 | Un flujo no puede listar pantallas que aún no existen (error de auditoría), y cada pantalla tiene un solo flujo | Regla | El flujo deja `screens: []` con una tabla de pantallas reservadas; `ui-spec-writer` las pasa al encabezado al crearlas |
-| Estado de las tareas (IDV-UX · 01 y · 02) sin actualizar al terminar la fase | Automatización | Al cerrar una fase, el orquestador llama a em-gestion-tareas AVANCE con la evidencia (commit y MR) |
+| El preflight de `ui-spec-writer` (Stitch) da BLOCKED en toda pantalla de la KB: no hay proyecto de Stitch, los componentes son nombres del DS y no conceptos CMP, y los AC sueltos no resuelven | Validación | Para prototipos en código, un perfil del preflight que resuelva los componentes contra las guías del DS y los AC contra su historia; el de Stitch queda solo para Stitch |
+| La INV y la DEC de cada pantalla se notan recién en la auditoría, después de escribirla | Validación | `ui-spec-writer` pide la INV y la DEC (o las crea como propuesta) en el mismo paso que el SCR |

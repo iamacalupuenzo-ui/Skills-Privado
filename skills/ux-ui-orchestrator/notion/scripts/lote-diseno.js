@@ -125,7 +125,7 @@ for (const d of documentos()) {
     meta.props["Resumen"] = { rich_text: [{ type: "text", text: { content: r.permite } }] };
     meta.props["Resumen vigente"] = { select: { name: vigente ? "Vigente" : "Desactualizado" } };
   }
-  const dsps = [...partir(leer(d.repoPath)).fm.matchAll(/^\s*-\s*id:\s*(DSP-\d+)\s*$/gm)].map(m => m[1]);
+  const dsps = [...partir(leer(d.repoPath)).fm.matchAll(/^\s*-\s*\{?\s*id:\s*"?(DSP-\d+)"?\s*[,}]?/gm)].map(m => m[1]);
   const productos = PRODUCTO_FORZADO ? [PRODUCTO_FORZADO] : (dsps.length ? productosDe(dsps) : []);
   if (productos.length !== 1) { resumen.push({ id: d.id, duda: true, paquetes: dsps, productos, motivo: dsps.length ? "sus paquetes no dan un solo producto" : "no nombra su paquete en sources; usa NOTION_PRODUCTO" }); continue; }
   meta.props["Producto"] = { relation: [{ id: productos[0] }] };

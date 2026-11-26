@@ -46,6 +46,8 @@ Leer y ejecutar `references/ciclo-retroalimentacion.md` al inicio y al cierre de
 
 Leer también `references/mejoras-del-proceso.md` al iniciar el paso 0 y, al cerrar cada fase, anotar ahí cada hueco encontrado (validación, automatización o job) con su estado. Después de cada merge, recargar en Notion los documentos de la rama con `DESIGN_REF=develop` y corregir los enlaces de las notas de GitLab. Toda entrega cierra con la tabla de MR: enlace, qué trae y orden de merge.
 
+**Tareas al ritmo del trabajo (Enzo, 2026-11-26).** Cada skill que termina un paso entrega su evidencia y en ese mismo turno se llama a `em-gestion-tareas`: al abrir el MR, AVANCE (estado «En curso», línea de MR y enlaces provisionales a la rama); al fusionarlo, CIERRE de las tareas que ese MR completa (casillas con evidencia, Artefactos que produce, Resultado, «Completada» y la línea del Plan en la madre). Una casilla sin evidencia no se marca: se escribe qué falta y se le pregunta a Enzo. No se pasa al paso siguiente con tareas terminadas sin cerrar.
+
 ## Comportamientos bloqueantes
 
 - **B1 — Inicio sin verificación previa, bloqueado.** No iniciar sin el informe de solo lectura de un agente distinto de quien construye y la comprobación de fuentes que exige `references/ciclo-retroalimentacion.md`; si faltan acceso o agente, declarar el bloqueo.
