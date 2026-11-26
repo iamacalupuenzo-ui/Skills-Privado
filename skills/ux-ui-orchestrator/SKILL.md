@@ -280,6 +280,8 @@ Ejecuta `scripts/audit_ux.py <kb> --compuerta <G>` antes de dar paso a la siguie
 
 El hook guardia-uxs impide subir ramas de diseño con UXS faltante, SCR cerrado sin INV/DEC, iteración sin propuesta/captura/aprobación o Validado sin prueba y ARP implementado. La conciliación también advierte ARTEFACTO_BORRADOR_CON_CONSTRUCCION: lee los repositorios de producto autorizados, referencias HU/FLW/SCR en código, ramas CLF_Feature_<US> y merges locales con referencias de MR; propone En construcción, y solo propone Validado con prueba de Enzo, captura y ARP de esa versión. Nunca aplica estados automáticamente ni afirma un estado remoto de MR sin evidencia. Sin repositorios configurados informa el límite.
 
+**Decisiones retiradas por el PO (Enzo, 2026-11-26).** Al iniciar o retomar un paquete, desde la raíz de la KB: `node scripts/decisiones-retiradas.mjs --paquete DSP-NNN`. Si sale con código 1, hay una DH del PO que retira o difiere algo que Enzo decidió sin su pregunta en el UXR o sin aviso publicado: se le informa a Enzo antes de diseñar, con las rutas. Dónde vive cada decisión y cómo se valida lo construido con datos simulados: `references/mapa-de-decisiones-y-validacion.md`.
+
 ## Recalcular estados en cadena
 
 Al conciliar, propón cambios en ambos sentidos: preguntas resueltas (Decidida/Diferida/Descartada) → UXR En revisión; si sus flujos ya están En construcción o Validado, UXR Aprobado, solo con aprobación de Enzo y approved_by. Una pantalla En construcción mueve su FLW/IB a En construcción; todas Validadas los llevan a Validado. Un IB con lienzo o capturas pasa a En revisión. La evidencia propia de Validado sigue siendo obligatoria.
@@ -334,6 +336,9 @@ Incluye siempre el informe de inicio y la matriz de sincronización de `referenc
 - `references/role-readiness.md` — qué necesita cada etapa/consumidor y mapa de códigos de error → skill dueño.
 - `references/controles-de-cierre.md` — los controles duros de cierre de paquete (auditoría, hook y compuerta GU): qué hacen, cómo se prueban y cómo se ajustan.
 - `references/worktree-protocol.md` — aislamiento con git worktree (rama `ux/<slug>`), integración y limpieza.
+- `references/mapa-de-decisiones-y-validacion.md` — dónde se leen las decisiones de Enzo (DEC), del PO (DH en RCP-001 §10), lo diferido (UXR-*-Q* y Preguntas) y los avisos (AVS-*); regla de lo retirado y validación de lo construido en local con datos simulados.
+- `scripts/decisiones-retiradas.mjs` — control de DH del PO que tocan decisiones de UX sin pregunta diferida o sin aviso (`--paquete`, `--todo`, `--json`; código 1 si falta algo).
+- `scripts/mock-validacion/proxy-idv-dsp009.mjs` — ejemplo de proxy que simula rutas que el mock BFF no tiene (identidad del Cliente y del Producto).
 - `scripts/cambios-kb.mjs` — qué cambió en la KB para un paquete desde la última revisión: inventario fechado de historias, cambios con su sección, preguntas abiertas y efecto en cadena sobre diseño y tareas (solo lee; `--registrar` guarda la revisión vista en `~/.comsatel/revision-kb.json`).
 - `templates/ux-design-spec-template.md` — plantilla de la UXS.
 - `notion/LEEME.md`, `notion/reglas-de-carga.md`, `notion/esquema-bases.md`, `notion/arquitectura-preguntas.md` — módulo Notion personal del catálogo; ver la sección «Módulo Notion».
