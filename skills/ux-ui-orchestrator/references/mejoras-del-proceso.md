@@ -38,6 +38,7 @@ Cada vez que una corrida del orquestador encuentra un hueco (algo manual, un err
 
 | Qué falta | Tipo | Propuesta |
 |---|---|---|
+| !555 quedó en conflicto en `changelog.md`: todos los equipos escriben arriba de la misma fecha | Automatización | Antes de cada push y antes de avisar a Enzo, `git fetch` y merge de `origin/develop` en la rama; si el único conflicto es el changelog, se conservan las dos entradas y se audita de nuevo |
 | Recargar los enlaces después del merge sin depender de la memoria del agente | Job | Al detectar el MR fusionado, recargar los documentos de la rama con `DESIGN_REF=develop` y avisar en el MR |
 | El aviso AVS fusionado en `develop` todavía tiene el enlace a la rama | Validación | Al preparar un aviso, escribir el enlace a `develop` desde el inicio. Se corrige en la próxima rama del DSP-009 |
 | `subir-respuestas.js` no guarda la huella de UXR-014-Q4: la verificación falla por los corchetes escapados (`\[Confirma`) | Validación | Normalizar los escapes de Notion antes de comparar el cuerpo |
