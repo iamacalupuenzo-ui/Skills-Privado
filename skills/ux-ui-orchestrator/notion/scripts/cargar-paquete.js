@@ -9,6 +9,7 @@
 // - Busca la página por ID y, en las historias, también por Catálogo (el mismo ID existe en otros catálogos).
 // - Conserva lo que la página tenga arriba del aviso «Contenido generado desde el repositorio» (el resumen).
 // - Las relaciones se agregan sin quitar las que ya tenga (segunda pasada --solo-relaciones).
+// - El Producto de cada historia es el del paquete (CL2 Flotas, no el Piloto).
 // - Verifica cada página después de subirla. Token: NOTION_TOKEN o ~/.notion/token.txt (nunca se imprime).
 const fs = require("fs");
 const os = require("os");
@@ -74,6 +75,12 @@ const titulo = t => { const m = t.replace(/\r\n/g, "\n").match(/^title:\s*(.*)$/
       props: { "Catálogo": { select: { name: CATALOGO } } },
       filtro: { property: "Catálogo", select: { equals: CATALOGO } },
       relaciones: { "Paquetes de alcance": { ds: DS.paquetes, ids: [dsp] } } })));
+
+  // Las historias pertenecen al mismo Producto que su paquete (p. ej. CL2 Flotas): se copia del paquete.
+  // Así una historia vieja que apuntaba a otro producto (el Piloto) vuelve a aparecer en las vistas del producto.
+  const pagPaquete = (await buscar(DS.paquetes, dsp))[0];
+  const producto = pagPaquete ? (pagPaquete.properties.Producto?.relation || []).map(x => ({ id: x.id })) : [];
+  if (producto.length) for (const it of items) if (it.ds === DS.historias) it.props["Producto"] = { relation: producto };
 
   const resumen = [];
   for (const it of items) {
