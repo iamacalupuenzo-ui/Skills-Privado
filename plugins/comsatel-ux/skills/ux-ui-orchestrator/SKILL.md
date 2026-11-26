@@ -44,6 +44,8 @@ Cada skill gobierna su formato y sus IDs; invócalo con la herramienta Skill y n
 
 Leer y ejecutar `references/ciclo-retroalimentacion.md` al inicio y al cierre de cada desarrollo, mejora, análisis o definición, también en la vía directa a front end y cuando se invoque un especialista aislado. Este orquestador es el único dueño: coordina la verificación previa independiente y la actualización por los especialistas de cada artefacto. Esta obligación no depende de la activación del módulo Notion ni de que el usuario diga «sesión finalizada».
 
+Leer también `references/mejoras-del-proceso.md` al iniciar el paso 0 y, al cerrar cada fase, anotar ahí cada hueco encontrado (validación, automatización o job) con su estado. Después de cada merge, recargar en Notion los documentos de la rama con `DESIGN_REF=develop` y corregir los enlaces de las notas de GitLab. Toda entrega cierra con la tabla de MR: enlace, qué trae y orden de merge.
+
 ## Comportamientos bloqueantes
 
 - **B1 — Inicio sin verificación previa, bloqueado.** No iniciar sin el informe de solo lectura de un agente distinto de quien construye y la comprobación de fuentes que exige `references/ciclo-retroalimentacion.md`; si faltan acceso o agente, declarar el bloqueo.
