@@ -171,6 +171,14 @@ class ControlesUX(unittest.TestCase):
         self.assertTrue(audit_ux.controlar_compuerta(self.kb, "G0"))
         self.assertTrue(audit_ux.controlar_compuerta(self.kb, "G7"))
 
+    def test_g0_exige_tareas_y_revision_de_la_kb(self):
+        self.write("design/MEMORY.md", "Escenario A. Plan: requisitos, flujos y pantallas.")
+        faltas = json.dumps(audit_ux.controlar_compuerta(self.kb, "G0"), ensure_ascii=False)
+        self.assertIn("no cita sus tareas", faltas)
+        self.assertIn("revisión de cambios de la KB", faltas)
+        self.write("design/MEMORY.md", "Plan atado a IDV-UX · 02. Revisión de la KB: cambios-kb.mjs en 08a7fc4a.")
+        self.assertEqual(audit_ux.controlar_compuerta(self.kb, "G0"), [])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -7,7 +7,7 @@ description: >
   las especificaciones para desarrollo", "mapea la documentación de", "audita el componente",
   "corrige la observación" o "actualiza el handoff".
 metadata:
-  version: "3.1.1"
+  version: "3.2.0"
 ---
 
 # Documentación de handoff — Orquestador
@@ -142,6 +142,7 @@ Por categoría:
 
 ## Comportamientos Bloqueantes
 
+- **B22 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
 - **B1** Sin descripción del usuario → no crear obs autónomamente
 - **B2** Sin nodo y sin frame numerado → pedir URL o nombre del frame
 - **B3** Nodo falla → declarar el error, no reportar ninguna medida
@@ -192,6 +193,7 @@ y las flechas mal apuntadas no se ven en el screenshot completo.
 
 | Racionalización | Realidad |
 |---|---|
+| «Es solo un cambio pequeño o un análisis; sincronizo después» | El inicio y el cierre del protocolo canónico son obligatorios; un pendiente de sincronización impide declarar terminado (B22). |
 | "La propiedad se aplicó, así que ya quedó bien" | Aplicar no es renderizar; cerrar sin screenshot puede dejar un resultado invisible o recortado. |
 | "Podemos documentar primero y auditar después" | El handoff congelaría una inconsistencia y desarrollo la implementaría como especificación. |
 | "El componente del kit tiene el mismo nombre, debe ser el correcto" | Los nombres y tipos varían entre archivos; resolver y verificar antes de instanciar evita usar un nodo equivocado. |

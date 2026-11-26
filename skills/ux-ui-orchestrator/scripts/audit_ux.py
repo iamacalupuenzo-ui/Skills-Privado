@@ -359,6 +359,13 @@ def controlar_compuerta(kb, compuerta):
         faltas.append(f"{compuerta}: falta el artefacto requerido en {carpetas[compuerta][0]}")
     if compuerta == "G0" and not (d / "MEMORY.md").is_file():
         faltas.append("G0: falta design/MEMORY.md con escenario, plan y registro de aprobación")
+    if compuerta == "G0" and (d / "MEMORY.md").is_file():
+        # Enzo, 2026-11-26: antes de diseñar, las tareas están mapeadas y la KB revisada.
+        plan = (d / "MEMORY.md").read_text(encoding="utf-8")
+        if not re.search(r"\b[A-Z]{3}-(UX|FRONT)\b", plan):
+            faltas.append("G0: el plan de design/MEMORY.md no cita sus tareas (p. ej. IDV-UX · 02); mapéalas con em-gestion-tareas antes de diseñar")
+        if not re.search(r"cambios-kb|Revisión de la KB", plan):
+            faltas.append("G0: el plan no registra la revisión de cambios de la KB (scripts/cambios-kb.mjs) con su commit")
     if compuerta == "G1":
         for p in md_files(d / "ux-requirements", "UXR-*.md"):
             fm = frontmatter(p) or {}

@@ -9,7 +9,7 @@ description: >
   el DS a los productos". No construye pantallas de producto (usa flujo-producto) ni audita
   tokens (usa comsatel-design-system).
 metadata:
-  version: "1.0.2"
+  version: "1.1.0"
 ---
 
 # Flujo del Design System
@@ -61,6 +61,7 @@ Si falta un componente o variante, no se inventa un envoltorio: se pregunta, y s
 
 ## Comportamientos bloqueantes
 
+- **B9 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
 - **B1 — La etiqueta va después de fusionar a `release`.** Una etiqueta `ds-vX.Y.Z` sobre un commit anterior publica el contenido viejo; si ocurrió, se borra y se rehace. Nunca se crea «para adelantar».
 - **B2 — No se crea la etiqueta hasta que `check:release-notes` pase.**
 - **B3 — `release`, la etiqueta y `main` son del arquitecto o del usuario**, y solo con su autorización explícita en esa acción. Si el entorno bloquea una fusión sin revisión, se informa (no se rodea).
@@ -74,6 +75,7 @@ Si falta un componente o variante, no se inventa un envoltorio: se pregunta, y s
 
 | Excusa | Realidad |
 |---|---|
+| «Es solo un cambio pequeño o un análisis; sincronizo después» | El inicio y el cierre del protocolo canónico son obligatorios; un pendiente de sincronización impide declarar terminado (B9). |
 | «Es un cambio de estilo, no necesita nota de versión» | Si cambia lo que ven los consumidores, la nota explica el impacto (B2). |
 | «Etiqueto ya y fusiono después» | La etiqueta quedaría sobre el commit viejo (B1). |
 | «Sube la versión de los productos con `^`» | Con rangos, Shell y micro UI pueden quedar en versiones distintas y el remoto no carga (B4). |

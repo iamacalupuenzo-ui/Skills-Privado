@@ -1,5 +1,7 @@
 # Módulo Notion del ux-ui-orchestrator (personal de Enzo Macalupu)
 
+> Regla vigente desde el 18-nov-2026: el [ciclo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) prevalece sobre los antecedentes de este documento respecto al inicio, cierre y transcripción de respuestas documentadas. La comparación de vigencia no decide; el cierre sí sincroniza decisiones humanas ya verificadas, sin fabricar aprobación ni resolver contradicciones.
+
 Hace que el orquestador mantenga al día la base de Notion «Gestión Operativa» (CL2 Flotas): carga lo registrado primero en el KB y concilia las preguntas en ambos sentidos; nunca difiere su registro hasta el cierre de sesión. **Solo vive en esta copia local.** La copia del repo (`.claude/skills/ux-ui-orchestrator`, compartida con el equipo) no lo tiene y no debe tenerlo.
 
 ## Activación

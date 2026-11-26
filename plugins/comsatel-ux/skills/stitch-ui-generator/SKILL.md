@@ -1,6 +1,8 @@
 ---
 name: stitch-ui-generator
 description: Usar cuando haya que generar o regenerar UI en Google Stitch para pantallas SCR-* ya especificadas de un flujo FLW-*, o cuando un agente vaya a crear, buscar o reutilizar un proyecto Stitch. No usar para inventar pantallas o flujos.
+metadata:
+  version: "1.0.0"
 ---
 
 # stitch-ui-generator
@@ -67,3 +69,13 @@ Responder `BLOCKED` con el código del validador (`ORPHAN_STITCH_ARTIFACT` sin S
 
 ## Definition of Done
 Cada SCR pedido tiene su artefacto dentro del STP gobernado, registrado en el DTM con `project_ref`, `artifact_ref` y `version` reales (o la limitación documentada); `GEN-*` actualizado; revisión humana pendiente.
+
+## Comportamientos bloqueantes
+
+- **B1 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
+
+## Racionalizaciones comunes
+
+| Racionalización | Realidad |
+|---|---|
+| «Es solo un artefacto o una revisión; sincronizo después» | Invocar al orquestador conserva su autoridad y exige las dos compuertas también en encargos directos (B1). |

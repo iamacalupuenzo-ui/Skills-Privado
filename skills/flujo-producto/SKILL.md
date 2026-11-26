@@ -9,7 +9,7 @@ description: >
   productos" o "despliega a QA". No cambia el DS (usa flujo-ds) ni construye la pantalla desde
   cero (usa angular-product-builder).
 metadata:
-  version: "1.0.4"
+  version: "1.1.0"
 ---
 
 # Flujo de producto
@@ -54,6 +54,7 @@ desplegar y comprobar.
 
 ## Comportamientos bloqueantes
 
+- **B10 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
 - **B1 — Nada se sube sin confirmación del usuario**, ni siquiera una rama.
 - **B2 — Lo desplegable sube de versión en los cinco sitios** en el mismo MR (o en su commit propio): sin versión nueva QA no despliega.
 - **B3 — La suite completa del repo corre antes de publicar** (lint, `test:ci`, mock y reglas si existen, `build`) con salida filtrada; se reportan cifras reales.
@@ -68,6 +69,7 @@ desplegar y comprobar.
 
 | Excusa | Realidad |
 |---|---|
+| «Es solo un cambio pequeño o un análisis; sincronizo después» | El inicio y el cierre del protocolo canónico son obligatorios; un pendiente de sincronización impide declarar terminado (B10). |
 | «El MR se fusionó, ya está en QA» | El job `deploy to qa` puede haber fallado; comprobar (B6). |
 | «Cambia un color, no hace falta versión» | Sin versión QA conserva la imagen (B2). |
 | «Subo solo la micro UI, el Shell después» | Con DS distinto el remoto no carga (B4). |

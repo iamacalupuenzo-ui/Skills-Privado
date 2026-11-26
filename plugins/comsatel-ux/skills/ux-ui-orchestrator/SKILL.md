@@ -1,6 +1,8 @@
 ---
 name: ux-ui-orchestrator
 description: Orquesta los skills UX/UI (ux-requirements-analyzer, user-flow-designer, ui-spec-writer, stitch-ui-generator, claude-design-orchestrator, figma-design-validator, accessibility-reviewer, ux-context-builder, ux-development-handoff) para llevar User Stories validadas hasta un paquete de diseño consolidado (UXS), un diseño gobernado y un handoff DESIGN_READY_FOR_DEV, con trazabilidad US→UXR→FLW→SCR→UXS→DTM y compuertas humanas. Úsalo siempre que el usuario pida gestionar, completar, auditar o retomar el diseño UX/UI de punta a punta, preparar pantallas para Claude Design/Desarrollo, cerrar un paquete de diseño (la UXS), evaluar si un SCR está listo, resolver una divergencia Stitch↔Figma, o decida qué skill UX/UI ejecutar y en qué orden, aunque no nombre ningún skill.
+metadata:
+  version: "1.0.0"
 ---
 
 # ux-ui-orchestrator
@@ -30,18 +32,36 @@ Cada skill gobierna su formato y sus IDs; invócalo con la herramienta Skill y n
 
 **Un paquete de diseño no se cierra sin su UXS.** Es lo que leen Claude Design (como UX Context Pack), QA y Desarrollo, y también el paquete que se entrega cuando se construye directo en front end. La compuerta **GU** y sus controles duros están en «Control de cierre de paquete», más abajo.
 
-**Entrada:** User Stories y reglas ya producidas por `af-requirements-orchestrator` (RQS con veredicto UX/UI READY o CONDITIONAL). Sin historias, este skill no arranca: señala `af-requirements-orchestrator`.
+**Entrada del flujo completo (el ciclo transversal no exige una RQS para coordinar su diagnóstico):** User Stories y reglas ya producidas por `af-requirements-orchestrator` (RQS con veredicto UX/UI READY o CONDITIONAL). Sin historias, el flujo completo no arranca: señala `af-requirements-orchestrator`.
 
 ## Cuándo no usarlo
 
-- Una tarea que toca un solo artefacto sin afectar a los demás (p. ej. "revisa la accesibilidad de SCR-016"): invoca directamente el skill.
+- Para un único artefacto, invoca al especialista para producirlo; este orquestador mantiene únicamente las compuertas del ciclo obligatorio, sin desplegar todo el flujo.
 - Gestionar requerimientos, historias o glosario: es `af-requirements-orchestrator`.
 - Implementar el diseño en código: es `development-handoff-builder` y Superpowers, después del gate.
 
+## Ciclo obligatorio de retroalimentación
+
+Leer y ejecutar `references/ciclo-retroalimentacion.md` al inicio y al cierre de cada desarrollo, mejora, análisis o definición, también en la vía directa a front end y cuando se invoque un especialista aislado. Este orquestador es el único dueño: coordina la verificación previa independiente y la actualización por los especialistas de cada artefacto. Esta obligación no depende de la activación del módulo Notion ni de que el usuario diga «sesión finalizada».
+
+## Comportamientos bloqueantes
+
+- **B1 — Inicio sin verificación previa, bloqueado.** No iniciar sin el informe de solo lectura de un agente distinto de quien construye y la comprobación de fuentes que exige `references/ciclo-retroalimentacion.md`; si faltan acceso o agente, declarar el bloqueo.
+- **B2 — Cierre sin sincronización, bloqueado.** No declarar terminado un desarrollo, mejora, análisis o definición sin ejecutar y comprobar el cierre de `references/ciclo-retroalimentacion.md`. Un destino pendiente se reporta como cierre BLOQUEADO, nunca como completado.
+- **B3 — Estado de tareas atrasado respecto del hecho.** Al fusionarse un MR, entregarse un paquete (handoff y pase vivo) o descartarse un trabajo, actualizar la tarea de Notion en ese momento según la sección C de `references/ciclo-retroalimentacion.md`, con evidencia y sin dejar `Completada` con `Resultado = Pendiente`. Un paquete no se da por entregado sin sus dos recursos.
+
+## Racionalizaciones comunes
+
+| Racionalización | Realidad |
+|---|---|
+| «La KB local o mi memoria bastan para empezar» | La revisión independiente contrasta referencias remotas frescas, código y Notion antes de avanzar (B1). |
+| «El build pasó; actualizaré los artefactos cuando termine la sesión» | Cada trabajo termina con sincronización comprobada; build o merge no sustituyen ese cierre (B2). |
+
 ## Flujo
 
+0. **Validar tareas y cambios de la KB** antes de todo (paso 0). Se repite al iniciar cada sesión y antes de cerrar una tarea.
 1. **Diagnosticar** el estado y el escenario (paso 1).
-2. **Planificar** la ruta mínima y mostrarla antes de ejecutar (paso 2).
+2. **Planificar** la ruta mínima atada a sus tareas y mostrarla antes de ejecutar (paso 2).
 3. **Aislar** en un git worktree si va a escribir archivos (paso 2b).
 4. **Ejecutar** por fases, con compuerta entre ellas (paso 3).
 5. **Cerrar costuras**: enrutar preguntas y brechas entre skills (paso 4).
@@ -49,7 +69,26 @@ Cada skill gobierna su formato y sus IDs; invócalo con la herramienta Skill y n
 7. **Consolidar** la UXS y emitir veredictos (paso 6).
 8. **Integrar**: proponer incorporación y esperar la decisión (paso 7).
 
+### 0. Validar tareas y cambios de la KB (Enzo, 2026-11-26)
+
+Antes de diagnosticar o diseñar, dos comprobaciones, en este orden:
+
+1. **¿El paquete tiene sus tareas?** `em-gestion-tareas` en modo ESTADO. Si no las tiene, modo RECIBIR (mapeo, validación con `armar-mapeo.mjs` y creación en Notion) y recién después se planifica. Lo hace el orquestador que empieza primero (UX o Desarrollo); el otro solo consulta ESTADO, para no duplicar tareas.
+2. **¿Qué cambió en la KB desde la última revisión?**
+
+   ```
+   node .claude/skills/ux-ui-orchestrator/scripts/cambios-kb.mjs DSP-NNN --kb knowledge-base --informe cambios.md
+   ```
+
+   La primera vez se indica `--desde <AAAA-MM-DD>` (la fecha en que se recibió el paquete); después usa la revisión registrada. El informe trae: el inventario del paquete y sus historias (HU) con la fecha y el autor de su última actualización; lo que cambió (historias, avisos AVS, consultas QST/RSP, decisiones y artefactos de diseño) con la sección tocada, por ejemplo «AC-4»; las preguntas abiertas con su responsable; y el efecto en cadena sobre los Requerimientos UX (UXR), Flujos de usuario (FLW), Pantallas (SCR) y tareas.
+
+   Solo lee. Muestra el informe y propón: AVANCE con nota o con bloqueo en cada tarea afectada (con `em-gestion-tareas`), «Revisar por cambio de fuente» en los artefactos de diseño (con la conciliación) y el comentario al analista si una decisión toca una HU. Con la aprobación de Enzo se aplica y se registra la revisión con `--registrar`. El commit revisado queda en `design/MEMORY.md` («Revisión de la KB: cambios-kb.mjs en <commit>»).
+
+**Cuándo se repite:** al iniciar cada sesión de UX, antes de cerrar una tarea (para no cerrar sobre una historia que cambió) y en la rutina diaria. La compuerta G0 de `audit_ux.py` falla si `design/MEMORY.md` no cita las tareas ni registra la revisión de la KB.
+
 ### 1. Diagnosticar
+
+Primero completar la compuerta B1; el informe independiente es la entrada de este diagnóstico. Para leer fuentes de la KB, usar `git show origin/develop:<ruta>` según el protocolo, nunca un worktree sucio.
 
 Haz un inventario antes de decidir, porque la ruta depende de lo que ya existe:
 
@@ -74,7 +113,7 @@ Si es ambiguo, pregunta una sola cosa concreta (iniciativa/flujo o historia de p
 
 ### 2. Planificar
 
-Presenta un plan corto: escenario, skills en orden, artefactos que se crearán o actualizarán, qué se paraleliza y qué decisiones humanas se esperan. Espera confirmación si crea más de cinco archivos, toca artefactos `approved`, o va a **crear un proyecto Stitch** o escribir en Figma (acciones externas). Si el usuario ya pidió ejecutar sin preguntar, procede, salvo la creación de un `STP-*`, que exige autorización humana explícita (`human:<id>`).
+Presenta un plan corto: escenario, skills en orden, **la tarea de cada fase** (p. ej. fase 2 → IDV-UX · 02), artefactos que se crearán o actualizarán, qué se paraleliza y qué decisiones humanas se esperan. Una fase sin tarea es trabajo nuevo: se agrega al mapeo (modo AJUSTAR de `em-gestion-tareas`) antes de ejecutarla. Espera confirmación si crea más de cinco archivos, toca artefactos `approved`, o va a **crear un proyecto Stitch** o escribir en Figma (acciones externas). Si el usuario ya pidió ejecutar sin preguntar, procede, salvo la creación de un `STP-*`, que exige autorización humana explícita (`human:<id>`).
 
 ### 2b. Aislar en un worktree
 
@@ -122,6 +161,15 @@ Enruta cada hallazgo al skill que puede resolverlo y repite hasta el punto fijo 
 
 Tope: tres pasadas. Si tras la tercera siguen apareciendo brechas, detente y repórtalas: es señal de un problema de alcance o de requisitos, no de diseño.
 
+**Cada hallazgo también se refleja en su tarea** (con `em-gestion-tareas`), en el momento en que aparece y no al cierre:
+
+| Lo que aparece a mitad del trabajo | Qué pasa con la tarea |
+|---|---|
+| Pregunta abierta que frena el trabajo (de PO, Arquitectura o el analista) | AVANCE con bloqueo: la pregunta, quién responde y qué desbloquea |
+| Trabajo nuevo: un módulo, una pantalla o un flujo que no estaba mapeado | AJUSTAR: se agrega al mapeo, se valida con `armar-mapeo.mjs` y se crea la subtarea |
+| Cambio en la KB que toca la tarea sin cambiar el alcance | AVANCE con nota y el enlace al cambio |
+| Pregunta UX que la IA cierra por delegación | AVANCE con nota y el DEC |
+
 ### 5. Auditar calidad
 
 1. Ejecuta `audit_ux.py` y corrige todo error imputable a un skill (re-invócalo; no edites a mano lo que genera una herramienta). Antes de cerrar, córrelo con `--exigir-uxs` (paso 6): un paquete con pantallas y sin UXS es un error, no un detalle.
@@ -156,6 +204,20 @@ Un paquete DSP-NNN con pantallas especificadas **no se cierra, ni se sube su ram
 Si el hook frena: arma la UXS con `ux-context-builder`, commitéala en la rama y vuelve a subir. **No rodees el bloqueo** (ni lo apagues con `COMSATEL_UX_GUARDIA`: esa variable la fija una persona, no el agente). Detalle y pruebas en `references/controles-de-cierre.md`.
 
 ### 7. Integrar
+
+Antes de emitir el cierre, completar B2 y reportar cada destino comprobado o pendiente. Integrar o publicar conserva sus permisos propios.
+
+## Tareas: siempre con em-gestion-tareas (Enzo, 2026-11-26)
+
+Toda tarea que este orquestador ejecuta se registra con `em-gestion-tareas`; ningún otro skill escribe en la base Tareas, en issues ni en ClickUp.
+
+- **Antes de empezar** (paso 0): las tareas existen y la KB está revisada con `cambios-kb.mjs`.
+- **Al empezar** una tarea UX (y al recibir un paquete: modo RECIBIR): modo AVANCE (estado «En curso»). Si la tarea no existe, se pide; no se crea sin su mapeo.
+- **Al pasar cada compuerta** (G1 a G7, GU): modo AVANCE con la salida de `audit_ux.py --compuerta` como evidencia. Así cada avance deja su trazabilidad sin depender de la memoria.
+- **Al terminar cada paso con evidencia** (MR, artefacto, comentario): modo AVANCE con los enlaces, para marcar su casilla. Mientras el trabajo vive en la rama `ux/*`, la rama y el commit son evidencia provisional; al fusionar se cambian por el enlace a `develop`.
+- **A mitad del trabajo**: la tabla del paso 4 (bloqueo, AJUSTAR o nota).
+- **Al terminar la tarea**: modo CERRAR con la evidencia. Cerrar marca criterios, cierre, Plan de la madre y Resultado; GitLab y ClickUp esperan su fecha límite.
+- Las capturas y «Cómo funciona» las agrega el ejecutor en la misma tarea; `em-gestion-tareas` no las sube.
 
 Con la auditoría limpia, o los errores restantes declarados, cierra según la sección 4 de `references/worktree-protocol.md`: `graphify update .`, resumen de cambios y decisiones pendientes, y propuesta de merge, PR, conservar o descartar. Espera la respuesta; no hagas commit, merge ni borres el worktree por iniciativa propia.
 
@@ -198,7 +260,7 @@ Los artefactos nuevos comienzan en Borrador (`status: draft`). El orquestador so
 - **Preservar contradicciones** entre fuentes; no elijas por tu cuenta.
 - **Verificar en vivo** las referencias Stitch y Figma antes de usarlas; si no se puede, es pregunta abierta, no un dato.
 - **Fechas y autoría** en frontmatter OKF v0.2: `generated.by` del skill que produjo el archivo (el de la UXS es `ux-context-builder/1.0`), `generated.at` ISO 8601 con `-05:00`.
-- **Solo diseño.** Si el pedido se desliza a negocio/requerimientos, arquitectura o código, detente y señala el skill de la etapa correspondiente.
+- **Solo diseño.** Coordinar la retroalimentación del desarrollo está incluido; escribir su código no. Si el pedido se desliza a negocio/requerimientos, arquitectura o código, detente y señala el skill de la etapa correspondiente.
 
 ## Comportamientos bloqueantes y lecciones de la sesión (2026-11-14)
 
@@ -214,15 +276,18 @@ Los artefactos nuevos comienzan en Borrador (`status: draft`). El orquestador so
 
 ## Informe final al usuario
 
-Cierra con un resumen breve, en este orden: escenario y ruta ejecutada; artefactos creados/actualizados; resultado de auditoría, preflight y gate (errores restantes); veredictos por consumidor; decisiones humanas pendientes; siguiente skill recomendado. Declara lo que no se pudo verificar u omitió (p. ej. Stitch/Figma inaccesibles).
+Incluye siempre el informe de inicio y la matriz de sincronización de `references/ciclo-retroalimentacion.md`. Cierra con un resumen breve, en este orden: escenario y ruta ejecutada; artefactos creados/actualizados; resultado de auditoría, preflight y gate (errores restantes); veredictos por consumidor; decisiones humanas pendientes; siguiente skill recomendado. Declara lo que no se pudo verificar u omitió (p. ej. Stitch/Figma inaccesibles).
 
 ## Referencias
+
+- `references/ciclo-retroalimentacion.md` — obligatorio al inicio y al cierre de todo desarrollo, mejora, análisis o definición.
 
 - `references/scenarios.md` — ruta, entradas y criterio de salida de cada escenario.
 - `references/quality-criteria.md` — atributos de calidad del diseño y cómo evaluarlos.
 - `references/role-readiness.md` — qué necesita cada etapa/consumidor y mapa de códigos de error → skill dueño.
 - `references/controles-de-cierre.md` — los controles duros de cierre de paquete (auditoría, hook y compuerta GU): qué hacen, cómo se prueban y cómo se ajustan.
 - `references/worktree-protocol.md` — aislamiento con git worktree (rama `ux/<slug>`), integración y limpieza.
+- `scripts/cambios-kb.mjs` — qué cambió en la KB para un paquete desde la última revisión: inventario fechado de historias, cambios con su sección, preguntas abiertas y efecto en cadena sobre diseño y tareas (solo lee; `--registrar` guarda la revisión vista en `~/.comsatel/revision-kb.json`).
 - `templates/ux-design-spec-template.md` — plantilla de la UXS.
 - `scripts/audit_ux.py` — auditoría determinista (`--json` para salida estructurada; `--exigir-uxs` con `--paquetes` o `--desde-rama` para el control de cierre).
 - `hooks/guardia-uxs.mjs` — hook del plugin que frena subir una rama `ux/*` sin la UXS de los paquetes que toca; se prueba con `hooks/probar-guardia-uxs.mjs`.

@@ -1,5 +1,7 @@
 ¿Dónde debe quedar una respuesta antes de verla en Notion?
 
+> Regla vigente desde el 18-nov-2026: el [ciclo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) prevalece sobre los antecedentes de este documento respecto al inicio, cierre y transcripción de respuestas documentadas. La comparación de vigencia no decide; el cierre sí sincroniza decisiones humanas ya verificadas, sin fabricar aprobación ni resolver contradicciones.
+
 ## En 30 segundos
 
 El KB es la fuente de verdad: primero Open questions del UXR, FLW o SCR y un DEC si hay una decisión; después Notion.

@@ -1,5 +1,7 @@
 # Reglas de carga a Notion
 
+> Regla vigente desde el 18-nov-2026: el [ciclo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) prevalece sobre los antecedentes de este documento respecto al inicio, cierre y transcripción de respuestas documentadas. La comparación de vigencia no decide; el cierre sí sincroniza decisiones humanas ya verificadas, sin fabricar aprobación ni resolver contradicciones.
+
 ## Quién hace qué
 - **El orquestador (Claude)** decide qué subir, prepara los archivos, valida y verifica leyendo Notion.
 - **opencode** ejecuta la subida (instrucciones en `prompts-opencode/`). Esta regla de Enzo es permanente.
@@ -7,7 +9,7 @@
 - **Una persona** aprueba estados de cierre y elecciones entre alternativas. Excepción: la IA puede cerrar prácticas estándar UX por delegación explícita de Enzo, con DEC, fecha y benchmarking; nunca negocio, permisos, datos o alcance. Propuesta UX se reserva para validación de Enzo; las propuestas de otros no se remapean.
 
 ## Qué no se pisa
-- Campos humanos: Estado, Respuesta, Decidido por, Fecha de decisión, Estado del documento, Aprobado por, Nivel de cierre, Decisión humana.
+- Conservar campos humanos y su historial. En Preguntas, transcribir Estado, Respuesta, Decidido por y Fecha de decisión solo con una decisión autorizada comprobada según el ciclo canónico. No modificar aprobaciones, Estado del documento, Aprobado por, Nivel de cierre ni Decisión humana por cuenta propia.
 - Para filas ya editadas usar solo `notion-sync.js upsert --solo-props` (con `ifEmpty`/`ifValues`) y `--solo-relaciones [--reemplazar]`. Nunca el `upsert` completo sobre Preguntas ya editadas.
 - Las páginas de documentos son espejo de lectura («no se edita aquí»). Toda respuesta, decisión y estado se registra primero en Open questions del KB (UXR/FLW/SCR), más DEC cuando se decide; después se carga a Notion. Una edición externa en Notion exige conciliación y propuesta al KB antes de recargar.
 - Borrar o archivar bases lo hace Enzo.
@@ -36,7 +38,7 @@ Verificar leyendo Notion (conteos, relaciones, una muestra de páginas). No dar 
 - Evitar `node -e` y reemplazos con barras invertidas; editar con archivos. En Windows, `process.exit` tras `fetch` puede dar un fallo de libuv: usar `process.exitCode`.
 
 ## Si Notion u opencode no están disponibles
-Seguir en el repo y anotar en `pendientes.json` `{fase, ids, script, motivo, fecha}`. Al empezar la siguiente sesión, avisar y subir en orden. No avanzar al paso siguiente si depende de que las preguntas del anterior estén ya en Notion.
+Conservar el trabajo local sin declarar cierre integral, y anotar en `pendientes.json` `{fase, ids, script, motivo, fecha}`. Al empezar la siguiente sesión, avisar y subir en orden. No avanzar al paso siguiente si depende de que las preguntas del anterior estén ya en Notion.
 
 ## Vistas de Notion (opencode + MCP oficial)
 - Se crean con el MCP oficial desde opencode (`notion-create-view`, `notion-update-view`): filtros, agrupación por propiedades reales, propiedades visibles y orden. Con `parent_page_id` se crea una vista enlazada dentro de una página.

@@ -1,6 +1,8 @@
 ---
 name: ux-requirements-analyzer
 description: Usar cuando User Stories y reglas de negocio deban analizarse para producir UX Requirements (UXR-*) y preguntas abiertas, sin inventar respuestas a vacíos.
+metadata:
+  version: "1.0.0"
 ---
 
 # ux-requirements-analyzer
@@ -49,3 +51,13 @@ UX-101
 
 ## Definition of Done
 The skill output is ready for human review, is traceable to its sources, and can be added to the UX/UI OKF bundle without losing provenance.
+
+## Comportamientos bloqueantes
+
+- **B1 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
+
+## Racionalizaciones comunes
+
+| Racionalización | Realidad |
+|---|---|
+| «Es solo un artefacto o una revisión; sincronizo después» | Invocar al orquestador conserva su autoridad y exige las dos compuertas también en encargos directos (B1). |

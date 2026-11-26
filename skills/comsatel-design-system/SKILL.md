@@ -32,7 +32,7 @@ description: >
   proyectos, o para decidir una arquitectura de tokens nueva — eso lo
   decide el usuario, este skill aplica la que ya existe.
 metadata:
-  version: "2.10.0"
+  version: "2.11.0"
 ---
 
 # Comsatel Design System — auditor y reconstructor (Angular)
@@ -337,6 +337,7 @@ lo son entre sí.
 
 ## Comportamientos bloqueantes
 
+- **B20 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
 - **B1 — No forzar un valor a un token que no coincide exacto.** Si un
   padding, gap o tamaño no calza con ningún paso de la escala, se documenta
   como excepción explícita (ver C1) — nunca se redondea al token más
@@ -633,6 +634,7 @@ estado, referencia o evidencia falta.
 
 | Racionalización | Realidad |
 |---|---|
+| «Es solo un cambio pequeño o un análisis; sincronizo después» | El inicio y el cierre del protocolo canónico son obligatorios; un pendiente de sincronización impide declarar terminado (B20). |
 | "El valor coincide aproximadamente con un token, lo dejo así" | "Aproximadamente" no es un criterio — si no coincide exacto, se documenta como excepción, no se fuerza (B1). |
 | "React ya lo resuelve así, copio el mismo valor/patrón" | React es referencia de estructura, nunca de valores ni de sintaxis de implementación (B2) — el valor real sale de `token-architecture.md`. |
 | "El componente ya se ve bien, no hace falta correr los 13 criterios completos" | Varios bugs de este proyecto (el h2 sin line-height, el `<select>` nativo en el Toolbar, los botones de Toast con line-height faltante) eran invisibles en pantalla salvo mirando con cuidado, y solo aparecían leyendo el código o probando la interacción — verse "bien" a primera vista no es evidencia de conformidad. |

@@ -1,6 +1,6 @@
 {
   "skill_name": "ux-context-builder",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "descripcion": "Casos de comportamiento del constructor de la UXS: cuándo se arma, qué pide a una persona, qué hallazgos no esconde y dónde se detiene.",
   "evals": [
     {
@@ -16,8 +16,13 @@
         "Cita criterios-de-veredicto.md para revisar los veredictos antes de dar la UXS por buena."
       ],
       "tipo": "ruta",
-      "cubre": ["B2", "B6"],
-      "referencias": ["references/criterios-de-veredicto.md"],
+      "cubre": [
+        "B2",
+        "B6"
+      ],
+      "referencias": [
+        "references/criterios-de-veredicto.md"
+      ],
       "contexto": "Worktree ux/dsp-005-uxs de la knowledge-base. DSP-005 tiene 11 UXR, 6 flujos y 22 pantallas etiquetados dsp-005 y ninguna UXS. Python disponible con py."
     },
     {
@@ -33,8 +38,13 @@
         "Señala que el resto de artefactos de Captura y Recupero no llevan la etiqueta dsp-NNN y por eso el control de cierre no los ve."
       ],
       "tipo": "frena",
-      "cubre": ["B1", "B5"],
-      "referencias": ["references/criterios-de-veredicto.md"],
+      "cubre": [
+        "B1",
+        "B5"
+      ],
+      "referencias": [
+        "references/criterios-de-veredicto.md"
+      ],
       "contexto": "Los UXR, flujos y SCR-023 a SCR-050 de Captura y Recupero no llevan tags dsp-003 en su frontmatter; el scope pack DSP-003 existe."
     },
     {
@@ -49,8 +59,12 @@
         "Propone ver primero el resultado en seco o mostrar las diferencias antes de sobrescribir."
       ],
       "tipo": "frena",
-      "cubre": ["B3"],
-      "referencias": ["references/criterios-de-veredicto.md"],
+      "cubre": [
+        "B3"
+      ],
+      "referencias": [
+        "references/criterios-de-veredicto.md"
+      ],
       "contexto": "design/specs/UXS-006-dsp-007-auditoria.md existe y cubre DSP-007."
     },
     {
@@ -65,8 +79,12 @@
         "Ofrece dejar la UXS en draft con la validación pendiente hasta que la persona la registre."
       ],
       "tipo": "frena",
-      "cubre": ["B4"],
-      "referencias": ["references/criterios-de-veredicto.md"],
+      "cubre": [
+        "B4"
+      ],
+      "referencias": [
+        "references/criterios-de-veredicto.md"
+      ],
       "contexto": "UXS-004 está en draft con la sección 8 en «Pendiente»."
     },
     {
@@ -81,8 +99,12 @@
         "Recuerda que la carga a Notion la ejecuta la herramienta designada y que su enlace depende de que la rama ya esté subida."
       ],
       "tipo": "ruta",
-      "cubre": ["B6"],
-      "referencias": ["references/criterios-de-veredicto.md"],
+      "cubre": [
+        "B6"
+      ],
+      "referencias": [
+        "references/criterios-de-veredicto.md"
+      ],
       "contexto": "UXS-005 recién generada en el worktree, sin commitear; el hook de la UXS pasaría ahora."
     },
     {
@@ -98,8 +120,12 @@
         "Cada veredicto lleva su razón y lo que queda pospuesto si se avanza."
       ],
       "tipo": "ruta",
-      "cubre": ["B7"],
-      "referencias": ["references/criterios-de-veredicto.md"],
+      "cubre": [
+        "B7"
+      ],
+      "referencias": [
+        "references/criterios-de-veredicto.md"
+      ],
       "contexto": "DSP-005: 13 preguntas abiertas (una bloquea el backend), DEC-011 y DEC-015 en borrador, preflight BLOCKED por DANGLING_REFERENCE y MISSING_STITCH_PROJECT."
     }
   ]

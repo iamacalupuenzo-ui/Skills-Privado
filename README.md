@@ -38,6 +38,7 @@ La decisión y evidencia que justifican la CLI están documentadas en
 | `ux-a-desarrollo` | Activo | Claude Code |
 | `verificar-calidad` | Activo | Claude Code |
 | `traspaso-entre-computadoras` | Activo | Claude Code |
+| `em-gestion-tareas` | Activo | Claude Code |
 | `ux-ui-orchestrator` | Activo | Claude Code |
 | `ux-requirements-analyzer` | Activo | Claude Code |
 | `user-flow-designer` | Activo | Claude Code |
@@ -50,6 +51,10 @@ La decisión y evidencia que justifican la CLI están documentadas en
 | `accessibility-reviewer` | Activo | Claude Code |
 | `design-qa` | Activo | Claude Code |
 | `anatomy` | Activo (de terceros, sin modificar) | Claude Code |
+| `micro-interactions` | Activo (de terceros, MIT, sin modificar): microinteracciones, movimiento y haptics | Claude Code |
+| `m3-expressive` | Activo (de terceros, MIT, copia parcial de solo texto, sin modificar): Material 3 Expressive | Claude Code |
+
+Los skills de terceros llevan su `LICENSE` original, un `LICENSE-UPSTREAM.md` y un `UPSTREAM.json` con el commit del que salieron. Solo se copian los que declaran licencia; los que no la declaran no se vendorizan: ver [`docs/skills-de-terceros-sin-licencia.md`](docs/skills-de-terceros-sin-licencia.md).
 
 ### Skills de documentación de UX y desarrollo
 
@@ -59,6 +64,10 @@ La decisión y evidencia que justifican la CLI están documentadas en
 
 La correspondencia entre los nombres vigentes y los registros históricos de Notion está
 en [`notion-registry.md`](notion-registry.md).
+
+## Ciclo obligatorio de producto y diseño
+
+El dueño es `ux-ui-orchestrator`: su [protocolo canónico](skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) exige verificación previa independiente y sincronización de cierre en cada desarrollo, mejora, análisis o definición. Los consumidores se registran en `skills-manifest.json` → `protocols`; ese registro documenta el contrato, no instala dependencias automáticamente. Resolver el dueño instalado o en la fuente central; si falta, detenerse. El detalle no se copia entre skills.
 
 ## Convención de actualización
 

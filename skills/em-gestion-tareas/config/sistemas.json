@@ -1,0 +1,39 @@
+{
+  "_nota": "Identificadores verificados el 2026-11-26. Los tokens nunca van aquí: GITLAB_TOKEN (variable de entorno), ~/.clickup/token.txt y ~/.notion/token.txt.",
+  "notion": {
+    "tareas": "collection://87a1a7d0-6388-82a0-82c0-8709ea959111",
+    "paquetes": "collection://66f1a7d0-6388-83f8-881b-0758134faa78",
+    "historias": "collection://4951a7d0-6388-820e-8c76-87b77818bc9f",
+    "recursos": "collection://8961a7d0-6388-8325-8da3-87169a9cf46c",
+    "plantillaTarea": "61b1a7d063888270a4e8014864029e73",
+    "plantillaPaquete": "83f1a7d06388837cb395014c9cab3175",
+    "productoCl2Flotas": "4161a7d0638881019c4be9b2eef812f5",
+    "proyectoCl2": "3fb1a7d06388812f9826e8e7039cf64f"
+  },
+  "gitlab": {
+    "api": "https://project.comsatel.com.pe/api/v4",
+    "web": "https://project.comsatel.com.pe",
+    "proyecto": 622,
+    "rutaProyecto": "comsatel/development/products/clocator2/cl2-flota/collaboration",
+    "tablero": 513,
+    "rutaKb": "comsatel/development/products/clocator2/knowledge-base",
+    "ramaKb": "develop",
+    "usuarios": { "Enzo Macalupu": "emacalupu", "Franklin Baltazar": "fbaltazar", "César (revisor)": 91 }
+  },
+  "clickup": {
+    "lista": "901714403439",
+    "usuarioEnzo": 101231538,
+    "prefijo": "CL2",
+    "etiquetaProducto": "producto cl2",
+    "actividadPorTipo": {
+      "ux": "actividad de diseño ux",
+      "ds": "actividad de diseño ui",
+      "ubicacion": "actividad de investigación",
+      "revision": "actividad de revisión",
+      "acompanamiento": "actividad de coordinación",
+      "entrega": "actividad de documentación",
+      "construccion": "actividad de implementación"
+    },
+    "prioridad": { "Alta": 2, "Media": 3, "Baja": 4 }
+  }
+}

@@ -10,7 +10,7 @@ description: >
   continuar». No construye ni versiona nada del Design System (usa flujo-ds) ni de un
   producto (usa flujo-producto): solo garantiza que el trabajo y su contexto viajen.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # Traspaso entre computadoras
@@ -43,7 +43,7 @@ una página de estado; la que llega la lee y retoma.
 
 1. **Commit de todo lo trabajado**, incluido lo ajeno a la tarea que esté sin commit. Nada se queda solo en el disco. Cada repositorio lleva su propia revisión de `git status`.
 2. **Push** de las ramas (el DS a GitLab, el piloto a GitHub) y los MR con César de revisor (`reviewer_ids=[91]`), **solo con la confirmación del usuario**. Si algo está apilado sobre un MR sin fusionar, avisar de no fusionar el de arriba antes de reapuntarlo.
-3. **Actualizar la página de estado** con: estado de cada MR verificado con la API y con fecha; ramas y commits; qué se hizo; qué quedó sin comprobar en pantalla; pendientes en orden.
+3. **Actualizar la página de estado** con: estado de cada MR verificado con la API y con fecha; ramas y commits; qué se hizo; qué quedó sin comprobar en pantalla; pendientes en orden. Hay **un pase vivo por paquete de alcance** (DSP-NNN), además del handoff del KB: un paquete se entrega con esos dos recursos. Si el paquete no tiene su pase, se crea en este paso.
 4. **Anotar lo que no viaja por git**: capturas, memoria local, copias dentro de `node_modules`, servidores levantados, variables de entorno. Y avisar si un consumidor necesita una versión del DS que aún no está publicada.
 5. **Actualizar la memoria local** y entregar al usuario el mensaje listo para pegar (`references/mensaje-de-arranque.md`), con enlaces e imágenes de lo trabajado.
 
@@ -62,6 +62,7 @@ Reglas de trabajo con el usuario; dónde está cada cosa (repos, ramas, puertos,
 
 ## Comportamientos bloqueantes
 
+- **B8 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
 - **B1 — No se da el cierre por hecho sin commit y push.** Lo que solo está en el disco se declara como tal y se pide autorización para subirlo.
 - **B2 — Nada se sube sin la confirmación del usuario** (push, MR, etiqueta). `release`, las etiquetas y `main` son del arquitecto.
 - **B3 — Los tokens no viajan por Notion, por el chat ni por archivos del repositorio.** Se nombran las variables de entorno y se le pide al usuario que las ponga.
@@ -69,11 +70,13 @@ Reglas de trabajo con el usuario; dónde está cada cosa (repos, ramas, puertos,
 - **B5 — Lo que no viaja por git se anota explícitamente** en la página.
 - **B6 — La página se actualiza antes de entregar el mensaje.** Un mensaje que apunta a una página vieja manda al agente siguiente en una dirección equivocada.
 - **B7 — Al llegar no se empieza a trabajar sin resumir y preguntar.**
+- **B9 — El estado de las tareas sigue al hecho.** Al actualizar la página, comprobar con la API qué MR ya se fusionaron y qué entregas ya se enviaron, y actualizar las tareas de Notion del paquete según la sección C del protocolo canónico de `ux-ui-orchestrator`. Una tarea no queda en `Finalizada - falta merge` ni `En curso` cuando su MR ya está fusionado o su entrega ya se envió.
 
 ## Racionalizaciones comunes
 
 | Dices | Realidad |
 |---|---|
+| «Es solo un cambio pequeño o un análisis; sincronizo después» | El inicio y el cierre del protocolo canónico son obligatorios; un pendiente de sincronización impide declarar terminado (B8). |
 | «Está todo en la rama, no hace falta cerrar» | Si hay cambios sin commit o sin push, no está. Se revisa `git status`. |
 | «La página ya lo dice, no verifico» | Envejece. Se consulta la API y se escribe la fecha. |
 | «Pego el token para que funcione allá» | Nunca. Se pide que el usuario cree las variables de entorno. |

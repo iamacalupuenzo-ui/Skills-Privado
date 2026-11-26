@@ -8,7 +8,7 @@ description: >
   "qué bloquea esta entrega", "preparemos el lanzamiento", "revisemos los riesgos" o
   "hagamos seguimiento de esto".
 metadata:
-  version: "1.9.2"
+  version: "1.10.0"
 ---
 
 # Gestión de proyectos — PM operativo
@@ -93,15 +93,24 @@ primero estos datos, preguntando solo lo que no se pueda sacar de lo que ya dijo
 Cuando el usuario diga que terminó una tarea, o pida marcarla como completada:
 
 1. Preguntar dónde está el resultado: un enlace, un archivo o el contenido mismo si es corto.
-2. Confirmar la fecha real de cierre (por defecto, hoy) y, si se usan, las horas reales.
-3. Con el resultado, escribirlo en la sección Resultado, pasar `Estado = Completada` y
+2. Fuera del ciclo canónico, confirmar la fecha real de cierre (por defecto, hoy) y, si se usan, las horas reales. Dentro del ciclo, no pedirlas ni cambiarlas salvo solicitud de Enzo; no bloquean el cierre.
+3. Con el resultado, escribirlo en la sección Resultado, aplicar el estado vivo según el ciclo canónico si corresponde (sin fingir merge), o pasar `Estado = Completada` fuera de ese ciclo, y
    `Resultado = Listo`.
 4. Sin resultado, no pasar a `Listo`. Si el usuario igual quiere marcarla completada, se
    marca, y se le avisa que va a quedar con `Alerta de cierre` hasta que aparezca el resultado.
+5. `Completada` con `Resultado = Pendiente` es una inconsistencia: al cerrar con entregable, la sección
+   Resultado lleva sus enlaces. Un trabajo descartado se renombra con el prefijo «[Descartada]», se cierra
+   explicando quién lo decidió y cuándo, y no se borra. Una tarea madre se cierra cuando todas sus
+   hijas están cerradas o descartadas. El detalle y el barrido de reconciliación están en la sección C
+   del [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) de `ux-ui-orchestrator`.
 
 Al consultar el estado de un proyecto o de la semana, recordar las tareas con `Alerta de
 cierre` y preguntar por su resultado, una por una o en lote, sin repetir la pregunta por la
 misma tarea en la misma conversación.
+
+## Tareas: las registra em-gestion-tareas (2026-11-26)
+
+Este skill se queda con el proyecto, el sprint, los riesgos, la salud y los reportes; las secciones de alta y cierre de tarea de arriba aplican solo a tareas fuera de CL2 Flotas. Crear, publicar, avanzar y cerrar tareas en Notion, GitLab y ClickUp lo hace `em-gestion-tareas`, con su estructura (alcance, criterios de aceptación, condición de cierre y trazabilidad). Aquí no se crean páginas en la base Tareas.
 
 ## Alcance compartido en ClickUp
 
@@ -119,7 +128,7 @@ evaluar por defecto solo tareas asignadas a **Enzo Francisco Macalupu Herrera**
    incluirlas si el usuario solicita explícitamente una vista de equipo, una dependencia externa
    o una coordinación.
 3. No sincronizar, crear, reasignar, actualizar estados ni comentar en ClickUp por iniciativa
-   propia. Primero se define el mapeo Notion ↔ ClickUp y la acción concreta autorizada.
+   propia. El mapeo Notion ↔ GitLab ↔ ClickUp está aprobado en `references/mapeo-notion-gitlab-clickup.md` (2026-11-14); cada escritura sigue necesitando la acción concreta autorizada.
 4. Distinguir siempre entre un dato interno de Notion, una señal compartida de ClickUp y una
    discrepancia pendiente de resolver; ninguna fuente sobrescribe la otra automáticamente.
 4.1. **No adelantar en ClickUp.** Notion es personal y puede ir adelantado; ClickUp es
@@ -219,6 +228,7 @@ Declarar el modo en la primera línea.
 
 ## Comportamientos bloqueantes
 
+- **B19 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
 - **B1 — Resultado antes que actividad:** no crear tareas de ejecución si falta el
   entregable, el resultado esperado o el criterio de aceptación que las justifica.
 - **B2 — Requerimiento antes que implementación:** un cambio de acceso, IP, código,
@@ -248,7 +258,7 @@ Declarar el modo en la primera línea.
   la jerarquía.
 - **B10 — Relato uniforme:** cada página de tarea sigue el orden `Antes de leer` →
   `En 30 segundos` → `El relato` → `Termina cuando` → `Resultado` → `Comprueba` (ver
-  bitacora-seguimiento.md). No añadir `Seguimiento` ni una bitácora al contenido. Sin
+  bitacora-seguimiento.md). No añadir `Seguimiento` ni una bitácora al contenido. En el ciclo canónico sí agregar `Avance` con evidencia actual. Sin
   condiciones verificables en `Termina cuando` no hay cierre objetivo, y una tarea `Completada`
   sin entregable en `Resultado` es una alerta de cierre, no un cierre.
 - **B11 — Cancelación conservadora:** no eliminar tareas o subtareas por obsolescencia,
@@ -267,7 +277,7 @@ Declarar el modo en la primera línea.
 - **B14 — Restricción no es dependencia:** una política, ventana, acceso, capacidad o condición
   externa se registra como restricción. Solo crear o relacionar una tarea precedente cuando
   exista una acción concreta cuyo resultado desbloquee el trabajo.
-- **B15 — Estado coherente:** aplicar la matriz de dependencias-bloqueos.md. Una ejecución
+- **B15 — Estado coherente:** aplicar la matriz de dependencias-bloqueos.md con las opciones reales de la base; en el ciclo canónico prevalece su mapeo de estados. Una ejecución
   impedida queda Bloqueada; trabajo ejecutado pendiente de aceptación queda En revisión.
   No cerrar mientras falte una condición de cierre. Cancelar el predecesor no libera la
   dependencia sin reemplazo, excepción aprobada o cambio de alcance documentado.
@@ -298,3 +308,9 @@ vigente, y que no quedan dependencias hacia registros descartados. Verificar tam
 fechas de sucesoras y tarea padre sean compatibles con la ruta crítica. Con resultado incierto,
 inspeccionar antes de repetir; evitar filas duplicadas. Verificar con los [casos de
 evaluación](references/evaluaciones.md) sin escribir en producción.
+
+## Racionalizaciones comunes
+
+| Racionalización | Realidad |
+|---|---|
+| «Es solo un cambio pequeño o un análisis; sincronizo después» | El inicio y el cierre del protocolo canónico son obligatorios; un pendiente de sincronización impide declarar terminado (B19). |
