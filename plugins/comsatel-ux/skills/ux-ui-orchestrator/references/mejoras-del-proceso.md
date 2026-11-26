@@ -42,4 +42,5 @@ Cada vez que una corrida del orquestador encuentra un hueco (algo manual, un err
 | Git Bash convierte `/projects/...` en ruta de Windows y la API de GitLab responde 404 | Validación | Los scripts de GitLab reciben la ruta sin barra inicial, o se corren con `MSYS_NO_PATHCONV=1` |
 | El hook bloquea `printf` con la variable del token | Automatización | Usar los ayudantes `git-gitlab` y `gitlab-api`, que leen la variable en memoria; llevarlos al skill |
 | La verificación previa independiente (B1) la hizo el mismo agente que construyó | Validación | Al delegar la orquestación, un agente evaluador distinto revisa cada UXR antes de cargarlo |
+| Una tabla partida por líneas en blanco (historial de UXR-024, desde octubre) hizo fallar la verificación en Notion: 6 tablas en la KB, 5 en Notion | Validación | `audit_ux.py` avisa de las filas de tabla separadas por líneas en blanco; se corrigió UXR-024 en !549 |
 | Estado de las tareas (IDV-UX · 01 y · 02) sin actualizar al terminar la fase | Automatización | Al cerrar una fase, el orquestador llama a em-gestion-tareas AVANCE con la evidencia (commit y MR) |
