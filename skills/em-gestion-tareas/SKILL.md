@@ -80,6 +80,16 @@ lista de ClickUp). `config/modelo-estimacion.json` es la hipótesis de horas (ca
 | `ACTIVIDAD` | «registra la reunión», «la ayuda que di» | Tarea corta en su frente (B12); no sigue el patrón de código |
 | `ESTADO` | «¿cómo va el tablero?» | Leer y reportar por lista, con enlaces |
 
+
+## Proyecto y producto: dos relaciones distintas (Enzo, 2026-11-26)
+
+La jerarquía en Notion es **Proyecto → Producto → Paquete (DSP) → Historia (HU)**. Ejemplo: el proyecto «CL2 Flotas» tiene los productos «CL2 Flotas», «Piloto de CL2 Flotas», «CL2 SVR Captura y Recupero» y los dos Design System.
+
+- **Paquetes e historias** llevan solo **Producto**; el proyecto les llega por el producto. Una historia lleva el producto de su paquete.
+- **Tareas** llevan las dos relaciones, **Proyecto y Producto**, las del paquete que las origina.
+- Si una página no aparece en una vista, lo primero que se revisa es su Producto (caso real: HU-01-14 seguía en el Piloto y no se veía junto a HU-01-16).
+- **Si hay duda, no se adivina: se pregunta con opciones** (herramienta de preguntas, con las alternativas de la base Productos y su proyecto). Hay duda cuando el paquete no tiene producto o tiene más de uno, cuando el producto no tiene un único proyecto, o cuando la historia ya está en otro producto. `cargar-paquete.js` las devuelve en `dudas` (sale con código 3) y no cambia esa relación; con la respuesta se repite con `--producto <id>` o `--confirmar-producto`.
+
 ## Comportamientos bloqueantes
 
 - **B1 — Nada se crea, se mueve ni se cierra en GitLab o ClickUp sin la confirmación del usuario.** Primero la corrida en seco. En Notion la escritura está aprobada (Enzo, 2026-11-26). El hook pide confirmación aunque se olvide.

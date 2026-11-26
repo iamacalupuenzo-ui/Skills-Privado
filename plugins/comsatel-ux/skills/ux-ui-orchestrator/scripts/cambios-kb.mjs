@@ -310,8 +310,13 @@ if (!carga || carga.omitida) md.push(`> No se cargó: ${carga ? carga.omitida : 
 else if (carga.error) md.push(`> **La carga falló:** ${carga.error}. Repite antes de seguir.`, '');
 else {
   md.push(`${carga.ok} de ${carga.total} páginas cargadas y verificadas desde \`${carga.ref}\` en \`${carga.commit}\`.`, '');
-  for (const i of carga.items) md.push(`- ${i.ok ? 'Cargada' : '**Falló**'}: ${i.id}${i.creada ? ' (nueva)' : ''}${i.error ? ' — ' + i.error : ''}`);
+  for (const i of carga.items) md.push(`- ${i.ok ? 'Cargada' : '**Falló**'}: ${i.id}${i.creada ? ' (nueva)' : ''}${i.productoSinCambiar ? ' (Producto sin cambiar: hay duda)' : ''}${i.error ? ' — ' + i.error : ''}`);
   md.push('');
+  if ((carga.dudas || []).length) {
+    md.push('### Dudas de proyecto o producto', '', 'No se adivinan: el agente se las pregunta a Enzo con estas opciones y repite la carga con `--producto <id>` o `--confirmar-producto`.', '');
+    for (const d of carga.dudas) md.push(`- **${d.pregunta}** Opciones: ${d.opciones.map((o) => `${o.producto || o.proyecto}${o.producto ? ' (proyecto ' + o.proyecto + ')' : ''}`).join(' · ')}.`);
+    md.push('');
+  }
 }
 md.push('## 1. Inventario del paquete', '', '| Documento | Última actualización | ¿Cambió? |', '|---|---|---|');
 for (const d of inventario) {

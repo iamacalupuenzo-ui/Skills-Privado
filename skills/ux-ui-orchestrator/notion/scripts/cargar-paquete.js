@@ -19,7 +19,7 @@ const { execFileSync } = require("child_process");
 const MOD = path.resolve(__dirname, "..");
 const CFG = JSON.parse(fs.readFileSync(path.join(MOD, "config.json"), "utf8"));
 const SYNC = path.resolve(MOD, CFG.sync);
-const DS = { historias: "4951a7d0-6388-820e-8c76-87b77818bc9f", paquetes: "66f1a7d0-6388-83f8-881b-0758134faa78" };
+const DS = { historias: "4951a7d0-6388-820e-8c76-87b77818bc9f", paquetes: "66f1a7d0-6388-83f8-881b-0758134faa78", productos: "8f11a7d0-6388-83aa-8575-07f48d4cdc91" };
 const CATALOGO = "RCP-001 CL2 Flotas";
 const arg = (n, d) => { const i = process.argv.indexOf(n); return i > 0 ? process.argv[i + 1] : d; };
 const dsp = process.argv[2];
@@ -66,7 +66,8 @@ const titulo = t => { const m = t.replace(/\r\n/g, "\n").match(/^title:\s*(.*)$/
   if (packs.length !== 1) throw new Error(dsp + ": " + packs.length + " archivos del paquete en " + REF);
   const textoPack = git("show", REF + ":" + packs[0]).replace(/\r\n/g, "\n");
   const seccion = (textoPack.split(/^## Historias incluidas/m)[1] || "").split(/^## /m)[0];
-  const historias = [...seccion.matchAll(/^\|\s*\[(HU-\d+-\d+)\]\(([^)]+)\)/gm)]
+  // El enlace puede decir «HU-01-14» o «CL2-US-119 (HU-07-05)»: se toma el HU de dentro del texto.
+  const historias = [...seccion.matchAll(/^\|\s*\[[^\]]*?\b(HU-\d+-\d+)[^\]]*\]\(([^)]+)\)/gm)]
     .map(m => ({ id: m[1], ruta: decodeURIComponent(m[2].replace(/^.*?\/-\/blob\/[^/]+\//, "")) }));
   if (!historias.length) throw new Error(dsp + ": la tabla «Historias incluidas» no lista historias");
 
@@ -76,11 +77,30 @@ const titulo = t => { const m = t.replace(/\r\n/g, "\n").match(/^title:\s*(.*)$/
       filtro: { property: "Catálogo", select: { equals: CATALOGO } },
       relaciones: { "Paquetes de alcance": { ds: DS.paquetes, ids: [dsp] } } })));
 
-  // Las historias pertenecen al mismo Producto que su paquete (p. ej. CL2 Flotas): se copia del paquete.
-  // Así una historia vieja que apuntaba a otro producto (el Piloto) vuelve a aparecer en las vistas del producto.
+  // Jerarquía (Enzo, 2026-11-26): Proyecto → Producto → Paquete → Historia. Proyecto y Producto son cosas distintas.
+  // Paquetes e historias solo tienen Producto; el Proyecto les llega por el Producto. Las tareas llevan los dos.
+  // Regla: la historia lleva el Producto de su paquete. Si hay duda, no se adivina: se devuelve la pregunta con
+  // opciones (`dudas`) para que el agente se la haga a Enzo, y se repite con --producto <id> o --confirmar-producto.
+  const dudas = [];
+  const nombreDe = p => (Object.values(p.properties).find(v => v.type === "title")?.title || []).map(x => x.plain_text).join("");
+  const productos = (await api("POST", "/data_sources/" + DS.productos + "/query", {})).results || [];
+  const proyectos = {};
+  for (const p of productos) for (const r of p.properties.Proyecto?.relation || []) proyectos[r.id] = proyectos[r.id] || nombreDe(await api("GET", "/pages/" + r.id));
+  const opcion = p => ({ id: p.id, producto: nombreDe(p), proyecto: (p.properties.Proyecto?.relation || []).map(r => proyectos[r.id]).join(", ") || "(sin proyecto)" });
+  const opciones = productos.map(opcion);
   const pagPaquete = (await buscar(DS.paquetes, dsp))[0];
-  const producto = pagPaquete ? (pagPaquete.properties.Producto?.relation || []).map(x => ({ id: x.id })) : [];
-  if (producto.length) for (const it of items) if (it.ds === DS.historias) it.props["Producto"] = { relation: producto };
+  let producto = arg("--producto") ? [{ id: arg("--producto") }] : (pagPaquete ? (pagPaquete.properties.Producto?.relation || []).map(x => ({ id: x.id })) : []);
+  if (producto.length !== 1) {
+    dudas.push({ tipo: "producto-del-paquete", pregunta: `¿A qué producto pertenece ${dsp}? ${producto.length ? "Tiene " + producto.length + " productos" : "No tiene producto"} en Notion.`, opciones });
+    producto = [];
+  } else {
+    const p = productos.find(x => x.id === producto[0].id);
+    if (!p) dudas.push({ tipo: "producto-desconocido", pregunta: `El producto ${producto[0].id} no está en la base Productos.`, opciones });
+    else if ((p.properties.Proyecto?.relation || []).length !== 1)
+      dudas.push({ tipo: "proyecto-del-producto", pregunta: `¿A qué proyecto pertenece el producto «${nombreDe(p)}»? En Notion tiene ${(p.properties.Proyecto?.relation || []).length} proyectos.`, opciones: Object.entries(proyectos).map(([id, n]) => ({ id, proyecto: n })) });
+    if (arg("--producto") && pagPaquete && !dry) await api("PATCH", "/pages/" + pagPaquete.id, { properties: { Producto: { relation: producto } } });
+  }
+  const confirmar = process.argv.includes("--confirmar-producto");
 
   const resumen = [];
   for (const it of items) {
@@ -103,6 +123,17 @@ const titulo = t => { const m = t.replace(/\r\n/g, "\n").match(/^title:\s*(.*)$/
         resumenPagina = res;
       }
       fs.writeFileSync(resF, resumenPagina ? resumenPagina + "\n\n" : "");
+      if (it.ds === DS.historias && producto.length) {
+        const actual = pagina ? (pagina.properties.Producto?.relation || []).map(x => x.id) : [];
+        const otro = actual.length && !(actual.length === 1 && actual[0] === producto[0].id);
+        if (!otro || confirmar) it.props["Producto"] = { relation: producto };
+        else {
+          const nom = id => (opciones.find(o => o.id === id) || { producto: id }).producto;
+          dudas.push({ tipo: "producto-de-la-historia", historia: it.id, pregunta: `${it.id} está en «${actual.map(nom).join(", ")}» y su paquete ${dsp} en «${nom(producto[0].id)}». ¿A cuál pertenece?`,
+            opciones: [...new Set([producto[0].id, ...actual])].map(id => opciones.find(o => o.id === id) || { id }) });
+          r.productoSinCambiar = true;
+        }
+      }
       // El Nombre de una página que ya existe no se toca (otros scripts la buscan por él). Una nueva sigue la convención «ID — título».
       const nombreActual = pagina ? (pagina.properties.Nombre?.title || []).map(x => x.plain_text).join("") : "";
       const t = titulo(texto) || it.id;
@@ -134,8 +165,9 @@ const titulo = t => { const m = t.replace(/\r\n/g, "\n").match(/^title:\s*(.*)$/
     resumen.push(r);
   }
   const fin = { paquete: dsp, ref: REF, commit: commit.slice(0, 8), dry, total: resumen.length,
-    ok: resumen.filter(r => r.ok).length, fallos: resumen.filter(r => r.error || r.ok === false).length, items: resumen };
+    ok: resumen.filter(r => r.ok).length, fallos: resumen.filter(r => r.error || r.ok === false).length, items: resumen, dudas };
   fs.writeFileSync(path.join(out, "resumen.json"), JSON.stringify(fin, null, 1));
   console.log(JSON.stringify(fin));
-  process.exit(fin.fallos ? 1 : 0);
+  // 1 = algo falló; 3 = cargó, pero hay dudas de proyecto o producto que Enzo tiene que resolver.
+  process.exit(fin.fallos ? 1 : dudas.length ? 3 : 0);
 })().catch(e => { console.error(e.message); process.exit(1); });
