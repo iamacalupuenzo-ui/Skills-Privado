@@ -294,9 +294,19 @@ else {
   if (!carga) { try { carga = JSON.parse(salida.trim().split('\n').pop()); } catch { carga = { error: 'el cargador no devolvió un resumen' }; } }
 }
 
+// Validación de relaciones (Enzo, 2026-11-26): paquete → producto → proyecto, historias, tareas y vistas. Solo lee.
+let relaciones = null;
+const validador = path.join(path.dirname(cargador), 'validar-relaciones.js');
+if (!bandera('--sin-notion') && fs.existsSync(validador)) {
+  let salida = '';
+  try { salida = execFileSync('node', [validador, dsp, '--kb', kb, '--ref', ref], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }); }
+  catch (e) { salida = String(e.stdout || ''); }
+  try { relaciones = JSON.parse(salida.trim().split('\n').pop()); } catch { relaciones = { error: 'el validador no devolvió un resultado' }; }
+}
+
 // ---------- salida ----------
 const resultado = { version: 1, generado: new Date().toISOString(), soloLectura: true, paquete: dsp, kb: { ref, commit: commit.slice(0, 8), fecha: fechaCommit(commit) },
-  base: { commit: base.slice(0, 8), fecha: fechaCommit(base), origen: origenBase }, inventario, cambios: relevantes, preguntas, disenoAfectado, tareas, propuestas, avisoNotion, carga };
+  base: { commit: base.slice(0, 8), fecha: fechaCommit(base), origen: origenBase }, inventario, cambios: relevantes, preguntas, disenoAfectado, tareas, propuestas, avisoNotion, carga, relaciones };
 
 const f = (iso) => (iso ? iso.slice(0, 16).replace('T', ' ') : '—');
 const md = [];
@@ -317,6 +327,14 @@ else {
     for (const d of carga.dudas) md.push(`- **${d.pregunta}** Opciones: ${d.opciones.map((o) => `${o.producto || o.proyecto}${o.producto ? ' (proyecto ' + o.proyecto + ')' : ''}`).join(' · ')}.`);
     md.push('');
   }
+}
+md.push('### Relaciones', '');
+if (!relaciones) md.push('> No se validaron (sin Notion o sin el módulo).', '');
+else if (relaciones.error) md.push(`> **La validación falló:** ${relaciones.error}.`, '');
+else {
+  for (const b of relaciones.bien) md.push(`- Correcto: ${b}.`);
+  for (const h of relaciones.hallazgos) md.push(`- **Revisar:** ${h.que}${h.arreglo ? ' Se arregla con ' + h.arreglo + '.' : ''}${h.opciones ? ' Pregunta a Enzo: ' + h.pregunta + ' Opciones: ' + h.opciones.map((o) => o.producto ? o.producto + ' (proyecto ' + o.proyecto + ')' : (o.proyecto || o.opcion)).join(' · ') + '.' : ''}`);
+  md.push('');
 }
 md.push('## 1. Inventario del paquete', '', '| Documento | Última actualización | ¿Cambió? |', '|---|---|---|');
 for (const d of inventario) {

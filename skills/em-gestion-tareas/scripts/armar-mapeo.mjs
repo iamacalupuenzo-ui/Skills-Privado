@@ -168,6 +168,10 @@ const trazabilidad = (t, ref, destino, esMadre, madre) => {
   if (usa.length) L.push(`- **Artefactos que usa:** ${usa.map((a) => (a.ruta ? `[${a.cod}](${kbUrl(a.ruta)})` : a.cod)).join(', ')}`);
   for (const r of [...(mapeo.referencias || []).filter((x) => (x.en || []).includes(ref) || (x.en || []).includes(madre) || (esMadre && (x.en || []).includes('*'))), ...(t.referencias || [])])
     L.push(`- **${r.texto}:** ${r.ruta ? `[${path.posix.basename(r.ruta, '.md')}](${kbUrl(r.ruta)})` : `[enlace](${r.url})`}`);
+  // Cambios de la KB (AVANCE con nota): viven en el mapeo (`cambiosKb`) para que una regeneración no los borre.
+  // Una nota va en la tarea si cita una de sus historias, o en todas si su `historias` está vacío.
+  const notas = (mapeo.cambiosKb || []).filter((c) => !(c.historias || []).length || (c.historias || []).some((x) => (t.historias || []).includes(x)) || (esMadre && (c.historias || []).length));
+  if (notas.length) L.push(`- **Cambios de la KB:**\n${notas.map((c) => `  - ${c.fecha} · ${c.ruta ? `[${c.documento}](${kbUrl(c.ruta)})` : c.documento}: ${c.texto}`).join('\n')}`);
   L.push('- **Artefactos que produce:** *se agregan al cerrar, con su enlace a `develop`.*');
   L.push('- **MR:** *se agregan cuando se abren.*');
   return L.join('\n');

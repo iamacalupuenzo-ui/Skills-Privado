@@ -743,5 +743,46 @@
         "IDV-UX · 01"
       ]
     }
+  ],
+  "cambiosKb": [
+    {
+      "revision": "08a7fc4a",
+      "fecha": "2026-11-25",
+      "documento": "DSP-009",
+      "ruta": "requirements/scope-packs/DSP-009-paquete-identidad-visual-cliente-producto.md",
+      "historias": [],
+      "texto": "cambió Preguntas abiertas y bloqueos (Maifre G. Rojas, 2026-11-24 y 2026-11-25). La tarea sigue igual; se revisa al trabajar esa sección."
+    },
+    {
+      "revision": "08a7fc4a",
+      "fecha": "2026-11-24",
+      "documento": "HU-01-14",
+      "ruta": "requirements/context-packs/user-stories/HU-01-14-personalizar-identidad-visual-cliente.md",
+      "historias": [
+        "HU-01-14"
+      ],
+      "texto": "cambió AC-3 — La identidad del Cliente prevalece; 12. Preguntas abiertas (Maifre G. Rojas, 2026-11-24). La tarea sigue igual; se revisa al trabajar esa sección."
+    },
+    {
+      "revision": "08a7fc4a",
+      "fecha": "2026-11-24",
+      "documento": "HU-01-16",
+      "ruta": "requirements/context-packs/user-stories/HU-01-16-identidad-visual-base-producto.md",
+      "historias": [
+        "HU-01-16"
+      ],
+      "texto": "cambió AC-4 — Se refleja en quienes la heredan; 12. Preguntas abiertas (Maifre G. Rojas, 2026-11-24). La tarea sigue igual; se revisa al trabajar esa sección."
+    },
+    {
+      "revision": "08a7fc4a",
+      "fecha": "2026-11-26",
+      "documento": "Preguntas abiertas",
+      "ruta": "",
+      "historias": [
+        "HU-01-14",
+        "HU-01-16"
+      ],
+      "texto": "PA-DSP-009-04 (F-02) (decide PO), PA-DSP-009-06 (F-10) (decide PO), HU-01-16-Q4 (decide Product Owner): abiertas, no bloquean. Se trabaja con la propuesta y se ajusta si la respuesta cambia algo."
+    }
   ]
 }
