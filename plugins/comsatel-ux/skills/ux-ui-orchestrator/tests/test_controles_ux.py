@@ -69,6 +69,28 @@ class ControlesUX(unittest.TestCase):
         self.write("design/investigations/INV-901.md", "# SCR-902\n")
         self.assertIn("SCR_SIN_INV_DEC", self.codigos(compuerta="G3"))
 
+    def test_no_aplica_y_decision_reutilizada_con_motivo_pasa(self):
+        self.write("decisions/ux-ui/decisiones/DEC-950.md", "# Decisión de otra pantalla SCR-111\n")
+        self.fm["research"] = {"investigation": "no-aplica", "decision": "DEC-950", "decision_reused": True,
+                               "motivo": "La historia y la decisión vigente ya resuelven lo que se ve."}
+        self.assertEqual(self.codigos(compuerta="G3"), set())
+
+    def test_no_aplica_sin_motivo_bloquea(self):
+        self.write("decisions/ux-ui/decisiones/DEC-950.md", "# SCR-111\n")
+        self.fm["research"] = {"investigation": "no-aplica", "decision": "DEC-950", "decision_reused": True}
+        self.assertIn("SCR_SIN_INV_DEC", self.codigos(compuerta="G3"))
+
+    def test_decision_reutilizada_inexistente_bloquea(self):
+        self.fm["research"] = {"investigation": "no-aplica", "decision": "DEC-999", "decision_reused": True,
+                               "motivo": "La historia y la decisión vigente ya resuelven lo que se ve."}
+        self.assertIn("SCR_SIN_INV_DEC", self.codigos(compuerta="G3"))
+
+    def test_dec_en_carpeta_decisions_se_encuentra(self):
+        self.fm["research"] = {"investigation": "INV-901", "decision": "DEC-902"}
+        self.write("design/investigations/INV-901.md", "# SCR-901\n")
+        self.write("decisions/ux-ui/decisiones/DEC-902.md", "# SCR-901\n")
+        self.assertEqual(self.codigos(compuerta="G3"), set())
+
     def test_g3_con_investigacion_pasa(self):
         self.investigacion()
         self.assertEqual(self.codigos(compuerta="G3"), set())

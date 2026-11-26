@@ -280,9 +280,30 @@ def controlar_iteracion(kb, cerrar=False, paquetes=None, conciliacion=None, comp
         cerrado = validado or st in ("approved", "closed", "cerrado") or cerrar or compuerta in ("G3", "GR")
         investigacion = fm.get("research") or {}
         if pantalla:
+            inv_dict = investigacion if isinstance(investigacion, dict) else {}
+            # Regla de Enzo (2026-11-26): no toda pantalla lleva investigación o decisión nueva.
+            # - investigation: no-aplica, con research.motivo, cuando la historia o una decisión vigente ya resuelve lo que se ve.
+            # - decision_reused: true cuando la pantalla reutiliza una DEC vigente de otra pantalla (no tiene que citarla), con motivo.
+            motivo = str(inv_dict.get("motivo") or inv_dict.get("reason") or "").strip()
             for campo, prefijo in (("investigation", "INV"), ("decision", "DEC")):
-                ref = investigacion.get(campo, "") if isinstance(investigacion, dict) else ""
-                candidatas = list((kb / "design").rglob(f"{ref}*.md")) if re.fullmatch(rf"{prefijo}-\d+", str(ref)) else []
+                ref = str(inv_dict.get(campo, "") or "")
+                if ref.lower() in ("no-aplica", "no aplica", "n/a"):
+                    if campo == "investigation" and len(motivo) >= 20:
+                        continue
+                    add("SCR_SIN_INV_DEC", f"{ident}: research.{campo} «no-aplica» exige research.motivo (al menos una frase)" if campo == "investigation"
+                        else f"{ident}: research.decision no admite «no-aplica»; usa una DEC nueva o una reutilizada con decision_reused", cerrado)
+                    continue
+                if not re.fullmatch(rf"{prefijo}-\d+", ref):
+                    candidatas = []
+                else:
+                    # Las DEC viven en decisions/ y las INV en design/: se busca en los dos.
+                    candidatas = [f for base in ("design", "decisions") if (kb / base).is_dir() for f in (kb / base).rglob(f"{ref}*.md")]
+                reutilizada = campo == "decision" and bool(inv_dict.get("decision_reused")) and candidatas
+                if reutilizada:
+                    if len(motivo) >= 20:
+                        continue
+                    add("SCR_SIN_INV_DEC", f"{ident}: decisión reutilizada {ref} sin research.motivo", cerrado)
+                    continue
                 # El documento debe citar la pantalla, no basta un ID de otro módulo.
                 if not any(ident in read(f) for f in candidatas):
                     add("SCR_SIN_INV_DEC", f"{ident}: falta {prefijo} enlazado en research.{campo} que cite la pantalla", cerrado)
