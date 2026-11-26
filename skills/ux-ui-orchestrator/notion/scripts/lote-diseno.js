@@ -16,7 +16,16 @@ const WT = process.env.NOTION_WORKTREE || CFG.worktree;
 const SYNC = process.env.NOTION_SYNC || require("path").resolve(MOD, CFG.sync);
 const REPO_URL = CFG.repo_url;
 const DESIGN_REF = process.env.DESIGN_REF || CFG.design_ref;
-const PRODUCTO = "3fb1a7d0-6388-814e-8cce-f48a414b5cf2";
+// Producto: NOTION_PRODUCTO lo fuerza; si no, sale del paquete que el documento nombra en sources (DSP-NNN).
+// Sin paquete o con paquetes de productos distintos, el documento no se carga y queda como duda (Enzo, 2026-11-26).
+const PRODUCTO_FORZADO = process.env.NOTION_PRODUCTO || "";
+const DS_PAQUETES = "66f1a7d0-6388-83f8-881b-0758134faa78";
+const TOKEN_N = (() => { if (process.env.NOTION_TOKEN) return process.env.NOTION_TOKEN.trim(); const t = require("path").join(require("os").homedir(), ".notion", "token.txt"); return require("fs").existsSync(t) ? require("fs").readFileSync(t, "utf8").split(/\r?\n/)[0].trim() : ""; })();
+function productosDe(dsps) {
+  // Consulta síncrona a Notion en un proceso hijo, porque el cargador es síncrono.
+  const code = "(async()=>{const out=[];for(const d of " + JSON.stringify(dsps) + "){const r=await fetch('https://api.notion.com/v1/data_sources/" + DS_PAQUETES + "/query',{method:'POST',headers:{Authorization:'Bearer '+process.env.T,'Notion-Version':'2025-09-03','Content-Type':'application/json'},body:JSON.stringify({filter:{or:[{property:'ID',rich_text:{equals:d}},{property:'title',title:{starts_with:d}}]}})});const j=await r.json();for(const p of j.results||[])for(const x of (p.properties.Producto?.relation||[]))out.push(x.id)}console.log(JSON.stringify([...new Set(out)]))})()";
+  return JSON.parse(require("child_process").execFileSync("node", ["-e", code], { encoding: "utf8", env: Object.assign({}, process.env, { T: TOKEN_N }) }));
+}
 const DS = {
   uxr: "6361a7d0-6388-8376-816d-076587d56e7f", flw: "3a91a7d0-6388-83d7-972f-07afabf710e0",
   scr: "a101a7d0-6388-8200-ace3-0747fc33b0fb", ib: "fb11a7d0-6388-8315-bbe5-8723b8807a73",
@@ -102,7 +111,6 @@ for (const d of documentos()) {
       "Ruta en el repo": { rich_text: [{ type: "text", text: { content: d.repoPath } }] },
       "Enlace GitLab": { url: REPO_URL + DESIGN_REF + "/" + d.repoPath },
       "Última carga": { date: { start: hoy } },
-      "Producto": { relation: [{ id: PRODUCTO }] },
     }, d.props, propiedadesDocumento(partir(leer(d.repoPath)).fm, d.cuerpo, tipo)),
     relations: d.relations,
   };
@@ -117,6 +125,10 @@ for (const d of documentos()) {
     meta.props["Resumen"] = { rich_text: [{ type: "text", text: { content: r.permite } }] };
     meta.props["Resumen vigente"] = { select: { name: vigente ? "Vigente" : "Desactualizado" } };
   }
+  const dsps = [...partir(leer(d.repoPath)).fm.matchAll(/^\s*-\s*id:\s*(DSP-\d+)\s*$/gm)].map(m => m[1]);
+  const productos = PRODUCTO_FORZADO ? [PRODUCTO_FORZADO] : (dsps.length ? productosDe(dsps) : []);
+  if (productos.length !== 1) { resumen.push({ id: d.id, duda: true, paquetes: dsps, productos, motivo: dsps.length ? "sus paquetes no dan un solo producto" : "no nombra su paquete en sources; usa NOTION_PRODUCTO" }); continue; }
+  meta.props["Producto"] = { relation: [{ id: productos[0] }] };
   fs.writeFileSync(metaF, JSON.stringify(meta, null, 1));
   if (dry) { resumen.push({ id: d.id, dry: true, relaciones: Object.fromEntries(Object.entries(d.relations).map(([k, v]) => [k, v.ids])), bytes: fs.statSync(cuerpo).size, lienzo: !!(d.props && d.props["Enlace del lienzo"]) }); continue; }
   try {
