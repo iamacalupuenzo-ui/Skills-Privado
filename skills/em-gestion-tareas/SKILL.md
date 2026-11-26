@@ -33,6 +33,7 @@ Este skill **registra**: no decide qué se hace ni lo ejecuta. Los orquestadores
 - `references/estructura-de-la-tarea.md` — la estructura aprobada (2026-11-26), sus tres versiones y los títulos. Leer antes de crear o corregir una tarea.
 - `references/trazabilidad.md` — qué enlaza cada tarea y por qué todo apunta a GitLab. Leer al crear y al cerrar.
 - `references/recibir-un-paquete.md` — el modo Recibir paso a paso, con el lector de historias y la estimación. Leer al recibir un DSP.
+- `references/pagina-del-paquete.md` — qué va en la página del DSP: las vistas «Historias del paquete» y «Tareas del paquete» arriba, el resumen y el contenido de la KB. Leer al recibir un DSP (crear las vistas) y al cargarlo.
 - `references/avance-y-cierre.md` — qué marca Avance, qué marca Cerrar y con qué evidencia. Leer antes de cambiar un estado.
 - `references/llamados.md` — el contrato con los orquestadores y los ejecutores. Leer si cambia un orquestador.
 - `references/mapeo-notion-gitlab-clickup.md` — estados, niveles, formato de ClickUp y fechas entre los tres sistemas (aprobado 2026-11-14).

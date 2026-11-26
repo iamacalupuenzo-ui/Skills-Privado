@@ -117,10 +117,16 @@ const titulo = t => { const m = t.replace(/\r\n/g, "\n").match(/^title:\s*(.*)$/
       const pagina = paginas[0];
       let resumenPagina = "";
       if (pagina) {
-        const md = (await api("GET", "/pages/" + pagina.id + "/markdown")).markdown || "";
-        const res = resumenDe(md);
+        let md = (await api("GET", "/pages/" + pagina.id + "/markdown")).markdown || "";
+        // Las vistas vinculadas («Historias del paquete», «Tareas del paquete») son la parte viva de la página:
+        // se sacan de donde estén y van siempre arriba. Sin su etiqueta en el contenido nuevo, Notion las borraría.
+        const vistas = md.match(/<database [^>]*>[\s\S]*?<\/database>/g) || [];
+        for (const v of vistas) md = md.replace(v, "");
+        const res = resumenDe(md.trim());
         if (res === null) throw new Error("la página tiene contenido largo sin el aviso generado: revísala antes de reemplazarla");
-        resumenPagina = res;
+        resumenPagina = [...vistas, res].filter(Boolean).join("\n\n");
+        r.vistas = vistas.length;
+        if (it.ds === DS.paquetes && vistas.length < 2) r.faltanVistas = "la página del paquete no tiene sus vistas «Historias del paquete» y «Tareas del paquete»: créalas (references del skill)";
       }
       fs.writeFileSync(resF, resumenPagina ? resumenPagina + "\n\n" : "");
       if (it.ds === DS.historias && producto.length) {

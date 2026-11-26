@@ -310,7 +310,7 @@ if (!carga || carga.omitida) md.push(`> No se cargó: ${carga ? carga.omitida : 
 else if (carga.error) md.push(`> **La carga falló:** ${carga.error}. Repite antes de seguir.`, '');
 else {
   md.push(`${carga.ok} de ${carga.total} páginas cargadas y verificadas desde \`${carga.ref}\` en \`${carga.commit}\`.`, '');
-  for (const i of carga.items) md.push(`- ${i.ok ? 'Cargada' : '**Falló**'}: ${i.id}${i.creada ? ' (nueva)' : ''}${i.productoSinCambiar ? ' (Producto sin cambiar: hay duda)' : ''}${i.error ? ' — ' + i.error : ''}`);
+  for (const i of carga.items) md.push(`- ${i.ok ? 'Cargada' : '**Falló**'}: ${i.id}${i.creada ? ' (nueva)' : ''}${i.productoSinCambiar ? ' (Producto sin cambiar: hay duda)' : ''}${i.faltanVistas ? ' — **faltan las vistas del paquete** (em-gestion-tareas, references/pagina-del-paquete.md)' : ''}${i.error ? ' — ' + i.error : ''}`);
   md.push('');
   if ((carga.dudas || []).length) {
     md.push('### Dudas de proyecto o producto', '', 'No se adivinan: el agente se las pregunta a Enzo con estas opciones y repite la carga con `--producto <id>` o `--confirmar-producto`.', '');

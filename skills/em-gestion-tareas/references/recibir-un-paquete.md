@@ -15,10 +15,11 @@ Probado con el DSP-009 (Identidad visual del Cliente y base del Producto) el 202
 5. **Validar:** `node scripts/armar-mapeo.mjs mapeo.json --kb <clon> --salida paginas.json`. Si no pasa, no se escribe.
 6. **Mostrar el mapeo a Enzo** si cambia la lógica habitual (una revisión en lugar de construcción, un tipo nuevo). Si sigue el patrón, se crea directo: la escritura en Notion está aprobada.
 7. **Crear en Notion, en este orden:**
-   1. Las historias que falten en la base Historias (Catálogo «RCP-001 CL2 Flotas»), con su enlace a la KB.
-   2. El registro del paquete en Paquetes de alcance (estructura de la plantilla «Nuevo proyecto»: Qué se logra, Alcance, Tareas, Riesgos y decisiones).
-   3. Las madres y después las subtareas, con `Tarea padre`.
+   1. El registro del paquete en Paquetes de alcance, con su **Producto** (y por él, su Proyecto). Si hay duda de producto o proyecto, se pregunta a Enzo con opciones antes de crear.
+   2. Las historias y el contenido del paquete con `cargar-paquete.js DSP-NNN` (del orquestador UX): las crea o actualiza desde la KB, con Catálogo, Producto y relación al paquete. Ya no se crean a mano.
+   3. Las madres y después las subtareas, con `Tarea padre`, **Proyecto y Producto** del paquete.
    4. `Bloqueada por` en cada subtarea.
+   5. Las vistas **Historias del paquete** y **Tareas del paquete** en la página del paquete (`pagina-del-paquete.md`) y otra pasada de `cargar-paquete.js` para dejarlas arriba.
 8. **Guardar el mapeo** junto a las demás entregas del paquete y anotar en `ids.json` la URL de Notion de cada tarea.
 9. **Publicar** (modo PUBLICAR) solo si Enzo lo pide.
 
