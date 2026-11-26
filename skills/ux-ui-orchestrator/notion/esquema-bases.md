@@ -16,12 +16,14 @@ ID (texto, clave de carga), Ruta en el repo, Enlace GitLab, Última carga, Produ
 | Pantallas | SCR-nnn (una fila por pantalla) | Flujo, Estados requeridos |
 | Especificaciones UX | UXS-nnn (el conjunto) | Veredicto Stitch, Veredicto QA, Nivel de cierre (En curso, Diseño cerrado, Listo para desarrollo), Fecha de la especificación; relaciones a todo el módulo |
 | Exploraciones | IB-nnn (una por flujo) | Enlace del lienzo, Fidelidad, Decisión humana |
+| Investigaciones | INV-nnn | Estado del documento, Fecha; relaciones a Paquetes, Pantallas, Flujos, Requerimientos UX y Decisiones (dos sentidos) |
+| Decisiones | DEC-nnn | Estado de la decisión (Propuesta, Aprobada, Sustituida, Descartada), Decidido por, Fecha de decisión; relaciones a Paquetes, Pantallas, Flujos, Requerimientos UX, Preguntas que responde, Investigación y Sustituye a / Sustituida por |
 | Preguntas | Una fila por pregunta | Ver `arquitectura-preguntas.md` §2 |
 
 Indicadores de bloqueo (en Historias, Requerimientos UX, Paquetes, Flujos, Pantallas, Exploraciones y Especificaciones UX): Preguntas que bloquean, Pendientes de confirmar, Abiertas sin bloqueo, listas de IDs, Resumen de preguntas y Estado de bloqueo. Pantallas añade Bloqueos del flujo y Bloqueada (1/0); Flujos añade Bloqueos propios; Exploraciones añade Pantallas bloqueadas.
 
 ## Bases sin uso (vacías o ajenas al flujo UX/UI)
-Reglas, Referencias, Decisiones, Recursos, Tareas, Reuniones, Revisiones. Decisión de Enzo: no se cargan Reglas ni Referencias; Decisiones se retira (la respuesta vive en la propia pregunta). Tareas queda para más adelante.
+Reglas, Referencias, Recursos, Tareas, Reuniones, Revisiones. Decisión de Enzo: no se cargan Reglas ni Referencias. Decisiones vuelve el 2026-11-26 como base propia junto con Investigaciones (Enzo): la DEC se carga como fila y su respuesta se sigue reflejando en la pregunta. Tareas queda para más adelante.
 Nota: «Épicas» que se ve en las páginas de Preguntas es una propiedad fantasma que la API devuelve y no existe en el esquema; se ignora.
 
 ## Iconos nativos válidos

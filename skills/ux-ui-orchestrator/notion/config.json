@@ -57,12 +57,19 @@
     "Preguntas": {
       "data_source": "9811a7d0-6388-829a-82b4-0735e973e46b",
       "database": "2b91a7d0-6388-8201-afe0-81fea03528a0"
+    },
+    "Investigaciones": {
+      "data_source": "85b1a7d0-6388-82fb-80f5-07742f858d2c",
+      "database": "6ce1a7d0-6388-8214-b0a1-812285c68f0f"
+    },
+    "Decisiones": {
+      "data_source": "9251a7d0-6388-8371-8107-070e3b5bd50a",
+      "database": "ab01a7d0-6388-8331-91cc-813a300be59f"
     }
   },
   "bases_sin_uso": [
     "Reglas",
     "Referencias",
-    "Decisiones",
     "Recursos",
     "Tareas",
     "Reuniones",

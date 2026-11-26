@@ -29,10 +29,42 @@ function productosDe(dsps) {
 const DS = {
   uxr: "6361a7d0-6388-8376-816d-076587d56e7f", flw: "3a91a7d0-6388-83d7-972f-07afabf710e0",
   scr: "a101a7d0-6388-8200-ace3-0747fc33b0fb", ib: "fb11a7d0-6388-8315-bbe5-8723b8807a73",
+  inv: "85b1a7d0-6388-82fb-80f5-07742f858d2c", dec: "9251a7d0-6388-8371-8107-070e3b5bd50a",
+  dsp: "66f1a7d0-6388-83f8-881b-0758134faa78", preg: "9811a7d0-6388-829a-82b4-0735e973e46b",
 };
+// INV y DEC (Enzo, 2026-11-26): las relaciones salen de screens, flow, requirements, supersedes y de los IDs de sources.
+// SCR-011-013 se expande a SCR-011, SCR-012 y SCR-013. Estado de la decisión: draft = Propuesta; accepted y approved = Aprobada.
+const ESTADO_DEC = { draft: "Propuesta", proposed: "Propuesta", accepted: "Aprobada", approved: "Aprobada", superseded: "Sustituida", rejected: "Descartada" };
+function idsDe(fm) {
+  const crudos = [...fm.matchAll(/\b((?:SCR|FLW|UXR|DSP|INV|DEC)-\d{3}(?:-\d{3})?)\b/g)].map(m => m[1]);
+  const out = new Set();
+  for (const x of crudos) {
+    const r = x.match(/^SCR-(\d{3})-(\d{3})$/);
+    if (r) { for (let n = +r[1]; n <= +r[2]; n++) out.add("SCR-" + String(n).padStart(3, "0")); }
+    else out.add(x.replace(/^((?:FLW|UXR|DSP|INV|DEC)-\d{3})-\d{3}$/, "$1"));
+  }
+  return [...out];
+}
+function propsInvDec(fm, t) {
+  const v = k => campo(fm, k).replace(/^["']|["']$/g, "");
+  const st = v("status") || "draft";
+  const fecha = v("decision_date") || v("approved_on") || v("date") || (fm.match(/at:\s*"?(\d{4}-\d{2}-\d{2})/) || [])[1] || "";
+  const p = {};
+  if (t === "dec") {
+    if (!ESTADO_DEC[st]) throw new Error("Estado de decisión sin mapa: " + st);
+    p["Estado de la decisión"] = { select: { name: ESTADO_DEC[st] } };
+    const por = v("decided_by") || v("approved_by");
+    if (por) p["Decidido por"] = { rich_text: [{ type: "text", text: { content: por.slice(0, 200) } }] };
+    if (fecha) p["Fecha de decisión"] = { date: { start: fecha } };
+  } else {
+    p["Estado del documento"] = { select: { name: { draft: "Borrador", in_review: "En revisión", approved: "Aprobado", accepted: "Aprobado" }[st] || "Borrador" } };
+    if (fecha) p["Fecha"] = { date: { start: fecha } };
+  }
+  return p;
+}
 const hoy = new Date().toISOString().slice(0, 10);
 const tipo = process.argv[2];
-if (!["flw", "scr", "ib"].includes(tipo)) { console.error("tipo: flw | scr | ib"); process.exit(2); }
+if (!["flw", "scr", "ib", "inv", "dec"].includes(tipo)) { console.error("tipo: flw | scr | ib | inv | dec"); process.exit(2); }
 const only = (process.argv.find(a => a.startsWith("--only=")) || "").slice(7).split(",").filter(Boolean);
 const dry = process.argv.includes("--dry-run");
 const out = path.join(S, tipo);
@@ -53,14 +85,33 @@ const partir = t => { const m = t.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/); re
 
 // Genera la lista de documentos a cargar: { id, title, repoPath, cuerpo, props, relations }
 function documentos() {
-  const dir = { flw: "design/user-flows", scr: "design/screens", ib: "design/explorations" }[tipo];
-  const pref = { flw: "FLW-", scr: "SCR-", ib: "IB-" }[tipo];
+  const dir = { flw: "design/user-flows", scr: "design/screens", ib: "design/explorations", inv: "design/investigacion", dec: "decisions/ux-ui/decisiones" }[tipo];
+  const pref = { flw: "FLW-", scr: "SCR-", ib: "IB-", inv: "INV-", dec: "DEC-" }[tipo];
   const docs = [];
   for (const f of fs.readdirSync(path.join(WT, dir)).filter(x => x.startsWith(pref) && x.endsWith(".md")).sort()) {
     const repoPath = dir + "/" + f, { fm, cuerpo } = partir(leer(repoPath));
     if (tipo === "flw") {
       docs.push({ id: campo(fm, "id"), title: campo(fm, "title"), repoPath, cuerpo,
         relations: { "Requerimientos UX": { ds: DS.uxr, ids: lista(fm, "requirements").filter(x => /^UXR-\d+$/.test(x)) } }, props: {} });
+    } else if (tipo === "inv" || tipo === "dec") {
+      const propio = campo(fm, "id");
+      const ids = idsDe(fm).filter(x => x !== propio);
+      const de = re => ids.filter(x => re.test(x));
+      const relations = {
+        "Paquetes de alcance": { ds: DS.dsp, ids: de(/^DSP-/) },
+        "Pantallas": { ds: DS.scr, ids: de(/^SCR-/) },
+        "Flujos": { ds: DS.flw, ids: de(/^FLW-/) },
+        "Requerimientos UX": { ds: DS.uxr, ids: de(/^UXR-/) },
+      };
+      if (tipo === "dec") {
+        relations["Investigación"] = { ds: DS.inv, ids: de(/^INV-/) };
+        const sust = lista(fm, "supersedes").concat((campo(fm, "supersedes").match(/DEC-\d{3}/g) || []));
+        relations["Sustituye a"] = { ds: DS.dec, ids: [...new Set(sust)] };
+        // Preguntas que responde: los IDs de pregunta que cita la DEC (UXR-014-Q4, HU-01-14-Q2, PA-DSP-009-03).
+        const preg = [...(fm + "\n" + cuerpo).matchAll(/\b((?:UXR|HU|FLW|SCR|INV|UXS|DEC)-[\d-]+?-Q\d+|PA-DSP-\d{3}-\d{2})\b/g)].map(m => m[1]);
+        relations["Preguntas que responde"] = { ds: DS.preg, ids: [...new Set(preg)] };
+      } else relations["Decisiones"] = { ds: DS.dec, ids: de(/^DEC-/) };
+      docs.push({ id: propio, title: campo(fm, "title"), repoPath, cuerpo, relations, props: propsInvDec(fm, tipo) });
     } else if (tipo === "ib") {
       const url = (cuerpo.match(/Lienzo[^|\n]*\|\s*(https:\/\/claude\.ai\/artifact\/[A-Za-z0-9]+)/) || [])[1];
       const props = { "Fidelidad": { select: { name: "Alta" } } };
@@ -111,9 +162,15 @@ for (const d of documentos()) {
       "Ruta en el repo": { rich_text: [{ type: "text", text: { content: d.repoPath } }] },
       "Enlace GitLab": { url: REPO_URL + DESIGN_REF + "/" + d.repoPath },
       "Última carga": { date: { start: hoy } },
-    }, d.props, propiedadesDocumento(partir(leer(d.repoPath)).fm, d.cuerpo, tipo)),
+    }, d.props, ["inv", "dec"].includes(tipo) ? {} : propiedadesDocumento(partir(leer(d.repoPath)).fm, d.cuerpo, tipo)),
     relations: d.relations,
   };
+  // La base Decisiones no tiene «Estado del documento»: usa «Estado de la decisión».
+  if (tipo === "dec") delete meta.props["Estado del documento"];
+  // Reutilizado por un paquete nuevo (regla de Enzo, 2026-11-26): NOTION_PAQUETES_EXTRA=DSP-009 suma ese paquete
+  // y se combina con NOTION_PRODUCTO para dejarlo en el producto del paquete nuevo; el paquete anterior se conserva.
+  const extra = (process.env.NOTION_PAQUETES_EXTRA || "").split(",").filter(Boolean);
+  if (extra.length && meta.relations["Paquetes de alcance"]) meta.relations["Paquetes de alcance"].ids = [...new Set(meta.relations["Paquetes de alcance"].ids.concat(extra))];
   let resumenArgs = [];
   const r = RESUMENES[d.id];
   if (r) {
@@ -125,7 +182,11 @@ for (const d of documentos()) {
     meta.props["Resumen"] = { rich_text: [{ type: "text", text: { content: r.permite } }] };
     meta.props["Resumen vigente"] = { select: { name: vigente ? "Vigente" : "Desactualizado" } };
   }
-  const dsps = [...partir(leer(d.repoPath)).fm.matchAll(/^\s*-\s*\{?\s*id:\s*"?(DSP-\d+)"?\s*[,}]?/gm)].map(m => m[1]);
+  const fmDoc = partir(leer(d.repoPath)).fm;
+  let dsps = [...fmDoc.matchAll(/^\s*-\s*\{?\s*id:\s*"?(DSP-\d+)"?\s*[,}]?/gm)].map(m => m[1]);
+  // INV y DEC suelen nombrar el paquete solo en tags (dsp-006): se usan como respaldo.
+  if (!dsps.length && ["inv", "dec"].includes(tipo)) dsps = [...new Set([...(fmDoc.match(/^tags:.*$/m) || [""])[0].matchAll(/\bdsp-(\d{3})\b/gi)].map(m => "DSP-" + m[1]))];
+  if (["inv", "dec"].includes(tipo) && dsps.length) meta.relations["Paquetes de alcance"].ids = [...new Set(dsps.concat(meta.relations["Paquetes de alcance"].ids))];
   const productos = PRODUCTO_FORZADO ? [PRODUCTO_FORZADO] : (dsps.length ? productosDe(dsps) : []);
   if (productos.length !== 1) { resumen.push({ id: d.id, duda: true, paquetes: dsps, productos, motivo: dsps.length ? "sus paquetes no dan un solo producto" : "no nombra su paquete en sources; usa NOTION_PRODUCTO" }); continue; }
   meta.props["Producto"] = { relation: [{ id: productos[0] }] };
