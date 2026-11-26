@@ -82,7 +82,8 @@ Antes de diagnosticar o diseñar, dos comprobaciones, en este orden:
 
    La primera vez se indica `--desde <AAAA-MM-DD>` (la fecha en que se recibió el paquete); después usa la revisión registrada. El informe trae: el inventario del paquete y sus historias (HU) con la fecha y el autor de su última actualización; lo que cambió (historias, avisos AVS, consultas QST/RSP, decisiones y artefactos de diseño) con la sección tocada, por ejemplo «AC-4»; las preguntas abiertas con su responsable; y el efecto en cadena sobre los Requerimientos UX (UXR), Flujos de usuario (FLW), Pantallas (SCR) y tareas.
 
-   Solo lee. Muestra el informe y propón: AVANCE con nota o con bloqueo en cada tarea afectada (con `em-gestion-tareas`), «Revisar por cambio de fuente» en los artefactos de diseño (con la conciliación) y el comentario al analista si una decisión toca una HU. Con la aprobación de Enzo se aplica y se registra la revisión con `--registrar`. El commit revisado queda en `design/MEMORY.md` («Revisión de la KB: cambios-kb.mjs en <commit>»).
+
+   Lo demás del informe es propuesta. Muestra el informe y propón: AVANCE con nota o con bloqueo en cada tarea afectada (con `em-gestion-tareas`), «Revisar por cambio de fuente» en los artefactos de diseño (con la conciliación) y el comentario al analista si una decisión toca una HU. Con la aprobación de Enzo se aplica y se registra la revisión con `--registrar`. El commit revisado queda en `design/MEMORY.md` («Revisión de la KB: cambios-kb.mjs en <commit>»).
 
 **Cuándo se repite:** al iniciar cada sesión de UX, antes de cerrar una tarea (para no cerrar sobre una historia que cambió) y en la rutina diaria. La compuerta G0 de `audit_ux.py` falla si `design/MEMORY.md` no cita las tareas ni registra la revisión de la KB.
 

@@ -5,15 +5,19 @@
 //      decisiones y artefactos de diseño, con la sección tocada (p. ej. «AC-4»);
 //   3. las preguntas abiertas del paquete y de sus historias, y las de UX (UXR, FLW, SCR) que las citan;
 //   4. el efecto en cadena: qué artefactos de diseño y qué tareas de Notion trabajan sobre lo que cambió.
-// Solo lee: la KB con `git show`/`git log` (no cambia la rama ni el árbol) y Notion con GET/query.
-// Lo único que escribe es el informe pedido y, con --registrar, la revisión vista en ~/.comsatel/revision-kb.json.
+// Lee la KB con `git show`/`git log` (no cambia la rama ni el árbol) y Notion con GET/query.
+// Escribe el informe pedido y, con --registrar, la revisión vista en ~/.comsatel/revision-kb.json.
+//   5. Carga obligatoria (Enzo, 2026-11-26): sube a Notion el paquete y sus historias tal como están en
+//      la KB, con notion/scripts/cargar-paquete.js. Es mecánica (la estructura es la misma) y no pide
+//      aprobación. Solo se omite con --sin-carga o si esta copia del skill no trae el módulo de Notion.
 //
 // Uso: node cambios-kb.mjs DSP-009 --kb <knowledge-base> [--ref origin/develop] [--desde <commit|AAAA-MM-DD>]
-//        [--sin-fetch] [--sin-notion] [--informe salida.md] [--json salida.json] [--registrar]
+//        [--sin-fetch] [--sin-notion] [--sin-carga] [--informe salida.md] [--json salida.json] [--registrar]
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const args = process.argv.slice(2);
 const opcion = (n, def) => { const i = args.indexOf(n); return i >= 0 ? args[i + 1] : def; };
@@ -33,7 +37,7 @@ if (!bandera('--sin-fetch')) { try { git('fetch', '-q', 'origin'); } catch { con
 const commit = git('rev-parse', ref).trim();
 let avisoSha = '';
 if (!bandera('--sin-fetch') && ref.startsWith('origin/')) {
-  const remoto = gitSeguro('ls-remote', 'origin', 'refs/heads/' + ref.slice(7)).split(/s/)[0];
+  const remoto = gitSeguro('ls-remote', 'origin', 'refs/heads/' + ref.slice(7)).split(/\s/)[0];
   if (remoto && remoto !== commit) avisoSha = `El SHA local de ${ref} (${commit.slice(0, 8)}) no coincide con el remoto (${remoto.slice(0, 8)}): repite el fetch antes de usar este informe.`;
   else if (!remoto) avisoSha = 'No pude comprobar el SHA remoto (ls-remote): el informe usa lo que hay en local.';
 }
@@ -235,7 +239,7 @@ if (!bandera('--sin-notion')) {
       return salida;
     };
     const texto = (p, n) => (p.properties[n]?.title || p.properties[n]?.rich_text || []).map((x) => x.plain_text).join('');
-    const paquetes = await consulta('66f1a7d0-6388-83f8-881b-0758134faa78', { filter: { property: 'title', title: { contains: dsp } } }).catch(async () => {
+    const paquetes = await consulta('66f1a7d0-6388-83f8-881b-0758134faa78', { filter: { or: [{ property: 'ID', rich_text: { equals: dsp } }, { property: 'title', title: { starts_with: dsp } }] } }).catch(async () => {
       // El nombre de la propiedad título puede variar: se busca sin filtro de propiedad.
       return [];
     });
@@ -278,9 +282,21 @@ for (const t of tareas) {
     bloqueantes: bloqueantes.map((p) => `${p.id} (${p.responsable || 'responsable sin registrar'})`) });
 }
 
+// ---------- carga obligatoria en Notion ----------
+let carga = null;
+const cargador = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'notion', 'scripts', 'cargar-paquete.js');
+if (bandera('--sin-carga')) carga = { omitida: 'se pidió --sin-carga' };
+else if (!fs.existsSync(cargador)) carga = { omitida: 'esta copia del skill no trae el módulo de Notion (notion/scripts/cargar-paquete.js)' };
+else {
+  let salida = '';
+  try { salida = execFileSync('node', [cargador, dsp, '--kb', kb, '--ref', ref], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }); }
+  catch (e) { salida = String(e.stdout || ''); if (!salida) carga = { error: String(e.stderr || e.message).split('\n')[0].slice(0, 200) }; }
+  if (!carga) { try { carga = JSON.parse(salida.trim().split('\n').pop()); } catch { carga = { error: 'el cargador no devolvió un resumen' }; } }
+}
+
 // ---------- salida ----------
 const resultado = { version: 1, generado: new Date().toISOString(), soloLectura: true, paquete: dsp, kb: { ref, commit: commit.slice(0, 8), fecha: fechaCommit(commit) },
-  base: { commit: base.slice(0, 8), fecha: fechaCommit(base), origen: origenBase }, inventario, cambios: relevantes, preguntas, disenoAfectado, tareas, propuestas, avisoNotion };
+  base: { commit: base.slice(0, 8), fecha: fechaCommit(base), origen: origenBase }, inventario, cambios: relevantes, preguntas, disenoAfectado, tareas, propuestas, avisoNotion, carga };
 
 const f = (iso) => (iso ? iso.slice(0, 16).replace('T', ' ') : '—');
 const md = [];
@@ -289,6 +305,14 @@ md.push(`- **KB:** \`${ref}\` en \`${resultado.kb.commit}\` (${f(resultado.kb.fe
 if (avisoSha) md.push(`> ${avisoSha}`, '');
 md.push(`- **Desde:** \`${resultado.base.commit}\` (${f(resultado.base.fecha)}), ${origenBase}.`);
 md.push(`- **Resumen:** ${relevantes.length} archivos del paquete cambiaron · ${preguntas.filter((p) => p.estado === 'Abierta').length} preguntas abiertas · ${disenoAfectado.length} artefactos de diseño por revisar · ${propuestas.length} tareas con propuesta.`, '');
+md.push('## 0. Carga en Notion', '');
+if (!carga || carga.omitida) md.push(`> No se cargó: ${carga ? carga.omitida : 'sin datos'}. Notion puede mostrar historias viejas.`, '');
+else if (carga.error) md.push(`> **La carga falló:** ${carga.error}. Repite antes de seguir.`, '');
+else {
+  md.push(`${carga.ok} de ${carga.total} páginas cargadas y verificadas desde \`${carga.ref}\` en \`${carga.commit}\`.`, '');
+  for (const i of carga.items) md.push(`- ${i.ok ? 'Cargada' : '**Falló**'}: ${i.id}${i.creada ? ' (nueva)' : ''}${i.error ? ' — ' + i.error : ''}`);
+  md.push('');
+}
 md.push('## 1. Inventario del paquete', '', '| Documento | Última actualización | ¿Cambió? |', '|---|---|---|');
 for (const d of inventario) {
   const cambio = relevantes.find((r) => r.ruta === d.ruta);

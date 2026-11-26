@@ -95,8 +95,10 @@ function resumenPrefijo() {
   return args.summary && args.summary !== true ? fs.readFileSync(args.summary, "utf8").replace(/\r\n/g, "\n").trimEnd() + "\n" : "";
 }
 
-async function findPage(ds, idValue) {
-  const r = await api("POST", "/data_sources/" + ds + "/query", { filter: { property: "ID", rich_text: { equals: idValue } }, page_size: 1 });
+// extra: filtro adicional (p. ej. Catálogo) cuando el mismo ID existe en otro catálogo, como HU-01-14 de Flotas y de Captura y Recupero.
+async function findPage(ds, idValue, extra) {
+  const porId = { property: "ID", rich_text: { equals: idValue } };
+  const r = await api("POST", "/data_sources/" + ds + "/query", { filter: extra ? { and: [porId, extra] } : porId, page_size: 1 });
   return r.results && r.results[0] ? r.results[0].id : null;
 }
 
@@ -123,7 +125,7 @@ async function upsert() {
     }
     props[prop] = { relation: pages };
   }
-  let page = await findPage(ds, meta.id), creada = false;
+  let page = meta.page || await findPage(ds, meta.id, meta.filtro), creada = false;
   if (args["solo-props"]) {
     // Actualiza solo las propiedades de meta.props; las de meta.ifEmpty se escriben únicamente si la fila las tiene vacías.
     if (!page) { console.log(JSON.stringify({ ok: false, id: meta.id, error: "la fila no existe" })); return; }
