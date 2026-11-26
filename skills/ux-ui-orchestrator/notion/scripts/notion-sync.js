@@ -120,9 +120,11 @@ async function upsert() {
   for (const [prop, rel] of Object.entries(meta.relations || {})) {
     const pages = [];
     for (const id of rel.ids || []) {
-      const pid = await findPage(rel.ds, id);
+      const pid = await findPage(rel.ds, id, rel.filtro); // filtro: el mismo ID existe en otros catálogos
       if (pid) pages.push({ id: pid }); else sinResolver.push(prop + ":" + id);
     }
+    // rel.pages: relaciones que la fila ya tiene; se conservan (unión), para no quitar lo que puso otra carga.
+    for (const pid of rel.pages || []) if (!pages.some(p => p.id.replace(/-/g, "") === pid.replace(/-/g, ""))) pages.push({ id: pid });
     props[prop] = { relation: pages };
   }
   let page = meta.page || await findPage(ds, meta.id, meta.filtro), creada = false;
