@@ -26,13 +26,13 @@ Cada vez que una corrida del orquestador encuentra un hueco (algo manual, un err
 | Las horas con IA no tenían regla | Regla | En documentación y validación, horas con IA = 50 % de las humanas; se anota si fue fuera del horario (memoria de horas) |
 | DEC-103 nombra dsp-009 y dsp-001 y el cargador no sabía en qué producto ponerla | Regla | Se aplicó la regla del 2026-11-26: lo reutilizado va al producto del paquete nuevo (`NOTION_PRODUCTO` = CL2 Flotas) |
 | Los skills vivos y el repo divergieron en las dos direcciones; un commit del 2026-11-26 borró la regla del ciclo en flujo-producto y orquestador-desarrollo al copiar los vivos encima | Validación | Sincronización con fusión de tres vías (base = versión del repo anterior a la fecha del archivo vivo), se conserva lo más reciente de cada lado y se restituyó el ciclo (B15 y B10). PR #2 de Skills-Privado |
+| SCR-011 a 013 no se recargaban: `notion-sync.js` reemplazaba el cuerpo sin la base de preguntas incrustada y Notion lo rechazaba (Enzo: «es un bloqueante de tu script») | Automatización | `notion-sync.js` vuelve a poner al final las bases y subpáginas incrustadas que tenía la página; SCR-011 a 013 recargadas el 2026-11-27 |
 
 ### Pendientes
 
 | Qué falta | Tipo | Propuesta |
 |---|---|---|
 | `lote-diseno.js dec` se detiene si la DEC nombra un paquete viejo además del nuevo | Automatización | Si uno de los paquetes es el que se está trabajando, tomar su producto y sumar el otro como paquete, sin preguntar |
-| SCR-011 a 013 no se recargan: tienen la base de preguntas incrustada y el reemplazo la borraría (cuerpo de Notion del 2026-10-16) | Automatización | El upsert conserva las etiquetas `<database>` del cuerpo actual al reemplazar; mientras tanto, nota manual con el cambio |
 | Copiar los skills vivos al repo pisa lo que llegó de otra computadora | Automatización | Ya existe `scripts/sync-skills-tres-vias.sh` (2026-11-27); falta que `traspaso-entre-computadoras` lo exija y que resuelva solo los choques de numeración de reglas |
 
 ## Corrida DSP-009 (2026-11-26)

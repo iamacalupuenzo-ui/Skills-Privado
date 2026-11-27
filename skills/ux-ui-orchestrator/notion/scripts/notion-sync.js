@@ -104,6 +104,15 @@ async function findPage(ds, idValue, extra) {
 
 // Crea o actualiza una fila por su ID y sube el cuerpo. meta = { id, title, props, relations }.
 // relations: { "<propiedad>": { ds: "<data_source_id>", ids: ["HU-01-09", ...] } } -> se resuelven por la propiedad ID.
+// Conserva las bases y subpáginas incrustadas: el reemplazo las volvería a poner al final en vez de borrarlas.
+// Notion rechaza un replace_content que las omite (caso SCR-011 a 013 con la base de preguntas, 2026-11-27).
+async function hijosIncrustados(page) {
+  const r = await api("GET", "/pages/" + page + "/markdown");
+  const md = r.markdown || "";
+  const tags = md.match(/<database\b[^>]*>[\s\S]*?<\/database>|<page\b[^>]*url="[^"]+"[^>]*>[\s\S]*?<\/page>/g) || [];
+  return tags.length ? "\n\n" + tags.join("\n\n") + "\n" : "";
+}
+
 async function upsert() {
   const ds = args.ds, meta = JSON.parse(fs.readFileSync(args.meta, "utf8"));
   if (meta.props?.Respuesta) {
@@ -189,7 +198,7 @@ async function upsert() {
     const src = args.source || "";
     const callout = "<callout>\n\tContenido generado desde el repositorio (GitLab). No se edita aquí: los cambios se hacen en el archivo del repo y se vuelven a cargar." +
       (args.loaded ? " Última carga: " + args.loaded + "." : "") + (src ? " Fuente: `" + src + "`" : "") + "\n</callout>\n";
-    await api("PATCH", "/pages/" + page + "/markdown", { type: "replace_content", replace_content: { new_str: resumenPrefijo() + callout + toEnhanced(body) } });
+    await api("PATCH", "/pages/" + page + "/markdown", { type: "replace_content", replace_content: { new_str: resumenPrefijo() + callout + toEnhanced(body) + (creada ? "" : await hijosIncrustados(page)) } });
   }
   console.log(JSON.stringify({ ok: true, id: meta.id, page, creada, sinResolver, esperado: args.body ? metrics(fs.readFileSync(args.body, "utf8")) : null }));
 }
@@ -210,7 +219,7 @@ async function upsert() {
       const actual = await api('GET', '/pages/' + page);
       if (actual.last_edited_time !== args['expect-edited']) throw new Error('Notion cambió antes de cargar el cuerpo; no se reemplaza.');
     }
-    await api("PATCH", "/pages/" + page + "/markdown", { type: "replace_content", replace_content: { new_str: content } });
+    await api("PATCH", "/pages/" + page + "/markdown", { type: "replace_content", replace_content: { new_str: content + await hijosIncrustados(page) } });
     console.log(JSON.stringify({ ok: true, page, bytes: content.length, esperado: metrics(body) }));
   } else if (cmd === "verify") {
     const r = await api("GET", "/pages/" + page + "/markdown");
