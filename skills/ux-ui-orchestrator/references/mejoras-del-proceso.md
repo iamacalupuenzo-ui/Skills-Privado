@@ -14,6 +14,27 @@ Cada vez que una corrida del orquestador encuentra un hueco (algo manual, un err
 | Tipo | Validación, automatización o job |
 | Estado | Hecho (con el commit o el archivo) o Pendiente |
 
+## Corrida DSP-009 (2026-11-27)
+
+**En qué paso va el paquete:** paso 7 (Integrar). Ya están hechos: diagnóstico, UXR, flujos, SCR, exploración, UXS-007, ARP-055 sobre lo construido de HU-01-14 y DEC-103. Falta: el paquete de entrega (handoff) en Recursos (IDV-FRONT · 06), el ARP de SCR-095 y 096 cuando se construya HU-01-16, y comentar los desvíos en #270 (IDV-FRONT · 03). El ciclo de retroalimentación se aplicó en cada paso: cada hueco encontrado mientras se ejecutaba quedó aquí y, si era una regla, en el skill.
+
+### Hechas
+
+| Qué pasó | Tipo | Qué se hizo |
+|---|---|---|
+| Un ARP terminado no se marcó en IDV-FRONT · 06, solo en la tarea de UX | Regla | em-gestion-tareas (`avance-y-cierre.md`): cada hecho se mapea a todas las tareas del paquete, de las dos madres (Enzo, 2026-11-26) |
+| Las horas con IA no tenían regla | Regla | En documentación y validación, horas con IA = 50 % de las humanas; se anota si fue fuera del horario (memoria de horas) |
+| DEC-103 nombra dsp-009 y dsp-001 y el cargador no sabía en qué producto ponerla | Regla | Se aplicó la regla del 2026-11-26: lo reutilizado va al producto del paquete nuevo (`NOTION_PRODUCTO` = CL2 Flotas) |
+| Los skills vivos y el repo divergieron en las dos direcciones; un commit del 2026-11-26 borró la regla del ciclo en flujo-producto y orquestador-desarrollo al copiar los vivos encima | Validación | Sincronización con fusión de tres vías (base = versión del repo anterior a la fecha del archivo vivo), se conserva lo más reciente de cada lado y se restituyó el ciclo (B15 y B10). PR #2 de Skills-Privado |
+
+### Pendientes
+
+| Qué falta | Tipo | Propuesta |
+|---|---|---|
+| `lote-diseno.js dec` se detiene si la DEC nombra un paquete viejo además del nuevo | Automatización | Si uno de los paquetes es el que se está trabajando, tomar su producto y sumar el otro como paquete, sin preguntar |
+| SCR-011 a 013 no se recargan: tienen la base de preguntas incrustada y el reemplazo la borraría (cuerpo de Notion del 2026-10-16) | Automatización | El upsert conserva las etiquetas `<database>` del cuerpo actual al reemplazar; mientras tanto, nota manual con el cambio |
+| Copiar los skills vivos al repo pisa lo que llegó de otra computadora | Automatización | Ya existe `scripts/sync-skills-tres-vias.sh` (2026-11-27); falta que `traspaso-entre-computadoras` lo exija y que resuelva solo los choques de numeración de reglas |
+
 ## Corrida DSP-009 (2026-11-26)
 
 ### Hechas
