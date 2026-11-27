@@ -9,7 +9,7 @@ description: >
   estatus". No diseña pantallas (usa ux-ui-orchestrator), no escribe el código de una pantalla
   (usa angular-product-builder) ni gestiona épicas ni Notion (usa product-orchestrator).
 metadata:
-  version: "1.7.0"
+  version: "1.8.0"
 ---
 
 # Orquestador de desarrollo — Comsatel Flotas
@@ -32,7 +32,7 @@ Subes la rama, abres el MR y lo asignas a César; la fusión y la etiqueta son s
 - `references/mapa-de-repos.md` — repos, rutas GitLab, puertos locales, parejas y quién fusiona. Leer al iniciar.
 - `references/convenciones-comunes.md` — commits, MR, ramas, tokens y trampas de Windows. Leer antes de commitear o abrir un MR.
 - `references/estatus.md` — cómo evaluar «¿cómo vamos?» con evidencia. Leer cuando pidan estatus.
-- `references/hooks-bloqueantes.md` — qué acciones frena el guardia de GitLab (fusionar, etiquetar, publicar, push a ramas protegidas, token), cuáles pide confirmar y cómo instalarlo desde `hooks/`. Leer cuando un comando aparezca como BLOQUEADO.
+- `references/hooks-bloqueantes.md` — qué acciones frena el guardia de GitLab (y cómo se extiende a Codex, git y el PATH con instalar-guardias-universales.mjs) (fusionar, etiquetar, publicar, push a ramas protegidas, token), cuáles pide confirmar y cómo instalarlo desde `hooks/`. Leer cuando un comando aparezca como BLOQUEADO.
 - `references/respuesta-de-cierre.md` — estructura única de la respuesta que cierra un paso (resultado, «Lo que hice», «Lo que necesito de ti», «Lo siguiente»). Leer antes de cerrar.
 
 ## Antes del desarrollo: la documentación de UX

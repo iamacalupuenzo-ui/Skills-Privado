@@ -1,0 +1,12 @@
+#!/bin/sh
+# Guardia de Comsatel para git (hook pre-push). Revisa lo que se va a subir sin importar qué agente
+# lo lanzó. Se activa con core.hooksPath (ver instalar-guardias-universales.mjs).
+# Encadena el pre-push propio del repositorio, si existe, para no pisarlo.
+aqui="$(cd "$(dirname "$0")" && pwd)"
+entrada="$(cat)"
+printf '%s\n' "$entrada" | node "$aqui/../guardia-git.mjs" pre-push "$@" || exit $?
+propio="$(git rev-parse --git-common-dir 2>/dev/null)/hooks/pre-push"
+if [ -x "$propio" ] && [ "$(cd "$(dirname "$propio")" && pwd)" != "$aqui" ]; then
+  printf '%s\n' "$entrada" | "$propio" "$@" || exit $?
+fi
+exit 0

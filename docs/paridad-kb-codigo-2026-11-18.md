@@ -40,7 +40,7 @@ corregida en `a0300f0239ffd5b59a57a45192c18d754f015cd1` coinciden. Los fixtures 
 extractos literales, procedencia y líneas originales. El menú es el mock/configuración del
 piloto, corroborado por shell-layout.mapper.ts; no prueba una sesión con el BFF real.
 
-## Versiones
+## Versiones (al 18-nov, antes de integrar con main)
 
 | Skill | Versión |
 |---|---|
@@ -82,3 +82,36 @@ No se escribió en la KB, micro UI o Shell, ni se abrió/actualizó un MR. No se
 el estado actual de !321 por API. El bloqueo está incorporado en las instrucciones de
 los skills y validado en el catálogo; no hay CI ni hook de paridad instalado en GitLab o
 en proyectos. Su instalación/publicación requiere el alcance correspondiente.
+
+## Estado integrado con main (2026-11-27)
+
+[verificado] Los dos commits del ciclo (paridad y guardias) se rebasaron sobre el `main` de Skills-Privado del
+traspaso del 27-nov (PR #2, 30 commits más) y se fusionaron a `main` por avance rápido. Las versiones de la tabla
+anterior ya no rigen: `main` había subido varias, así que se resolvió tomando la más alta y sumando una.
+
+| Skill o plugin | Versión publicada | Regla de paridad |
+|---|---|---|
+| paridad-diseno-desarrollo | 1.3.0 | Define el modo KB-CODIGO |
+| ux-ui-orchestrator | 1.2.0 | B4 |
+| orquestador-desarrollo | 1.8.0 | B11 |
+| flujo-producto | 1.5.1 | B16 |
+| plugin comsatel-desarrollo | 1.3.0 | — |
+| plugin comsatel-ux | 1.3.0 | — |
+
+La regla tiene número distinto en cada skill porque cada uno ya tenía sus propias reglas B. En `main` ya existían
+B9 y B10 en orquestador-desarrollo, B10 a B15 en flujo-producto y B1 a B3 en ux-ui-orchestrator, así que la de
+paridad quedó al final de cada lista.
+
+El diseño gobernado de Claude Design y de prototipos (governed_artifacts.py) pasó a ser reconocido por el gate de
+handoff; hasta entonces el gate solo aceptaba Figma o Stitch.
+
+[verificado] Casos de prueba de la regla: orquestador-desarrollo caso 10 (B11) y flujo-producto caso 14 (B16).
+Validación sobre la rama integrada: `npm test` con 36 skills, 0 errores y 24 avisos; 34 pruebas de paridad; 134 de
+ux-development-handoff; guardias con 56 casos declarados y 0 fallos.
+
+## Qué decide el comparador y qué no
+
+El comparador informa una divergencia con el valor y el archivo y línea de cada lado; no decide cuál fuente manda.
+Esa decisión es del responsable del paquete. Ejemplo: la KB dice cinco unidades y el código tiene seis claves.
+El comparador marca la clave sobrante. Si la clave sobra del código o falta en la KB lo decide una persona, y
+mientras no lo decida el cierre y el MR siguen bloqueados.

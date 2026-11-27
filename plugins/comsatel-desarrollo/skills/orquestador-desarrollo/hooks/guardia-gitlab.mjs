@@ -7,11 +7,12 @@
 // Documentación: ../references/hooks-bloqueantes.md
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
-const PROTEGIDAS = ['develop', 'main', 'release'];
+export const PROTEGIDAS = ['develop', 'main', 'release'];
 
-const AVISO_BLOQUEO = (titulo, motivo, que) =>
+export const AVISO_BLOQUEO = (titulo, motivo, que) =>
   `BLOQUEADO: ${titulo}\nMotivo: ${motivo}\nQué hacer: ${que}`;
 
 function ramaActual(cwd, dirOpt) {
@@ -95,7 +96,7 @@ function sinTextoLibre(cmd) {
     .replace(/(\s(?:-m|--message)(?:=|\s+))("(?:[^"\\]|\\.)*"|'[^']*')/g, '$1""');
 }
 
-function evaluar(cmd, cwd) {
+export function evaluar(cmd, cwd) {
   const todo = sinTextoLibre(cmd);
 
   // 1. Token: nunca imprimirlo ni escribirlo en un comando (se revisa el texto completo).
@@ -219,34 +220,55 @@ function evaluar(cmd, cwd) {
   return null;
 }
 
-let entrada = '';
-process.stdin.setEncoding('utf8');
-process.stdin.on('data', (c) => (entrada += c));
-process.stdin.on('end', () => {
-  let evento;
-  try { evento = JSON.parse(entrada); } catch { process.exit(0); }
-  if (!/^(Bash|PowerShell)$/i.test(evento.tool_name || '')) process.exit(0);
-  const cmd = evento.tool_input?.command || '';
-  if (!cmd) process.exit(0);
-  const r = evaluar(cmd, evento.cwd || process.cwd());
-  if (!r) process.exit(0);
-  const [tipo, titulo, motivo, que] = r;
-  if (tipo === 'deny') {
+// Modo estricto: pensado para agentes sin nadie al teclado (codex exec, workers de Orca). Un "ask" pasa a "deny".
+export const modoEstricto = () => process.env.COMSATEL_GUARDIA_ASK === 'deny' || process.argv.includes('--estricto');
+
+// Solo se ejecuta como hook cuando es el archivo invocado; los adaptadores de git y de shell lo importan.
+const esPrincipal = process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href;
+
+function principal() {
+  let entrada = '';
+  process.stdin.setEncoding('utf8');
+  process.stdin.on('data', (c) => (entrada += c));
+  process.stdin.on('end', () => {
+    let evento;
+    try { evento = JSON.parse(entrada); } catch { process.exit(0); }
+    if (!/^(Bash|PowerShell|shell|local_shell|exec_command|container.exec)$/i.test(evento.tool_name || '')) process.exit(0);
+    const cmd = evento.tool_input?.command || '';
+    if (!cmd) process.exit(0);
+    const r = evaluar(cmd, evento.cwd || process.cwd());
+    if (!r) process.exit(0);
+    const [tipo, titulo, motivo, que] = r;
+    if (tipo === 'deny') {
+      process.stdout.write(JSON.stringify({
+        hookSpecificOutput: {
+          hookEventName: 'PreToolUse',
+          permissionDecision: 'deny',
+          permissionDecisionReason: AVISO_BLOQUEO(titulo, motivo, que),
+        },
+      }));
+      process.exit(0);
+    }
+    if (modoEstricto()) {
+      process.stdout.write(JSON.stringify({
+        hookSpecificOutput: {
+          hookEventName: 'PreToolUse',
+          permissionDecision: 'deny',
+          permissionDecisionReason: AVISO_BLOQUEO(titulo, `${motivo}
+(Modo estricto: aquí no hay nadie que confirme.)`, 'Pídele la confirmación a la persona responsable y que ella ejecute la acción en su terminal.'),
+        },
+      }));
+      process.exit(0);
+    }
     process.stdout.write(JSON.stringify({
       hookSpecificOutput: {
         hookEventName: 'PreToolUse',
-        permissionDecision: 'deny',
-        permissionDecisionReason: AVISO_BLOQUEO(titulo, motivo, que),
+        permissionDecision: 'ask',
+        permissionDecisionReason: `${titulo}\nMotivo: ${motivo}\nQué sigue: ${que}`,
       },
     }));
     process.exit(0);
-  }
-  process.stdout.write(JSON.stringify({
-    hookSpecificOutput: {
-      hookEventName: 'PreToolUse',
-      permissionDecision: 'ask',
-      permissionDecisionReason: `${titulo}\nMotivo: ${motivo}\nQué sigue: ${que}`,
-    },
-  }));
-  process.exit(0);
-});
+  });
+}
+
+if (esPrincipal) principal();

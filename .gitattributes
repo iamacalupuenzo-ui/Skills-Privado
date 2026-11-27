@@ -1,0 +1,7 @@
+# Los hooks de git y los atajos sh se ejecutan con sh: necesitan finales de línea LF aunque el repo use autocrlf.
+skills/orquestador-desarrollo/hooks/githooks/* text eol=lf
+skills/orquestador-desarrollo/hooks/shims/* text eol=lf
+skills/orquestador-desarrollo/hooks/shims/*.cmd text eol=crlf
+plugins/*/skills/orquestador-desarrollo/hooks/githooks/* text eol=lf
+plugins/*/skills/orquestador-desarrollo/hooks/shims/* text eol=lf
+plugins/*/skills/orquestador-desarrollo/hooks/shims/*.cmd text eol=crlf

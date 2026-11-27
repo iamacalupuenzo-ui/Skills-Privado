@@ -99,3 +99,46 @@ borrar la rama remota y volver a subirla es lo mismo que forzar. Lo que sí se h
 
 Un agente va a ejecutar `git push origin HEAD:release`. ¿Qué pasa y a quién le toca la acción?
 (Respuesta: se bloquea, porque `release` está protegida; la acción entra por MR y la fusiona César.)
+
+## Guardias para Codex, Orca y otros agentes
+
+El guardia de GitLab nació como hook de Claude Code. Para que las mismas reglas rijan sin importar qué agente
+trabaje, se reparten en capas. Cada una cubre lo que la anterior no ve.
+
+| Capa | Qué ve | Quién queda cubierto | Límite |
+|---|---|---|---|
+| 1. Hook nativo de Claude Code | El comando antes de ejecutarlo; pide confirmación (`ask`) | Claude Code | Solo ese agente |
+| 2. Hook nativo de Codex | El mismo comando, mismo protocolo (`PreToolUse`) | Codex | Codex no sabe pedir confirmación: lo toma como fallo del hook y deja pasar el comando. Por eso se instala en modo estricto (`--estricto`: un `ask` pasa a bloqueo). Hay que confiar en el hook con `/hooks` |
+| 3. Hook `pre-push` de git | Lo que git va a subir de verdad: ramas protegidas, forzados, borrados, etiquetas | Cualquier agente, terminal o persona | `git push --no-verify`, o un repositorio con su propio `core.hooksPath` |
+| 4. Atajos en el PATH (`glab`, `npm`, `curl`) | Fusionar con `glab`, `npm publish`, fusiones o etiquetas por API con `curl` | Cualquier terminal que herede el PATH | Una ruta absoluta, `Invoke-RestMethod` o un script que llame a la API |
+| 5. GitLab (ramas protegidas, aprobaciones, alcance del token) | Todo, en el servidor | Todos | No se construye aquí; es la única capa que no se puede esquivar |
+
+Qué decide cada capa: lo que es `deny` se bloquea siempre. Lo que pide confirmación (`ask`) se confirma en Claude Code,
+se bloquea en Codex y en modo estricto, y en los hooks de git y los atajos se avisa por stderr y se deja pasar
+(salvo `COMSATEL_GUARDIA_ASK=deny`, recomendado para workers sin nadie al teclado). El motor es uno solo
+(`guardia-gitlab.mjs`, función `evaluar`); `guardia-git.mjs` y `guardia-shim.mjs` lo reutilizan.
+
+### Instalación
+
+Vista previa (no escribe nada) y aplicación:
+
+    node hooks/instalar-guardias-universales.mjs
+    node hooks/instalar-guardias-universales.mjs --apply --git-repo <ruta-del-repositorio>
+    node hooks/instalar-guardias-universales.mjs --apply --git-global          # todos los repositorios
+    node hooks/instalar-guardias-universales.mjs --apply --quitar              # deshace todo
+
+Copia las guardias en `~/.comsatel-guardias/actual`, registra el hook en `~/.codex/hooks.json` (conserva los hooks
+ajenos y guarda una copia), activa el `pre-push` y deja los atajos en `shims/`. Para activar los atajos hay que
+anteponer esa carpeta al PATH de usuario y reiniciar Orca y las terminales: el instalador imprime el comando y no
+toca tu PATH. `--git-global` se niega a reemplazar un `core.hooksPath` global existente salvo con `--forzar`.
+
+### Verificación
+
+`node hooks/probar-guardias-universales.mjs` usa repositorios de git reales con un remoto temporal y comprueba los
+hooks de git, los atajos (incluidos los `.cmd` de Windows), el instalador y el protocolo de hook de Codex.
+Además se comprobó con Codex 0.166 (`approval: never`, `sandbox: danger-full-access`): el hook se dispara, bloquea
+`git push origin develop` y, en modo estricto, también el push de una rama feature. Sin modo estricto, Codex
+dejó pasar ese push.
+
+[no comprobado] opencode, Qoder y Antigravity: no se verificó si admiten hooks propios. Quedan cubiertos por las
+capas 3 y 4 mientras corran en una terminal con el PATH y git configurados.

@@ -1,0 +1,3 @@
+#!/bin/sh
+aqui="$(cd "$(dirname "$0")" && pwd)"
+COMSATEL_SHIM_DIR="$aqui" exec node "$aqui/../guardia-shim.mjs" npm "$@"

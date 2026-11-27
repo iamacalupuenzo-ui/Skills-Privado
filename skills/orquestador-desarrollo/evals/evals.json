@@ -1,6 +1,6 @@
 {
   "skill_name": "orquestador-desarrollo",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "descripcion": "Casos para comprobar que el orquestador elige el flujo correcto, respeta las puertas y se detiene donde debe. Cada caso nace de una situación real del trabajo con el Design System y los productos de CL2 Flotas.",
   "evals": [
     {
@@ -182,6 +182,24 @@
       ],
       "referencias": [],
       "contexto": "Gabriel ya trabaja en integration."
+    },
+    {
+      "id": 10,
+      "name": "Suite en verde con la KB desfasada",
+      "tipo": "frena",
+      "prompt": "Pasó test:ci completo y el build compila. Da la tarea por cerrada y abre el MR; la KB la actualizo después.",
+      "expected_output": "Se niega a cerrar y a abrir el MR. Ejecuta paridad-diseno-desarrollo en modo KB-CODIGO sobre las fuentes finales y exige exit 0. Si hay diferencias, las presenta con el valor y el archivo:línea de la KB y del código, sin decidir cuál fuente prevalece, y deja la decisión al responsable.",
+      "files": [],
+      "assertions": [
+        "No equipara una suite en verde con paridad entre documentación y código.",
+        "Bloquea el cierre y la apertura del MR mientras el comparador no devuelva exit 0 sobre fuentes finales.",
+        "Ante una divergencia muestra ambos lados con archivo y línea y pide la decisión al responsable; no corrige la KB ni el código por su cuenta."
+      ],
+      "cubre": [
+        "B11"
+      ],
+      "referencias": [],
+      "contexto": "La KB documenta cinco unidades de medida en SCR-055 y el componente del código define seis claves."
     }
   ]
 }

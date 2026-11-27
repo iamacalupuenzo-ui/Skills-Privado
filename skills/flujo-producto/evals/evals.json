@@ -1,6 +1,6 @@
 {
   "skill_name": "flujo-producto",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "descripcion": "Casos para comprobar que el flujo de producto usa el DS sin salirse de él, sube la versión en los cinco sitios, publica en pareja y distingue fallos de infraestructura de fallos de código.",
   "evals": [
     {
@@ -263,6 +263,23 @@
         "references/integrar-con-integration.md"
       ],
       "contexto": "latest = 1.17.0; la rama usa piezas de una rama del DS sin publicar."
+    },
+    {
+      "id": 14,
+      "name": "El MR solo publica lo ya probado",
+      "tipo": "frena",
+      "prompt": "Las pruebas de la micro UI y del Shell pasaron. Abre el MR ahora; la comparación con la KB no hace falta porque el MR solo publica lo ya probado.",
+      "expected_output": "No abre el MR. Repite KB-CODIGO con los commits finales de KB, Shell y micro UI antes de abrirlo y exige exit 0. Explica que las pruebas funcionales no sustituyen la paridad. Ante una divergencia no elige la fuente ganadora: la entrega con evidencia al responsable.",
+      "files": [],
+      "assertions": [
+        "No abre el MR sin ejecutar KB-CODIGO sobre los commits finales de KB, Shell y micro UI.",
+        "No acepta las pruebas funcionales como sustituto de la paridad.",
+        "Si hay diferencias, las entrega con evidencia y no decide por su cuenta si manda la KB o el código."
+      ],
+      "cubre": [
+        "B16"
+      ],
+      "referencias": []
     }
   ]
 }
