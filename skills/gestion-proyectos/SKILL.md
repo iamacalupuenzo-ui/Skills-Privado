@@ -108,6 +108,10 @@ Al consultar el estado de un proyecto o de la semana, recordar las tareas con `A
 cierre` y preguntar por su resultado, una por una o en lote, sin repetir la pregunta por la
 misma tarea en la misma conversación.
 
+## Tareas: las registra em-gestion-tareas (2026-11-26)
+
+Este skill se queda con el proyecto, el sprint, los riesgos, la salud y los reportes; las secciones de alta y cierre de tarea de arriba aplican solo a tareas fuera de CL2 Flotas. Crear, publicar, avanzar y cerrar tareas en Notion, GitLab y ClickUp lo hace `em-gestion-tareas`, con su estructura (alcance, criterios de aceptación, condición de cierre y trazabilidad). Aquí no se crean páginas en la base Tareas.
+
 ## Alcance compartido en ClickUp
 
 ClickUp es la capa de visibilidad compartida para el equipo y líderes; Notion conserva la
@@ -124,7 +128,7 @@ evaluar por defecto solo tareas asignadas a **Enzo Francisco Macalupu Herrera**
    incluirlas si el usuario solicita explícitamente una vista de equipo, una dependencia externa
    o una coordinación.
 3. No sincronizar, crear, reasignar, actualizar estados ni comentar en ClickUp por iniciativa
-   propia. Primero se define el mapeo Notion ↔ ClickUp y la acción concreta autorizada.
+   propia. El mapeo Notion ↔ GitLab ↔ ClickUp está aprobado en `references/mapeo-notion-gitlab-clickup.md` (2026-11-14); cada escritura sigue necesitando la acción concreta autorizada.
 4. Distinguir siempre entre un dato interno de Notion, una señal compartida de ClickUp y una
    discrepancia pendiente de resolver; ninguna fuente sobrescribe la otra automáticamente.
 4.1. **No adelantar en ClickUp.** Notion es personal y puede ir adelantado; ClickUp es

@@ -19,13 +19,13 @@ Complementan a `audit_ux.py`, que solo verifica lo determinista (existencia, enl
 | Accesible con evidencia | ¿El ARP evaluó contraste, foco, teclado, nombres accesibles, errores, objetivos táctiles y reflow? | `pass` sin evaluar; "WCAG AA" citado de una herramienta |
 | Reutilizable | ¿Se usó un CMP existente antes de crear uno nuevo? ¿La variación está documentada? | Componente duplicado; reutilizable "porque aparece dos veces" |
 | Semántico | ¿Se usan TKN semánticos y no valores crudos (hex, px sueltos)? | Valores crudos en SCR/CMP |
-| Gobernado | ¿Cada SCR del alcance tiene `governed_design` y la divergencia Stitch↔Figma no está `open`? | Handoff basado en un artefacto Stitch |
+| Gobernado | ¿Cada SCR tiene validación en código con Enzo, captura y ARP implementado, o governed_design aprobado si se usa Figma? | Handoff basado en un artefacto Stitch |
 | Vigente | ¿Las referencias Stitch/Figma se verificaron en vivo y no están obsoletas? | `STALE_FIGMA_REFERENCE`; `project_ref` sin evidencia |
 | Decisión humana explícita | ¿Cada DD, aprobación y gate registra quién, cuándo y por qué? | Aprobación sin autor; `verified` fabricado |
 
 ## Severidad
 
-- **Bloqueante:** impide el gate o hace que Stitch/Desarrollo inventen (SCR sin `flow`, divergencia abierta, falta `governed_design`, pregunta crítica oculta).
+- **Bloqueante:** impide el gate o hace que Stitch/Desarrollo inventen (SCR sin `flow`, divergencia abierta, falta evidencia de validación en código o de diseño gobernado, pregunta crítica oculta).
 - **Mayor:** degrada la calidad del diseño pero el flujo puede avanzar con riesgo declarado (estado omitido justificable, ARP `inconclusive`).
 - **Menor:** forma o redacción (etiqueta inconsistente, tokens por normalizar).
 

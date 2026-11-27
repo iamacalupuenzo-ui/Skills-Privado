@@ -1,78 +1,94 @@
-// Sube a Preguntas las respuestas ya registradas en DEC-001…005 (preguntas/respuestas.json): propiedades + sección «Respuestas registradas».
-// Uso: node subir-respuestas.js [--dry-run] [--lote=i/n] [--only=ID,ID]
-// Reglas: Respuesta solo si estaba vacía; Estado pasa a «Propuesta» solo si estaba vacío o en «Abierta»; nada se marca Decidida.
-const fs = require("fs");
-const path = require("path");
-const { execFileSync } = require("child_process");
-
-const MOD = require("path").resolve(__dirname, /historico$/.test(__dirname) ? "../.." : "..");
-const CFG = JSON.parse(require("fs").readFileSync(require("path").join(MOD, "config.json"), "utf8"));
-const S = process.env.NOTION_TRABAJO || require("path").join(MOD, "trabajo").replace(/\\/g, "/");
-const WT = process.env.NOTION_WORKTREE || CFG.worktree;
-const SYNC = process.env.NOTION_SYNC || require("path").resolve(MOD, CFG.sync);
-const REPO_URL = CFG.repo_url;
-const DESIGN_REF = process.env.DESIGN_REF || CFG.design_ref;
-const DS_PREG = "9811a7d0-6388-829a-82b4-0735e973e46b";
-const hoy = new Date().toISOString().slice(0, 10);
-const dry = process.argv.includes("--dry-run");
-const lote = (process.argv.find(a => a.startsWith("--lote=")) || "").slice(7).split("/").map(Number);
-const only = (process.argv.find(a => a.startsWith("--only=")) || "").slice(7).split(",").filter(Boolean);
-const out = path.join(S, "preguntas", "resp");
-fs.mkdirSync(out, { recursive: true });
-
-const { R } = JSON.parse(fs.readFileSync(path.join(S, "preguntas", "respuestas.json"), "utf8"));
-const PAGE = {};
-for (const i of [1, 2, 3, 4]) for (const x of JSON.parse(fs.readFileSync(path.join(S, "preguntas", "resumen-" + i + ".json"), "utf8"))) if (x.page) PAGE[x.id] = x.page;
-
-const esC = a => /§C/.test(a.fuente);
-const orden = (a, b) => (b.vigente ? 1 : 0) - (a.vigente ? 1 : 0) || (esC(a) ? 1 : 0) - (esC(b) ? 1 : 0) || b.fecha.localeCompare(a.fecha) || (/DEC-001/.test(b.fuente) ? 1 : 0) - (/DEC-001/.test(a.fuente) ? 1 : 0);
-const trozos = (s, n) => { const r = []; for (let i = 0; i < s.length; i += n) r.push(s.slice(i, i + n)); return r.length ? r : [""]; };
-const rt = s => ({ rich_text: trozos(s, 1900).slice(0, 1).map(c => ({ type: "text", text: { content: c } })) });
-
-let ids = Object.keys(R).filter(id => PAGE[id]);
-if (only.length) ids = ids.filter(id => only.includes(id));
-if (lote.length === 2 && lote[1]) ids = ids.filter((_, i) => i % lote[1] === lote[0] - 1);
-const run = (script, args) => execFileSync("node", [script, ...args], { encoding: "utf8", env: Object.assign({}, process.env, { DESIGN_REF }) });
-const resumen = [];
-for (const id of ids) {
-  const resp = [...R[id]].sort(orden), v = resp[0], f = id.replace(/[^\w.-]+/g, "_");
-  const delegada = esC(v);
-  const texto = "[" + v.fuente + " · " + v.fecha + "] " + v.texto;
-  const respuesta = texto.length > 1900 ? texto.slice(0, 1880).replace(/\s+\S*$/, "") + "… (texto completo en el cuerpo de la página)" : texto;
-  const decidido = delegada ? "Recomendación (IA), delegada por Enzo Macalupu; pendiente de validar" : "Enzo Macalupu (diseño); pendiente del PO";
-  const meta = {
-    id, title: id,
-    props: {
-      "Respuesta": rt(respuesta), "Decidido por": rt(decidido), "Fecha de decisión": { date: { start: v.fecha } },
-      "Estado": { select: { name: "Propuesta" } },
-    },
-    ifEmpty: ["Respuesta", "Decidido por", "Fecha de decisión"], ifValues: { "Estado": ["Abierta"] },
-  };
-  // Sección «Respuestas registradas»: la vigente primero, luego el historial (más reciente a más antigua)
-  const L = ["", "## Respuestas registradas", "", "Respuestas de Enzo Macalupu y recomendaciones registradas en el repo. **Todas están pendientes de confirmación del responsable indicado**; ninguna es regla de negocio. La primera es la que se usa como «Respuesta».", ""];
-  resp.forEach((a, i) => {
-    L.push("### " + (i === 0 ? "Vigente · " : "") + a.fuente + " — " + a.fecha, "", a.texto, "");
-    if (a.confirma) L.push("**Quién debe confirmar:** " + a.confirma, "");
-    L.push("Fuente: [`" + a.archivo.replace(/^design\//, "") + "`](" + REPO_URL + DESIGN_REF + "/" + a.archivo + ")", "");
-  });
-  const base = path.join(S, "preguntas", "lote", f), origen = base + "-origen.md", nuevo = path.join(out, f + "-origen2.md"), cuerpo2 = path.join(out, f + "-cuerpo2.md"), mF = path.join(out, f + "-resp.json");
-  fs.writeFileSync(mF, JSON.stringify(meta, null, 1));
-  const repoPath = (R[id][0].archivo || "design/consultas/CPO-001-consultas-al-product-owner-dsp-001.md");
-  fs.writeFileSync(nuevo, fs.readFileSync(origen, "utf8").replace(/\s+$/, "") + "\n" + L.join("\n"));
-  const rec = { id, vigente: v.fuente, fecha: v.fecha, respuestas: resp.length, delegada };
-  if (dry) { resumen.push(rec); continue; }
-  try {
-    const p = JSON.parse(run(SYNC, ["upsert", "--ds", DS_PREG, "--meta", mF, "--solo-props"]));
-    run(path.join(MOD, "scripts", "prepare-body.js"), [repoPath, nuevo, cuerpo2, WT, id]);
-    // el cuerpo conserva su ruta de fuente original
-    const fuenteCuerpo = (preguntasFuente(id));
-    run(SYNC, ["push", "--page", PAGE[id], "--body", cuerpo2, "--source", fuenteCuerpo, "--loaded", hoy]);
-    resumen.push(Object.assign(rec, { ok: true, props: p.soloProps, omitidas: p.omitidas }));
-  } catch (e) { resumen.push(Object.assign(rec, { error: String(e.stderr || e.message).slice(0, 220) })); }
+#!/usr/bin/env node
+// Prepara un plan revisable; solo --aplicar-plan aplica exactamente ese plan aprobado.
+const fs = require('node:fs');
+const path = require('node:path');
+const { execFileSync } = require('node:child_process');
+const { opciones, configuracion, snapshot, resumenRespuesta, resolucion, validarDelegacion, hash } = require('./kb-preguntas.js');
+const { clienteLectura, listar } = require('./conciliar-kb-notion.js');
+const { deduplicarPlan } = require('./validar-plan.js');
+const rt = s => ({ rich_text: [{ type: 'text', text: { content: s } }] });
+function propiedades(q) {
+  validarDelegacion(q);
+  if (!q.estado) throw new Error(q.id + ': estado sin mapa; completa el KB antes de cargar.');
+  if (q.estado === 'Propuesta UX' && /PO\b|Product Owner|Negocio|Arquitectura|Seguridad|Analista/i.test(q.responsable)) throw new Error(q.id + ': una pregunta mixta conserva Propuesta; decide su responsable externo a UX.');
+  if (q.estado === 'Decidida' && (!q.fecha || !q.decididoPor || (!q.decision && !q.decisiones.length))) throw new Error(q.id + ': una decisión exige fecha, autoría y DEC en el KB antes de cargar.');
+  const p = { Respuesta: rt(resumenRespuesta(q)), Estado: { select: { name: q.estado } } };
+  if (q.decididoPor) p['Decidido por'] = rt(q.decididoPor);
+  if (q.fecha) p['Fecha de decisión'] = { date: { start: q.fecha } };
+  return p;
 }
-function preguntasFuente(id) {
-  const m = path.join(S, "preguntas", "lote", id.replace(/[^\w.-]+/g, "_") + "-meta.json");
-  try { return JSON.parse(fs.readFileSync(m, "utf8")).props["Ruta en el repo"].rich_text[0].text.content; } catch (e) { return ""; }
+function insertarResolucion(md, seccion) {
+  // Conserva contexto, alternativas, comentarios y vistas fuera de la sección administrada.
+  const limpio = md.replace(/^## Resolución\s*\n[\s\S]*?(?=^## (?!#)|$(?![\s\S]))/gm, '').trimEnd();
+  return limpio + '\n\n' + seccion;
 }
-fs.writeFileSync(path.join(S, "preguntas", "resp-resumen" + (lote.length === 2 ? "-" + lote[0] : "") + (dry ? "-dry" : "") + ".json"), JSON.stringify(resumen, null, 1));
-console.log(JSON.stringify({ total: resumen.length, ok: resumen.filter(r => r.ok).length, errores: resumen.filter(r => r.error).length, dry }));
+async function main() {
+  const args = opciones(), cfg = configuracion(args), kb = snapshot(cfg);
+  if (args['dry-run'] && args['aplicar-plan']) throw new Error('--dry-run no aplica planes; omite --aplicar-plan para preparar uno.');
+  const out = path.resolve(args.plan || path.join(process.env.NOTION_TRABAJO || path.resolve(__dirname, '../trabajo'), 'preguntas/plan-respuestas.json'));
+  const sync = path.resolve(__dirname, 'notion-sync.js');
+  const run = a => JSON.parse(execFileSync(process.execPath, [sync, ...a], { encoding: 'utf8' }));
+  if (!args['aplicar-plan']) {
+    const only = String(args.only || '').split(',').filter(Boolean);
+    const desconocidos = only.filter(id => !kb.preguntas.some(q => q.id === id));
+    if (desconocidos.length) throw new Error('IDs solicitados ausentes del KB: ' + desconocidos.join(', '));
+    const api = args['notion-json'] ? null : clienteLectura(cfg.bases.Preguntas.data_source);
+    const paginas = args['notion-json'] ? JSON.parse(fs.readFileSync(args['notion-json'], 'utf8'))
+      : await listar(api, '/data_sources/' + cfg.bases.Preguntas.data_source + '/query', { page_size: 100 });
+    const preguntas = [], pendientes = [];
+    for (const q of kb.preguntas.filter(q => (!only.length || only.includes(q.id)))) {
+      const candidatas = paginas.filter(p => (p.properties?.ID?.rich_text || []).map(t => t.plain_text ?? t.text?.content ?? '').join('') === q.id);
+      if (candidatas.length > 1) throw new Error(q.id + ': ID repetido en Notion; concilia antes de preparar la carga.');
+      const p = candidatas[0];
+      if (!p) { pendientes.push({ id: q.id, motivo: 'Sin página en Notion; prepara primero su creación con el cargador de preguntas.' }); continue; }
+      const responsables = (p.properties?.Responsable?.multi_select || []).map(x => x.name).join(' ');
+      if (q.estado === 'Propuesta UX' && /PO|Negocio|Arquitectura|Seguridad|Analista/i.test(responsables)) throw new Error(q.id + ': la propuesta de otro responsable no se remapea a Propuesta UX.');
+      const anterior = api ? (await api('GET', '/pages/' + p.id + '/markdown')).markdown : p.markdown || '';
+      if (anterior === undefined) throw new Error(q.id + ': no se pudo leer el cuerpo completo.');
+      const cuerpo = insertarResolucion(anterior, resolucion(q, cfg));
+      preguntas.push({ id: q.id, page: p.id, fingerprint: q.fingerprint, expectedEdited: p.last_edited_time,
+        expectedBodyHash: hash(anterior), props: propiedades(q), cuerpo, sourceHashes: q.sourceHashes });
+    }
+    const plan = { version: 1, commit: kb.commit, ref: kb.ref, preguntas: deduplicarPlan(preguntas), cobertura: { completa: !pendientes.length, pendientes } };
+    fs.mkdirSync(path.dirname(out), { recursive: true }); fs.writeFileSync(out, JSON.stringify(plan, null, 2));
+    console.log(JSON.stringify({ dryRun: true, preguntas: preguntas.length, pendientes: pendientes.length, completa: plan.cobertura.completa, plan: out })); return;
+  }
+  const plan = JSON.parse(fs.readFileSync(args['aplicar-plan'], 'utf8'));
+  plan.preguntas = deduplicarPlan(plan.preguntas);
+  if (plan.cobertura?.completa !== true || plan.cobertura.pendientes.length) throw new Error('El plan no cubre todos los registros solicitados; resuelve los pendientes antes de aplicar.');
+  if (plan.commit !== kb.commit || plan.ref !== kb.ref) throw new Error('El KB cambió; genera y aprueba un plan nuevo.');
+  const huella = fs.existsSync(cfg.huella) ? JSON.parse(fs.readFileSync(cfg.huella, 'utf8')) : { version: 1, preguntas: {} };
+  const leer = clienteLectura(cfg.bases.Preguntas.data_source);
+  let ok = 0;
+  for (const p of plan.preguntas) {
+    const q = kb.preguntas.find(q => q.id === p.id);
+    if (!q || q.fingerprint !== p.fingerprint || JSON.stringify(p.props) !== JSON.stringify(propiedades(q))) throw new Error(p.id + ': el plan no coincide con el KB.');
+    if (!p.cuerpo.endsWith(resolucion(q, cfg))) throw new Error(p.id + ': la resolución del plan no coincide con el KB.');
+    if (!p.expectedEdited || !p.expectedBodyHash) throw new Error(p.id + ': plan sin precondiciones; vuelve a prepararlo leyendo Notion.');
+    const base = path.join(path.dirname(out), p.id.replace(/[^\w.-]/g, '_'));
+    fs.mkdirSync(path.dirname(base), { recursive: true });
+    fs.writeFileSync(base + '.json', JSON.stringify({ ...p, title: p.id }));
+    fs.writeFileSync(base + '.md', p.cuerpo);
+    const carga = run(['upsert', '--ds', cfg.bases.Preguntas.data_source, '--meta', base + '.json', '--solo-props']);
+    if (!carga.ok) throw new Error(p.id + ': no se cargaron las propiedades.');
+    run(['push', '--page', p.page, '--body', base + '.md', '--source', q.archivo, '--expect-edited', carga.lastEdited]);
+    const ver = run(['verify', '--page', p.page, '--body', base + '.md']);
+    if (!ver.ok) throw new Error(p.id + ': carga no verificada; no se guarda la huella.');
+    const pagina = await leer('GET', '/pages/' + p.page), props = pagina.properties;
+    const texto = p => (p?.rich_text || []).map(t => t.plain_text ?? t.text?.content ?? '').join('');
+    if (texto(props.Respuesta) !== resumenRespuesta(q) || props.Estado?.select?.name !== q.estado
+        || (q.decididoPor && texto(props['Decidido por']) !== q.decididoPor) || (q.fecha && props['Fecha de decisión']?.date?.start !== q.fecha)) {
+      throw new Error(p.id + ': las propiedades leídas no coinciden; no se guarda la huella.');
+    }
+    const contenido = await leer('GET', '/pages/' + p.page + '/markdown');
+    if (contenido.truncated || !contenido.markdown?.includes(resolucion(q, cfg).trim())) throw new Error(p.id + ': la resolución completa no se verificó; no se guarda la huella.');
+    huella.preguntas[p.id] = { fingerprint: q.fingerprint, sourceHashes: q.sourceHashes, commit: kb.commit, ref: kb.ref,
+      cargado: new Date().toISOString(), notion: { estado: q.estado, respuesta: resumenRespuesta(q), decididoPor: texto(props['Decidido por']), fecha: props['Fecha de decisión']?.date?.start || '' } };
+    fs.mkdirSync(path.dirname(cfg.huella), { recursive: true });
+    fs.writeFileSync(cfg.huella + '.tmp', JSON.stringify(huella, null, 2)); fs.renameSync(cfg.huella + '.tmp', cfg.huella);
+    ok++;
+  }
+  console.log(JSON.stringify({ ok, total: plan.preguntas.length }));
+}
+if (require.main === module) main().catch(e => { console.error(e.message); process.exitCode = 2; });
+module.exports = { propiedades, insertarResolucion, main };

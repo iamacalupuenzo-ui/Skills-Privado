@@ -26,6 +26,7 @@ Cada pantalla explorada existe como SCR con `flow` y requisitos. Sin SCR/FLW: `B
 ## Invariants
 - Las alternativas son exploración, no diseño gobernado.
 - La elección entre alternativas es humana; el DD registra quién y por qué.
+- **Si el front ya está construido, el diseño se guía por el front** (regla de Enzo, 2026-11-26, IB-025). La exploración en baja fidelidad se hace igual, pero solo valida estructura y flujo, y no rediseña la pantalla. Con la validación de Enzo, la IB queda `status: accepted`, `approved_by: "Enzo Macalupu (UX/UI)"` y `approved_on`, con capturas de cada pizarra en `design/explorations/IB-NNN/`. Los ajustes visuales se piden después como cambios sobre lo construido.
 
 ## Workflow
 1. Validar entradas y provenance; leer SCR/FLW/UXR.

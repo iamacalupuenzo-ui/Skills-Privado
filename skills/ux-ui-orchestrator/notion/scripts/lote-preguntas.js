@@ -3,6 +3,8 @@
 // Reglas acordadas con Enzo: estado y bloqueo solo cuando la fuente lo dice de forma inequívoca; nada se marca Decidida por inferencia
 // salvo «Cerrada/Resuelta» explícito; los vínculos a flujos/pantallas/exploraciones salen solo de menciones explícitas.
 const fs = require("fs");
+const { origenPregunta } = require('./contrato-documentos.js');
+const { estadoKB } = require('./kb-preguntas.js');
 const path = require("path");
 const { execFileSync } = require("child_process");
 
@@ -74,14 +76,8 @@ function mapBloquea(t) {
   if (/^(FLW|SCR)\b/.test(t)) return "Diseño";
   return null; // ambigua: el texto original queda en el cuerpo
 }
-function mapEstado(t) {
-  t = norm(String(t || "").replace(/\*\*/g, ""));
-  if (!t) return null;
-  if (/^Abierta/i.test(t)) return "Abierta";
-  if (/^Respondida/i.test(t)) return "Propuesta";
-  if (/^(Cerrada|Resuelta)/i.test(t)) return "Decidida";
-  return null; // Reformulada/Consolidada/otros: lo decide una persona
-}
+function mapEstado(t) { return estadoKB(t); }
+
 const menciones = (txt, re) => [...new Set((txt.match(re) || []))];
 
 const titulo = r => {
@@ -98,7 +94,7 @@ for (const r of preguntas) {
   if (SALTADAS.has(r.id)) continue;
   if (only.length && !only.includes(r.id)) continue;
   const esUxrQ = /^UXR-\d{3}-Q\d+$/.test(r.id), esHuQ = /^HU-\d{2}-\d{2}-Q\d+$/.test(r.id);
-  const origen = esUxrQ ? "UXR" : esHuQ ? (r.textos.length ? "HU" : "CPO-001") : (r.dud2 ? "DUD-002" : "CPO-001");
+  const origen = origenPregunta(r);
   const fuentePrincipal = (r.fuentes.find(f => f.startsWith("design/ux-requirements/")) || r.fuentes[0] || "");
   const uxrs = [...new Set([
     ...(esUxrQ ? [r.id.slice(0, 7)] : []),
@@ -112,7 +108,7 @@ for (const r of preguntas) {
   const resp = mapResponsable(r.responsable || (r.cpo && r.cpo.responsable) || (r.dud2 && r.dud2.responsable));
   const prio = mapPrioridad(r.prioridad) || mapPrioridad(r.cpo && r.cpo.prioridad);
   const bloquea = mapBloquea(r.bloquea) || mapBloquea(r.cpo && r.cpo.bloquea);
-  const estado = mapEstado(r.estadoTexto);
+  const estado = r.estado || mapEstado(r.estadoTexto);
   const eq = [...new Set([...r.alias, ...(r.id === "UXR-001-Q2" ? ["UXR-003-Q1", "HU-07-02-Q7"] : [])])].filter(x => x !== r.id);
 
   // --- cuerpo ---

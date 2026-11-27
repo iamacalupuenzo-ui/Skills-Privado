@@ -63,7 +63,7 @@ La variable de entorno `COMSATEL_UX_GUARDIA` la fija **la persona**, en su propi
 node hooks/probar-guardia-uxs.mjs
 ```
 
-Arma repositorios temporales de verdad (un remoto, `develop` y una rama `ux/prueba`) y comprueba 19 casos: los que niegan (push de `ux/*` sin UXS, con `-u`, sin argumentos, con refspec,
+Arma repositorios temporales de verdad (un remoto, `develop` y una rama `ux/prueba`) y comprueba 22 casos: los que niegan (push de `ux/*` sin UXS, con `-u`, sin argumentos, con refspec,
 con `git -C`, tras un `cd`, con el envoltorio `git-auth`), el modo `aviso`, y los que pasan (con UXS, rama que no es `ux/*`, artefactos sin etiqueta, dry-run, borrar rama,
 fuera de un repositorio de diseño, modo `off`, texto de un commit que dice «git push»). Sale con código 1 si alguno falla.
 
@@ -79,3 +79,47 @@ fuera de un repositorio de diseño, modo `off`, texto de un commit que dice «gi
 1. Lee el mensaje: dice qué paquetes no tienen UXS.
 2. Arma la UXS con `ux-context-builder` (`--dry-run` primero), commitéala en la misma rama.
 3. Vuelve a subir. **No apagues ni rodees el guardia**: si es una excepción real, la persona decide y cambia su entorno.
+
+## Compuertas de avance y evidencia de construcción (2026-11-14)
+
+Antes de avanzar ejecuta `audit_ux.py <kb> --compuerta <G>`. Un código 1 bloquea el paso, no se compensa con una declaración del agente. G0 exige design/MEMORY.md; G1 UXR con lineage; G2 FLW con screens; G3/GR SCR, INV y DEC; GU la UXS; G4 exploración con capturas; G5 ARP implementado; G6 código validado o diseño gobernado aprobado; G7 HOF y el gate formal cuando se usa; GI propuesta de iteración; GC conciliación. Estas comprobaciones verifican artefactos y evidencia; la aprobación y el juicio siguen siendo humanos.
+
+G3 exige research.investigation y research.decision en el frontmatter del SCR (o heredados desde su documento), con IDs INV y DEC existentes que citen la pantalla. En borradores incompletos avisa SCR_SIN_INV_DEC; al cerrar el SCR o pasar G3 bloquea. La investigación pertenece a Pantallas e incluye benchmarking, DS disponible o faltante, micro UI de destino y ubicación en el shell.
+
+En cada archivo FLW, SCR o IB que cambia al construir, registra este contrato después de que Enzo apruebe la propuesta:
+
+```yaml
+status: in_construction # draft → in_review → in_construction → validated
+research: {investigation: INV-001, decision: DEC-001}
+iteration:
+  implementation_changed: true
+  version: revision-del-prototipo
+  proposal: design/evidence/propuesta-001.md
+  screenshot: design/evidence/iteracion-001.png
+  approved_by: Enzo
+  approved_at: fecha-real-de-aprobacion
+  documents:
+    UXR: design/ux-requirements/UXR-001.md
+    FLW: design/user-flows/FLW-001.md
+    SCR: design/screens/SCR-001.md
+    DEC: design/decisiones/DEC-001.md
+validation:
+  by: Enzo
+  date: fecha-real-de-la-prueba
+  browser: entorno-probado
+  version: revision-del-prototipo
+  screenshot: design/evidence/iteracion-001.png
+  accessibility:
+    target: implemented
+    status: pass
+    report: design/accessibility/ARP-001.md
+    version: revision-del-prototipo
+```
+
+Los archivos tienen que existir dentro del KB; no sirve una ruta externa. El propio ARP declara a11y_review.screen, target: implemented, result: pass y la misma version. Durante la construcción se crea y actualiza el ARP; no se espera a terminar ni se acepta Figma como sustituto. Falta de propuesta, documentos, captura o aprobación bloquea con ITERACION_SIN_PROPUESTA_CAPTURA o ITERACION_SIN_APROBACION. Validado sin prueba o ARP implementado de esa versión bloquea con VALIDADO_SIN_PRUEBA o VALIDADO_SIN_A11Y_IMPLEMENTADA. Para exploraciones, captures lista capturas existentes; la herramienta es libre.
+
+Para cerrar el paquete ejecuta `audit_ux.py <kb> --cerrar-paquete --conciliacion <informe.json>`. Además de la UXS, exige informe completo sin diferencias, de HEAD limpio: CONCILIACION_INCOMPLETA, CONCILIACION_PENDIENTE y CONCILIACION_DESACTUALIZADA bloquean. La cascada sin resolver bloquea con CASCADA_PENDIENTE o CASCADA_INCOMPLETA. El informe solo propone; no se alteran datos para hacer pasar la compuerta.
+
+La detección de código que referencia HU/FLW/SCR emite ARTEFACTO_BORRADOR_CON_CONSTRUCCION como advertencia. Se propone En construcción; la captura y prueba real con Enzo permiten proponer Validado. Las ramas y merges locales aportan trazabilidad, no sustituyen evidencia. La ausencia en un clon incompleto no demuestra que no exista implementación.
+
+Pruebas desde la raíz del repositorio: `py -m unittest discover -s skills/ux-ui-orchestrator/tests -p "test_*.py"`, `node --test skills/ux-ui-orchestrator/notion/scripts/conciliar-kb-notion.test.js` y `node skills/ux-ui-orchestrator/hooks/probar-guardia-uxs.mjs`. No escriben en Notion; los fixtures usan repositorios temporales.

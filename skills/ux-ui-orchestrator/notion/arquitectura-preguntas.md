@@ -1,79 +1,92 @@
-# Arquitectura de preguntas y respuestas — Notion «Gestión Operativa» (CL2 Flotas)
+¿Dónde debe quedar una respuesta antes de verla en Notion?
 
 > Regla vigente desde el 18-nov-2026: el [ciclo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) prevalece sobre los antecedentes de este documento respecto al inicio, cierre y transcripción de respuestas documentadas. La comparación de vigencia no decide; el cierre sí sincroniza decisiones humanas ya verificadas, sin fabricar aprobación ni resolver contradicciones.
 
-Especificación para el agente o skill que trabaje esta información. Uso personal de Enzo Macalupu: **no se sube al repositorio**. Los otros diseñadores pueden trabajar solo con el repo. Fecha de la especificación: 2026-10-18.
+## En 30 segundos
 
-## 1. Principio
-El repo `knowledge-base` es la fuente de los artefactos de diseño (UXR, FLW, SCR, IB, DEC). Notion es la capa de gestión operativa: relaciones, estados, bloqueos, propuestas y seguimiento. Nada de lo que decide una persona lo decide el agente.
+El KB es la fuente de verdad: primero Open questions del UXR, FLW o SCR y un DEC si hay una decisión; después Notion.
+La conciliación detecta diferencias en ambos sentidos y solo propone: una persona decide qué aplicar.
+Reglas aprobadas por Enzo el 2026-11-14; sustituyen el flujo de refinamiento primero en Notion del 2026-10-18.
 
-## 2. Base Preguntas (data source 9811a7d0-6388-829a-82b4-0735e973e46b)
-Una fila por pregunta (clave: propiedad **ID**, p. ej. `UXR-010-Q5`, `ARQ-12`, `HU-07-02-Q6`). Título = `ID · pregunta completa` (≤130 caracteres).
-- Origen: DUD-001, DUD-002, UXR, CPO-001, HU, Otro. Ruta en el repo, Enlace GitLab, Última carga, Producto.
-- **Estado**: Abierta, Propuesta, Decidida, Descartada.
-- **Bloquea**: No, Diseño, Desarrollo. **Nivel de bloqueo**: Flujo, Pantalla, Entrega, Documental. **Prioridad**: Alta, Media, Baja. **Responsable** (múltiple): PO, UX, Arquitectura, Seguridad, Desarrollo, Analista funcional, UX Writing.
-- **Quién puede responder**: Diseño, Negocio, Arquitectura o Seguridad, Mixta.
-- Respuesta, Decidido por, Fecha de decisión, Propuesta de diseño (texto), **Duplicada** (casilla), **Equivale a** (relación a Preguntas).
-- Relaciones: Producto, Paquetes de alcance, Historias, Requerimientos UX, Flujos, Pantallas, Exploraciones, Reglas.
-- Fórmulas: Bloqueo vigente, Bloqueante (ID), Bloqueante Flujo/Pantalla/Entrega (ID), Pendiente de confirmar (ID), Abierta sin bloqueo (ID), Situación.
+## 1. Del KB a Notion
 
-## 3. Estados (significado)
-- **Abierta**: sin respuesta registrada. **Propuesta**: hay respuesta o propuesta de una persona, pendiente de quien debe confirmar. **Decidida**: cerrada por una decisión vigente del repo (DH/ARQ) o por una persona autorizada. **Descartada**: reemplazada por otra pregunta.
-- El agente transcribe estados que declara la fuente; nunca marca Decidida por su cuenta. Las respuestas tomadas de DEC-001…005 entran como Propuesta («pendiente del PO»).
-- El repo usa el término «cerrada»; en Notion se mantuvo «Decidida». Al volver al repo se usa el vocabulario del repo.
+La respuesta, su estado, quién decide, fecha, fuentes e impacto se registran primero en la tabla **Open questions** del artefacto dueño. Si se decide, añade el DEC y enlázalo. No esperes al cierre de sesión para devolver decisiones al repo: esa regla queda reemplazada. Notion conserva la gestión, relaciones, vistas y comentarios; los documentos son espejos del KB.
 
-## 4. Regla de bloqueo (acordada con Enzo)
-- Bloquea el diseño: Estado Abierta (o vacío) con Bloquea Diseño/Desarrollo y no Duplicada.
-- **Propuesta no bloquea el diseño**: cuenta como «por confirmar» y frena el paso a Desarrollo.
-- Criterio de DEC-004 §7: UXR-015-Q6, UXR-017-Q3, ARQ-10.1(-A/-B) y DOM-CLIENTE-01 → Bloquea No.
-- Cascada: Flujos cuentan preguntas de nivel Flujo; Pantallas cuentan las suyas y heredan el bloqueo de su flujo; Exploraciones heredan de sus pantallas; Historias, UXR y paquetes cuentan todo. Cada una tiene «Preguntas que bloquean», «Pendientes de confirmar», «Abiertas sin bloqueo», listas de IDs, «Resumen de preguntas» y «Estado de bloqueo».
-- Notion no permite un rollup de otro rollup: se usa una fórmula intermedia (p. ej. «Bloqueos propios» en Flujos).
+Si se detecta una respuesta que alguien escribió en Notion, conserva la evidencia y propone incorporarla al KB. No la copies ni sobreescribas por tu cuenta. Antes de escribir durante una iteración, Enzo aprueba la propuesta de cambios a UXR, FLW, SCR y DEC, la captura y el estado. La aprobación de una propuesta UX no decide negocio.
 
-## 5. Estructura de la página de una pregunta
-1. Título: la pregunta completa (no se repite en el cuerpo).
-2. Contexto de la necesidad. 3. Qué se evalúa. 4. Alternativas posibles (las propuestas por la IA van marcadas «(IA)»; cada una con su efecto en el diseño).
-5. Propuesta o resolución: si la pregunta es de diseño, respuesta directa (IA), por qué, **cómo funcionaría** (pasos), diagrama Mermaid si es un flujo, evidencia con grado (D documentado, I inferido) y límites. Si la decide Negocio, Seguridad o Arquitectura: «Sin propuesta de diseño», con el efecto de cada alternativa.
-6. Debajo: texto original del repo, datos de la fuente, respuestas registradas (historial por fecha, la vigente primero) y enlaces al repo.
-- Las referencias BR/DH/ARQ/HU se enlazan al repo. **Diferido por decisión de Enzo (2026-10-18)**: añadir entre paréntesis un resumen corto de cada regla citada (sale del catálogo HUC-00 / RCP-001 en `prepare-body.js`); se aplicará a las preguntas nuevas, no se recarga lo ya cargado.
-- Texto de IA: se rotula «(IA)», sin nombrar el modelo (pueden intervenir varios).
+## 2. Estados y vocabulario del KB
 
-## 6. Duplicadas y equivalentes
-Solo se marca Duplicada la pregunta que el repo convierte en un puntero («Ver X») o declara absorbida; la principal conserva la respuesta. La misma duda en otro login o pantalla NO es duplicada (conserva su vínculo al flujo). «Equivale a» enlaza al par.
+| Notion | KB en Open questions | Quién decide |
+|---|---|---|
+| Abierta | Abierta | Responsable identificado |
+| Propuesta UX | Propuesta UX, pendiente de validar por Enzo | UX propone; solo Enzo valida |
+| Propuesta | Propuesta o Respondida, pendiente de confirmar | PO, Negocio, Arquitectura, Seguridad o Analista |
+| Decidida | Cerrada o Resuelta (también acepta Decidida) | Responsable autorizado, con DEC |
+| Diferida | Diferida | Fuera del paquete o piloto actual; se reabre cuando se construya |
+| Descartada | Descartada, Reemplazada, Absorbida o Duplicada explícita | Responsable autorizado |
 
-## 7. Flujo de trabajo repo ↔ Notion
-- Artefactos (UXR/FLW/SCR/IB/DEC): se crean en el repo (worktree `ux/<slug>`, skill ux-ui-orchestrator), luego se cargan a Notion.
-- Preguntas: nacen en las tablas «Open questions» de los UXR; se cargan a Notion; ahí se gestionan (estado, propuestas, validaciones).
-- En cada cierre del ciclo canónico: devolver al repo las decisiones tomadas (DEC nuevo + tablas «Open questions» actualizadas) con la estructura y el vocabulario del repo, por MR. Lo que es solo gestión de Notion (propuestas de IA, contexto, diagramas, resúmenes, duplicadas, niveles, fórmulas) NO vuelve al repo.
-- Antes de cada carga: `git fetch origin develop:refs/remotes/origin/develop` y verificar el SHA con `git ls-remote origin refs/heads/develop` y comparar con las decisiones de RCP-001 (ARQ/DH) y las historias; el worktree puede estar atrasado (ya pasó con ARQ-08/11.5/12).
+**Propuesta UX es solo para las validaciones de Enzo.** Las propuestas de otros (PO, Arquitectura, Seguridad, Analista) no se tocan ni se remapean. Una Propuesta existente nunca se transforma automáticamente en Propuesta UX. Si se mezclan PO y UX, decide el PO y UX propone; permanece Propuesta. Los estados ambiguos se reportan para revisión, no se infieren de palabras sueltas en la pregunta.
 
-## 8. Scripts (carpeta `scripts/`, ver LEEME.md) y orden
-`extraer-preguntas` → `lote-preguntas` → `preguntas-refs niveles|relaciones|estados` → `respuestas-dec` → `subir-respuestas` → `marcar-duplicadas` → `contexto-entradas` → `contexto-codex.sh` (redacción en lotes de 4) → `contexto-validar` → `contexto-lote` (carga). Fichas ya redactadas: `~/.claude/notion/preguntas-fichas/`.
-- La subida a Notion la ejecuta opencode (instrucciones en `opencode-*.md`); la redacción en lotes la hace Codex en solo lectura; Claude diseña, valida y verifica.
-- Para filas ya editadas usar solo `--solo-props` (con `ifEmpty`/`ifValues`) y `--solo-relaciones [--reemplazar]`; nunca el `upsert` completo.
+**Decidida por delegación** no es un séptimo estado. Es Decidida, con `Decidido por = IA (delegado por Enzo)`, fecha y fuentes de benchmarking (NN/g, GOV.UK, Material, Carbon, Atlassian, Polaris o WCAG), registradas primero en el KB y el DEC. Se permite solo para prácticas estándar UX: textos, estados vacíos, mensajes, formatos y patrones. Nunca para negocio, permisos, datos o alcance; una pregunta mixta sigue con su responsable humano. Registra una columna Dominio con una de esas prácticas para poder verificar la delegación; la IA no simula una aprobación de Enzo.
 
-## 9. Límites conocidos
-- La API no renombra opciones de select ni oculta propiedades vacías ni crea vistas; el clasificador bloquea borrados (archivar bases lo hace Enzo).
-- Las sesiones limpias de `claude -p` con el MCP `notion` a veces no conectan a tiempo: reintentar una vez.
-- No usar `node -e` ni reemplazos con barras invertidas; editar con archivos.
-- **Decisión de Enzo (2026-10-18): no se cargan las bases Reglas ni Referencias** (quedan vacías). Los enlaces a reglas y los referentes de evidencia viven como texto dentro de cada pregunta; relacionarlos obligaría a modificar todo lo ya hecho. Si se retoma, Referencias tendría más valor que Reglas (referentes reutilizables entre preguntas).
-- El MCP no es más rápido para volcar contenido: el script con REST tarda ~6 s por página; un modelo con el MCP, 1–3 min.
+## 3. Base Preguntas y bloqueos
 
-## 10. Decisiones de diseño del skill (se van registrando con Enzo, 2026-10-18)
-- El skill es personal, no se sube al repo, y el orquestador debe actuar desde el primer momento («tenemos este paquete de historias» → sabe por dónde empezar, con Notion en cuenta).
-- **Orden de guardado por fase: primero Notion y luego el repo.** Notion es el espacio de refinamiento (leer, entender, mapear, evaluar si se puede construir y comprobar después que se construyó bien); el repo recibe el módulo ya refinado, con su estructura. (Sustituye la recomendación anterior de repo primero.)
-- **Módulo = un flujo** (sus historias de experiencia, pantallas, exploraciones y preguntas). Se da por cerrado cuando está completo; luego puede desglosarse en tareas (aún sin definir).
-- **Sincronización de un solo sentido (opción A):** en Notion solo se editan preguntas, estados, respuestas y comentarios; las páginas de documentos son espejo de lectura. Cualquier cambio de texto se pide al agente, que regenera el archivo local y lo vuelve a subir.
-- Proceso de Enzo: paquete de alcance → historias de experiencia (UXR) → flujos → pantallas planificadas (con un skill que consulta el sistema de diseño) → dos caminos de construcción (baja fidelidad con un skill y un MCP, o construir con los componentes del sistema de diseño en estructura microUI) → handoff opcional (puede sobrar si ya entrega los flujos y las historias de experiencia).
-- **Base «Especificaciones UX»** (data source 23c1a7d0-6388-8293-bac3-871f76aac85e, database b771a7d0-6388-83af-a729-010019c5bd73, icono nativo `checklist`): una fila por UXS (hoy UXS-001, cargada con `cargar-uxs.js`). Es el lugar del *conjunto* de lo que se va a desarrollar. Propiedades: Estado del documento, Aprobado por, Fecha de aprobación, Fecha de la especificación, Veredicto Stitch/Figma/Desarrollo/QA (READY, CONDITIONAL, NOT READY; los transcribe del propio UXS), **Nivel de cierre** (En curso, Diseño cerrado, Listo para desarrollo; lo fija una persona), relaciones bidireccionales a Paquetes de alcance, Historias, Requerimientos UX, Flujos, Pantallas, Exploraciones, Preguntas y Producto (propiedad espejo «Especificaciones UX»), y los mismos rollups y fórmulas de bloqueo que las demás bases. Su veredicto del UXS-001 (2026-10-14): Stitch, Figma y Desarrollo NOT READY; QA CONDITIONAL.
-- **Posición en el proceso:** UXR → flujos → pantallas (SCR, especificación) → **UXS (conjunto y preparación por consumidor)** → exploración (IB, versión visual) → diseño gobernado/Figma → handoff opcional. El UXS se emite tras las especificaciones de pantalla y antes de explorar (su veredicto para Stitch/exploración es la puerta), y es un documento vivo que se actualiza en cada etapa posterior.
-- Límites de la API: una relación admite como máximo 100 elementos por petición (para más, enlazar desde el lado de la pregunta, como `uxs-preguntas.js`), y al leer una página Notion recorta cada relación a 25 elementos (usar `/pages/{id}/properties/{pid}` paginado; ya corregido en `--solo-relaciones`).
-- **Alcance del skill (Enzo, 2026-10-18):** solo el orquestador de UX/UI (`ux-ui-orchestrator`), que genera la información y sabe cómo, dónde y con qué estructura subirla a Notion para dejarla lista. Quedan fuera el skill de documentación, el orquestador de desarrollo y el skill `centro-operativo-uxui` (otro ambiente de Notion; no le corresponde al flujo UX/UI). El orquestador existe también en el repo (`.claude/skills/ux-ui-orchestrator`, compartido con el equipo): la capacidad de Notion va **solo en la copia local** (`~/.claude/skills/ux-ui-orchestrator/notion/`), nunca en la del repo.
-- **Activación (opción A):** el módulo Notion se activa solo cuando existe la carpeta `notion/` en la copia local; si Enzo dice «sin Notion» en una sesión, se omite. El módulo contiene LEEME, arquitectura de preguntas, esquema de bases, reglas de carga, `config.json` (IDs, sin token) y los scripts. La subida sigue delegada a opencode.
-- Skills que llama el orquestador: ux-requirements-analyzer (UXR), user-flow-designer (FLW), ui-spec-writer (+ web-atomic-component-designer) (SCR/CMP/TKN), stitch-ui-generator y/o claude-design-orchestrator (exploración IB), accessibility-reviewer (ARP), figma-design-validator (diseño gobernado), ux-development-handoff (HOF); el propio orquestador consolida el UXS. Los lienzos de Claude Design están en el campo «Enlace del lienzo» de Exploraciones (uno por flujo).
-- **Cambios en las historias (Enzo, 2026-10-18):** las historias se actualizan constantemente. Antes de cada carga y de cada fase el skill compara el contenido de `origin/develop` con la huella guardada de la última carga (archivo auxiliar fuera del repo, como los resúmenes). La propiedad **Vigencia** de Preguntas (Vigente, Revisar por cambio de fuente; ya creada, las 123 actuales en «Vigente») la rellena el skill; el Estado no se cambia por una mera variación de fuente: en el cierre se transcriben las decisiones comprobadas; la persona decide contradicciones o dudas de vigencia. Filtrar la vista por «Revisar por cambio de fuente» para repasarlas.
-- **Si Notion u opencode no están disponibles (Enzo, 2026-10-18, opción A):** el orquestador sigue generando en el repo y guarda una **lista de subidas pendientes** (archivo `notion/pendientes.json` del módulo local). Al empezar la siguiente sesión avisa de lo que falta y lo sube en orden, o cuando Enzo lo pida. Excepción: no avanza al paso siguiente si ese paso depende de que las preguntas del anterior ya estén en Notion.
-- **Fases del módulo que se usan (Enzo, 2026-10-18):** inicio (paquete e historias), historias de experiencia (UXR), flujos, pantallas, UXS, exploración y cierre de módulo. **Se omiten** el diseño gobernado en Figma (`figma-design-validator`) y el handoff (`ux-development-handoff`): Enzo entrega a desarrollo el paquete completo (historias de experiencia, flujos, pantallas y UXS). Por eso se quitaron de «Especificaciones UX» los veredictos de Figma y Desarrollo (quedan Stitch y QA); «Listo para desarrollo» sale de «Nivel de cierre».
-- **Accesibilidad opcional:** `accessibility-reviewer` es una revisión (informe ARP por pantalla, WCAG 2.2 AA; no construye ni corrige), no una fase obligatoria y no se exige para cerrar un módulo. Si se desarrolla directamente en código se pueden ejecutar pruebas de accesibilidad y generar un documento de accesibilidad.
-- **Resúmenes «En 30 segundos»:** se redactan para todos los documentos (UXR, flujos, pantallas, exploraciones…) de las historias NUEVAS, solo en Notion; no se aplican retroactivamente a lo ya cargado (los flujos, pantallas y exploraciones actuales no los tienen).
-- Las preguntas bloquean el diseño o solo la arquitectura/procesos internos (que la UI no muestra); estas últimas no deben frenar el diseño.
-- **Cierre de módulo en dos niveles (Enzo, 2026-10-18).** *Diseño cerrado* = (1) sin preguntas que bloqueen el diseño en el flujo ni sus pantallas, (3) documentos del módulo en Estado del documento «Aprobado» por una persona y (4) exploración de alta fidelidad con «Decisión humana» resuelta; con esto se puede construir y llevar el módulo al repo. *Listo para desarrollo* = lo anterior más (2) preguntas «Propuesta» del módulo confirmadas y (5) lo construido verificado contra lo diseñado. El agente comprueba los indicadores pero nunca aprueba ni confirma por una persona.
+Una fila por pregunta, clave **ID**; título `ID · pregunta completa`. Conserva Ruta en el repo, Enlace GitLab, Última carga, Producto, Responsable, Prioridad, Bloquea (No, Diseño, Desarrollo), Nivel de bloqueo (Flujo, Pantalla, Entrega, Documental), Duplicada y Equivale a. Relaciones a Historias, Paquetes, UXR, Flujos, Pantallas y Exploraciones. IDs de bases en config.json; el token nunca va allí.
+
+Abierta (o Estado vacío), con Bloquea Diseño/Desarrollo y sin Duplicada, bloquea el diseño. Propuesta no bloquea diseño y sigue pendiente de su responsable para el paso a desarrollo. Propuesta UX queda pendiente de Enzo y su revisión se verifica por separado antes de cerrar: no se agrega al contador de PO. Diferida no se construye en el paquete actual y exige registrar cuándo se reabre.
+
+La fórmula **Situación** muestra **Por validar (UX)** para Propuesta UX y **Por confirmar** para Propuesta. **Pendiente de confirmar (ID)** sigue contando solo Propuesta. No cambies propuestas de otros ni sus fórmulas por inferencia. Flujos, Pantallas, Exploraciones, Historias y UXS conservan sus indicadores y relaciones de bloqueo; Notion no admite rollup de rollup y usa fórmulas intermedias.
+
+## 4. Página de pregunta
+
+La propiedad **Respuesta** contiene un resumen de hasta **200 caracteres**, incluido el prefijo **[Confirma: X]** cuando está pendiente (Enzo para Propuesta UX; PO o responsable real para Propuesta). El texto completo nace en el KB y vive en el cuerpo de Notion:
+
+- Encabezado 2: **Resolución**.
+- Encabezados 3: **Respuesta**, **Fuentes y evidencia**, **Quién decide**, **Impacto**.
+
+Nunca heading_1. Las fuentes deben permitir revisar la evidencia y sus límites; fecha y autoría no se inventan. Mantén contexto de la necesidad, qué se evalúa, alternativas, texto original y enlaces al KB. Las propuestas de IA llevan «(IA)». El contexto temporal generado por IA no constituye una respuesta mientras no esté registrado en el KB. Los resúmenes «En 30 segundos», vistas e indicadores pueden seguir siendo propios de Notion.
+
+## 5. Conciliación en ambos sentidos
+
+Ejecuta `scripts/conciliar-kb-notion.js` al retomar, antes de cargar y antes de cerrar. Lee la rama de config.json con git, sin checkout ni fetch; usa REST y ~/.notion/token.txt, sin MCP. Produce Markdown y JSON locales, nunca aplica cambios ni modifica la huella.
+
+- **a, Notion → KB:** cierre o respuesta que el KB no refleja; propone Open questions y DEC.
+- **b, KB → Notion:** cambio frente a la huella de la última carga verificada, incluidas fuentes de Arquitectura, PO e Infraestructura; propone actualizar y **Vigencia = Revisar por cambio de fuente**. También señala divergencia respecto de los valores cargados.
+- **c:** pregunta en un solo lado; no crea, archiva ni descarta automáticamente.
+- **d:** estados contradictorios, duplicación de ID o vocabulario ambiguo, incluso dentro del KB.
+
+Los tipos pueden coincidir en una pregunta. La huella conserva por ID el hash de las fuentes, la fila canónica, el commit y los valores verificados en Notion. No se reconstruye desde la fecha ni desde el estado actual: sin huella la cobertura queda incompleta y no autoriza el cierre. La dependencia se calcula de forma conservadora por archivo completo: un cambio en un catálogo compartido puede exigir revisar varias preguntas. Las referencias a tablas antiguas de DUD/CPO sin pregunta canónica aparecen como solo Notion: deben migrarse mediante una propuesta humana.
+
+## 6. Carga y recuperación
+
+Primero concilia; una persona revisa el informe y aprueba los cambios concretos. Actualiza el KB aprobado y ejecuta extracción y preparación de respuestas. `subir-respuestas.js --dry-run` prepara un plan con la revisión del KB, las propiedades y el cuerpo actuales de Notion como precondiciones. Solo `--aplicar-plan <archivo>` aplica un plan aprobado; si cambió el KB o Notion, se detiene. opencode ejecuta la carga y el orquestador verifica leyendo. La huella se guarda fuera del repo únicamente tras la carga verificada; los scripts históricos de respuestas redirigen al cargador canónico.
+
+No pises campos humanos ni cierres decisiones por otra persona. Conserva comentarios, vistas y contexto fuera de Resolución. Si Notion no está disponible, trabaja en el KB autorizado y registra pendientes; un paquete no se cierra con diferencias abiertas ni conciliación incompleta. Reglas y Referencias siguen sin cargarse como bases separadas: la evidencia vive en la pregunta.
+
+## 7. Iteración y cierre UX
+
+La investigación de la solución vive dentro de **Pantallas** y deja un **INV y un DEC** enlazados al SCR, incluso en la vía directa a código. En cada iteración con cambios en lo construido, propone la actualización de UXR, FLW, SCR y DEC, la captura y el estado; Enzo aprueba antes de escribir. La investigación sustenta la propuesta, no sustituye la validación.
+
+Flujos, Pantallas y Exploraciones recorren **Borrador → En revisión → En construcción → Validado**. Validado exige prueba con Enzo en el navegador y captura de esa versión. La accesibilidad se evalúa sobre lo implementado antes de Validado; el contrato del Design System no reemplaza esa revisión. El esquema comprobable y los comandos de auditoría están en `../references/controles-de-cierre.md`.
+
+¿Qué registro actualizas primero cuando Notion tiene una decisión que falta en el KB?
+
+## 8. Estados en cadena, hacia arriba y hacia abajo
+
+Pregunta → UXR: si todas sus preguntas están Decidida, Diferida o Descartada, propone En revisión; ninguna puede seguir Abierta, Propuesta UX o Propuesta. Si además todos sus flujos están En construcción o Validado, propone Aprobado (cerrado). **Enzo aprueba ese paso y registra approved_by**: la propuesta no equivale a la aprobación. Sin preguntas canónicas registradas no se infiere el cierre de un UXR vacío.
+
+SCR → FLW: al menos una pantalla En construcción o Validado lleva el flujo a En construcción; todas Validadas llevan a Validado. SCR → IB: lienzo o capturas llevan a En revisión, una pantalla construida a En construcción y todas Validadas a Validado. La propuesta de Validado conserva la exigencia de evidencia del flujo o exploración; no copia una aprobación humana.
+
+FLW/UXR → UXS/Paquete: En curso mientras falten definiciones o revisión. Diseño cerrado exige ausencia de preguntas que bloqueen diseño, aprobación real de los documentos y exploraciones resueltas. Listo para desarrollo agrega ausencia de propuestas por confirmar y verificación de lo construido (pantallas Validadas). Las preguntas Diferidas o Descartadas no se construyen en el alcance actual. Una aprobación meramente propuesta no satisface este cierre.
+
+En el paquete se propone Borrador sin artefactos, En preparación mientras se define, Listo para selección de sprint con diseño cerrado, En sprint con construcción detectada y Cerrado tras validación completa. Estar En sprint no retrocede a selección solo porque falte la validación final. Los estados operativos de sprint son propuestas y los confirma una persona; no implican una asignación automática a un sprint.
+
+Hacia abajo: cualquier cambio en una fuente del KB, también de Arquitectura, PO o Infraestructura, propone Vigencia = Revisar por cambio de fuente en sus preguntas y Resumen vigente = Desactualizado en UXR/FLW. Los documentos ya Validados o Aprobados vuelven a En revisión como propuesta. Las dependencias se recalculan hasta un punto fijo; una fuente invalidada tiene prioridad sobre un avance. No se deduce la vigencia por autor ni por fecha: se usa la huella verificada, también de documentos.
+
+La conciliación usa estados canónicos del KB para las preguntas. Las decisiones que solo están en Notion deben conciliarse e incorporarse primero al KB; no aprueba un UXR apoyándose en un cierre remoto contradictorio. Guarda la propuesta con `--cascada-informe <salida.md>`; el JSON conserva cascada.propuestas y estadosCalculados. Ningún cambio se aplica. La auditoría de cierre bloquea si quedan propuestas o cobertura incompleta.
+
+## 9. HU afectada: comentario al analista del DSP
+
+La HU es del analista funcional de su paquete; el orquestador nunca la edita. Una respuesta o decisión que puede afectarla genera el tipo de diferencia «HU afectada → comentario al analista del DSP», con pregunta, cambio, HU, DSP conocido y AC o regla a revisar. Si faltan el DSP o la referencia exacta, la propuesta lo dice. Primero se concilia la respuesta al KB y Enzo aprueba el comentario; el analista decide si modifica la historia. Ni el script ni la cascada publican comentarios.
+
+Antes de toda carga: corrida en seco completa, deduplicación por ID y aprobación de Enzo. Un ID con dos contenidos distintos o un registro con null/undefined bloquea el plan; no se escribe FIN para una carga parcial. La carga masiva usa REST para no agotar el cupo del MCP.

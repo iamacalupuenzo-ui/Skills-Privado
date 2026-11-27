@@ -11,7 +11,7 @@ metadata:
 
 Coordinar los skills de la pista UX/UI para que sus artefactos queden **completos, consistentes y trazables entre sí**, y consolidarlos en una **Especificación de Diseño UX/UI (UXS)** con un veredicto de preparación por etapa y por consumidor. Cada skill produce un artefacto correcto por sí mismo; lo que falla en la práctica son las costuras: un SCR cuyo FLW no lo lista, una pantalla generada en Stitch sin DTM, un Figma aprobado con divergencia abierta, un UXR cuya pregunta abierta nadie dirigió al skill que puede cerrarla. Este orquestador cierra esas costuras.
 
-Es el equivalente de `af-requirements-orchestrator` para la etapa siguiente: aquel termina con una RQS lista; este arranca de ella. No redacta contenido propio: delega en cada skill y verifica. No decide por humanos, no aprueba diseños y no escribe código; declara si el diseño está listo para Desarrollo y con qué skill continuar.
+Es el equivalente de `af-requirements-orchestrator` para la etapa siguiente: aquel termina con una RQS lista; este arranca de ella. No redacta contenido propio: delega en cada skill y verifica. No decide por humanos, no aprueba diseños y no escribe código; puede cerrar por delegación de Enzo solo preguntas UX de práctica estándar con benchmarking, DEC, fecha y fuentes; declara si el diseño está listo para Desarrollo y con qué skill continuar.
 
 ## Skills que orquesta
 
@@ -44,6 +44,10 @@ Cada skill gobierna su formato y sus IDs; invócalo con la herramienta Skill y n
 
 Leer y ejecutar `references/ciclo-retroalimentacion.md` al inicio y al cierre de cada desarrollo, mejora, análisis o definición, también en la vía directa a front end y cuando se invoque un especialista aislado. Este orquestador es el único dueño: coordina la verificación previa independiente y la actualización por los especialistas de cada artefacto. Esta obligación no depende de la activación del módulo Notion ni de que el usuario diga «sesión finalizada».
 
+Leer también `references/mejoras-del-proceso.md` al iniciar el paso 0 y, al cerrar cada fase, anotar ahí cada hueco encontrado (validación, automatización o job) con su estado. Después de cada merge, recargar en Notion los documentos de la rama con `DESIGN_REF=develop` y corregir los enlaces de las notas de GitLab. Toda entrega cierra con la tabla de MR: enlace, qué trae y orden de merge.
+
+**Tareas al ritmo del trabajo (Enzo, 2026-11-26).** Cada skill que termina un paso entrega su evidencia y en ese mismo turno se llama a `em-gestion-tareas`: al abrir el MR, AVANCE (estado «En curso», línea de MR y enlaces provisionales a la rama); al fusionarlo, CIERRE de las tareas que ese MR completa (casillas con evidencia, Artefactos que produce, Resultado, «Completada» y la línea del Plan en la madre). Una casilla sin evidencia no se marca: se escribe qué falta y se le pregunta a Enzo. No se pasa al paso siguiente con tareas terminadas sin cerrar.
+
 ## Comportamientos bloqueantes
 
 - **B1 — Inicio sin verificación previa, bloqueado.** No iniciar sin el informe de solo lectura de un agente distinto de quien construye y la comprobación de fuentes que exige `references/ciclo-retroalimentacion.md`; si faltan acceso o agente, declarar el bloqueo.
@@ -59,14 +63,45 @@ Leer y ejecutar `references/ciclo-retroalimentacion.md` al inicio y al cierre de
 
 ## Flujo
 
+0. **Validar tareas y cambios de la KB** antes de todo (paso 0). Se repite al iniciar cada sesión y antes de cerrar una tarea.
 1. **Diagnosticar** el estado y el escenario (paso 1).
-2. **Planificar** la ruta mínima y mostrarla antes de ejecutar (paso 2).
+2. **Planificar** la ruta mínima atada a sus tareas y mostrarla antes de ejecutar (paso 2).
 3. **Aislar** en un git worktree si va a escribir archivos (paso 2b).
 4. **Ejecutar** por fases, con compuerta entre ellas (paso 3).
 5. **Cerrar costuras**: enrutar preguntas y brechas entre skills (paso 4).
 6. **Auditar** (paso 5).
 7. **Consolidar** la UXS y emitir veredictos (paso 6).
 8. **Integrar**: proponer incorporación y esperar la decisión (paso 7).
+
+### 0. Validar tareas y cambios de la KB (Enzo, 2026-11-26)
+
+Antes de diagnosticar o diseñar, dos comprobaciones, en este orden:
+
+1. **¿El paquete tiene sus tareas?** `em-gestion-tareas` en modo ESTADO. Si no las tiene, modo RECIBIR (mapeo, validación con `armar-mapeo.mjs` y creación en Notion) y recién después se planifica. Lo hace el orquestador que empieza primero (UX o Desarrollo); el otro solo consulta ESTADO, para no duplicar tareas.
+2. **¿Qué cambió en la KB desde la última revisión?**
+
+   ```
+   node .claude/skills/ux-ui-orchestrator/scripts/cambios-kb.mjs DSP-NNN --kb knowledge-base --informe cambios.md
+   ```
+
+   La primera vez se indica `--desde <AAAA-MM-DD>` (la fecha en que se recibió el paquete); después usa la revisión registrada. El informe trae: el inventario del paquete y sus historias (HU) con la fecha y el autor de su última actualización; lo que cambió (historias, avisos AVS, consultas QST/RSP, decisiones y artefactos de diseño) con la sección tocada, por ejemplo «AC-4»; las preguntas abiertas con su responsable; y el efecto en cadena sobre los Requerimientos UX (UXR), Flujos de usuario (FLW), Pantallas (SCR) y tareas.
+
+
+   Lo demás del informe es propuesta. Muestra el informe y propón: AVANCE con nota o con bloqueo en cada tarea afectada (con `em-gestion-tareas`), «Revisar por cambio de fuente» en los artefactos de diseño (con la conciliación) y el comentario al analista si una decisión toca una HU. Con la aprobación de Enzo se aplica y se registra la revisión con `--registrar`. El commit revisado queda en `design/MEMORY.md` («Revisión de la KB: cambios-kb.mjs en <commit>»).
+
+### Proyecto y producto: dos relaciones distintas (Enzo, 2026-11-26)
+
+La jerarquía en Notion es **Proyecto → Producto → Paquete (DSP) → Historia (HU)**. Ejemplo: el proyecto «CL2 Flotas» tiene los productos «CL2 Flotas», «Piloto de CL2 Flotas», «CL2 SVR Captura y Recupero» y los dos Design System.
+
+- **Paquetes e historias** llevan solo **Producto**; el proyecto les llega por el producto. Una historia lleva el producto de su paquete.
+- **Tareas** llevan las dos relaciones, **Proyecto y Producto**, las del paquete que las origina.
+- Si una página no aparece en una vista, lo primero que se revisa es su Producto (caso real: HU-01-14 seguía en el Piloto y no se veía junto a HU-01-16).
+- **Si hay duda, no se adivina: se pregunta con opciones** (herramienta de preguntas, con las alternativas de la base Productos y su proyecto). Hay duda cuando el paquete no tiene producto o tiene más de uno, cuando el producto no tiene un único proyecto, o cuando la historia ya está en otro producto. `cargar-paquete.js` las devuelve en `dudas` (sale con código 3) y no cambia esa relación; con la respuesta se repite con `--producto <id>` o `--confirmar-producto`.
+- **Documentos de diseño (UXR, FLW, SCR):** los carga `lote-doc.js`, que toma el producto de sus paquetes y levanta la misma duda. Un UXR que nombra su paquete en `sources` solo se relaciona con ese paquete y sus historias; las demás historias que cita son fuentes que reutiliza (UXR-139 cita HU-01-09 y no es del DSP-001).
+- **Un UXR reutilizado por un paquete nuevo se mueve a ese paquete y a su producto,** conservando la relación con el paquete anterior como antecedente (Enzo, 2026-11-26: UXR-010 a 014 pasaron de DSP-001 al DSP-009). En la KB se agrega el paquete nuevo a `sources`; la carga va con `--confirmar-producto=nuevo`.
+- **Las historias se resuelven por ID y Catálogo** («RCP-001 CL2 Flotas»): el mismo ID existe en el catálogo SVR, y sin el filtro la relación queda duplicada. La carga suma relaciones y no quita las que ya existen.
+
+**Cuándo se repite:** al iniciar cada sesión de UX, antes de cerrar una tarea (para no cerrar sobre una historia que cambió) y en la rutina diaria. La compuerta G0 de `audit_ux.py` falla si `design/MEMORY.md` no cita las tareas ni registra la revisión de la KB.
 
 ### 1. Diagnosticar
 
@@ -85,7 +120,7 @@ Lee además `knowledge-base/index.md`, `changelog.md`, `design/MEMORY.md` si exi
 | A. Iniciativa nueva de diseño | Hay historias READY/CONDITIONAL y no hay UXR/FLW/SCR |
 | B. Cambio sobre diseño existente | Hay artefactos de diseño y cambia una historia, regla o decisión |
 | C. Especificar pantallas | Hay UXR/FLW; faltan SCR/CMP/TKN o están incompletos |
-| D. Exploración visual | SCR especificados y listos; falta explorar en Claude Design (o Stitch) |
+| D. Exploración visual | SCR especificados y listos; falta explorar con la herramienta elegida (Claude Design, Figma, código u otra), con capturas |
 | E. Diseño gobernado | Hay exploración; falta gobernar el diseño (Claude Design con DD humano, o el prototipo validado), o divergencia Stitch↔Figma si se usan |
 | F. Auditoría y gate | Hay que saber si un SCR/flujo está listo para Desarrollo, o si un paquete puede cerrarse (UXS) |
 | G. Decisión humana recibida | Un humano respondió preguntas, eligió alternativa o aprobó |
@@ -95,7 +130,7 @@ Si es ambiguo, pregunta una sola cosa concreta (iniciativa/flujo o historia de p
 
 ### 2. Planificar
 
-Presenta un plan corto: escenario, skills en orden, artefactos que se crearán o actualizarán, qué se paraleliza y qué decisiones humanas se esperan. Espera confirmación si crea más de cinco archivos, toca artefactos `approved`, o va a **crear un proyecto Stitch** o escribir en Figma (acciones externas). Si el usuario ya pidió ejecutar sin preguntar, procede, salvo la creación de un `STP-*`, que exige autorización humana explícita (`human:<id>`).
+Presenta un plan corto: escenario, skills en orden, **la tarea de cada fase** (p. ej. fase 2 → IDV-UX · 02), artefactos que se crearán o actualizarán, qué se paraleliza y qué decisiones humanas se esperan. Una fase sin tarea es trabajo nuevo: se agrega al mapeo (modo AJUSTAR de `em-gestion-tareas`) antes de ejecutarla. Espera confirmación si crea más de cinco archivos, toca artefactos `approved`, o va a **crear un proyecto Stitch** o escribir en Figma (acciones externas). Si el usuario ya pidió ejecutar sin preguntar, procede, salvo la creación de un `STP-*`, que exige autorización humana explícita (`human:<id>`).
 
 ### 2b. Aislar en un worktree
 
@@ -109,14 +144,15 @@ Orden canónico (omite lo que el escenario no necesite):
 |---|---|---|
 | 1 Requisitos UX | `ux-requirements-analyzer` | Cada UXR con lineage a US/AC; actor, permisos y estados; vacíos como preguntas |
 | 2 Flujos | `user-flow-designer` | Happy path, excepciones, permisos y estados; `screens` declarado |
-| 3 Especificación | `ui-spec-writer` (+ `web-atomic-component-designer` si hay librería) | `validators/cli.py preflight` sin `BLOCKED`; cada SCR con `flow`, `requirements`, `required_states`, `a11y_requirements` |
-| 3b Consolidación (**GU**) | `ux-context-builder` | `audit_ux.py --exigir-uxs` sin `PAQUETE_SIN_UXS` para el paquete; veredicto por consumidor con su razón; preguntas abiertas con responsable; validación humana pendiente |
-| 4 Exploración | `claude-design-orchestrator` (o `stitch-ui-generator`) | Cada artefacto con SCR→FLW; Intent Brief y DD humano; con Stitch, `register-exploration` sin error y un solo `STP` por iniciativa |
-| 5 Accesibilidad | `accessibility-reviewer` | La accesibilidad se apoya en los componentes del Design System; ARP por SCR cuando el diseño no sale de ellos; ningún `pass` sin evaluar; `fail`/`inconclusive` visibles |
-| 6 Diseño gobernado | Claude Design (DD humano), el prototipo validado al terminar de construir, o `figma-design-validator` | El diseño queda gobernado de alguna de esas formas; con Figma/Stitch, `governed_design` por SCR y divergencia `none` o `resolved` |
+| 3 Especificación | `ui-spec-writer` (+ `web-atomic-component-designer` si hay librería) | `validators/cli.py preflight` sin `BLOCKED`; cada SCR con `flow`, `requirements`, `required_states`, `a11y_requirements`; investigación dentro de Pantallas con INV y DEC; `audit_ux.py --compuerta G3` sin error |
+| 3b Componentes preliminares | `ui-spec-writer` | Cada SCR con su tabla pieza → componente del Design System (existe o brecha con su código de GAPS.md) |
+| 4 Exploración en baja fidelidad (**obligatoria**, Enzo 2026-11-26) | `claude-design-orchestrator` (Claude Design, Figma, código u otra); registra el IB | Lee las SCR y su lista preliminar, no la UXS; valida estructura y flujo; brechas nuevas a la SCR y a GAPS.md (`npm run gap:report` en ui-components); capturas guardadas; `audit_ux.py --compuerta G4` sin error |
+| 4b Consolidación (**GU**): la UXS agrupa todo, exploración incluida | `ux-context-builder` | `audit_ux.py --exigir-uxs` sin `PAQUETE_SIN_UXS` para el paquete; veredicto por consumidor con su razón; preguntas abiertas con responsable; validación humana pendiente |
+| 5 Accesibilidad durante la construcción | `accessibility-reviewer`, sobre micro UI, shell y DS implementados | ARP creado y actualizado mientras se construye, con accesibilidad evaluada sobre lo implementado antes de Validado; ARP con versión evaluada, resultados y evidencia; ningún `pass` sin evaluar; `fail`/`inconclusive` visibles |
+| 6 Diseño gobernado | Claude Design (DD humano), el prototipo validado al terminar de construir, o `figma-design-validator` | Figma es opcional; código validado con Enzo, captura y ARP permite pasar G6 sin Figma. Con Figma/Stitch, `governed_design` por SCR y divergencia `none` o `resolved` |
 | 7 Handoff | `ux-development-handoff` | `validators/cli.py gate` sin `FAILED`/`BLOCKED`; revisión humana pendiente registrada (hoy el gate solo reconoce Figma o Stitch como diseño gobernado) |
 
-Por qué este orden: el flujo necesita los UXR para listar pantallas; la especificación de pantalla es lo que consume la exploración y evita que invente; la UXS cierra el paquete antes de explorar o construir porque es lo que leen Claude Design, QA y Desarrollo; la accesibilidad se apoya en los componentes del Design System y lo propio de cada pantalla se verifica al validar lo construido. La **vía directa a front end** (escenario H) salta la exploración y el handoff formal, **pero no la fase 3b**. Pasa de fase solo cuando la compuerta se cumple o cuando la pregunta abierta no bloquea (queda registrada, no se esconde).
+Por qué este orden: el flujo necesita los UXR para listar pantallas; la especificación de pantalla es lo que consume la exploración y evita que invente; la exploración lee las pantallas y su lista preliminar de componentes, no la UXS (Enzo, 2026-11-26); la UXS va después porque agrupa todo el paquete, exploración y brechas incluidas, y es lo que leen QA y Desarrollo; las brechas que salen en desarrollo vuelven a la SCR y a GAPS.md; la accesibilidad se apoya en los componentes del Design System y lo propio de cada pantalla se verifica al validar lo construido. La **vía directa a front end** (escenario H) salta la exploración y el handoff formal, **pero no la fase 3b**. Pasa de fase solo cuando la compuerta se cumple o cuando la pregunta abierta no bloquea (queda registrada, no se esconde).
 
 **Paralelización.** Las fases 1–3 se paralelizan por flujo/familia de UXR (p. ej. UXR-028/029/030 son independientes entre sí tras UXR-017). Las fases 4–6 se paralelizan por SCR, **excepto** que todos los SCR de una iniciativa viven en el mismo `STP` (invariante de `stitch-ui-generator`): serializa la creación/resolución del proyecto y paraleliza solo la generación de pantallas dentro de él.
 
@@ -143,6 +179,15 @@ Enruta cada hallazgo al skill que puede resolverlo y repite hasta el punto fijo 
 
 Tope: tres pasadas. Si tras la tercera siguen apareciendo brechas, detente y repórtalas: es señal de un problema de alcance o de requisitos, no de diseño.
 
+**Cada hallazgo también se refleja en su tarea** (con `em-gestion-tareas`), en el momento en que aparece y no al cierre:
+
+| Lo que aparece a mitad del trabajo | Qué pasa con la tarea |
+|---|---|
+| Pregunta abierta que frena el trabajo (de PO, Arquitectura o el analista) | AVANCE con bloqueo: la pregunta, quién responde y qué desbloquea |
+| Trabajo nuevo: un módulo, una pantalla o un flujo que no estaba mapeado | AJUSTAR: se agrega al mapeo, se valida con `armar-mapeo.mjs` y se crea la subtarea |
+| Cambio en la KB que toca la tarea sin cambiar el alcance | AVANCE con nota y el enlace al cambio |
+| Pregunta UX que la IA cierra por delegación | AVANCE con nota y el DEC |
+
 ### 5. Auditar calidad
 
 1. Ejecuta `audit_ux.py` y corrige todo error imputable a un skill (re-invócalo; no edites a mano lo que genera una herramienta). Antes de cerrar, córrelo con `--exigir-uxs` (paso 6): un paquete con pantallas y sin UXS es un error, no un detalle.
@@ -156,7 +201,7 @@ Tope: tres pasadas. Si tras la tercera siguen apareciendo brechas, detente y rep
 
 | Consumidor | Qué puede hacer cuando está READY | Skill siguiente |
 |---|---|---|
-| Claude Design (exploración visual) | Explorar y criticar alternativas sin inventar; la UXS es su UX Context Pack | `claude-design-orchestrator` |
+| Claude Design (exploración visual) | Revisar la exploración contra el paquete completo; la exploración en sí se hace antes de la UXS, desde las SCR | `claude-design-orchestrator` |
 | Stitch | Generar exploración sin inventar (hoy no se usa) | `stitch-ui-generator` |
 | Figma | Validar y gobernar el diseño (descartado como diseño gobernado el 2026-10-04) | `figma-design-validator` |
 | Desarrollo (Developer + agente IA) | Construir directo en front end desde los SCR, el Design System y las decisiones (CONDITIONAL), o pasar el gate formal con diseño gobernado (READY) | construcción directa; `ux-development-handoff` → `development-handoff-builder` |
@@ -180,13 +225,59 @@ Si el hook frena: arma la UXS con `ux-context-builder`, commitéala en la rama y
 
 Antes de emitir el cierre, completar B2 y reportar cada destino comprobado o pendiente. Integrar o publicar conserva sus permisos propios.
 
+## Cómo se diseña: pregunta al inicio de cada paquete (Enzo, 2026-11-26)
+
+Antes de diseñar pantallas, se pregunta a Enzo «¿cómo diseñamos esto?». El agente propone una opción según el tiempo disponible frente a lo que costaría el front, y Enzo decide.
+
+| Opción | Cuándo | Qué es |
+|---|---|---|
+| Directo al front | Hay tiempo para construir e iterar (lo construye UX/UI o Desarrollo) | Front real con datos simulados; el diseño se valida sobre él. Si el front ya existe, manda el front |
+| Prototipo rápido en Angular | Poco tiempo | Pantallas con los componentes reales de `@comsatel/ui-components` y datos fijos: sin BFF, servicios ni pruebas. Se compila y se comparte con un enlace (nadie instala nada). No es la especificación: la SCR lo es |
+| Claude Design o Figma | Explorar estructura y flujo | Baja fidelidad con controles imitados; no se salta (IB) |
+
+No se diseña en HTML suelto imitando los `cs-*`: se parece, pero no es igual. Hipótesis por medir: el prototipo cuesta una fracción del front. En el primer paquete donde se use, se registran sus horas frente a las del front.
+
+## Tareas: siempre con em-gestion-tareas (Enzo, 2026-11-26)
+
+Toda tarea que este orquestador ejecuta se registra con `em-gestion-tareas`; ningún otro skill escribe en la base Tareas, en issues ni en ClickUp.
+
+- **Antes de empezar** (paso 0): las tareas existen y la KB está revisada con `cambios-kb.mjs`.
+- **Al empezar** una tarea UX (y al recibir un paquete: modo RECIBIR): modo AVANCE (estado «En curso»). Si la tarea no existe, se pide; no se crea sin su mapeo.
+- **Al pasar cada compuerta** (G1 a G7, GU): modo AVANCE con la salida de `audit_ux.py --compuerta` como evidencia. Así cada avance deja su trazabilidad sin depender de la memoria.
+- **Al terminar cada paso con evidencia** (MR, artefacto, comentario): modo AVANCE con los enlaces, para marcar su casilla. Mientras el trabajo vive en la rama `ux/*`, la rama y el commit son evidencia provisional; al fusionar se cambian por el enlace a `develop`.
+- **A mitad del trabajo**: la tabla del paso 4 (bloqueo, AJUSTAR o nota).
+- **Al terminar la tarea**: modo CERRAR con la evidencia. Cerrar marca criterios, cierre, Plan de la madre y Resultado; GitLab y ClickUp esperan su fecha límite.
+- Las capturas y «Cómo funciona» las agrega el ejecutor en la misma tarea; `em-gestion-tareas` no las sube.
+
 Con la auditoría limpia, o los errores restantes declarados, cierra según la sección 4 de `references/worktree-protocol.md`: `graphify update .`, resumen de cambios y decisiones pendientes, y propuesta de merge, PR, conservar o descartar. Espera la respuesta; no hagas commit, merge ni borres el worktree por iniciativa propia.
+
+## Construcción y cierre de iteración (Enzo, 2026-11-14)
+
+La investigación de la solución va dentro de Pantallas y deja un INV y un DEC enlazados al SCR antes de cerrarlo: benchmarking, componentes del DS disponibles o faltantes, micro UI de destino y ubicación en el shell. La exploración admite cualquier herramienta y guarda capturas. El ARP se crea y actualiza durante la construcción del prototipo, sobre lo implementado. En cada iteración que cambia lo construido, el agente propone los cambios a UXR, FLW, SCR y DEC, la captura y el estado; Enzo aprueba **antes de escribir**. El registro de evidencia se mantiene en la memoria del proyecto (`design/MEMORY.md`) y en el artefacto, con el contrato de `references/controles-de-cierre.md`.
+
+Flujos, Pantallas y Exploraciones siguen **Borrador → En revisión → En construcción → Validado**. Validado exige prueba con Enzo en el navegador y captura de la versión probada, además de accesibilidad revisada sobre lo implementado. La vía directa a código conserva todos estos controles. `audit_ux.py --cerrar-paquete --conciliacion <informe.json>` bloquea un cierre sin estas evidencias; la auditoría ordinaria avisa de los documentos aún en preparación.
+
+## Verificaciones automáticas antes de avanzar
+
+Ejecuta `scripts/audit_ux.py <kb> --compuerta <G>` antes de dar paso a la siguiente fase. G0 exige la memoria con el plan; G1 UXR y lineage; G2 FLW y screens; G3/GR SCR e INV+DEC; GU UXS; G4 exploración y capturas; G5 ARP implementado; G6 diseño validado en código o gobernado aprobado; G7 HOF (además del gate formal si se usa); GI la propuesta y evidencia de iteración; GC la conciliación completa sin diferencias. El esquema y los códigos están en `references/controles-de-cierre.md`. Un resultado con errores bloquea el avance. La vía directa a código pasa por GU, G3, G5, G6, GI y GC; no depende de Figma ni de un HOF formal.
+
+El hook guardia-uxs impide subir ramas de diseño con UXS faltante, SCR cerrado sin INV/DEC, iteración sin propuesta/captura/aprobación o Validado sin prueba y ARP implementado. La conciliación también advierte ARTEFACTO_BORRADOR_CON_CONSTRUCCION: lee los repositorios de producto autorizados, referencias HU/FLW/SCR en código, ramas CLF_Feature_<US> y merges locales con referencias de MR; propone En construcción, y solo propone Validado con prueba de Enzo, captura y ARP de esa versión. Nunca aplica estados automáticamente ni afirma un estado remoto de MR sin evidencia. Sin repositorios configurados informa el límite.
+
+**Decisiones retiradas por el PO (Enzo, 2026-11-26).** Al iniciar o retomar un paquete, desde la raíz de la KB: `node scripts/decisiones-retiradas.mjs --paquete DSP-NNN`. Si sale con código 1, hay una DH del PO que retira o difiere algo que Enzo decidió sin su pregunta en el UXR o sin aviso publicado: se le informa a Enzo antes de diseñar, con las rutas. Dónde vive cada decisión y cómo se valida lo construido con datos simulados: `references/mapa-de-decisiones-y-validacion.md`.
+
+## Recalcular estados en cadena
+
+Al conciliar, propón cambios en ambos sentidos: preguntas resueltas (Decidida/Diferida/Descartada) → UXR En revisión; si sus flujos ya están En construcción o Validado, UXR Aprobado, solo con aprobación de Enzo y approved_by. Una pantalla En construcción mueve su FLW/IB a En construcción; todas Validadas los llevan a Validado. Un IB con lienzo o capturas pasa a En revisión. La evidencia propia de Validado sigue siendo obligatoria.
+
+Recalcula UXS y paquete desde preguntas, aprobación y validación: En curso → Diseño cerrado → Listo para desarrollo. Para Estado del alcance propone Borrador, En preparación, Listo para selección de sprint, En sprint o Cerrado según su preparación y construcción; la persona confirma el paso operativo. Una aprobación propuesta no cuenta como aprobación real.
+
+Si cambia una fuente del KB, sin importar quién la editó, propón Vigencia = Revisar por cambio de fuente en preguntas, Resumen vigente = Desactualizado en UXR/FLW y retorno de Validado/Aprobado a En revisión. La invalidación se propaga por dependencias y prevalece sobre un avance. Sin huella se declara cobertura incompleta. La conciliación genera las propuestas; Enzo aprueba y primero se actualiza el KB. GC bloquea una cascada pendiente o incompleta.
 
 ## Compuertas humanas
 
-Todos los skills UX/UI dejan `status: draft`. Este orquestador mantiene esa línea:
+Los artefactos nuevos comienzan en Borrador (`status: draft`). El orquestador solo transcribe cambios de estado aprobados y comprobables:
 
-- Nunca asignes `verified`, `approved` ni `human_review.status: approved`, ni registres una validación en nombre de una persona.
+- Nunca inventes `verified`, `approved`, `human_review.status: approved` ni una validación en nombre de una persona. Registra Validado solo tras la prueba de Enzo, su aprobación, captura y revisión de accesibilidad implementada.
 - **Elegir entre alternativas, resolver una divergencia Stitch↔Figma, aprobar `governed_design` y aprobar el gate son decisiones humanas.** Regístralas (quién, cuándo, qué, por qué) solo cuando el usuario las aporte con nombre y rol; sin autor identificable, queda como información del usuario.
 - Crear un proyecto Stitch exige autorización explícita (`--authorized-by human:<id>`).
 - Termina con una lista de **decisiones humanas pendientes**: pregunta, responsable, prioridad y qué desbloquea.
@@ -203,6 +294,18 @@ Todos los skills UX/UI dejan `status: draft`. Este orquestador mantiene esa lín
 - **Fechas y autoría** en frontmatter OKF v0.2: `generated.by` del skill que produjo el archivo (el de la UXS es `ux-context-builder/1.0`), `generated.at` ISO 8601 con `-05:00`.
 - **Solo diseño.** Coordinar la retroalimentación del desarrollo está incluido; escribir su código no. Si el pedido se desliza a negocio/requerimientos, arquitectura o código, detente y señala el skill de la etapa correspondiente.
 
+## Comportamientos bloqueantes y lecciones de la sesión (2026-11-14)
+
+- **KB primero y conciliación en ambos sentidos.** Notion refleja el KB. Toda respuesta, decisión y estado se registra primero en Open questions de UXR/FLW/SCR y en DEC cuando se decide; una diferencia se propone y se aprueba antes de aplicarla.
+- **Delegación limitada a UX estándar.** La IA cierra textos, estados vacíos, mensajes, formatos o patrones con benchmarking, fecha, DEC y fuentes, como IA (delegado por Enzo). Nunca cierra negocio, permisos, datos ni alcance.
+- **Propuesta UX es solo para Enzo.** Las propuestas ajenas no se remapean. Si intervienen PO y UX, decide el PO y UX propone. Diferida significa que la función no se construye en este paquete o piloto; se reabre al construirla.
+- **Resumen y detalle tienen lugares distintos.** Respuesta tiene hasta 200 caracteres y [Confirma: X] si está pendiente; el detalle vive en Resolución, con sus cuatro heading_3. Nunca heading_1 en Notion.
+- **Lo construido deja evidencia y mueve sus dependencias.** Nada permanece en Borrador con código detectado. Propón estado, captura y actualización en cadena; Validado requiere prueba con Enzo y ARP implementado. Una fuente modificada devuelve a revisión lo aprobado o validado.
+- **Corrida en seco y aprobación de Enzo antes de escribir en Notion.** Muestra el plan concreto completo; no conviertas una propuesta ni el silencio en aprobación. La escritura masiva usa API REST, no MCP: el cupo del MCP se agota. La conciliación solo lee por REST.
+- **Un plan, un registro por ID.** Deduplica antes de cargar. IDs repetidos con contenido distinto bloquean el plan; campos null, undefined o registros sin ID impiden darlo por completo. Los workers no escriben FIN hasta cubrir todos los registros; los pendientes se explican y nunca se esconden con nulls.
+- **Los estados se retroalimentan, no bajan en una sola dirección.** Una pregunta mueve su UXR; una pantalla mueve su flujo y su exploración; flujos y UXR mueven la UXS y el paquete; un cambio en el KB vuelve a abrir lo que depende de él. Recalcula hasta que nada cambie. **El alcance del paquete lo decide el gestor de proyectos** con el sprint de GitLab: la cascada nunca hace retroceder un paquete, y la entrada a «En sprint» o «Cerrado» solo se propone para que él la confirme. UX puede cargar sus tareas en un sprint antes que Desarrollo.
+- **La HU pertenece al analista funcional de su DSP.** Si una respuesta o decisión la afecta, no la edites. Propón un comentario para ese analista: ID de pregunta, qué cambió y AC o regla a revisar. El analista decide el cambio; Enzo aprueba el comentario. Si falta el DSP o el AC exacto, decláralo; no inventes destinatarios. El comentario no se envía automáticamente.
+
 ## Informe final al usuario
 
 Incluye siempre el informe de inicio y la matriz de sincronización de `references/ciclo-retroalimentacion.md`. Cierra con un resumen breve, en este orden: escenario y ruta ejecutada; artefactos creados/actualizados; resultado de auditoría, preflight y gate (errores restantes); veredictos por consumidor; decisiones humanas pendientes; siguiente skill recomendado. Declara lo que no se pudo verificar u omitió (p. ej. Stitch/Figma inaccesibles).
@@ -216,6 +319,10 @@ Incluye siempre el informe de inicio y la matriz de sincronización de `referenc
 - `references/role-readiness.md` — qué necesita cada etapa/consumidor y mapa de códigos de error → skill dueño.
 - `references/controles-de-cierre.md` — los controles duros de cierre de paquete (auditoría, hook y compuerta GU): qué hacen, cómo se prueban y cómo se ajustan.
 - `references/worktree-protocol.md` — aislamiento con git worktree (rama `ux/<slug>`), integración y limpieza.
+- `references/mapa-de-decisiones-y-validacion.md` — dónde se leen las decisiones de Enzo (DEC), del PO (DH en RCP-001 §10), lo diferido (UXR-*-Q* y Preguntas) y los avisos (AVS-*); regla de lo retirado y validación de lo construido en local con datos simulados.
+- `scripts/decisiones-retiradas.mjs` — control de DH del PO que tocan decisiones de UX sin pregunta diferida o sin aviso (`--paquete`, `--todo`, `--json`; código 1 si falta algo).
+- `scripts/mock-validacion/proxy-idv-dsp009.mjs` — ejemplo de proxy que simula rutas que el mock BFF no tiene (identidad del Cliente y del Producto).
+- `scripts/cambios-kb.mjs` — qué cambió en la KB para un paquete desde la última revisión: inventario fechado de historias, cambios con su sección, preguntas abiertas y efecto en cadena sobre diseño y tareas (solo lee; `--registrar` guarda la revisión vista en `~/.comsatel/revision-kb.json`).
 - `templates/ux-design-spec-template.md` — plantilla de la UXS.
 - `scripts/audit_ux.py` — auditoría determinista (`--json` para salida estructurada; `--exigir-uxs` con `--paquetes` o `--desde-rama` para el control de cierre).
 - `hooks/guardia-uxs.mjs` — hook del plugin que frena subir una rama `ux/*` sin la UXS de los paquetes que toca; se prueba con `hooks/probar-guardia-uxs.mjs`.

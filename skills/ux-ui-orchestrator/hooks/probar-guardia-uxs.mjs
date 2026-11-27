@@ -69,6 +69,12 @@ const sinUxs = repo('sin-uxs', { conUxs: false });
 const conUxs = repo('con-uxs', { conUxs: true });
 const otraRama = repo('otra-rama', { conUxs: false, rama: 'feature/otra' });
 const sinEtiqueta = repo('sin-etiqueta', { conUxs: false, etiqueta: 'captura-recupero' });
+const validadoSinEvidencia = repo('validado-sin-evidencia', { conUxs: true });
+escribir(join(validadoSinEvidencia, 'design/screens/SCR-901-prueba.md'), SCR('SCR-901', 'FLW-901', 'dsp-901').replace('status: draft', 'status: validated'));
+const iteracionSinPropuesta = repo('iteracion-sin-propuesta', { conUxs: true });
+escribir(join(iteracionSinPropuesta, 'design/screens/SCR-901-prueba.md'), SCR('SCR-901', 'FLW-901', 'dsp-901').replace('status: draft', 'status: in_construction\niteration: {implementation_changed: true, version: prueba}'));
+const aprobadoSinInvestigacion = repo('aprobado-sin-investigacion', { conUxs: true });
+escribir(join(aprobadoSinInvestigacion, 'design/screens/SCR-901-prueba.md'), SCR('SCR-901', 'FLW-901', 'dsp-901').replace('status: draft', 'status: approved'));
 const noKb = mkdtempSync(join(raizTemp, 'no-kb-'));
 git(noKb, 'init', '-b', 'main');
 
@@ -95,6 +101,9 @@ const casos = [
   ['deny', 'con git -C desde fuera del repo', `git -C "${sinUxs}" push origin ux/prueba`, noKb],
   ['deny', 'después de un cd', `cd "${sinUxs}" && git push origin ux/prueba`, noKb],
   ['deny', 'con el envoltorio git-auth', `node git-auth.mjs "${sinUxs}" push origin ux/prueba`, noKb],
+  ['deny', 'Validado sin captura ni ARP implementado', 'git push origin ux/prueba', validadoSinEvidencia],
+  ['deny', 'iteración con cambios sin propuesta de actualización', 'git push origin ux/prueba', iteracionSinPropuesta],
+  ['deny', 'SCR cerrado sin investigación INV y DEC', 'git push origin ux/prueba', aprobadoSinInvestigacion],
   // Piden confirmar con el modo aviso
   ['ask', 'modo aviso', 'git push origin ux/prueba', sinUxs, { COMSATEL_UX_GUARDIA: 'aviso' }],
   // Pasan sin ruido

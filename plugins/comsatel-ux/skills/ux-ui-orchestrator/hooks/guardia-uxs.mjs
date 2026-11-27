@@ -111,14 +111,16 @@ function comprobar(raiz, rama, modo) {
   const r = spawnSync(py[0], [...py.slice(1), AUDITORIA, raiz, '--exigir-uxs', '--desde-rama', base, '--json'], { encoding: 'utf8', timeout: 60000, maxBuffer: 32 * 1024 * 1024 });
   let reporte;
   try { reporte = JSON.parse(r.stdout); } catch { return noPude('la auditoría no devolvió un resultado legible'); }
-  const faltan = (reporte.controles || []).filter((c) => c.nivel === 'error' && c.codigo === 'PAQUETE_SIN_UXS');
+  const codigosBloqueantes = new Set(['PAQUETE_SIN_UXS', 'SCR_SIN_INV_DEC', 'VALIDADO_SIN_PRUEBA',
+    'VALIDADO_SIN_A11Y_IMPLEMENTADA', 'ITERACION_SIN_PROPUESTA_CAPTURA', 'ITERACION_SIN_APROBACION', 'ITERACION_INVALIDA', 'EXPLORACION_SIN_CAPTURA']);
+  const faltan = (reporte.controles || []).filter((c) => c.nivel === 'error' && codigosBloqueantes.has(c.codigo));
   if (!faltan.length) return null;
   const lista = faltan.map((c) => `  - ${c.mensaje}`).join('\n');
   const razon = [
-    `BLOQUEADO: subir ${rama} sin la UXS de ${faltan.map((c) => c.paquete).join(', ')}`,
+    `BLOQUEADO: subir ${rama} con controles de UX pendientes (${[...new Set(faltan.map((c) => c.codigo))].join(', ')})`,
     'Motivo: un paquete con pantallas especificadas se consolida en una UXS (con el veredicto por consumidor) antes de subir su diseño. Es el paquete que leen Claude Design, QA y Desarrollo, y sin ella se pierde la trazabilidad.',
     lista,
-    'Qué hacer: pide al skill ux-context-builder que arme la UXS del paquete (o ux-ui-orchestrator, paso 6), commitéala en esta rama y vuelve a subir.',
+    'Qué hacer: completa la UXS, INV/DEC, propuesta de iteración, prueba con Enzo, captura y ARP implementado según los errores indicados; ejecuta audit_ux.py --compuerta <G> antes de avanzar.',
     'Si es una excepción real, la persona (no el agente) puede fijar COMSATEL_UX_GUARDIA=aviso en su entorno.',
   ].join('\n');
   return { tipo: modo === 'aviso' ? 'ask' : 'deny', razon };

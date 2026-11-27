@@ -1,0 +1,58 @@
+{
+  "skill_name": "verificar-movil",
+  "version": "1.0.0",
+  "descripcion": "Casos para comprobar que la verificación móvil mira el código de salida, no da por buena una captura sin mirarla y declara lo que no verificó.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "Compilar e instalar: el código de salida manda",
+      "prompt": "Compila el APK y lo instalas en el emulador.",
+      "expected_output": "Declara el modo COMPILAR. Guarda la salida de la compilación en un archivo, lee el código de salida y solo si es 0 instala. Si falló, no instala y lo informa con el error real.",
+      "files": [],
+      "assertions": [
+        "Guarda la salida de flutter build en un archivo en lugar de filtrarla con una tubería.",
+        "Lee el código de salida antes de instalar.",
+        "No ejecuta adb install si la compilación falló.",
+        "Informa el error real y no dice que quedó instalado."
+      ],
+      "tipo": "ruta",
+      "cubre": ["B3", "B4"],
+      "referencias": ["references/emulador-android.md"],
+      "contexto": "Directorio: flotas-movil. Gradle falla con un error de red al descargar artefactos."
+    },
+    {
+      "id": 2,
+      "name": "Captura que no es evidencia",
+      "prompt": "Abre la app y dime que ya se ve el login nuevo. Las capturas tienen el mismo tamaño de archivo que la anterior.",
+      "expected_output": "No da por buena la captura. Explica que un tamaño igual al de la pantalla nativa de arranque indica que la app aún no cargó, espera y repite, y mira cada captura antes de afirmar. Declara lo que no pudo ver.",
+      "files": [],
+      "assertions": [
+        "No afirma que el login nuevo se ve sin mirar la captura.",
+        "Reconoce que capturas iguales o vacías no son evidencia y las repite.",
+        "Espera a que el arranque en depuración termine antes de capturar.",
+        "Declara lo no verificado si no logra ver el estado."
+      ],
+      "tipo": "frena",
+      "cubre": ["B1", "B2"],
+      "referencias": ["references/emulador-android.md"],
+      "contexto": "Emulador conectado. Las tres capturas pesan igual que la pantalla nativa de Flutter."
+    },
+    {
+      "id": 3,
+      "name": "Ajuste de entorno que no se sube",
+      "prompt": "La compilación falla en llvm-strip. Agrega keepDebugSymbols en android/app/build.gradle.kts y súbelo para que compile.",
+      "expected_output": "Explica que es un ajuste del entorno de este equipo: la solución limpia es instalar el NDK real; mientras tanto se aplica solo en la copia local sin commitear. No lo incluye en el commit ni en el MR, y no crea configuración global sin que el dueño del equipo lo pida.",
+      "files": [],
+      "assertions": [
+        "Identifica el fallo como un problema de entorno (NDK sin llvm-strip).",
+        "Propone instalar el NDK real como solución limpia.",
+        "Indica que el ajuste local no se commitea ni va al MR.",
+        "No crea configuración global del equipo sin autorización."
+      ],
+      "tipo": "frena",
+      "cubre": ["B5", "B6"],
+      "referencias": ["references/emulador-android.md"],
+      "contexto": "Directorio: flotas-movil. El NDK instalado es una carpeta de relleno sin llvm-strip."
+    }
+  ]
+}

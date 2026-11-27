@@ -173,7 +173,7 @@ Antes de auditar o construir, lee la guía del componente y la nota de la versi�
   siempre** antes de agregar un componente, mover una carpeta, cambiar un import
   entre componentes o tocar `public-api.ts` — ver B19.
 - `references/package-release.md` — protocolo para publicar una versión del
-  paquete en GitHub Packages. **Leer antes de cualquier `npm publish`, tag o
+  paquete en el Package Registry de GitLab. **Leer antes de cualquier publicación o
   afirmación de que una versión ya puede instalarse.**
 
 ---
@@ -528,9 +528,9 @@ lo son entre sí.
   (incluida migración o la confirmación explícita de que no existe) y evidencia
   de verificación. Ejecutar `npm run check:release-notes` y el protocolo de
   `package-release.md`. Un commit o un `package.json` con una versión nueva NO
-  prueba que el artefacto exista en GitHub Packages: comprobar la versión en el
-  registro antes y después de `npm publish`. Nunca crear el tag
-  `ds-v<versión>` ni declarar disponible una versión que falle esa comprobación.
+  prueba que el artefacto exista en el registro de GitLab: comprobar la versión en el
+  registro después del job `publish`. Nunca crear el tag `ds-v<versión>` a mano
+  (lo crea el pipeline de `main`) ni declarar disponible una versión que falle esa comprobación.
   La nota y el artefacto deben coincidir exactamente con
   `projects/comsatel-ds/package.json`, para evitar que una plataforma adopte
   una versión inexistente o sin contrato conocido.

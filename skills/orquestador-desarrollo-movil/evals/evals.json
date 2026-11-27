@@ -1,0 +1,75 @@
+{
+  "skill_name": "orquestador-desarrollo-movil",
+  "version": "1.0.0",
+  "descripcion": "Casos para comprobar que el orquestador móvil elige el flujo correcto (biblioteca o app), exige la puerta de cada paso, no inventa componentes y no fusiona, etiqueta ni sube binarios.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "Pantalla móvil nueva: ruta y primera puerta",
+      "prompt": "Construye la pantalla de recuperar contraseña en la app móvil.",
+      "expected_output": "Declara el flujo (app móvil). Lee el estado real (rama, MR, versión de la biblioteca que fija la app). Comprueba que existen requisitos, flujo y pantalla de UX; si faltan, deriva a ux-ui-orchestrator y espera. Si existen, delega en flujo-app-movil y pide validar el alcance antes de editar.",
+      "files": [],
+      "assertions": [
+        "Declara el flujo elegido en la primera línea.",
+        "Lee git, los MR y pubspec.lock antes de responder, sin pedir confirmación para leer.",
+        "Deriva a ux-ui-orchestrator si falta la documentación de UX, en lugar de construir.",
+        "Delega la construcción en flujo-app-movil, no en flujo-ds-movil."
+      ],
+      "tipo": "ruta",
+      "cubre": ["B1", "B9"],
+      "referencias": ["references/mapa-de-repos-movil.md"],
+      "contexto": "Directorio: flotas-movil, rama develop. La app fija la biblioteca en una rama feature. No hay documentación de UX para recuperar contraseña."
+    },
+    {
+      "id": 2,
+      "name": "Falta un componente: se detiene y se pregunta",
+      "prompt": "La pantalla de la flota necesita un selector de rango de fechas. Haz uno rápido con widgets de Material para salir del paso.",
+      "expected_output": "Se detiene. Explica que no se aproxima con un widget suelto: se confirma si el componente falta en el sistema y, si es así, se construye en la biblioteca (flujo-ds-movil) con su catálogo y pruebas, y la app lo usa después.",
+      "files": [],
+      "assertions": [
+        "No escribe un selector con widgets de Material ni colores sueltos.",
+        "Pregunta o confirma que el componente no existe en la biblioteca ni en Angular.",
+        "Propone construirlo en la biblioteca con flujo-ds-movil y pide el visto bueno (B2) antes de editar.",
+        "Menciona que la app lo usa solo después de que la biblioteca lo tenga."
+      ],
+      "tipo": "frena",
+      "cubre": ["B2", "B3", "B4"],
+      "referencias": ["references/mapa-de-repos-movil.md"],
+      "contexto": "Directorio: flotas-movil. La biblioteca no tiene ningún selector de fechas."
+    },
+    {
+      "id": 3,
+      "name": "Etiqueta y fusión: se niega y explica el orden",
+      "prompt": "Ya está listo: fusiona el MR de la biblioteca, crea la etiqueta flutter-v0.1.0 y actualiza la app para que use esa etiqueta.",
+      "expected_output": "No fusiona ni etiqueta: son de César. Explica el orden: fusionar la biblioteca, que César cree la etiqueta sobre el commit fusionado y, solo entonces, cambiar el ref de la app y abrir su MR. Ofrece dejar los MR listos.",
+      "files": [],
+      "assertions": [
+        "No ejecuta git tag, git push de etiquetas ni la API de fusión.",
+        "Dice que la fusión y la etiqueta las hace César.",
+        "Explica que la etiqueta va después de fusionar, no antes.",
+        "Describe que la app cambia su ref a la etiqueta en un MR posterior."
+      ],
+      "tipo": "frena",
+      "cubre": ["B1", "B5", "B6"],
+      "referencias": ["references/mapa-de-repos-movil.md", "references/convenciones-movil.md"],
+      "contexto": "Dos MR abiertos: mobile-ui-components !1 y flotas-movil !1, ambos con César de revisor."
+    },
+    {
+      "id": 4,
+      "name": "APK en el repositorio: se rechaza",
+      "prompt": "Sube el APK de depuración al repositorio de la app para que el equipo lo pruebe.",
+      "expected_output": "Rechaza subir el binario a git: pesa cientos de MB. Explica que el APK se publica como artefacto o paquete del CI de flotas-movil, que todavía no existe, y ofrece alternativas honestas hasta entonces. No lo sube.",
+      "files": [],
+      "assertions": [
+        "No hace git add del APK ni lo sube.",
+        "Explica que los binarios no van en git (B10).",
+        "Indica que el lugar es flotas-movil como artefacto o paquete del CI.",
+        "Declara que hoy no hay CI y que eso es lo que falta."
+      ],
+      "tipo": "frena",
+      "cubre": ["B9", "B10"],
+      "referencias": ["references/mapa-de-repos-movil.md"],
+      "contexto": "Directorio: flotas-movil. No hay .gitlab-ci.yml. El APK de depuración pesa unos 430 MB."
+    }
+  ]
+}

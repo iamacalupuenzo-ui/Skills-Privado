@@ -6,6 +6,8 @@
 // código 1, y el código 1 no bloquea (el comando se ejecutaría). Lo demás pasa sin ruido.
 // Documentación: ../references/hooks-bloqueantes.md
 import { execFileSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 const PROTEGIDAS = ['develop', 'main', 'release'];
 
@@ -29,6 +31,34 @@ function remotoDe(cwd) {
   } catch {
     return '';
   }
+}
+
+// Avisos de un push a un producto (no bloquean: se suman a la confirmación). Solo lecturas locales y
+// rápidas, sin red: la versión del DS en package.json y `git merge-tree` contra origin/integration tal
+// como está en el clon. La revisión completa la hacen revisar_ds.py y simular_fusion.py (flujo-producto).
+function avisosDePush(dir) {
+  const avisos = [];
+  const git = (...args) => execFileSync('git', ['-C', dir, ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], timeout: 4000 });
+  let raiz = '';
+  try { raiz = git('rev-parse', '--show-toplevel').trim(); } catch { return avisos; }
+  try {
+    const pkg = JSON.parse(readFileSync(join(raiz, 'package.json'), 'utf8'));
+    const v = (pkg.dependencies || {})['@comsatel/ui-components'] || (pkg.devDependencies || {})['@comsatel/ui-components'];
+    if (v && !/^\d+\.\d+\.\d+(-[\w.-]+)?$/.test(v)) avisos.push(`El DS no tiene versión exacta («${v}»).`);
+    else if (v && v.includes('-')) avisos.push(`El DS fijado es una prerelease (${v}): corre revisar_ds.py; si ya hay una estable igual o mayor, fíjala antes del MR.`);
+  } catch { /* sin package.json o sin DS: nada que avisar */ }
+  try {
+    git('rev-parse', '--verify', '--quiet', 'refs/remotes/origin/integration');
+    try {
+      git('merge-tree', '--write-tree', '--name-only', '--no-messages', 'origin/integration', 'HEAD');
+    } catch (e) {
+      if (e.status === 1) {
+        const archivos = String(e.stdout || '').trim().split(/\r?\n/).slice(1).filter(Boolean);
+        avisos.push(`HEAD choca con origin/integration en ${archivos.length} archivos (según el último fetch): corre simular_fusion.py e integra con git merge antes del MR.`);
+      }
+    }
+  } catch { /* el repo no tiene integration */ }
+  return avisos;
 }
 
 // Divide el comando en sentencias simples (; & | y saltos de línea).
@@ -167,11 +197,13 @@ function evaluar(cmd, cwd) {
     // Push permitido en principio: pide confirmación (regla B1: nada se sube sin que lo confirmes).
     const enDS =/ui-components/i.test(remoto) || /ui-components/i.test(dirTrabajo);
     const rama = destinos[0] || ramaActual(cwd, push.dirC) || 'la rama actual';
+    const avisos = esComsatel && !enDS ? avisosDePush(dirTrabajo) : [];
     return ['ask',
       enDS ? `Subir ${rama} al sistema de diseño (ui-components)` : `Subir ${rama} a GitLab`,
-      enDS
+      (enDS
         ? 'Estás en el sistema de diseño: un cambio aquí afecta a todos los productos (Shell y micro UI). Debe estar confirmado y seguir flujo-ds.'
-        : 'Regla B1: nada se sube sin tu confirmación. Esto solo sube una rama feature/*; no fusiona ni etiqueta.',
+        : 'Regla B1: nada se sube sin tu confirmación. Esto solo sube una rama feature/*; no fusiona ni etiqueta.')
+        + (avisos.length ? `\nAvisos antes de subir:\n- ${avisos.join('\n- ')}` : ''),
       'Si estás de acuerdo, confirma. Después se abre el MR a develop y se asigna a César (en pareja si es Shell + micro UI).'];
   }
 

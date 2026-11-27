@@ -1,0 +1,788 @@
+{
+  "paquete": {
+    "id": "DSP-009",
+    "nombre": "Identidad visual del Cliente y base del Producto",
+    "ruta": "requirements/scope-packs/DSP-009-paquete-identidad-visual-cliente-producto.md",
+    "issue": 267
+  },
+  "responsable": {
+    "nombre": "Enzo Macalupu",
+    "usuario": "emacalupu"
+  },
+  "madres": [
+    {
+      "codigo": "IDV-UX",
+      "titulo": "Diseño UX/UI de la identidad visual del Cliente y del Producto (DSP-009)",
+      "antesDeLeer": "¿qué se reutiliza de la identidad del Distribuidor y qué es nuevo para el Cliente y el Producto?",
+      "en30": "Dejar la parte de UX del DSP-009 (2 historias) lista para Desarrollo, adaptando lo que ya existe de la identidad del Distribuidor (HU-01-09).<br />Es la tarea padre del análisis UX del Sprint 6; sus horas incluyen las de las subtareas.",
+      "relato": {
+        "problema": "El Sprint 6 (23 al 27 de noviembre) lleva la identidad visual a los niveles Cliente (HU-01-14, Web Cliente) y Producto (HU-01-16, BackOffice). Desarrollo ya avanzó: Franklin tiene construida HU-01-14 y el plan aprobado de HU-01-16.",
+        "queSeHace": "Se adaptan los requerimientos UX (UXR-010 a 014 y 024), el flujo FLW-004 y la pantalla SCR-011-013 del Distribuidor a los dos niveles nuevos, con accesibilidad, mapeo al Design System y la especificación UX.",
+        "queEntrega": "Requerimientos UX, flujo y pantallas de las 2 historias, y la especificación UX (UXS) del paquete.",
+        "dondeEncaja": "Habilita la revisión del front (IDV-FRONT). Las preguntas del PO ya cerradas (herencia por elemento, AC-6 solo en la portada, logotipo en el layout) están en la KB.",
+        "noDecidido": "HU-01-16-Q4 (aviso del conteo de Distribuidores) sigue abierta."
+      },
+      "criterio": "Las {n} subtareas están completas y la especificación UX cubre las 2 historias del DSP-009. Las {horas} h incluyen las de las subtareas: no sumarlas dos veces.",
+      "comprueba": "¿Por qué HU-01-16 lleva menos horas de UX que HU-01-14?",
+      "subtareas": [
+        {
+          "n": "01",
+          "tipo": "ux",
+          "historias": [
+            "HU-01-14",
+            "HU-01-16"
+          ],
+          "horas": 1.5,
+          "inicio": "2026-11-26",
+          "limite": "2026-11-26",
+          "titulo": "Mapa de las 2 historias: qué se reutiliza de la identidad del Distribuidor y qué es nuevo (HU-01-14 y 16)",
+          "criterio": "Existe el mapa que dice, por historia, qué requerimiento, flujo y pantalla del Distribuidor se reutiliza, qué se adapta y qué es nuevo.",
+          "antesDeLeer": "¿qué criterios de aceptación de HU-01-14 son el mismo comportamiento que HU-01-09 en otro nivel?",
+          "en30": "Leer las 2 historias con el lector de paquetes y marcar la reutilización. 1,5 h, 26/11.",
+          "relato": {
+            "problema": "HU-01-14 no declara el tipo de sus 10 criterios; sin el mapa, se diseña de cero lo que ya existe.",
+            "queSeHace": "Se cruza cada criterio con UXR-010 a 014, UXR-024, FLW-004 y SCR-011-013, y con lo que Franklin ya construyó (#270).",
+            "queEntrega": "El mapa de reutilización del paquete.",
+            "dondeEncaja": "Primera subtarea de IDV-UX; ajusta las horas de las demás."
+          },
+          "comprueba": "¿Qué pantalla del Distribuidor sirve de base para las dos historias?",
+          "alcance": {
+            "incluye": [
+              "Cada criterio de aceptación de HU-01-14 y HU-01-16 marcado como reutiliza, adapta o nuevo",
+              "El cruce con lo construido en #270"
+            ],
+            "noIncluye": [
+              "Diseñar pantallas"
+            ]
+          },
+          "artefactos": [
+            "UXR-010",
+            "UXR-011",
+            "UXR-012",
+            "UXR-013",
+            "UXR-014",
+            "UXR-024",
+            "FLW-004",
+            "SCR-011-013"
+          ],
+          "criterios": [
+            "Cada criterio de aceptación de las 2 historias está marcado como reutiliza, adapta o nuevo",
+            "Las horas de IDV-UX e IDV-FRONT están revisadas con ese mapa"
+          ],
+          "cubre": [
+            {
+              "historia": "HU-01-14",
+              "ac": "AC-1 a AC-10"
+            },
+            {
+              "historia": "HU-01-16",
+              "ac": "AC-1 a AC-8"
+            }
+          ]
+        },
+        {
+          "n": "02",
+          "tipo": "ux",
+          "historias": [
+            "HU-01-14",
+            "HU-01-16"
+          ],
+          "horas": 3,
+          "inicio": "2026-11-26",
+          "limite": "2026-11-26",
+          "bloqueadaPor": [
+            "IDV-UX · 01"
+          ],
+          "titulo": "Requerimientos UX y flujo de la herencia de identidad en los niveles Cliente y Producto (HU-01-14 y 16)",
+          "criterio": "Los requerimientos UX y el flujo cubren los niveles Cliente y Producto, con la herencia por elemento y el retiro.",
+          "antesDeLeer": "¿qué pasa con un elemento que el Cliente no personalizó cuando cambia la identidad del nivel superior?",
+          "en30": "Actualizar UXR-010 a 014, UXR-024 y FLW-004 para el Cliente y el Producto. 3 h, 26/11.",
+          "relato": {
+            "problema": "Los requerimientos y el flujo actuales hablan solo del Distribuidor.",
+            "queSeHace": "Se agregan los niveles Cliente y Producto: herencia por elemento (PA-DSP-009-03), retiro solo con identidad propia, la base del Producto sin retiro y los permisos de cada actor.",
+            "queEntrega": "Requerimientos UX y flujo actualizados en la KB.",
+            "dondeEncaja": "Alimenta las pantallas (03 y 04)."
+          },
+          "comprueba": "¿Por qué la identidad base del Producto no se puede retirar?",
+          "alcance": {
+            "incluye": [
+              "Niveles Cliente y Producto en UXR-010 a 014 y UXR-024",
+              "Excepciones del flujo FLW-004: herencia por elemento, retiro y permisos"
+            ],
+            "noIncluye": [
+              "Cambiar el comportamiento del Distribuidor ya entregado"
+            ]
+          },
+          "artefactos": [
+            "UXR-010",
+            "UXR-011",
+            "UXR-012",
+            "UXR-013",
+            "UXR-014",
+            "UXR-024",
+            "FLW-004"
+          ],
+          "criterios": [
+            "Cada criterio de aceptación de las 2 historias tiene su requerimiento UX",
+            "El flujo cubre Cliente y Producto, con sus excepciones"
+          ],
+          "cubre": [
+            {
+              "historia": "HU-01-14",
+              "ac": "AC-1 a AC-10"
+            },
+            {
+              "historia": "HU-01-16",
+              "ac": "AC-1 a AC-8"
+            }
+          ]
+        },
+        {
+          "n": "03",
+          "tipo": "ux",
+          "historias": [
+            "HU-01-14"
+          ],
+          "horas": 3,
+          "inicio": "2026-11-27",
+          "limite": "2026-11-27",
+          "bloqueadaPor": [
+            "IDV-UX · 02"
+          ],
+          "titulo": "Pantallas de la identidad del Cliente en Web Cliente, con accesibilidad (HU-01-14)",
+          "criterio": "Existen las pantallas de HU-01-14 en Web Cliente con sus 5 estados y su revisión de accesibilidad.",
+          "antesDeLeer": "¿qué cambia en la pantalla del Distribuidor para que la use el Cliente?",
+          "en30": "Adaptar SCR-011-013 al Cliente en Web Cliente, dentro de microui-monitoring (./SettingsRoutes). 3 h, 27/11.",
+          "relato": {
+            "problema": "El Cliente personaliza su marca en Web Cliente, donde hoy no hay pantalla de identidad.",
+            "queSeHace": "Se adapta el editor del Distribuidor: origen heredado del Distribuidor o del Producto, retiro, sin permiso y la marca en portada, vista previa y layout después del ingreso.",
+            "queEntrega": "Pantallas de HU-01-14 con sus estados.",
+            "dondeEncaja": "Base de la revisión IDV-FRONT · 03."
+          },
+          "comprueba": "¿Por qué el formulario de ingreso muestra la marca del Distribuidor y no la del Cliente?",
+          "alcance": {
+            "incluye": [
+              "Pantallas de la identidad del Cliente en Web Cliente con sus 5 estados",
+              "Revisión de contraste de los colores elegidos"
+            ],
+            "noIncluye": [
+              "El formulario de ingreso de cada Distribuidor"
+            ]
+          },
+          "artefactos": [
+            "SCR-011-013",
+            "UXR-014"
+          ],
+          "criterios": [
+            "Pantallas con los 5 estados: identidad heredada, logotipo en blanco, sin permiso, éxito y retirada",
+            "Accesibilidad revisada: contraste de los colores elegidos",
+            "Trazabilidad criterio de aceptación → pantalla de AC-1 a AC-10"
+          ],
+          "cubre": [
+            {
+              "historia": "HU-01-14",
+              "ac": "AC-1 a AC-10"
+            }
+          ]
+        },
+        {
+          "n": "04",
+          "tipo": "ux",
+          "historias": [
+            "HU-01-16"
+          ],
+          "horas": 2,
+          "inicio": "2026-11-27",
+          "limite": "2026-11-27",
+          "bloqueadaPor": [
+            "IDV-UX · 02"
+          ],
+          "titulo": "Pantallas de la identidad base del Producto en BackOffice, con accesibilidad (HU-01-16)",
+          "criterio": "Existen las pantallas de HU-01-16: el editor en nivel Producto y la portada de BackOffice con logotipo, nombre y colores.",
+          "antesDeLeer": "¿qué le falta al editor del Distribuidor para editar la identidad del Producto?",
+          "en30": "El mismo editor de microui-bo-tenants en nivel Producto, solo para el Administrador Global y sin «Retirar», y la portada de BackOffice. 2 h, 27/11.",
+          "relato": {
+            "problema": "Hoy la identidad del Producto solo se lee como referencia y la portada de BackOffice pinta los colores pero no el logotipo ni el nombre.",
+            "queSeHace": "Se define el modo Producto del editor y la portada (AC-6, PA-DSP-009-05).",
+            "queEntrega": "Pantallas de HU-01-16 con sus estados.",
+            "dondeEncaja": "Base de la revisión IDV-FRONT · 04."
+          },
+          "comprueba": "¿Dónde se cumple AC-6 y dónde no?",
+          "alcance": {
+            "incluye": [
+              "El editor en nivel Producto para el Administrador Global, sin «Retirar»",
+              "La portada de BackOffice con logotipo, nombre y colores"
+            ],
+            "noIncluye": [
+              "El aviso del conteo de Distribuidores (HU-01-16-Q4, abierta con el PO)"
+            ]
+          },
+          "artefactos": [
+            "SCR-011-013"
+          ],
+          "criterios": [
+            "Editor en nivel Producto con los estados sin permiso, logotipo faltante y éxito",
+            "Portada de BackOffice con logotipo, nombre y colores",
+            "Trazabilidad criterio de aceptación → pantalla de AC-1 a AC-8"
+          ],
+          "cubre": [
+            {
+              "historia": "HU-01-16",
+              "ac": "AC-1 a AC-8"
+            }
+          ]
+        },
+        {
+          "n": "05",
+          "tipo": "ux",
+          "historias": [
+            "HU-01-14",
+            "HU-01-16"
+          ],
+          "horas": 1.5,
+          "inicio": "2026-11-27",
+          "limite": "2026-11-27",
+          "bloqueadaPor": [
+            "IDV-UX · 03",
+            "IDV-UX · 04"
+          ],
+          "titulo": "Componentes del Design System para cada pantalla de la identidad visual (HU-01-14 y 16)",
+          "criterio": "Cada pantalla tiene su lista de componentes del Design System y las brechas quedan identificadas.",
+          "antesDeLeer": "¿qué partes del editor no existen en el Design System?",
+          "en30": "Mapear al Design System web las pantallas de las 2 historias. 1,5 h, 27/11.",
+          "relato": {
+            "problema": "El editor del Distribuidor usa piezas propias de microui-bo-tenants (campo de color, carga de logotipo, vista previa) que el Cliente necesita en otra micro UI.",
+            "queSeHace": "Se lista el componente de cada pieza y se marca lo que falta.",
+            "queEntrega": "El mapeo al Design System y la lista de brechas.",
+            "dondeEncaja": "Alimenta la especificación (06) e IDV-FRONT · 02."
+          },
+          "comprueba": "¿Qué pieza del editor tendría que pasar al Design System para usarse en dos micro UI?",
+          "alcance": {
+            "incluye": [
+              "Componentes del Design System por pantalla",
+              "Brechas del Design System identificadas"
+            ],
+            "noIncluye": [
+              "Construir componentes nuevos"
+            ]
+          },
+          "criterios": [
+            "Cada pantalla tiene su lista de componentes",
+            "Las brechas del Design System están identificadas"
+          ],
+          "cubre": [
+            {
+              "historia": "HU-01-14",
+              "ac": "AC-1 a AC-10"
+            },
+            {
+              "historia": "HU-01-16",
+              "ac": "AC-1 a AC-8"
+            }
+          ]
+        },
+        {
+          "n": "06",
+          "tipo": "ux",
+          "historias": [
+            "HU-01-14",
+            "HU-01-16"
+          ],
+          "horas": 3,
+          "inicio": "2026-11-27",
+          "limite": "2026-11-27",
+          "bloqueadaPor": [
+            "IDV-UX · 05"
+          ],
+          "titulo": "Especificación UX de la identidad visual del Cliente y del Producto (HU-01-14 y 16)",
+          "criterio": "La especificación UX del DSP-009 está en la KB con la trazabilidad historia → requerimiento → flujo → pantalla y su veredicto por consumidor.",
+          "antesDeLeer": "¿qué recibe Desarrollo para comparar lo que construyó?",
+          "en30": "Escribir la especificación UX (UXS) del paquete. 3 h, 27/11.",
+          "relato": {
+            "problema": "Desarrollo ya construyó HU-01-14; sin la especificación no hay contra qué revisar.",
+            "queSeHace": "Se arma la UXS con la trazabilidad, los estados, la accesibilidad y las brechas.",
+            "queEntrega": "La UXS del DSP-009 en la KB.",
+            "dondeEncaja": "Última subtarea de IDV-UX; es la base de la revisión del front."
+          },
+          "comprueba": "¿Qué parte de la especificación usa la revisión del front?",
+          "alcance": {
+            "incluye": [
+              "UXS del DSP-009 con trazabilidad historia → requerimiento → flujo → pantalla",
+              "Puntos abiertos con su dueño"
+            ],
+            "noIncluye": [
+              "El paquete de entrega a Desarrollo (IDV-FRONT · 06)"
+            ]
+          },
+          "artefactos": [
+            "UXS-001"
+          ],
+          "criterios": [
+            "La UXS cubre las 2 historias con su trazabilidad",
+            "Los puntos abiertos están registrados con su dueño"
+          ],
+          "cubre": [
+            {
+              "historia": "HU-01-14",
+              "ac": "AC-1 a AC-10"
+            },
+            {
+              "historia": "HU-01-16",
+              "ac": "AC-1 a AC-8"
+            }
+          ]
+        }
+      ],
+      "alcance": {
+        "incluye": [
+          "Requerimientos UX, flujo y pantallas de HU-01-14 (Web Cliente) y HU-01-16 (BackOffice)",
+          "Accesibilidad, mapeo al Design System y especificación UX (UXS) del paquete"
+        ],
+        "noIncluye": [
+          "La identidad del Distribuidor (DSP-001)",
+          "La marca en notificaciones y reportes (Temas 06 y 10)",
+          "La pantalla móvil"
+        ]
+      },
+      "artefactos": [
+        "UXR-010",
+        "UXR-011",
+        "UXR-012",
+        "UXR-013",
+        "UXR-014",
+        "UXR-024",
+        "FLW-004",
+        "SCR-011-013",
+        "UXS-001"
+      ],
+      "criterios": [
+        "La especificación UX cubre HU-01-14 y HU-01-16",
+        "Las dudas de UX están respondidas o registradas como pendientes del PO"
+      ],
+      "cubre": [
+        {
+          "historia": "HU-01-14",
+          "ac": "AC-1 a AC-10"
+        },
+        {
+          "historia": "HU-01-16",
+          "ac": "AC-1 a AC-8"
+        }
+      ]
+    },
+    {
+      "codigo": "IDV-FRONT",
+      "titulo": "Revisión y entrega del front de la identidad visual del Cliente y del Producto (DSP-009)",
+      "antesDeLeer": "¿qué construyó Desarrollo y qué falta revisar antes de entregarlo?",
+      "en30": "Revisar lo que Franklin construyó de las 2 historias, acompañarlo en los ajustes y entregar con accesibilidad, paquete de entrega y documento de pase.<br />Aquí no se construye: el front lo hace Desarrollo (#270 y #272).",
+      "relato": {
+        "problema": "Desarrollo construye con Superpowers: HU-01-14 está construida y validada sin integrar (#270); HU-01-16 tiene el plan aprobado (#272).",
+        "queSeHace": "Se ubica lo construido, se revisa contra las pantallas, se buscan brechas del Design System y se acompaña a Desarrollo.",
+        "queEntrega": "Revisión de cada módulo, informes de accesibilidad, paquete de entrega y documento de pase.",
+        "dondeEncaja": "Depende de IDV-UX. Arquitectura decidió que la identidad del Cliente va en microui-monitoring como ./SettingsRoutes (RSP-ARQ-DSP-009, S-05); la del Producto vive en microui-bo-tenants y web-backoffice."
+      },
+      "criterio": "Las {n} subtareas están completas y Desarrollo recibió la entrega de las 2 historias. Las {horas} h incluyen las de las subtareas.",
+      "comprueba": "¿Por qué en este paquete el front se revisa y no se construye?",
+      "subtareas": [
+        {
+          "n": "01",
+          "tipo": "ubicacion",
+          "historias": [
+            "HU-01-14",
+            "HU-01-16"
+          ],
+          "horas": 1,
+          "inicio": "2026-11-27",
+          "limite": "2026-11-27",
+          "titulo": "Ubicación del front: micro UI, rutas y lo construido por Desarrollo (HU-01-14 y 16)",
+          "criterio": "Se sabe en qué micro UI, rama y ruta está cada historia y qué construyó Desarrollo.",
+          "antesDeLeer": "¿en qué micro UI vive la identidad del Cliente y por qué no en una de configuración?",
+          "en30": "Ubicar el código de las 2 historias y su estado en GitLab. 1 h, 27/11.",
+          "relato": {
+            "problema": "La identidad del Cliente no tiene micro UI propia; si no se ubica, la revisión se hace sobre la rama equivocada.",
+            "queSeHace": "Se confirman microui-monitoring (./SettingsRoutes), microui-bo-tenants y web-backoffice, sus ramas y los issues #270 y #272.",
+            "queEntrega": "La tabla historia → micro UI → rama → estado.",
+            "dondeEncaja": "Primera subtarea de IDV-FRONT."
+          },
+          "comprueba": "¿Qué dice Arquitectura sobre mover la pantalla a microui-administration?",
+          "alcance": {
+            "incluye": [
+              "Micro UI, rama y ruta de cada historia",
+              "Avance de #270 y #272"
+            ],
+            "noIncluye": [
+              "Revisar el comportamiento"
+            ]
+          },
+          "criterios": [
+            "Cada historia tiene su micro UI, rama y ruta",
+            "El avance de #270 y #272 está anotado"
+          ],
+          "cubre": [
+            {
+              "historia": "HU-01-14",
+              "ac": "AC-1 a AC-10"
+            },
+            {
+              "historia": "HU-01-16",
+              "ac": "AC-1 a AC-8"
+            }
+          ]
+        },
+        {
+          "n": "02",
+          "tipo": "ds",
+          "historias": [
+            "HU-01-14",
+            "HU-01-16"
+          ],
+          "horas": 2,
+          "inicio": "2026-11-30",
+          "limite": "2026-11-30",
+          "bloqueadaPor": [
+            "IDV-FRONT · 01",
+            "IDV-UX · 05"
+          ],
+          "titulo": "Componentes del editor de identidad: si existen en las micro UI o si Desarrollo registró brechas (HU-01-14 y 16)",
+          "criterio": "Se sabe qué componentes del editor usa lo construido, cuáles faltan en el Design System y la brecha está registrada en GAPS.md o descartada.",
+          "antesDeLeer": "¿Franklin copió el editor del Distribuidor o lo armó de nuevo?",
+          "en30": "Revisar los componentes del editor en microui-monitoring y microui-bo-tenants. 2 h, 30/11.",
+          "relato": {
+            "problema": "El editor del Distribuidor vive en microui-bo-tenants; el del Cliente, en otra micro UI. Duplicarlo deja dos versiones del mismo componente.",
+            "queSeHace": "Se compara lo construido con el mapeo al Design System (IDV-UX · 05) y con las brechas que haya anotado Desarrollo.",
+            "queEntrega": "La lista de componentes con su origen y las brechas registradas.",
+            "dondeEncaja": "Alimenta las revisiones 03 y 04."
+          },
+          "comprueba": "¿Qué riesgo tiene copiar el editor a otra micro UI?",
+          "alcance": {
+            "incluye": [
+              "Origen de cada pieza del editor: Design System, copia local o nueva",
+              "Brechas registradas o descartadas"
+            ],
+            "noIncluye": [
+              "Mover componentes al Design System en este paquete"
+            ]
+          },
+          "criterios": [
+            "Cada pieza del editor tiene su origen: Design System, copia local o nueva",
+            "Las brechas están en GAPS.md o descartadas con su motivo"
+          ],
+          "cubre": [
+            {
+              "historia": "HU-01-14",
+              "ac": "AC-1 a AC-10"
+            },
+            {
+              "historia": "HU-01-16",
+              "ac": "AC-1 a AC-8"
+            }
+          ]
+        },
+        {
+          "n": "03",
+          "tipo": "revision",
+          "historias": [
+            "HU-01-14"
+          ],
+          "horas": 3,
+          "inicio": "2026-11-30",
+          "limite": "2026-11-30",
+          "bloqueadaPor": [
+            "IDV-UX · 03",
+            "IDV-FRONT · 02"
+          ],
+          "construyo": {
+            "nombre": "Franklin Baltazar",
+            "usuario": "fbaltazar",
+            "issue": 270
+          },
+          "titulo": "Revisión de la identidad del Cliente en microui-monitoring contra sus pantallas (HU-01-14)",
+          "criterio": "Lo construido de HU-01-14 está revisado contra sus pantallas, con brechas y desvíos registrados y comunicados a Desarrollo.",
+          "antesDeLeer": "¿lo construido respeta la herencia por elemento y el retiro?",
+          "en30": "Revisar en el navegador la identidad del Cliente construida por Franklin. 3 h, 30/11.",
+          "relato": {
+            "problema": "La historia está construida y validada por Desarrollo, pero no revisada contra UX.",
+            "queSeHace": "Se prueba cada estado y criterio en el navegador y se anotan las diferencias.",
+            "queEntrega": "La revisión con sus hallazgos.",
+            "dondeEncaja": "Alimenta el acompañamiento (05)."
+          },
+          "comprueba": "¿Qué estado de la pantalla es el más fácil de romper?",
+          "alcance": {
+            "incluye": [
+              "Cada estado y criterio de HU-01-14 probado en el navegador"
+            ],
+            "noIncluye": [
+              "Corregir el código: lo hace Desarrollo"
+            ]
+          },
+          "artefactos": [
+            "SCR-011-013"
+          ],
+          "criterios": [
+            "Lo construido coincide con sus pantallas y estados",
+            "Brechas y desvíos registrados con su dueño"
+          ],
+          "cubre": [
+            {
+              "historia": "HU-01-14",
+              "ac": "AC-1 a AC-10"
+            }
+          ]
+        },
+        {
+          "n": "04",
+          "tipo": "revision",
+          "historias": [
+            "HU-01-16"
+          ],
+          "horas": 3,
+          "inicio": "2026-12-01",
+          "limite": "2026-12-01",
+          "bloqueadaPor": [
+            "IDV-UX · 04",
+            "#272"
+          ],
+          "construyo": {
+            "nombre": "Franklin Baltazar",
+            "usuario": "fbaltazar",
+            "issue": 272
+          },
+          "titulo": "Revisión de la identidad base del Producto en BackOffice: editor en nivel Producto y portada (HU-01-16)",
+          "criterio": "Lo construido de HU-01-16 está revisado contra sus pantallas, con brechas y desvíos registrados y comunicados a Desarrollo.",
+          "antesDeLeer": "¿la portada de BackOffice ya muestra el logotipo y el nombre del Producto?",
+          "en30": "Revisar el editor en nivel Producto y la portada cuando #272 tenga construcción. 3 h, 01/12.",
+          "relato": {
+            "problema": "HU-01-16 todavía no tiene construcción; se revisa en cuanto #272 avance.",
+            "queSeHace": "Se prueba el editor como Administrador Global, la ausencia de «Retirar» y la portada.",
+            "queEntrega": "La revisión con sus hallazgos.",
+            "dondeEncaja": "Alimenta el acompañamiento (05)."
+          },
+          "comprueba": "¿Por qué el editor del Producto no ofrece «Retirar»?",
+          "alcance": {
+            "incluye": [
+              "El editor en nivel Producto y la portada de BackOffice probados en el navegador"
+            ],
+            "noIncluye": [
+              "Corregir el código: lo hace Desarrollo"
+            ]
+          },
+          "criterios": [
+            "Lo construido coincide con sus pantallas y estados",
+            "Brechas y desvíos registrados con su dueño"
+          ],
+          "cubre": [
+            {
+              "historia": "HU-01-16",
+              "ac": "AC-1 a AC-8"
+            }
+          ]
+        },
+        {
+          "n": "05",
+          "tipo": "acompanamiento",
+          "historias": [
+            "HU-01-14",
+            "HU-01-16"
+          ],
+          "horas": 3,
+          "inicio": "2026-12-01",
+          "limite": "2026-12-01",
+          "bloqueadaPor": [
+            "IDV-FRONT · 03",
+            "IDV-FRONT · 04"
+          ],
+          "titulo": "Acompañamiento a Desarrollo: preguntas, retroalimentación y ajustes (HU-01-14 y 16)",
+          "criterio": "Se respondieron las preguntas de Desarrollo y los hallazgos de la revisión están aplicados o registrados.",
+          "antesDeLeer": "¿qué hallazgos de la revisión cambian el código y cuáles solo la documentación?",
+          "en30": "Acompañar a Franklin con las preguntas y los ajustes. 3 h, 01/12.",
+          "relato": {
+            "problema": "Los hallazgos de la revisión solo sirven si llegan a Desarrollo y se cierran.",
+            "queSeHace": "Se responden las preguntas y se acuerdan los ajustes con Franklin.",
+            "queEntrega": "Ajustes aplicados o registrados.",
+            "dondeEncaja": "Antes de la entrega (06)."
+          },
+          "comprueba": "¿Qué ajuste quedó pendiente y de quién depende?",
+          "alcance": {
+            "incluye": [
+              "Respuestas a Desarrollo y ajustes acordados"
+            ],
+            "noIncluye": [
+              "Cambios de alcance: se elevan como solicitud de cambio"
+            ]
+          },
+          "criterios": [
+            "Preguntas de Desarrollo respondidas",
+            "Retroalimentación y ajustes aplicados o registrados"
+          ],
+          "cubre": [
+            {
+              "historia": "HU-01-14",
+              "ac": "AC-1 a AC-10"
+            },
+            {
+              "historia": "HU-01-16",
+              "ac": "AC-1 a AC-8"
+            }
+          ]
+        },
+        {
+          "n": "06",
+          "tipo": "entrega",
+          "historias": [
+            "HU-01-14",
+            "HU-01-16"
+          ],
+          "horas": 4,
+          "inicio": "2026-12-02",
+          "limite": "2026-12-02",
+          "bloqueadaPor": [
+            "IDV-FRONT · 05"
+          ],
+          "titulo": "Entrega a Desarrollo: informes de accesibilidad, paquete de entrega y documento de pase (HU-01-14 y 16)",
+          "criterio": "Desarrollo recibió el paquete de entrega con los informes de accesibilidad de lo construido y el documento de pase.",
+          "antesDeLeer": "¿qué tiene que saber Desarrollo para continuar sin rehacer lo revisado?",
+          "en30": "Cerrar la entrega de las 2 historias. 4 h, 02/12.",
+          "relato": {
+            "problema": "Sin entrega, lo revisado queda en conversaciones.",
+            "queSeHace": "Se evalúa la accesibilidad sobre lo construido y se escriben el paquete de entrega y el documento de pase.",
+            "queEntrega": "Informes de accesibilidad, paquete de entrega en Recursos y documento de pase.",
+            "dondeEncaja": "Última subtarea de IDV-FRONT."
+          },
+          "comprueba": "¿Qué partes del paquete de entrega no se reabren?",
+          "alcance": {
+            "incluye": [
+              "Informes de accesibilidad sobre lo construido",
+              "Paquete de entrega y documento de pase"
+            ],
+            "noIncluye": [
+              "La prueba de Calidad (#271 y #273)"
+            ]
+          },
+          "criterios": [
+            "Informe de accesibilidad (ARP) de cada pantalla construida, contra WCAG 2.2 AA",
+            "Paquete de entrega en Recursos",
+            "Documento de pase (traspaso vivo) con el estado de cada MR verificado en GitLab",
+            "Enviado a Desarrollo (fecha y canal anotados)"
+          ],
+          "cubre": [
+            {
+              "historia": "HU-01-14",
+              "ac": "AC-1 a AC-10"
+            },
+            {
+              "historia": "HU-01-16",
+              "ac": "AC-1 a AC-8"
+            }
+          ]
+        }
+      ],
+      "alcance": {
+        "incluye": [
+          "Revisión de lo construido por Desarrollo en microui-monitoring, microui-bo-tenants y web-backoffice",
+          "Acompañamiento a Desarrollo y entrega con accesibilidad, paquete de entrega y documento de pase"
+        ],
+        "noIncluye": [
+          "Construir el front: lo hace Desarrollo (#270 y #272)",
+          "Calidad: la reciben las tareas #271 y #273"
+        ]
+      },
+      "criterios": [
+        "Las 2 historias están revisadas contra sus pantallas",
+        "Desarrollo recibió el paquete de entrega y el documento de pase"
+      ],
+      "cubre": [
+        {
+          "historia": "HU-01-14",
+          "ac": "AC-1 a AC-10"
+        },
+        {
+          "historia": "HU-01-16",
+          "ac": "AC-1 a AC-8"
+        }
+      ]
+    }
+  ],
+  "historias": {
+    "HU-01-14": {
+      "issue": 268,
+      "ruta": "requirements/context-packs/user-stories/HU-01-14-personalizar-identidad-visual-cliente.md",
+      "desarrollo": [
+        270
+      ],
+      "calidad": [
+        271
+      ]
+    },
+    "HU-01-16": {
+      "issue": 269,
+      "ruta": "requirements/context-packs/user-stories/HU-01-16-identidad-visual-base-producto.md",
+      "desarrollo": [
+        272
+      ],
+      "calidad": [
+        273
+      ]
+    }
+  },
+  "referencias": [
+    {
+      "texto": "Decisión de Arquitectura (S-05: micro UI de la identidad del Cliente)",
+      "ruta": "questions/design/consultas/RSP-ARQ-DSP-009-DEV-2026-11-23-s01-s11.md",
+      "en": [
+        "IDV-FRONT",
+        "IDV-FRONT · 01",
+        "IDV-FRONT · 03",
+        "IDV-UX · 03"
+      ]
+    },
+    {
+      "texto": "Historia base reutilizada (HU-01-09, identidad del Distribuidor)",
+      "ruta": "requirements/context-packs/user-stories/HU-01-09-configurar-identidad-visual-distribuidor.md",
+      "en": [
+        "IDV-UX",
+        "IDV-UX · 01"
+      ]
+    }
+  ],
+  "cambiosKb": [
+    {
+      "revision": "08a7fc4a",
+      "fecha": "2026-11-25",
+      "documento": "DSP-009",
+      "ruta": "requirements/scope-packs/DSP-009-paquete-identidad-visual-cliente-producto.md",
+      "historias": [],
+      "texto": "cambió Preguntas abiertas y bloqueos (Maifre G. Rojas, 2026-11-24 y 2026-11-25). La tarea sigue igual; se revisa al trabajar esa sección."
+    },
+    {
+      "revision": "08a7fc4a",
+      "fecha": "2026-11-24",
+      "documento": "HU-01-14",
+      "ruta": "requirements/context-packs/user-stories/HU-01-14-personalizar-identidad-visual-cliente.md",
+      "historias": [
+        "HU-01-14"
+      ],
+      "texto": "cambió AC-3 — La identidad del Cliente prevalece; 12. Preguntas abiertas (Maifre G. Rojas, 2026-11-24). La tarea sigue igual; se revisa al trabajar esa sección."
+    },
+    {
+      "revision": "08a7fc4a",
+      "fecha": "2026-11-24",
+      "documento": "HU-01-16",
+      "ruta": "requirements/context-packs/user-stories/HU-01-16-identidad-visual-base-producto.md",
+      "historias": [
+        "HU-01-16"
+      ],
+      "texto": "cambió AC-4 — Se refleja en quienes la heredan; 12. Preguntas abiertas (Maifre G. Rojas, 2026-11-24). La tarea sigue igual; se revisa al trabajar esa sección."
+    },
+    {
+      "revision": "08a7fc4a",
+      "fecha": "2026-11-26",
+      "documento": "Preguntas abiertas",
+      "ruta": "",
+      "historias": [
+        "HU-01-14",
+        "HU-01-16"
+      ],
+      "texto": "PA-DSP-009-04 (F-02) (decide PO), PA-DSP-009-06 (F-10) (decide PO), HU-01-16-Q4 (decide Product Owner): abiertas, no bloquean. Se trabaja con la propuesta y se ajusta si la respuesta cambia algo."
+    }
+  ]
+}

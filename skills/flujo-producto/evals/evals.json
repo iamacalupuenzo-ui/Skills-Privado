@@ -1,6 +1,6 @@
 {
   "skill_name": "flujo-producto",
-  "version": "1.1.0",
+  "version": "1.4.0",
   "descripcion": "Casos para comprobar que el flujo de producto usa el DS sin salirse de él, sube la versión en los cinco sitios, publica en pareja y distingue fallos de infraestructura de fallos de código.",
   "evals": [
     {
@@ -163,7 +163,7 @@
         "Identifica el dueño canónico y la capacidad ausente; no duplica el protocolo ni simula su ejecución."
       ],
       "cubre": [
-        "B10"
+        "B15"
       ],
       "referencias": []
     },
@@ -178,9 +178,91 @@
         "Reporta cada destino pendiente con motivo y no pide ni cambia horas o fechas."
       ],
       "cubre": [
-        "B10"
+        "B15"
       ],
       "referencias": []
+    },
+    {
+      "id": 10,
+      "name": "Sube una micro UI que solo compila con el DS copiado en node_modules",
+      "prompt": "Sube la rama de la US121 de microui-monitoring; ya pasaron las 227 pruebas de test:ci. No la fusiones todavía.",
+      "expected_output": "No sube sobre la base de test:ci. Verifica la rama en un worktree aparte con npm ci, lint, test:rules, test:ci y build; detecta que depende de una rama del DS sin publicar, la lista y propone subirla también como feature sin MR; sube con -o ci.skip, sin abrir MR, y deja la nota «NO FUSIONAR» en el issue.",
+      "files": [],
+      "assertions": [
+        "Crea un worktree aparte (`git worktree add`) y corre `npm ci` antes de subir; no corre `ng build` en el worktree del `ng serve`.",
+        "Corre `lint` y `test:rules` además de `test:ci` y reporta las cifras de cada uno.",
+        "Lista las ramas del DS sin publicar de las que depende el producto y propone subirlas sin MR; no fija la versión sin publicar en `package.json`.",
+        "Usa `git push -u origin <rama> -o ci.skip` sin abrir MR y deja o edita la nota «NO FUSIONAR» en el issue de collaboration."
+      ],
+      "tipo": "frena",
+      "cubre": [
+        "B10"
+      ],
+      "referencias": [
+        "references/subir-sin-fusionar.md"
+      ],
+      "contexto": "Directorio: microui-monitoring. El DS está compilado en local y copiado sobre node_modules; el código usa escenas de cs-illustration que solo existen en una rama local del DS."
+    },
+    {
+      "id": 11,
+      "name": "Construir sin mirar integration",
+      "prompt": "Arranca la US119 en microui-monitoring: crea CLF_Feature_119 desde develop y empieza la página.",
+      "expected_output": "Antes de construir corre simular_fusion.py y revisa integration y las ramas de los demás. Al ver que integration ya tiene la página (Gabriel), se detiene y propone basar la rama en integration o pregunta.",
+      "files": [],
+      "assertions": [
+        "Corre simular_fusion.py (o git fetch y merge-tree) antes de crear archivos.",
+        "Revisa integration y las ramas cl2_feature_us_* antes de construir.",
+        "Con choques o trabajo existente, se detiene y pregunta en vez de seguir sobre develop."
+      ],
+      "tipo": "frena",
+      "cubre": [
+        "B12"
+      ],
+      "referencias": [
+        "references/integrar-con-integration.md"
+      ],
+      "contexto": "integration ya tiene core/settings/ y la página de estado visual."
+    },
+    {
+      "id": 12,
+      "name": "Rebase para integrar",
+      "prompt": "La 123 choca con integration en 7 archivos. Haz rebase sobre origin/integration y súbela con --force-with-lease.",
+      "expected_output": "Se niega a rebase y a push forzado. Propone git merge de origin/integration en el worktree fusion-integration con la ref fusion/CLF_Feature_123, conservando ambos lados, fusionando primero la 121 (base de la cadena) y propagando a la 123, y push por avance rápido con confirmación.",
+      "files": [],
+      "assertions": [
+        "No ejecuta git rebase ni push forzado.",
+        "Usa git merge en un worktree aparte (fusion-integration), no en el del ng serve.",
+        "Respeta la cadena: primero la base (121) y luego la hija (123).",
+        "El push es por avance rápido (git push origin HEAD:refs/heads/<rama>) y pide confirmación."
+      ],
+      "tipo": "frena",
+      "cubre": [
+        "B13"
+      ],
+      "referencias": [
+        "references/integrar-con-integration.md"
+      ],
+      "contexto": "Cadena CLF_Feature_121 -> CLF_Feature_123 -> CLF_Feature_119, ya subidas."
+    },
+    {
+      "id": 13,
+      "name": "Prerelease del DS con estable publicada",
+      "prompt": "Haz commit de la página; el package.json fija @comsatel/ui-components 1.17.0-pre.157.",
+      "expected_output": "Corre revisar_ds.py: detecta que la 1.17.0 ya es latest, pide fijar la estable con --save-exact en Shell y micro UI, y avisa de las piezas que la estable no tiene (variant neutral, escenas fleet-*) como bloqueadas.",
+      "files": [],
+      "assertions": [
+        "Corre revisar_ds.py antes del commit.",
+        "Propone fijar la 1.17.0 exacta en la pareja Shell + micro UI.",
+        "Señala variant neutral y las escenas que no existen en la 1.17.0 y no las manda a MR."
+      ],
+      "tipo": "frena",
+      "cubre": [
+        "B14"
+      ],
+      "referencias": [
+        "references/integrar-con-integration.md"
+      ],
+      "contexto": "latest = 1.17.0; la rama usa piezas de una rama del DS sin publicar."
     }
   ]
 }

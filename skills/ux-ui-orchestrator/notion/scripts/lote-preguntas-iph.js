@@ -5,6 +5,9 @@
 // Variables: NOTION_TRABAJO, NOTION_WORKTREE, NOTION_PRODUCTO, DESIGN_REF, UXR_RANGO (por defecto 026-035).
 // Reglas de Enzo: estado y bloqueo solo cuando la fuente es inequívoca; nada se marca Decidida; los vínculos salen de menciones explícitas.
 const fs = require("fs");
+const { snapshot, configuracion, estadoKB, resolucion } = require('./kb-preguntas.js');
+const { origenPregunta } = require('./contrato-documentos.js');
+const cfgKB = configuracion(), preguntasKB = new Map(snapshot(cfgKB).preguntas.map(q => [q.id, q]));
 const path = require("path");
 const { execFileSync } = require("child_process");
 
@@ -141,7 +144,8 @@ for (const r of lista) {
   L.push("## Pregunta", "", norm(r.texto), "");
   L.push("## Lo que dice la fuente", "", "| Campo | Valor en el repo |", "|---|---|",
     "| Responsable | " + (norm(r.responsable) || "—") + " |", "| Prioridad | " + (norm(r.prioridad) || "—") + " |", "| Bloquea | " + (norm(r.bloquea) || "—") + " |",
-    "| Estado | Abierta: la tabla de origen no registra respuesta |", "");
+    "| Estado | " + (preguntasKB.get(r.id)?.estadoTexto || "Abierta") + " |", "");
+  if (preguntasKB.has(r.id)) L.push(resolucion(preguntasKB.get(r.id), cfgKB));
   const eqs = equivale(r); if (eqs.length) L.push("**Equivale a:** " + eqs.join(", ") + ".", "");
   L.push("## Dónde está en el repo", "", "- [`" + r.ruta + "`](" + REPO_URL + DESIGN_REF + "/" + r.ruta + ")");
   const origenF = path.join(out, f + "-origen.md"), cuerpoF = path.join(out, f + "-cuerpo.md"), metaF = path.join(out, f + "-meta.json");
@@ -149,8 +153,8 @@ for (const r of lista) {
   try { run(path.join(MOD, "scripts", "prepare-body.js"), [r.ruta, origenF, cuerpoF, WT, r.id]); }
   catch (e) { resumen.push({ id: r.id, error: "prepare: " + String(e.message).slice(0, 160) }); continue; }
   const props = {
-    "Origen": { select: { name: esUxr ? "UXR" : "HU" } },
-    "Estado": { select: { name: "Abierta" } },
+    "Origen": { select: { name: origenPregunta(preguntasKB.get(r.id) || r) } },
+    "Estado": { select: { name: preguntasKB.get(r.id)?.estado || "Abierta" } },
     "Vigencia": { select: { name: "Vigente" } },
     "Ruta en el repo": { rich_text: [{ type: "text", text: { content: r.ruta } }] },
     "Enlace GitLab": { url: REPO_URL + DESIGN_REF + "/" + r.ruta },

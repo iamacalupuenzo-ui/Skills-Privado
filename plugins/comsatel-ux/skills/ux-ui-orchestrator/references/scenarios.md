@@ -43,23 +43,17 @@ Cada escenario indica la ruta mínima. "Mínima" importa: ejecutar fases que no 
 
 ## D. Exploración visual
 
-**Señal:** SCR especificados con la UXS del paquete armada; falta explorar en Claude Design (o en Stitch, si se usa).
+**Señal:** SCR e investigación INV/DEC preparados, con UXS consolidada; falta explorar.
 
-**Entradas mínimas:** SCR con su FLW y lineage; `STP-*` activo o autorización humana explícita para crearlo.
+**Ruta:** elige Claude Design, Figma, código u otra herramienta → registra IB, alternativas y decisión → guarda capturas → verifica G4 con audit_ux.py. No se exige una herramienta específica. Con Stitch conserva su STP autorizado y su registro; no crees un proyecto sin autorización.
 
-**Ruta:** resolver proyecto (REUSE del `STP` activo; CREATE solo autorizado) → `stitch-ui-generator` por SCR → `register-exploration` → crítica contra UXR/AC → (opcional) `claude-design-orchestrator` para alternativas → UXS.
+## E. Diseño gobernado o validado en código
 
-**Atención:** verifica en vivo el `project_ref` antes de usarlo. Todo SCR de la iniciativa en el mismo proyecto. La exploración no es diseño gobernado.
+**Señal:** existe exploración y falta evidencia de aprobación o validación.
 
-## E. Diseño gobernado
+**Ruta en código:** construye micro UI + shell + DS, crea y actualiza ARP mientras se implementa, prueba con Enzo en navegador, guarda captura y registra versión y aprobación → G5/G6. Figma es opcional cuando esta vía está validada.
 
-**Señal:** existe exploración y falta el diseño en Figma validado, o Stitch y Figma divergen.
-
-**Entradas mínimas:** archivo/nodo Figma por SCR con acceso autorizado. Sin acceso, el resultado es BLOCKED; no asumas el contenido.
-
-**Ruta:** `accessibility-reviewer` sobre el artefacto a gobernar → `figma-design-validator` → si hay divergencia, `claude-design-orchestrator` prepara el Intent Brief y las alternativas y **un humano decide** (DD) → `register-governed` con `--divergence none|resolved|open`.
-
-**Atención:** `governed_design.status: approved` solo con `approved_by: human:<id>` y divergencia no `open`. Al aprobar Figma, la exploración de Stitch pasa a `superseded` y se conserva.
+**Si se usa Figma:** verifica acceso autorizado, resuelve divergencia con DD humano y conserva governed_design aprobado en el DTM. No inventes approved_by ni supongas el contenido de un nodo inaccesible. La revisión de Figma no reemplaza el ARP implementado para Validado.
 
 ## F. Auditoría y gate
 
@@ -85,9 +79,9 @@ Cada escenario indica la ruta mínima. "Mínima" importa: ejecutar fases que no 
 
 **Entradas mínimas:** SCR completos del paquete (con `flow`, `requirements`, `required_states` y `a11y_requirements`) y las decisiones (DEC) que los corrigen.
 
-**Ruta:** SCR → **UXS (compuerta GU)** → construcción (`orquestador-desarrollo`) → validación del prototipo al terminar de construir. La vía directa **salta la exploración y el handoff formal, no la UXS**: el paquete se consolida igual, con `ux-context-builder`, antes de subir la rama de diseño.
+**Ruta:** SCR con INV/DEC y G3 → **UXS (compuerta GU)** → construcción (`orquestador-desarrollo`) → ARP actualizado durante la implementación → propuesta documental/captura/estado aprobada por Enzo → validación del prototipo y conciliación/cascada sin diferencias. La vía directa **salta la exploración y el handoff formal, no la UXS**: el paquete se consolida igual, con `ux-context-builder`, antes de subir la rama de diseño.
 
-**Atención:** el diseño se gobierna con el prototipo validado (capturas de cada estado, URL y MR), pero el gate `DESIGN_READY_FOR_DEV` hoy solo reconoce Figma o Stitch como diseño gobernado: el veredicto de Desarrollo es CONDITIONAL, no READY. Lo que ningún diseño cubre se consulta y se registra en una decisión (DEC), no se improvisa.
+**Atención:** el diseño se gobierna con el prototipo validado (capturas de cada estado, URL y MR), y pasa G5/G6 sin Figma; no se exige el HOF formal en esta vía. El validador legado DESIGN_READY_FOR_DEV conserva su contrato propio y no sustituye estas compuertas. Lo que ningún diseño cubre se consulta y se registra en una decisión (DEC), no se improvisa.
 
 ## Combinaciones y conflictos
 

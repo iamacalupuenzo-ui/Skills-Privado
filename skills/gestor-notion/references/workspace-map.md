@@ -41,6 +41,25 @@ Este espacio es la fuente de verdad para el seguimiento operativo de encargos, c
 - `Avance (%)` recibe un número entero de 0 a 100. `Progreso` se calcula solo como barra textual; nunca escribir ni actualizar esa fórmula en una tarea. Rangos: 0-24 rojo, 25-49 naranja, 50-74 amarillo, 75-99 azul y 100 verde.
 - No crear subtareas simuladas. Usar la relación `Épica` o `User Story` solo si el usuario pide descomponer una actividad y confirma el contenedor correspondiente.
 
+### Paquetes de alcance y Tareas
+
+Criterio propio de Enzo, pedido el 2026-11-16: el avance del paquete se mide por tareas
+finalizadas, no por horas. Las tareas padre no cuentan para evitar el doble conteo.
+Verifica el schema vivo de ambas bases antes de operar; este bloque documenta el criterio.
+
+En **Tareas**, las dos propiedades son fórmulas de solo lectura:
+
+- **Cuenta en avance (1/0):** 1 si `Subtareas` está vacío; 0 si la tarea tiene subtareas.
+- **Finalizada (1/0):** 1 si `Subtareas` está vacío y `Estado` es `Completada` o
+  `Finalizada - falta merge`; 0 en cualquier otro caso, incluso si una tarea padre está cerrada.
+
+En **Paquetes**, sobre las tareas relacionadas:
+
+- **Subtareas totales:** rollup con la suma de `Cuenta en avance (1/0)`.
+- **Subtareas finalizadas:** rollup con la suma de `Finalizada (1/0)`.
+- **Avance (%):** fórmula `round(Subtareas finalizadas / Subtareas totales × 100)`;
+  si el total es 0, devuelve 0 para evitar dividir entre cero. No se escribe manualmente.
+
 ### BD principal: Projects
 
 **Collection ID:** `collection://c18a01dc-169a-82c8-90d0-07edc4821769`
@@ -74,6 +93,23 @@ Este espacio es la fuente de verdad para el seguimiento operativo de encargos, c
 | `Procesos` | relation | Procesos & SOPs (`86266c47`) | `Proyectos` en Procesos & SOPs |
 | `Sub-procesos` | relation | Sub-procesos & Pasos (`786b6518`) | `Proyectos` en Sub-procesos |
 | `Skills & Marcos` | relation | Skills & Marcos (`0f912612`) | `Proyectos` en Skills & Marcos |
+
+---
+
+## Base Pantallas — contenido en Notion
+
+**Collection ID:** `collection://a101a7d0-6388-8200-ace3-0747fc33b0fb` · [Pantallas](https://app.notion.com/p/c5a1a7d06388839b8eea015f0818ebce).
+Criterio propio de Enzo, aprobado el 2026-11-16; verificar el schema vivo antes de escribir.
+
+La propiedad select **Contenido en Notion** distingue tres niveles según el cuerpo:
+
+- **Solo ficha (ver KB):** propiedades y enlace al KB, con el cuerpo vacío.
+- **Resumen:** pregunta previa, «En 30 segundos» (máximo tres líneas), qué muestra, estados requeridos explicados, preguntas abiertas con ID si existen y enlace al KB.
+- **Completa:** estructura de construcción como [SCR-086](https://app.notion.com/p/4161a7d063888176b832f3c8a69c2cd9): pregunta previa, «En 30 segundos», cómo funciona, capturas, Recursos con INV y DEC, y estado.
+
+Una pantalla nueva arranca como **Solo ficha (ver KB)** o **Resumen** y pasa a **Completa** al entrar en construcción, cuando tiene esa estructura. El nivel describe el cuerpo real; no equivale a aprobar o validar la pantalla. No marcar Completa solo por cambiar el estado del documento.
+
+El **KB es la fuente**: en Notion se resume y se enlaza, sin copiar el texto completo, porque las copias se separan con el tiempo. INV, DEC y anexos van como **subpáginas dentro de Recursos de la misma pantalla**, justo debajo de la pregunta previa; nunca como registros sueltos en una base aparte. En Notion usar encabezados 2 y 3, nunca 1.
 
 ---
 

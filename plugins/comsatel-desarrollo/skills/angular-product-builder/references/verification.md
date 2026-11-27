@@ -65,6 +65,11 @@ inspección de código.
   (`arquitectura-proyecto.md`, sección 3.7): tamaño de archivos, shell sin
   lógica de negocio, mutaciones solo en el servicio de transiciones, diálogos
   en su propio componente, plantilla y estilos según la convención.
+- Cada archivo nuevo tiene su capa citada (`capas-y-trabajo-existente.md`):
+  ningún modelo, cliente HTTP, validación de negocio ni adaptador en
+  `features/`. Antes de cada commit se mostró la salida real de las puertas del
+  repositorio y de `scripts/revisar_capas.py`, con los fallos previos
+  separados. `test:rules` en verde no prueba la capa de cada archivo.
 - Los tokens CSS del Design System usados en código nuevo existen de verdad en
   los archivos públicos del paquete instalado (ver la referencia del sistema
   elegido); un token que solo aparece en el código compilado del DS no cuenta.

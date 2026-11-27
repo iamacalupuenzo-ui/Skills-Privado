@@ -1,0 +1,75 @@
+{
+  "skill_name": "flujo-app-movil",
+  "version": "1.0.0",
+  "descripcion": "Casos para comprobar que el flujo de la app móvil mantiene la pantalla detrás de un contrato, no escribe tokens ni colores sueltos y entrega en el orden correcto con la biblioteca.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "Conectar el login al servidor sin acoplar la pantalla",
+      "prompt": "Conecta el login al BFF: llama al endpoint de autenticación desde LoginScreen con http.",
+      "expected_output": "Declara el modo DATOS. Explica que la pantalla no conoce el servidor: se implementa AuthRepository con el cliente del BFF en core/auth y se inyecta en main.dart; la pantalla sigue dependiendo del contrato. Mantiene el mensaje genérico para credenciales inválidas y otro para fallos de red. Agrega pruebas con un repositorio falso.",
+      "files": [],
+      "assertions": [
+        "Declara el modo detectado (DATOS).",
+        "No importa un cliente HTTP dentro de LoginScreen.",
+        "Implementa o propone una implementación de AuthRepository en core/auth.",
+        "Conserva el mensaje genérico ante credenciales inválidas y otro distinto ante fallos de red.",
+        "Menciona la prueba con un repositorio falso."
+      ],
+      "tipo": "ruta",
+      "cubre": ["B2"],
+      "referencias": ["references/estructura-de-la-app.md"],
+      "contexto": "Directorio: flotas-movil. Existe DemoAuthRepository y LoginScreen recibe un AuthRepository."
+    },
+    {
+      "id": 2,
+      "name": "Color y medida sueltas en una pantalla",
+      "prompt": "En la bienvenida pon el título en Color(0xFF1B4079) y un SizedBox(height: 18) antes del botón.",
+      "expected_output": "No escribe el hexadecimal ni el 18. Usa un rol de color del sistema (context.cs...) y un valor de CsGap o CsPadding, y explica que los valores sueltos rompen el modo oscuro y el contraste.",
+      "files": [],
+      "assertions": [
+        "No escribe un color en hexadecimal en la pantalla.",
+        "No escribe una medida suelta; usa CsGap o CsPadding.",
+        "Menciona que los valores sueltos rompen el modo oscuro o el contraste."
+      ],
+      "tipo": "frena",
+      "cubre": ["B3"],
+      "referencias": ["references/estructura-de-la-app.md"],
+      "contexto": "Directorio: flotas-movil, features/auth/welcome_screen.dart."
+    },
+    {
+      "id": 3,
+      "name": "Falta un componente: se pregunta",
+      "prompt": "La pantalla de unidades necesita una barra de búsqueda con filtros. Arma una con TextField y Chip.",
+      "expected_output": "Se detiene y pregunta. No aproxima con widgets sueltos. Si se confirma que el sistema no lo tiene, se construye en la biblioteca con flujo-ds-movil y la app lo usa después.",
+      "files": [],
+      "assertions": [
+        "No construye la barra con TextField y Chip.",
+        "Pregunta si el componente existe o debe crearse en la biblioteca.",
+        "Deriva a flujo-ds-movil para construirlo si se confirma que falta."
+      ],
+      "tipo": "frena",
+      "cubre": ["B1"],
+      "referencias": ["references/estructura-de-la-app.md"],
+      "contexto": "Directorio: flotas-movil. La biblioteca no tiene un componente de búsqueda con filtros."
+    },
+    {
+      "id": 4,
+      "name": "Actualizar la biblioteca tras fusionar",
+      "prompt": "Ya se fusionó el MR de la biblioteca y César creó flutter-v0.1.0. Actualiza la app.",
+      "expected_output": "Declara el modo DEPENDENCIA. Confirma que la etiqueta existe en GitLab, cambia el ref de pubspec.yaml, resuelve las dependencias sin escribir el token, revisa que pubspec.lock quede en el commit de la etiqueta, corre analyze y test, prueba el recorrido en el emulador y abre un MR a develop con César, nombrando la versión anterior y la nueva.",
+      "files": [],
+      "assertions": [
+        "Declara el modo detectado (DEPENDENCIA).",
+        "Comprueba que la etiqueta existe antes de cambiar el ref.",
+        "No escribe el token en pubspec.yaml, en la URL ni en la configuración de git.",
+        "Revisa pubspec.lock y corre flutter analyze y flutter test.",
+        "Abre el MR con César y nombra la versión anterior y la nueva."
+      ],
+      "tipo": "ruta",
+      "cubre": ["B5", "B6", "B7"],
+      "referencias": ["references/dependencia-de-la-biblioteca.md"],
+      "contexto": "Directorio: flotas-movil. pubspec.yaml apunta a una rama feature de la biblioteca que ya se borró."
+    }
+  ]
+}

@@ -53,6 +53,14 @@ def test_frontmatter_is_valid(skills_dir, name):
 @pytest.mark.parametrize("name", sorted(CHANGED))
 def test_skill_has_required_sections_and_rules(skills_dir, name):
     _, text = frontmatter(skill_dir(skills_dir, name) / "SKILL.md")
+    if name == "accessibility-reviewer":
+        # El contrato actualizado exige evidencia de la implementación durante la construcción.
+        for campo in ("a11y_review", "target: implemented", "version:", "durante la construcción", "VALIDADO_SIN_A11Y_IMPLEMENTADA"):
+            assert campo.lower() in text.lower()
+        assert "No esperes al final" in text
+        assert "nunca inventes verified" in text
+        assert len(text.splitlines()) <= 130
+        return
     missing = [s for s in SECTIONS if s not in text]
     assert not missing, f"{name}: missing sections {missing}"
     assert "DO NOT INVENT MISSING INFORMATION" in text

@@ -61,6 +61,12 @@ un correo de seguimiento, validar una respuesta o actualizar el estado de una ac
 5. Si la respuesta afecta otras tareas, identifica las dependencias y registra la
    actualización también en cada tarea impactada. Cierra con un resumen breve de lo
    actualizado y los puntos que siguen abiertos.
+6. Antes de pasar una tarea a `Completada` o `Finalizada - falta merge`, actualiza primero
+   su página de Notion a la versión final: «En 30 segundos», «Cómo funciona», «Hallazgos»
+   y «Pendiente», junto con las capturas o ilustraciones de la versión que quedó.
+   Aplica aunque el cambio sea pequeño. Una página cerrada con capturas viejas es un
+   error: si el contenido o la evidencia no corresponden a la versión final, no cambies
+   el estado hasta actualizarlos y verificarlos.
 
 ## Referencias disponibles
 
@@ -281,6 +287,10 @@ Relaciones entre ambientes:
 ```
 
 ---
+
+## Tareas: las registra em-gestion-tareas (2026-11-26)
+
+Este skill se queda con los registros, relaciones y plantillas generales de Notion. Crear, publicar, avanzar y cerrar tareas en Notion, GitLab y ClickUp lo hace `em-gestion-tareas`, con su estructura (alcance, criterios de aceptación, condición de cierre y trazabilidad). Aquí no se crean páginas en la base Tareas.
 
 ## Comportamientos bloqueantes
 

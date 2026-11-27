@@ -1,0 +1,20 @@
+{
+  "fuente": "Hipótesis v0.1 (2026-11-26) calibrada con un solo dato: DSP-006, 5 historias en Web y Móvil = 39 h de UX (HOM-UX). Recalibrar con las horas reales de DSP-004, 005 y 007 en Notion.",
+  "horas": {
+    "lecturaBase": 1,
+    "lecturaPorHistoria": 0.25,
+    "uxrYFlujoPorHistoria": 2,
+    "pantallasPorPlataforma": 2,
+    "accesibilidadPorHistoria": 0.5,
+    "porEstadoExtra": 0.25,
+    "porPreguntaAbierta": 0.5,
+    "mapeoAlDs": 1.5,
+    "uxsYEntrega": 3
+  },
+  "umbrales": {
+    "estadosIncluidos": 4,
+    "descuentoMaximoPorReutilizar": 0.5,
+    "impactoAlto": 8,
+    "impactoMedio": 4
+  }
+}

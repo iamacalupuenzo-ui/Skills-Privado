@@ -51,6 +51,8 @@ destino autorizado del agente. No imprimir secretos ni mezclar ramas ajenas.
    existentes, estado real de integración), KB (UXR/FLW/SCR/DEC/UXS y versiones) y
    Notion (contenido anterior, Preguntas y Tareas). Distinguir construido, validado,
    fusionado y desplegado; leer resultados previos no equivale a ejecutar pruebas.
+
+   **Por paquete, la parte mecánica la hace `scripts/cambios-kb.mjs DSP-NNN` (2026-11-26):** hace el fetch y compara el SHA con `ls-remote`, lista las historias y el paquete con la fecha y el autor de su última actualización, lo que cambió desde la revisión registrada (con la sección tocada), las preguntas abiertas y qué artefactos de diseño y tareas dependen de eso. No reemplaza el juicio de este paso: el informe es su insumo, y lo que no cubre (código, MR, contratos) se sigue verificando aquí.
 3. Cruzar **todas** las preguntas abiertas de los UXR («Open questions») y Notion
    Preguntas con RSP-ARQ-*, RSP-DEV-*, DEC-*, DH en RCP-001, issues y sus comentarios,
    contratos API-PRP y decisiones de la sesión. Separar respondida con fuente,
@@ -149,7 +151,7 @@ Aprendizaje del 24-nov-2026, al revisar los paquetes DSP-004 a DSP-007: 22 tarea
 en `Finalizada - falta merge`, `En curso` o `Por hacer` cuando su trabajo ya estaba fusionado
 o entregado, y 17 estaban `Completada` con `Resultado = Pendiente`. El estado se actualiza
 cuando ocurre el hecho que lo cierra, no en un barrido final. Cada actualización cita su
-evidencia (MR, página, archivo) y se verifica; el orquestador la hace o la delega.
+evidencia (MR, página, archivo) y se verifica. El orquestador decide qué hecho ocurrió y **la escritura la hace `em-gestion-tareas`** (modos AVANCE y CERRAR): es el único skill que escribe en Tareas, issues y ClickUp, con la misma estructura en los tres.
 
 1. **Disparadores.** Un hecho verificado actualiza la tarea que le corresponde:
 
@@ -208,3 +210,5 @@ Se evaluó automatizar: comparar SHA y comprobar cargas es mecánico, pero resol
 alcance, contradicciones y atribución requiere juicio y capacidades de cada entorno. Por
 eso no se añade un script que aparente certificar la ejecución real desde este catálogo;
 los comandos de A y la relectura de B son evidencia obligatoria por ejecución.
+`cambios-kb.mjs` no certifica nada: inventaría lo que cambió en la KB y propone; la decisión y
+la verificación siguen siendo de este ciclo.

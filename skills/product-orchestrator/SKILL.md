@@ -185,6 +185,10 @@ que no estén bloqueadas.
    (`comsatel-design-system` para Comsatel DS) en un ciclo separado y conserva
    el handoff como entrada.
 
+## Tareas: las registra em-gestion-tareas (2026-11-26)
+
+Este skill se queda con las épicas, la segmentación y el ruteo entre skills. Crear, publicar, avanzar y cerrar tareas en Notion, GitLab y ClickUp lo hace `em-gestion-tareas`, con su estructura (alcance, criterios de aceptación, condición de cierre y trazabilidad). Aquí no se crean páginas en la base Tareas.
+
 ## Bloqueantes
 
 - **B10 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.

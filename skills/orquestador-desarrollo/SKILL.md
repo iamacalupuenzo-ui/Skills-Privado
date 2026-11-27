@@ -9,7 +9,7 @@ description: >
   estatus". No diseña pantallas (usa ux-ui-orchestrator), no escribe el código de una pantalla
   (usa angular-product-builder) ni gestiona épicas ni Notion (usa product-orchestrator).
 metadata:
-  version: "1.3.0"
+  version: "1.5.0"
 ---
 
 # Orquestador de desarrollo — Comsatel Flotas
@@ -30,6 +30,7 @@ Subes la rama, abres el MR y lo asignas a César; la fusión y la etiqueta son s
 - `references/convenciones-comunes.md` — commits, MR, ramas, tokens y trampas de Windows. Leer antes de commitear o abrir un MR.
 - `references/estatus.md` — cómo evaluar «¿cómo vamos?» con evidencia. Leer cuando pidan estatus.
 - `references/hooks-bloqueantes.md` — qué acciones frena el guardia de GitLab (fusionar, etiquetar, publicar, push a ramas protegidas, token), cuáles pide confirmar y cómo instalarlo desde `hooks/`. Leer cuando un comando aparezca como BLOQUEADO.
+- `references/respuesta-de-cierre.md` — estructura única de la respuesta que cierra un paso (resultado, «Lo que hice», «Lo que necesito de ti», «Lo siguiente»). Leer antes de cerrar.
 
 ## Antes del desarrollo: la documentación de UX
 
@@ -58,6 +59,7 @@ El desarrollo parte de documentación ya generada. Esa etapa tiene su propio orq
 3. Confirmar la versión del DS que cada producto fija (exacta) antes de planear cualquier cambio de UI.
 4. Si el pedido toca el DS, pararse en la confirmación del usuario antes de editar (bloqueante B2).
 5. Si falta acceso (token, permisos de GitLab), decirlo y detener solo esa operación.
+6. **Dónde está trabajando el equipo.** Antes de proponer la rama, `git fetch` y revisar `integration` y las ramas de los demás desarrolladores (`cl2_feature_us_*`). Si el equipo ya trabaja en `integration`, el trabajo nuevo sale de `origin/integration`; si ya hay ramas nuestras, `simular_fusion.py` (de `flujo-producto`) dice cuánto chocan (B9).
 
 ## Detección de ruta
 
@@ -74,17 +76,30 @@ El desarrollo parte de documentación ya generada. Esa etapa tiene su propio orq
 ## Secuencia canónica y sus puertas
 
 1. **Alcance.** Qué cambia, en qué repos, qué depende de qué. Puerta: el usuario valida el alcance si toca el DS o varios repos.
+1b. **Dónde se desarrolla.** Rama nueva desde `origin/integration` cuando el equipo ya trabaja ahí (si no, desde `origin/develop`), en un worktree propio que no sea el del `ng serve`. Datos sin interfaz en `core/`, UI reutilizable en `shared/`, pantalla en `features/` (`angular-product-builder`, B20 a B24). Puerta: `simular_fusion.py` sin choques o con la integración decidida, y la búsqueda de trabajo existente hecha.
 2. **Fuente de UX.** `ux-a-desarrollo` si hay decisiones por bajar. Puerta: lo pendiente del PO queda en un documento, nunca como rótulo en la UI.
 3. **Construcción.** `angular-product-builder` (o `flujo-ds` si es el DS). Mejoras pequeñas, directas; grandes, delegadas.
-4. **Verificación.** `verificar-calidad`. Puerta: módulo verde y verificado en el navegador.
+4. **Verificación.** `verificar-calidad`. Puerta: `puertos_libres.py` antes de levantar; módulo verde, `lint` y `test:rules` en cada iteración, y verificado en el navegador. Antes de cada commit: `revisar_capas.py` (`angular-product-builder`) y `revisar_ds.py` (`flujo-producto`).
 5. **Confirmación.** El usuario valida lo visual. Nada se sube sin ese visto bueno.
-6. **Publicación.** `flujo-producto` o `flujo-ds`. Puerta: suite completa verde, versión subida, MR a `develop`.
+6. **Publicación.** `flujo-producto` o `flujo-ds`. Puerta: `puertas.py` (`verificar-calidad`) en verde sobre cada punta, con lo que ya fallaba separado; `simular_fusion.py` sin choques con la rama destino; `revisar_ds.py` sin hallazgos y la pareja con la misma versión; versión subida; MR a `develop` o a `integration` (con Luis de revisor) según dónde trabaje el equipo. Una pieza que depende de una rama del DS sin publicar no va a MR (`flujo-ds`, B10).
 7. **Comprobación en QA.** El pipeline de `develop` desplegó y QA responde de verdad.
 8. **Documentación.** Registro de decisiones, mapa de publicación y memoria al día.
 
+## Tareas: siempre con em-gestion-tareas (Enzo, 2026-11-26)
+
+Toda tarea que este orquestador ejecuta se registra con `em-gestion-tareas`; ningún otro skill escribe en la base Tareas, en issues ni en ClickUp.
+
+- **Al empezar** una tarea FRONT o del Design System: modo AVANCE (estado «En curso»). Si la tarea no existe, se pide; no se crea sin su mapeo.
+- **Al terminar cada paso con evidencia** (MR, artefacto en `develop`, comentario): modo AVANCE con los enlaces, para marcar su casilla y su trazabilidad.
+- **Al terminar la tarea**: modo CERRAR con la evidencia. Cerrar marca criterios, cierre, Plan de la madre y Resultado; GitLab y ClickUp esperan su fecha límite.
+- Las capturas y «Cómo funciona» las agrega el ejecutor en la misma tarea; `em-gestion-tareas` no las sube.
+
+## Validar lo construido: solo en local con datos simulados (Enzo, 2026-11-26)
+
+Cuando UX o Enzo revisan lo que construyó Desarrollo, se levanta en local Shell + micro UI desde `origin/integration` (worktrees `--detach`) con el mock BFF del Shell. Nunca DEV, QA ni usuarios reales: UX solo revisa el frontend. Si el mock no cubre las rutas de la pantalla, se simulan con un proxy delante del mock a partir del contrato de la micro UI, sin cambiar el repo, y se avisa a Desarrollo qué rutas faltan. Se entregan las URL de entrada diciendo cuál es cuál. Detalle y ejemplo: `ux-ui-orchestrator/references/mapa-de-decisiones-y-validacion.md`.
+
 ## Comportamientos bloqueantes
 
-- **B9 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
 - **B1 — Nada se sube sin confirmación.** Subir ramas, abrir MR, fusionar, etiquetar y desplegar son acciones separadas; cada una pide su autorización, y la de una no cubre la siguiente.
 - **B2 — El DS no se toca sin confirmación.** Explicar qué cambia y por qué, con evidencia, y esperar el visto bueno.
 - **B3 — Shell y micro UI van en pareja con el mismo DS.** El DS es singleton en la federación: si un lado queda en 1.9.1 y el otro en 1.9.2, el remoto no carga. Fusionar y desplegar las parejas juntas.
@@ -94,15 +109,19 @@ El desarrollo parte de documentación ya generada. Esa etapa tiene su propio orq
 - **B7 — Un fallo de infraestructura no es un fallo de código.** Leer el registro del job antes de culpar al cambio; un timeout de Docker Hub se reintenta.
 - **B8 — Nunca imprimir tokens.** Se usan por cabecera o variable de entorno, sin mostrarlos.
 
+- **B9 — Se desarrolla donde trabaja el equipo.** Antes de abrir una rama se revisan `integration` y las ramas de los demás; si el equipo trabaja en `integration`, la rama sale de ahí, y lo ya hecho se integra con `git merge` (nunca rebase ni push forzado, `flujo-producto` B13). El 17-nov-2026 se construyó sobre `develop` la misma página que Gabriel ya tenía en `integration` y la simulación dio 6, 7 y 13 choques en monitoring.
+- **B10 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
+
 ## Racionalizaciones comunes
 
 | Excusa | Realidad |
 |---|---|
-| «Es solo un cambio pequeño o un análisis; sincronizo después» | El inicio y el cierre del protocolo canónico son obligatorios; un pendiente de sincronización impide declarar terminado (B9). |
+| «Es solo un cambio pequeño o un análisis; sincronizo después» | El inicio y el cierre del protocolo canónico son obligatorios; un pendiente de sincronización impide declarar terminado (B10). |
 | «El usuario dijo "subimos", ya puedo fusionar y etiquetar» | Subir una rama no autoriza fusionar ni publicar (B1). |
 | «El pipeline pasó, QA ya está bien» | Un job de despliegue puede fallar aparte; comprobar QA en vivo y los jobs. |
 | «Solo cambia el CSS, no hace falta versión» | Sin versión QA no despliega la imagen nueva (B4). |
 | «Subo primero un lado de la pareja» | Con DS distinto el mapa deja de cargar (B3). |
+| «Parto de `develop` como siempre» | Si el equipo trabaja en `integration`, partir de `develop` duplica trabajo y genera choques (B9). |
 | «Creo la etiqueta ya y fusiono después» | La etiqueta quedaría sobre el commit viejo (B5). |
 
 ## Señales de alerta
@@ -111,9 +130,10 @@ El desarrollo parte de documentación ya generada. Esa etapa tiene su propio orq
 - Un MR pasa a fusionarse sin pipeline en verde o con conflictos.
 - Una versión nueva con `-qa` que no cambió en los cinco sitios.
 - Se asume el estado de una rama sin leer GitLab.
+- Se abre una rama sin haber mirado `integration` ni las ramas de los demás desarrolladores.
 
 ## Formato de respuesta
 
-- Declarar el flujo elegido en la primera línea.
-- Cerrar con: qué se hizo, qué se verificó (cifras y estado real), qué falta y quién lo hace.
+- Al empezar, declarar el flujo elegido en la primera línea.
+- Al cerrar un paso, seguir `references/respuesta-de-cierre.md`: primera línea con el resultado, «Lo que hice:», «Lo que necesito de ti:» y «Lo siguiente…». Dentro de «Lo que hice» va lo verificado con cifras y estado real; lo que falta va en «Lo que necesito de ti» o en «Lo siguiente», con quién lo hace.
 - Español, conciso, sin emojis decorativos. Lo no verificado se dice como tal.
