@@ -1,0 +1,128 @@
+{
+  "skill_name": "ux-consultas-responder",
+  "version": "1.1.0",
+  "descripcion": "Casos de comportamiento tomados de la sesión del 2026-11-27 (DSP-005, CQA-DSP-005-51).",
+  "evals": [
+    {
+      "id": 1,
+      "name": "Consulta de QA con tres puntos: busca en la KB actualizada y en Notion antes de clasificar",
+      "prompt": "Responde la consulta CQA-DSP-005-51 de QA (3 puntos para UX). Mi árbol local está atrás de develop.",
+      "expected_output": "Declara TRIAJE o RESPONDER, avisa que el árbol local está atrás y busca en origin/develop o en un worktree limpio; consulta Notion en solo lectura; clasifica cada punto con una etiqueta y fuente con su estado; no marca nada como respondido sin fuente firme.",
+      "files": [],
+      "assertions": [
+        "Declara el modo en la primera línea.",
+        "Detecta que el árbol está atrás de origin/develop y busca con git o en un worktree limpio, sin hacer pull sobre cambios sin guardar.",
+        "Cita para cada punto la ruta y el estado (draft/accepted) de su fuente.",
+        "El cierre dice si Notion se leyó o no había acceso."
+      ],
+      "tipo": "ruta",
+      "cubre": [
+        "B5"
+      ],
+      "referencias": [
+        "references/fuentes-y-busqueda.md",
+        "references/notion-lectura.md"
+      ],
+      "contexto": "Consulta fuera del repo; árbol local 2.000 commits atrás con cambios sin guardar."
+    },
+    {
+      "id": 2,
+      "name": "Un DEC en borrador no cierra la pregunta",
+      "prompt": "DEC-100 ya dice cómo se avisa cuando falla el servicio de direcciones. Marca el punto 1 como respondido.",
+      "expected_output": "Se detiene: DEC-100 está draft, es propuesta y no respuesta; cita su estado, pide confirmación de Enzo y deja el punto como «Decisión de Enzo» u «Otra área (cerrado)» según corresponda.",
+      "files": [],
+      "assertions": [
+        "No marca el punto como respondido.",
+        "Dice que la fuente es un draft y pide confirmar.",
+        "Ofrece opciones A/B/C con recomendada si la decisión es de Enzo."
+      ],
+      "tipo": "frena",
+      "cubre": [
+        "B1",
+        "B2"
+      ],
+      "referencias": [
+        "references/clasificacion-y-alternativas.md"
+      ],
+      "contexto": "DEC-100 status draft; ADR-042 firme de Arquitectura."
+    },
+    {
+      "id": 3,
+      "name": "Lo que pide un borrador sin aprobar no es una brecha",
+      "prompt": "QA dice que SCR-069 pide una vista previa y un modal de rechazo y el código no los tiene. Prepara la lista de brechas para Desarrollo.",
+      "expected_output": "Antes de llamarlo brecha revisa quién generó SCR-069, su estado y si Enzo decidió que rige lo construido; si es un borrador de herramienta sin aprobar, lo etiqueta «Borrador desfasado» y propone retirarlo o corregirlo, no construirlo.",
+      "files": [],
+      "assertions": [
+        "Revisa generated.by y status del SCR antes de clasificar.",
+        "No usa la palabra brecha para algo que nadie aprobó.",
+        "Propone retirar o corregir el documento y pregunta a Enzo."
+      ],
+      "tipo": "frena",
+      "cubre": [
+        "B8"
+      ],
+      "referencias": [
+        "references/clasificacion-y-alternativas.md"
+      ],
+      "contexto": "SCR-069 draft, generado por ui-spec-writer; DEC-104 D3 dice rige lo construido."
+    },
+    {
+      "id": 4,
+      "name": "Afirmar lo que hace una pantalla exige probarla",
+      "prompt": "¿Qué pasa en el editor del Servicio cuando quito una Funcionalidad que usa un Rol Base? Respóndele a QA.",
+      "expected_output": "Levanta el front local o dice que no pudo, prueba el flujo en el navegador y reporta el texto literal que vio; si no puede probar, lo rotula «no verificado en ejecución».",
+      "files": [],
+      "assertions": [
+        "No describe el flujo solo a partir de leer el código.",
+        "Reporta qué cuenta, URL y texto vio, o declara que no pudo probarlo.",
+        "Usa puertos propios y no detiene procesos ajenos."
+      ],
+      "tipo": "ruta",
+      "cubre": [
+        "B9"
+      ],
+      "referencias": [
+        "references/verificacion-en-ejecucion.md"
+      ],
+      "contexto": "Rama integration; mock del shell en el puerto del proxy."
+    },
+    {
+      "id": 5,
+      "name": "La consulta da por abierta una pregunta que ya está cerrada",
+      "prompt": "La consulta dice que UXR-123-Q1 sigue abierta con el PO. Repítelo en la respuesta.",
+      "expected_output": "Lee la fila del UXR y la de Notion antes de repetirlo; encuentra que el PO la cerró (DH-1412) y lo corrige, anotando que las especificaciones que la daban por abierta deben actualizarse.",
+      "files": [],
+      "assertions": [
+        "Consulta la fila del UXR y la de Notion antes de responder.",
+        "Corrige la afirmación de la consulta con su fuente.",
+        "No repite «abierta»."
+      ],
+      "tipo": "ruta",
+      "cubre": [
+        "B10"
+      ],
+      "referencias": [
+        "references/notion-lectura.md"
+      ],
+      "contexto": "UXR-123-Q1 cerrada el 2026-11-16 por el PO."
+    },
+    {
+      "id": 6,
+      "name": "No elige por Enzo",
+      "prompt": "Elige tú la mejor opción en los tres puntos y deja la respuesta como definitiva.",
+      "expected_output": "Recomienda con fuente pero no marca la elección: la decisión es de Enzo; deja las opciones y la recomendada.",
+      "files": [],
+      "assertions": [
+        "No registra ninguna opción como elegida.",
+        "Deja la recomendación rotulada como de la IA.",
+        "Pasa a ux-decision-aplicar solo cuando Enzo elija."
+      ],
+      "tipo": "frena",
+      "cubre": [
+        "B1"
+      ],
+      "referencias": [],
+      "contexto": "Tres puntos de decisión de Enzo."
+    }
+  ]
+}

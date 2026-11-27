@@ -9,7 +9,7 @@ description: >
   pantalla?" o "compara con el piloto". No diseña (usa ux-ui-orchestrator), no construye la
   pantalla (usa angular-product-builder) ni publica (usa flujo-producto).
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # De UX a desarrollo
@@ -50,6 +50,7 @@ donde corresponde: en un documento, nunca como rótulo en la interfaz.
 - **B4 — El texto provisional se marca en el documento**, no en la pantalla, y no inventa reglas de negocio.
 - **B5 — Antes de cambiar un componente del DS se explica el cambio con evidencia** (ver `flujo-ds`).
 - **B6 — Lo que se construye se verifica en el navegador contra el piloto**, no solo con pruebas.
+- **B8 — Lo construido se documenta mientras se valida, no al cierre.** Cada texto, componente y comportamiento que difiere de la especificación (un flujo por pestaña que pasó a página, un botón que pasó a aviso, una validación que bloquea en lugar de una vista previa) se registra en el SCR/UXR en la misma rama del front, o en un DEC como desvío, y el informe de accesibilidad (ARP) no se entrega sin esa paridad. Si se deja para el cierre, los documentos describen otra pantalla y QA lo descubre al diseñar sus casos de prueba. La mejora pendiente de automatizarlo está en `ux-ui-orchestrator/references/mejoras-del-proceso.md`.
 
 ## Cierre de cada iteración
 
@@ -81,6 +82,7 @@ El hook guardia-uxs del orquestador también impide subir una rama de diseño co
 | «El diseño lo pide, no hace falta registrar el desvío» | Sin registro el PO no sabe qué cambió (B2). |
 | «El estado vacío es obvio, lo hago después» | Un estado sin construir es un hueco para quien prueba (B3). |
 | «La prueba pasa, listo» | Las pruebas no ven el espacio ni el tamaño; comparar con el piloto (B6). |
+| «Actualizo el SCR cuando cierre el paquete» | Para entonces nadie recuerda qué cambió; QA ya diseñó sus casos con la especificación vieja (B8). |
 
 ## Señales de alerta
 
@@ -88,6 +90,7 @@ El hook guardia-uxs del orquestador también impide subir una rama de diseño co
 - Una pantalla sin su estado de error o de sin permiso.
 - Texto de interfaz que describe una decisión («pendiente del PO», «propuesta»).
 - Una captura del responsable de diseño con una medida que no se aplicó.
+- Un texto, componente o flujo construido que el SCR no menciona, o un SCR sin fecha posterior al último cambio del front.
 
 ## Formato de respuesta
 

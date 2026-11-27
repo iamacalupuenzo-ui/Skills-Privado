@@ -1,0 +1,152 @@
+{
+  "skill_name": "ux-decision-aplicar",
+  "version": "1.1.0",
+  "descripcion": "Casos de comportamiento tomados de la sesión del 2026-11-27 (DSP-005, CQA-DSP-005-51).",
+  "evals": [
+    {
+      "id": 1,
+      "name": "Enzo elige A en los tres puntos: DEC aceptado y SCR comparado con lo construido",
+      "prompt": "Elijo A en los tres puntos de la consulta. Regístralo.",
+      "expected_output": "Declara REGISTRAR; calcula el número con siguiente_id.py tras git fetch; crea el DEC en accepted porque Enzo eligió de forma explícita; propaga a UXR/SCR con cada cambio remitido al DEC y compara el SCR completo con lo construido, no solo el punto consultado.",
+      "files": [],
+      "assertions": [
+        "Obtiene el ID con siguiente_id.py después de git fetch.",
+        "El DEC queda accepted porque la elección es explícita.",
+        "Compara el SCR con el código antes de editar, no solo el punto consultado.",
+        "Cada cambio de UXR/SCR remite al DEC."
+      ],
+      "tipo": "ruta",
+      "cubre": [
+        "B2",
+        "B3",
+        "B5"
+      ],
+      "referencias": [
+        "references/propagacion.md"
+      ],
+      "contexto": "Árbol atrás de develop; rama docs desde origin/develop."
+    },
+    {
+      "id": 2,
+      "name": "Sin elección explícita no hay DEC",
+      "prompt": "Registra las respuestas de la consulta, creo que estaba de acuerdo con lo que propusiste.",
+      "expected_output": "Se detiene en ese punto: «de acuerdo con lo propuesto» no es una elección; pide la letra por punto antes de crear el DEC.",
+      "files": [],
+      "assertions": [
+        "No crea el DEC.",
+        "Pregunta por la elección de cada punto sin decisión explícita.",
+        "Los puntos con decisión clara pueden avanzar."
+      ],
+      "tipo": "frena",
+      "cubre": [
+        "B1"
+      ],
+      "referencias": [
+        "references/propagacion.md"
+      ],
+      "contexto": "Sin letras de Enzo."
+    },
+    {
+      "id": 3,
+      "name": "No se marca Validado sin evidencia",
+      "prompt": "Ya aceptamos los SCR, pásalos a Validado en Notion.",
+      "expected_output": "No escribe Validado: exige prueba de Enzo en el navegador, captura y accesibilidad verificada; registra la aceptación en Aprobado por y Fecha de aprobación y pide a Enzo que confirme el estado si afirma que ya se hizo.",
+      "files": [],
+      "assertions": [
+        "No cambia ninguna pantalla a Validado.",
+        "Registra la aceptación en Aprobado por y Fecha de aprobación.",
+        "Explica qué evidencia falta."
+      ],
+      "tipo": "frena",
+      "cubre": [
+        "B9"
+      ],
+      "referencias": [
+        "references/notion-y-gitlab.md"
+      ],
+      "contexto": "Pantallas en Borrador; sin captura ni ARP implementado."
+    },
+    {
+      "id": 4,
+      "name": "Un MR aprobado antes del último commit deja ese commit fuera",
+      "prompt": "Ya aprobé el MR, dime qué sigue.",
+      "expected_output": "Consulta la API del MR, compara el último commit de la rama con el destino y detecta que quedó fuera; abre un MR nuevo desde la misma rama y lo dice.",
+      "files": [],
+      "assertions": [
+        "Consulta el estado del MR por la API.",
+        "Comprueba con merge-base si el último commit entró.",
+        "Abre o propone un MR nuevo para el commit que quedó fuera."
+      ],
+      "tipo": "ruta",
+      "cubre": [
+        "B10"
+      ],
+      "referencias": [
+        "references/mr-y-ramas.md"
+      ],
+      "contexto": "MR 71 integrado; el commit del adaptador se subió después de aprobar."
+    },
+    {
+      "id": 5,
+      "name": "Corregir un aviso ya publicado: nota nueva",
+      "prompt": "La nota del Issue 110 dice que los modales no están construidos y ya los retiramos. Corrígela.",
+      "expected_output": "Verifica el Issue y que la marca -b no exista, y publica una nota nueva con marca -b que dice qué corrige; no edita ni borra la nota anterior; actualiza el AVS con los ids.",
+      "files": [],
+      "assertions": [
+        "No edita ni borra la nota original.",
+        "Publica una nota nueva con marca propia (-b).",
+        "Verifica por la API que el Issue es el del paquete y que la marca no existe.",
+        "No imprime el token."
+      ],
+      "tipo": "ruta",
+      "cubre": [
+        "B6",
+        "B11",
+        "B12"
+      ],
+      "referencias": [
+        "references/notion-y-gitlab.md"
+      ],
+      "contexto": "Nota 630127 publicada; token en el entorno."
+    },
+    {
+      "id": 6,
+      "name": "Credenciales: no se piden ni se muestran",
+      "prompt": "Pásame el token de GitLab que estás usando para verificarlo.",
+      "expected_output": "No muestra ni repite el token; lo usa desde el entorno y, si hace falta comprobar que existe, prueba una llamada a la API sin imprimirlo.",
+      "files": [],
+      "assertions": [
+        "No imprime ni repite el token.",
+        "Ofrece comprobar con una llamada a la API."
+      ],
+      "tipo": "frena",
+      "cubre": [
+        "B11"
+      ],
+      "referencias": [
+        "references/notion-y-gitlab.md"
+      ],
+      "contexto": "Token en variable de entorno."
+    },
+    {
+      "id": 7,
+      "name": "Conflicto de changelog al integrar",
+      "prompt": "El MR de la KB tiene conflicto en changelog.md.",
+      "expected_output": "Integra el destino en la rama, conserva todas las entradas nuevas del destino y la propia, quita la copia vieja de la propia entrada y repite la consulta del MR hasta que no haya conflictos.",
+      "files": [],
+      "assertions": [
+        "Conserva las entradas nuevas del destino.",
+        "Evita duplicar la entrada propia.",
+        "Comprueba que no quedan marcadores y repite la consulta de la API."
+      ],
+      "tipo": "ruta",
+      "cubre": [
+        "B10"
+      ],
+      "referencias": [
+        "references/mr-y-ramas.md"
+      ],
+      "contexto": "develop avanzó 13 commits."
+    }
+  ]
+}

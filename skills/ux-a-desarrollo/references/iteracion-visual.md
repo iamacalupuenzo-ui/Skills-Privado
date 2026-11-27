@@ -22,6 +22,15 @@ El responsable de diseño ajusta con capturas anotadas (cajas, medidas en píxel
 4. Medir con `getBoundingClientRect` y estilos computados cuando la captura habla de píxeles.
 5. Probar el caso con el elemento aparecido (por ejemplo, un botón que solo existe con otro valor) y con el elemento ausente.
 
+## Servidores de prueba: fallas conocidas
+
+1. **No correr `ng build` (ni cambiar de rama) en la carpeta que sirve `ng serve`.** Reemplaza los archivos que el servidor tiene indexados y los módulos compartidos dan 404. Reiniciar `ng serve` con la caché limpia. Para comprobar que compila, usar otra copia de trabajo.
+2. **El proxy del shell apunta a un puerto fijo** (`proxy.conf.json`) para el mock y para cada micro UI. Si el mock o la micro UI escuchan en otro, la pantalla carga sin datos o en blanco. Comparar el `remoteEntry.json` pedido por el shell con el del puerto propio.
+3. **Una rama que cambia el proxy lo reescribe al cambiar de rama.** Releer el archivo después de cambiar de rama.
+4. **Usar puertos distintos de los de la persona** y detener solo procesos propios (comprobar su línea de comandos antes).
+5. **Dar siempre la URL completa** de cada pantalla, con el `login_hint` de la cuenta correcta; `admin@acme` solo sirve para los T&C.
+6. Lo que dibuja una pantalla puede depender del contrato del mock: si el campo no existe en el mock de esa rama, no se verá aunque el código esté. Decir de qué dato depende.
+
 ## Cierre de cada iteración
 
 Decir qué cambió y qué se midió; las pruebas del módulo con cifras; qué quedó sin verificar. Reiniciar los servidores si corrieron `ng test` o `ng build`.
