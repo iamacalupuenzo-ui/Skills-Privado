@@ -114,7 +114,9 @@ function documentos() {
       docs.push({ id: propio, title: campo(fm, "title"), repoPath, cuerpo, relations, props: propsInvDec(fm, tipo) });
     } else if (tipo === "ib") {
       const url = (cuerpo.match(/Lienzo[^|\n]*\|\s*(https:\/\/claude\.ai\/artifact\/[A-Za-z0-9]+)/) || [])[1];
-      const props = { "Fidelidad": { select: { name: "Alta" } } };
+      // «baja fidelidad» en el título o fidelity/fidelidad: baja en el frontmatter da Baja; si no, Alta (IB-025 salía Alta siendo baja, 2026-11-26).
+      const fid = /baja[- ]fidelidad|^(fidelity|fidelidad):\s*"?(baja|low)/im.test(campo(fm, "title") + "\n" + fm) ? "Baja" : "Alta";
+      const props = { "Fidelidad": { select: { name: fid } } };
       if (url) props["Enlace del lienzo"] = { url };
       docs.push({ id: campo(fm, "id"), title: campo(fm, "title"), repoPath, cuerpo,
         relations: { "Pantallas": { ds: DS.scr, ids: lista(fm, "screens") } }, props });

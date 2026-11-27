@@ -31,6 +31,14 @@ garantiza los pocos casos donde un error no se puede deshacer.
 Pasan sin aviso: `git status`, `fetch`, `log`, `git push --dry-run`, `git tag --list` y las
 consultas de lectura a la API.
 
+## Avisos al subir una rama de producto (no bloquean)
+
+Al confirmar un push a un repo de producto de Comsatel, el guardia suma avisos al motivo, sin
+cambiar la decisión: si `package.json` fija el DS sin versión exacta o en prerelease, y si `HEAD`
+choca con `origin/integration` según `git merge-tree` (sin fetch, con lo que haya en el clon).
+Son lecturas locales de menos de un segundo. La revisión completa sigue siendo de
+`revisar_ds.py` y `simular_fusion.py` (`flujo-producto`); un aviso no reemplaza correrlos.
+
 ## Cómo se ve un bloqueo
 
 ```
@@ -44,7 +52,7 @@ asignado a César.
 ## Archivos (viven en el repo de skills, como base de conocimiento)
 
 - `hooks/guardia-gitlab.mjs` — el guardia (Node, sin dependencias).
-- `hooks/probar-guardia.mjs` — 42 casos: lo que debe bloquear, confirmar y dejar pasar.
+- `hooks/probar-guardia.mjs` — 43 casos (incluye los avisos de un push): lo que debe bloquear, confirmar y dejar pasar.
 - `hooks/instalar-hooks.mjs` — lo instala en tu configuración de Claude Code.
 
 ## Instalar, probar y retirar
@@ -58,6 +66,16 @@ node skills/orquestador-desarrollo/hooks/instalar-hooks.mjs --quitar
 El instalador copia el guardia a `~/.claude/hooks/` (así `skils update` no lo borra), agrega un
 solo hook `PreToolUse` para Bash y PowerShell, deja copia de respaldo de `settings.json` y no
 toca los demás hooks. Ábrelo en una sesión nueva para que se cargue.
+
+## Si hay que reescribir una rama ya subida
+
+El push forzado sigue bloqueado aunque el usuario lo autorice en el chat. Tampoco se rodea:
+borrar la rama remota y volver a subirla es lo mismo que forzar. Lo que sí se hace:
+
+1. Comprobar con `git ls-remote origin <rama>` que el remoto sigue en el SHA que subiste tú.
+2. Darle al usuario el comando para que lo ejecute él, con `!` en Claude Code:
+   `git push --force-with-lease=<rama>:<sha-esperado> origin <rama> -o ci.skip`
+3. Prevenirlo: separar las historias en ramas antes del primer push.
 
 ## Cómo identificar qué hooks tienes
 

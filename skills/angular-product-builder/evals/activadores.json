@@ -1,0 +1,21 @@
+{
+  "skill_name": "angular-product-builder",
+  "version": "2.11.1",
+  "descripcion": "Casos de activación: pedidos que deben activar el skill (debe_activar: true) y pedidos parecidos que corresponden a otro skill (debe_activar: false, con el skill correcto). Se usan al cambiar la description del encabezado: cada caso se prueba en una conversación nueva y se anota qué skill se activó.",
+  "casos": [
+    { "id": "A1", "pedido": "Construye la página «Estado de las Unidades» en microui-monitoring con el modelo A/B y los tres tiempos de reporte.", "debe_activar": true, "motivo": "Construir una pantalla de producto Angular con el DS (CONSTRUIR)." },
+    { "id": "A2", "pedido": "Agrega el cliente HTTP de visual-state-settings a la micro UI de monitoreo.", "debe_activar": true, "motivo": "Capa de datos de un producto Angular: debe clasificar el archivo en core/ y buscar si ya existe (B21, B22)." },
+    { "id": "A3", "pedido": "¿Dónde pongo el modelo y la validación de esta pantalla, en features o en core?", "debe_activar": true, "motivo": "Decisión de capas en un repositorio Angular de producto." },
+    { "id": "A4", "pedido": "Revisa si la rama CLF_Feature_119 respeta la estructura de carpetas del README.", "debe_activar": true, "motivo": "Auditoría de arquitectura de un repositorio Angular (AUDITAR con revisar_capas.py)." },
+    { "id": "A5", "pedido": "Crea un login para la app de flota con Comsatel DS.", "debe_activar": true, "motivo": "Caso clásico de CONSTRUIR o INICIAR." },
+    { "id": "A6", "pedido": "Audita la arquitectura de este proyecto Angular y dime qué mejorarías.", "debe_activar": true, "motivo": "Modo AUDITAR." },
+    { "id": "A7", "pedido": "Antes de empezar la US119, ¿alguien ya hizo la capa de datos en otra rama?", "debe_activar": true, "motivo": "Búsqueda de trabajo existente antes de construir (B22)." },
+    { "id": "N1", "pedido": "Sube esto a develop y abre los MR del Shell y la micro UI.", "debe_activar": false, "skill_correcto": "flujo-producto", "motivo": "Publicar y versionar no es de este skill." },
+    { "id": "N2", "pedido": "Cambia el componente cs-badge del DS para que acepte un ícono a la derecha.", "debe_activar": false, "skill_correcto": "flujo-ds", "motivo": "Cambiar el sistema de diseño no es de este skill." },
+    { "id": "N3", "pedido": "Corre las pruebas y levanta los servidores locales para revisar en el navegador.", "debe_activar": false, "skill_correcto": "verificar-calidad", "motivo": "Verificación sin construir." },
+    { "id": "N4", "pedido": "Segmenta la épica de configuración del estado visual en historias y casos de uso.", "debe_activar": false, "skill_correcto": "epica-a-plan-desarrollo", "motivo": "Especificación de producto; el builder la lee, no la escribe." },
+    { "id": "N5", "pedido": "Crea un issue en GitLab para la US119 y súbelo a ClickUp.", "debe_activar": false, "skill_correcto": "em-gestion-tareas", "motivo": "Gestión de tareas." },
+    { "id": "N6", "pedido": "Audita los tokens de color del componente Button del DS.", "debe_activar": false, "skill_correcto": "comsatel-design-system", "motivo": "Auditoría del DS, no de un producto." },
+    { "id": "N7", "pedido": "Explícame cómo funciona linkedSignal en Angular 22.", "debe_activar": false, "skill_correcto": "angular-developer", "motivo": "Pregunta de framework sin producto ni repositorio destino." }
+  ]
+}

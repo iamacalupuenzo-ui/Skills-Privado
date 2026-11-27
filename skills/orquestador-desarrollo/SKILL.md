@@ -110,11 +110,13 @@ Cuando UX o Enzo revisan lo que construyó Desarrollo, se levanta en local Shell
 - **B8 — Nunca imprimir tokens.** Se usan por cabecera o variable de entorno, sin mostrarlos.
 
 - **B9 — Se desarrolla donde trabaja el equipo.** Antes de abrir una rama se revisan `integration` y las ramas de los demás; si el equipo trabaja en `integration`, la rama sale de ahí, y lo ya hecho se integra con `git merge` (nunca rebase ni push forzado, `flujo-producto` B13). El 17-nov-2026 se construyó sobre `develop` la misma página que Gabriel ya tenía en `integration` y la simulación dio 6, 7 y 13 choques en monitoring.
+- **B10 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
 
 ## Racionalizaciones comunes
 
 | Excusa | Realidad |
 |---|---|
+| «Es solo un cambio pequeño o un análisis; sincronizo después» | El inicio y el cierre del protocolo canónico son obligatorios; un pendiente de sincronización impide declarar terminado (B10). |
 | «El usuario dijo "subimos", ya puedo fusionar y etiquetar» | Subir una rama no autoriza fusionar ni publicar (B1). |
 | «El pipeline pasó, QA ya está bien» | Un job de despliegue puede fallar aparte; comprobar QA en vivo y los jobs. |
 | «Solo cambia el CSS, no hace falta versión» | Sin versión QA no despliega la imagen nueva (B4). |

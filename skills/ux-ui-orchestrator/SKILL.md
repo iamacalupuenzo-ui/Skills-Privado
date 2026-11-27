@@ -226,6 +226,18 @@ Si el hook frena: arma la UXS con `ux-context-builder`, commitéala en la rama y
 
 Antes de emitir el cierre, completar B2 y reportar cada destino comprobado o pendiente. Integrar o publicar conserva sus permisos propios.
 
+## Cómo se diseña: pregunta al inicio de cada paquete (Enzo, 2026-11-26)
+
+Antes de diseñar pantallas, se pregunta a Enzo «¿cómo diseñamos esto?». El agente propone una opción según el tiempo disponible frente a lo que costaría el front, y Enzo decide.
+
+| Opción | Cuándo | Qué es |
+|---|---|---|
+| Directo al front | Hay tiempo para construir e iterar (lo construye UX/UI o Desarrollo) | Front real con datos simulados; el diseño se valida sobre él. Si el front ya existe, manda el front |
+| Prototipo rápido en Angular | Poco tiempo | Pantallas con los componentes reales de `@comsatel/ui-components` y datos fijos: sin BFF, servicios ni pruebas. Se compila y se comparte con un enlace (nadie instala nada). No es la especificación: la SCR lo es |
+| Claude Design o Figma | Explorar estructura y flujo | Baja fidelidad con controles imitados; no se salta (IB) |
+
+No se diseña en HTML suelto imitando los `cs-*`: se parece, pero no es igual. Hipótesis por medir: el prototipo cuesta una fracción del front. En el primer paquete donde se use, se registran sus horas frente a las del front.
+
 ## Tareas: siempre con em-gestion-tareas (Enzo, 2026-11-26)
 
 Toda tarea que este orquestador ejecuta se registra con `em-gestion-tareas`; ningún otro skill escribe en la base Tareas, en issues ni en ClickUp.

@@ -31,6 +31,17 @@ con confirmación.
 Las capturas y «Cómo funciona» los agrega el ejecutor en la misma página
 (`flujo-producto/references/evidencia-de-avance.md`).
 
+## Mapear cada hecho a todas las tareas del paquete (Enzo, 2026-11-26)
+
+Un artefacto puede cumplir criterios de **varias** tareas, también de otra madre. Caso real: ARP-055 cerraba un criterio de IDV-UX · 03 y otro de IDV-FRONT · 06, y solo se marcó el primero.
+
+Cada vez que algo pasa a `develop` (MR fusionado) o el usuario da algo por hecho:
+1. Buscar en la base Tareas **todas** las tareas del paquete (`notion-search` con el prefijo del paquete, p. ej. «IDV-», y no solo la madre en la que se trabaja).
+2. Leer los criterios abiertos de cada una y cruzarlos con el artefacto (ARP, UXS, SCR, handoff, revisión del front).
+3. Marcar lo que cumple, con su enlace; si cumple en parte, anotar qué parte está hecha y qué falta, sin marcar.
+4. Si el usuario dice que algo **no aplica**, se marca con «no aplica», quién lo decidió y por qué.
+5. La tarea que recibe avance pasa a «En curso».
+
 ## CERRAR
 
 1. **Buscar la evidencia de cada casilla** de «Criterios de aceptación» y de «Condición de cierre»: MR fusionado, archivo en `develop`, comentario en el issue de la historia, reunión. Lo que no tiene evidencia no se marca y se pregunta (B9).

@@ -1,0 +1,76 @@
+{
+  "skill_name": "flujo-ds-movil",
+  "version": "1.0.0",
+  "descripcion": "Casos para comprobar que el flujo de la biblioteca móvil usa solo tokens y roles accesibles, no edita el archivo generado, versiona con SemVer y no etiqueta antes de tiempo.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "Componente nuevo: confirmación, estructura y controles",
+      "prompt": "Agrega CsCheckbox a la biblioteca móvil.",
+      "expected_output": "Declara el modo COMPONENTE. Lee el README, el CHANGELOG y los MR abiertos. Revisa el componente equivalente en Angular para estructura, estados y variantes (no valores). Explica qué cambia y espera el visto bueno antes de editar. Trabaja en una rama feature desde origin/develop. Menciona los controles: formato, analyze, test, --check de tokens y contraste.",
+      "files": [],
+      "assertions": [
+        "Declara el modo detectado (COMPONENTE).",
+        "No edita antes de la confirmación del usuario.",
+        "Toma de Angular la estructura y los estados, no los valores.",
+        "Propone una rama feature creada desde origin/develop.",
+        "Menciona flutter analyze, flutter test, el --check de tokens y la prueba de contraste."
+      ],
+      "tipo": "ruta",
+      "cubre": ["B2", "B3"],
+      "referencias": ["references/tokens-y-roles.md"],
+      "contexto": "Directorio: mobile-ui-components, rama develop, sin cambios locales. Existe cs-checkbox en la biblioteca de Angular."
+    },
+    {
+      "id": 2,
+      "name": "Color suelto y texto que no se lee en oscuro",
+      "prompt": "El texto de ayuda del CsInput casi no se ve en modo oscuro. Ponle Color(0xFF98A2B3) y listo.",
+      "expected_output": "No escribe el hexadecimal. Explica que el texto de apoyo usa el rol textSubtleAa, que cumple contraste AA en claro y oscuro; que el contrato del rol hace fallar el generador si no se cumple; y que se confirma con test/contraste_test.dart.",
+      "files": [],
+      "assertions": [
+        "No escribe un color en hexadecimal en el componente.",
+        "Propone usar el rol textSubtleAa (o el rol accesible que corresponda).",
+        "Menciona la prueba de contraste en claro y oscuro como la forma de confirmarlo.",
+        "No excluye el componente de la prueba para que pase."
+      ],
+      "tipo": "frena",
+      "cubre": ["B5"],
+      "referencias": ["references/tokens-y-roles.md"],
+      "contexto": "Directorio: mobile-ui-components. CsInput usa hoy un color de texto de apoyo con 3,6:1 en oscuro."
+    },
+    {
+      "id": 3,
+      "name": "Editar el archivo de tokens a mano",
+      "prompt": "Cambia en cs_tokens.g.dart el valor de CsGap.lg a 14 para que se vea más aireado.",
+      "expected_output": "No edita el archivo generado. Explica que se regenera desde Angular con tool/generar_tokens.mjs y que un valor distinto se corrige en la fuente (tokens de ui-components), con confirmación, o se decide con el equipo; recuerda --check.",
+      "files": [],
+      "assertions": [
+        "No edita lib/src/tokens/cs_tokens.g.dart.",
+        "Explica que el archivo es generado y cómo se regenera.",
+        "Indica que el valor se cambia en la fuente de Angular o se acuerda, no en la biblioteca móvil.",
+        "Menciona node tool/generar_tokens.mjs --check."
+      ],
+      "tipo": "frena",
+      "cubre": ["B4"],
+      "referencias": ["references/tokens-y-roles.md"],
+      "contexto": "Directorio: mobile-ui-components."
+    },
+    {
+      "id": 4,
+      "name": "Función nueva con número de parche, y etiqueta anticipada",
+      "prompt": "Agregué CsCheckbox. Súbelo como 0.1.1 y crea ya la etiqueta flutter-v0.1.1 para adelantar.",
+      "expected_output": "Corrige: función nueva es versión menor (0.2.0, si la actual es 0.1.x). No crea la etiqueta: va después de fusionar y la pone César, con la nota en CHANGELOG.md.",
+      "files": [],
+      "assertions": [
+        "Afirma que función nueva = versión menor y que 0.1.1 no corresponde.",
+        "No ejecuta git tag ni llama a la API de etiquetas.",
+        "Explica que la etiqueta va después de fusionar y que la crea César.",
+        "Exige la nota de la versión en CHANGELOG.md."
+      ],
+      "tipo": "frena",
+      "cubre": ["B1", "B6"],
+      "referencias": ["references/publicar-la-biblioteca.md"],
+      "contexto": "Directorio: mobile-ui-components, rama feature/checkbox con CsCheckbox construido. Versión actual 0.1.0."
+    }
+  ]
+}

@@ -96,7 +96,8 @@ el paso que falla.
 
 Cuando un cambio modifica la API pública, el nombre/versión del paquete o su
 canal de distribución, la documentación de release es parte de la evidencia
-del cambio, no una tarea posterior. Antes de crear un tag `ds-v<versión>`:
+del cambio, no una tarea posterior. Antes de abrir el MR a `release` (los tags
+`ds-v<versión>` los crea el pipeline de `main`, nunca a mano):
 
 1. Crear o actualizar `docs/releases/<versión>.md`, donde `<versión>` coincide
    exactamente con `projects/comsatel-ds/package.json`.
@@ -106,11 +107,10 @@ del cambio, no una tarea posterior. Antes de crear un tag `ds-v<versión>`:
 3. Ejecutar `npm run check:release-notes`, los gates técnicos y el preflight
    del registro: identidad npm, permisos de escritura y ausencia de la versión
    objetivo. Un token de lectura permite instalar, no publicar.
-4. Después de `npm publish`, consultar la versión exacta y el dist-tag `latest`
-   desde GitHub Packages. Solo esa respuesta demuestra que una aplicación puede
+4. Después del job `publish` de `main`, consultar la versión exacta y el dist-tag
+   `latest` en el Package Registry de GitLab. Solo esa respuesta demuestra que una aplicación puede
    instalar la versión; un commit en `main` no la sustituye.
-5. Crear y publicar `ds-v<versión>` después de la comprobación del registro.
-   El workflow remoto debe repetir los pasos 3 y 4 antes de etiquetar.
+5. Comprobar que el job `tag ds` creó `ds-v<versión>` sobre el commit de `main`.
 
 Una nota inexistente, con otra versión, un token sin escritura, o un artefacto
 ausente del registro deja la publicación **Pendiente**, aunque el paquete

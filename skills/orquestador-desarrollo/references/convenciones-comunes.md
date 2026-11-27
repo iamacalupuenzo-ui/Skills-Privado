@@ -5,6 +5,15 @@
 - Estilo del repositorio de producto: `[develop] : texto en español`, en minúsculas y sin punto final. El DS usa Conventional Commits (`fix(table-footer): …`, `feat(…)`, `docs(…)`).
 - Cada commit termina con el trailer `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`.
 - Un commit por tema cuando se pueda; no mezclar la versión con el cambio funcional (la versión va en su propio commit).
+- Si el repositorio etiqueta los commits con la historia (`feat(US<n>): …`, como `microui-monitoring`), **antes del primer commit** lee el título del issue en `collaboration` (proyecto 622) y su HU, y confirma que el trabajo pertenece a esa historia. Ejemplo: US121 = HU-07-03 «Visualizar, buscar y filtrar Unidades en el mapa»; US123 = HU-07-14 «Usar las herramientas generales del mapa». Si el trabajo cambia de historia, cambia de rama.
+- Por qué: 10 commits de buscador y filtros (US121) quedaron como US123 en la rama de la 123. Separarlos después costó caro: `cherry-pick` y `revert` daban conflictos porque el código estaba entrelazado con el de Medir área.
+- Si ya ocurrió, la técnica que funcionó:
+  1. Respaldo: `git branch respaldo/<rama>-antes-reorden`.
+  2. Desde el estado final, devolver los archivos exclusivos de la otra historia a su estado en la rama base (`git checkout <base> -- <archivo>`) y editar a mano los compartidos.
+  3. Un commit por rama que liste en el mensaje los SHA originales que reemplaza.
+  4. Comprobar que `git diff <tope-original> <tope-nueva>` da 0 líneas en la rama de arriba.
+  5. Hacerlo antes del primer push: después, reescribir exige push forzado, que el guardia bloquea (`hooks-bloqueantes.md`).
+- En ramas apiladas, cada rama pasa su propia suite antes de apilar la siguiente: una corrección de pruebas de la rama de abajo no va en un commit de la de arriba.
 
 ## Ramas
 

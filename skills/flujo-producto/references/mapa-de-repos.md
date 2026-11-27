@@ -46,6 +46,8 @@ Raíz local: la carpeta donde cada persona clona los repositorios (todos hermano
 
 El 3000 es ajeno: no tocar. Matar solo por PID del puerto (`netstat -ano | grep :PUERTO`).
 
+Levantamiento verificado el 2026-11-17 (manda sobre la tabla anterior si difieren): Shell del Backoffice en el 4200, bo-tenants en el 4201, Shell de Flotas en el 4400 (4401 en otra copia), monitoring en el 4202 y mock de Flotas en el 8082. El mock del Backoffice usa el 3000 por defecto, que ocupa el servidor MCP de draw.io: se levanta con `MOCK_PORT=3001` y `proxy.conf.json` apuntado al 3001 solo en local, sin commit. El proxy del Shell del Backoffice manda `/mfe/microui-bo-feature-flags` al 4202, el mismo puerto de monitoring. Antes de levantar: `puertos_libres.py` de `verificar-calidad`.
+
 ## Entornos
 
 - QA Backoffice: `https://backoffice.qa.comsatel.com.pe` (BFF real; login por Keycloak).

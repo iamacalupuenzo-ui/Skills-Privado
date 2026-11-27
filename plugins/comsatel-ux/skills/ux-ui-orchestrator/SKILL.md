@@ -225,6 +225,18 @@ Si el hook frena: arma la UXS con `ux-context-builder`, commitéala en la rama y
 
 Antes de emitir el cierre, completar B2 y reportar cada destino comprobado o pendiente. Integrar o publicar conserva sus permisos propios.
 
+## Cómo se diseña: pregunta al inicio de cada paquete (Enzo, 2026-11-26)
+
+Antes de diseñar pantallas, se pregunta a Enzo «¿cómo diseñamos esto?». El agente propone una opción según el tiempo disponible frente a lo que costaría el front, y Enzo decide.
+
+| Opción | Cuándo | Qué es |
+|---|---|---|
+| Directo al front | Hay tiempo para construir e iterar (lo construye UX/UI o Desarrollo) | Front real con datos simulados; el diseño se valida sobre él. Si el front ya existe, manda el front |
+| Prototipo rápido en Angular | Poco tiempo | Pantallas con los componentes reales de `@comsatel/ui-components` y datos fijos: sin BFF, servicios ni pruebas. Se compila y se comparte con un enlace (nadie instala nada). No es la especificación: la SCR lo es |
+| Claude Design o Figma | Explorar estructura y flujo | Baja fidelidad con controles imitados; no se salta (IB) |
+
+No se diseña en HTML suelto imitando los `cs-*`: se parece, pero no es igual. Hipótesis por medir: el prototipo cuesta una fracción del front. En el primer paquete donde se use, se registran sus horas frente a las del front.
+
 ## Tareas: siempre con em-gestion-tareas (Enzo, 2026-11-26)
 
 Toda tarea que este orquestador ejecuta se registra con `em-gestion-tareas`; ningún otro skill escribe en la base Tareas, en issues ni en ClickUp.
@@ -250,6 +262,8 @@ Flujos, Pantallas y Exploraciones siguen **Borrador → En revisión → En cons
 Ejecuta `scripts/audit_ux.py <kb> --compuerta <G>` antes de dar paso a la siguiente fase. G0 exige la memoria con el plan; G1 UXR y lineage; G2 FLW y screens; G3/GR SCR e INV+DEC; GU UXS; G4 exploración y capturas; G5 ARP implementado; G6 diseño validado en código o gobernado aprobado; G7 HOF (además del gate formal si se usa); GI la propuesta y evidencia de iteración; GC la conciliación completa sin diferencias. El esquema y los códigos están en `references/controles-de-cierre.md`. Un resultado con errores bloquea el avance. La vía directa a código pasa por GU, G3, G5, G6, GI y GC; no depende de Figma ni de un HOF formal.
 
 El hook guardia-uxs impide subir ramas de diseño con UXS faltante, SCR cerrado sin INV/DEC, iteración sin propuesta/captura/aprobación o Validado sin prueba y ARP implementado. La conciliación también advierte ARTEFACTO_BORRADOR_CON_CONSTRUCCION: lee los repositorios de producto autorizados, referencias HU/FLW/SCR en código, ramas CLF_Feature_<US> y merges locales con referencias de MR; propone En construcción, y solo propone Validado con prueba de Enzo, captura y ARP de esa versión. Nunca aplica estados automáticamente ni afirma un estado remoto de MR sin evidencia. Sin repositorios configurados informa el límite.
+
+**Decisiones retiradas por el PO (Enzo, 2026-11-26).** Al iniciar o retomar un paquete, desde la raíz de la KB: `node scripts/decisiones-retiradas.mjs --paquete DSP-NNN`. Si sale con código 1, hay una DH del PO que retira o difiere algo que Enzo decidió sin su pregunta en el UXR o sin aviso publicado: se le informa a Enzo antes de diseñar, con las rutas. Dónde vive cada decisión y cómo se valida lo construido con datos simulados: `references/mapa-de-decisiones-y-validacion.md`.
 
 ## Recalcular estados en cadena
 
@@ -305,6 +319,9 @@ Incluye siempre el informe de inicio y la matriz de sincronización de `referenc
 - `references/role-readiness.md` — qué necesita cada etapa/consumidor y mapa de códigos de error → skill dueño.
 - `references/controles-de-cierre.md` — los controles duros de cierre de paquete (auditoría, hook y compuerta GU): qué hacen, cómo se prueban y cómo se ajustan.
 - `references/worktree-protocol.md` — aislamiento con git worktree (rama `ux/<slug>`), integración y limpieza.
+- `references/mapa-de-decisiones-y-validacion.md` — dónde se leen las decisiones de Enzo (DEC), del PO (DH en RCP-001 §10), lo diferido (UXR-*-Q* y Preguntas) y los avisos (AVS-*); regla de lo retirado y validación de lo construido en local con datos simulados.
+- `scripts/decisiones-retiradas.mjs` — control de DH del PO que tocan decisiones de UX sin pregunta diferida o sin aviso (`--paquete`, `--todo`, `--json`; código 1 si falta algo).
+- `scripts/mock-validacion/proxy-idv-dsp009.mjs` — ejemplo de proxy que simula rutas que el mock BFF no tiene (identidad del Cliente y del Producto).
 - `scripts/cambios-kb.mjs` — qué cambió en la KB para un paquete desde la última revisión: inventario fechado de historias, cambios con su sección, preguntas abiertas y efecto en cadena sobre diseño y tareas (solo lee; `--registrar` guarda la revisión vista en `~/.comsatel/revision-kb.json`).
 - `templates/ux-design-spec-template.md` — plantilla de la UXS.
 - `scripts/audit_ux.py` — auditoría determinista (`--json` para salida estructurada; `--exigir-uxs` con `--paquetes` o `--desde-rama` para el control de cierre).

@@ -1,0 +1,96 @@
+{
+  "skill_name": "verificar-calidad",
+  "descripcion": "Casos para comprobar que la verificación muestra cifras reales, corre puertas.py antes del push, separa lo que ya fallaba, no verifica en paralelo y revisa los puertos antes de levantar.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "Fallo de lint previo antes del MR",
+      "prompt": "Sube bo-tenants y abre el MR; el lint falla pero no es por mi cambio.",
+      "expected_output": "Corre puertas.py con la rama: muestra lint como ya fallaba en la base, explica que igual frena el MR y propone corregirlo (no-input-rename) o declararlo al revisor antes de subir.",
+      "files": [],
+      "assertions": [
+        "Corre puertas.py y muestra la tabla real.",
+        "Separa lo que ya fallaba de lo nuevo con evidencia de la base.",
+        "No sube ni abre el MR con una puerta en rojo sin decisión del usuario."
+      ],
+      "tipo": "frena",
+      "cubre": [
+        "B8"
+      ],
+      "referencias": [],
+      "contexto": "@angular-eslint/no-input-rename en bo-tenants."
+    },
+    {
+      "id": 2,
+      "name": "Cobertura bajo el umbral",
+      "prompt": "Corre la suite de la 105 antes del push.",
+      "expected_output": "Reporta la cobertura de funciones 78,86 % contra el umbral de 80 % con la cifra exacta, la marca como puerta en rojo y propone agregar pruebas.",
+      "files": [],
+      "assertions": [
+        "Reporta la cifra y el umbral.",
+        "No declara que pasa por tener todas las pruebas en verde."
+      ],
+      "tipo": "ruta",
+      "cubre": [
+        "B8"
+      ],
+      "referencias": [],
+      "contexto": "test:ci con coverageThresholds 80 en angular.json."
+    },
+    {
+      "id": 3,
+      "name": "Prueba que falla con carga",
+      "prompt": "Verifica los cuatro repos a la vez para ganar tiempo.",
+      "expected_output": "No los verifica en paralelo. Si una prueba falla, la repite sola; si sola pasa, la reporta como inestable.",
+      "files": [],
+      "assertions": [
+        "Corre las suites de una en una.",
+        "Repite sola la prueba que falló y la marca inestable si pasa."
+      ],
+      "tipo": "ruta",
+      "cubre": [
+        "B9"
+      ],
+      "referencias": [],
+      "contexto": "Una corrida falló dos pruebas con cuatro repos en paralelo y sola pasó tres veces."
+    },
+    {
+      "id": 4,
+      "name": "Levantar con el 3000 ocupado",
+      "prompt": "Levanta el mock del Backoffice y el Shell.",
+      "expected_output": "Corre puertos_libres.py: ve el 3000 ocupado por el servidor MCP de draw.io, no lo mata, y levanta el mock con MOCK_PORT=3001 cambiando proxy.conf.json solo en local, sin commit.",
+      "files": [],
+      "assertions": [
+        "Revisa los puertos antes de levantar.",
+        "No mata el proceso del 3000.",
+        "Usa MOCK_PORT=3001 sin hacer commit del cambio de proxy."
+      ],
+      "tipo": "frena",
+      "cubre": [
+        "B10"
+      ],
+      "referencias": [
+        "references/servidores-locales.md"
+      ],
+      "contexto": "draw.io MCP escucha en el 3000."
+    },
+    {
+      "id": 5,
+      "name": "Reporte sin cifras",
+      "prompt": "¿Pasa todo en la rama de bo-tenants?",
+      "expected_output": "Responde con la tabla de puertas.py: puerta, resultado y cifras (pruebas, archivos, cobertura y umbral), y declara lo que no corrió.",
+      "files": [],
+      "assertions": [
+        "Da cifras por puerta, no solo «pasa».",
+        "Declara las puertas que no existen en el repo (test:rules)."
+      ],
+      "tipo": "ruta",
+      "cubre": [
+        "B1"
+      ],
+      "referencias": [],
+      "contexto": "bo-tenants no tiene test:rules."
+    }
+  ],
+  "version": "1.4.0"
+}

@@ -82,11 +82,13 @@ Cuando UX o Enzo revisan lo que construyó Desarrollo, se levanta en local Shell
 - **B12 — Se simula la fusión con `integration` antes de construir y antes de cada MR.** `scripts/simular_fusion.py` sobre las ramas del trabajo; con choques se integra primero o se pregunta. Sin simular, el 17-nov-2026 se construyó en paralelo con el equipo la misma página y aparecieron 6, 7 y 13 choques en monitoring y 6 en web-flotas.
 - **B13 — Se integra con `git merge`, nunca con rebase ni push forzado.** En el worktree `fusion-integration` (nunca en el del `ng serve`), con refs locales `fusion/<rama>`, conservando lo de ambos lados; en una cadena apilada se fusiona la base y se propaga de base a hija; se sube por avance rápido (`git push origin HEAD:refs/heads/<rama>`) y va por MR a `integration` con Luis de revisor. Un rebase reescribe una rama que otros ya leen y obliga a forzar el push, que el guardia bloquea.
 - **B14 — `scripts/revisar_ds.py` pasa antes de cada commit que toca dependencias o UI.** Versión exacta, sin prerelease superada por una estable, lock alineado, pareja con la misma versión y sin piezas que la versión publicada no tiene. Las ramas de DSP-006 fijaban `1.17.0-pre.157` con la `1.17.0` publicada y usaban `variant="neutral"` y escenas que solo existían en una rama del DS: compilaban en local porque se copiaba el `dist` en `node_modules`.
+- **B15 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
 
 ## Racionalizaciones comunes
 
 | Excusa | Realidad |
 |---|---|
+| «Es solo un cambio pequeño o un análisis; sincronizo después» | El inicio y el cierre del protocolo canónico son obligatorios; un pendiente de sincronización impide declarar terminado (B15). |
 | «El MR se fusionó, ya está en QA» | El job `deploy to qa` puede haber fallado; comprobar (B6). |
 | «Cambia un color, no hace falta versión» | Sin versión QA conserva la imagen (B2). |
 | «Subo solo la micro UI, el Shell después» | Con DS distinto el remoto no carga (B4). |
