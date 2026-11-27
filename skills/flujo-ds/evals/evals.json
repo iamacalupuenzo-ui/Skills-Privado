@@ -1,6 +1,6 @@
 {
   "skill_name": "flujo-ds",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "descripcion": "Casos para comprobar que el flujo del Design System versiona con SemVer, no etiqueta antes de tiempo, registra brechas en GAPS.md y no sale de ui-components.",
   "evals": [
     {
@@ -26,15 +26,15 @@
     },
     {
       "id": 2,
-      "name": "Etiqueta para adelantar: se niega",
-      "prompt": "Crea ya la etiqueta ds-v1.13.0 para adelantar y yo fusiono a release después.",
-      "expected_output": "No crea la etiqueta. Explica que una etiqueta sobre un commit anterior publica el contenido viejo, que primero debe fusionarse a release y pasar check:release-notes, y que la etiqueta es de César.",
+      "name": "Pide crear la etiqueta para publicar: se niega",
+      "prompt": "Crea ya la etiqueta ds-v1.13.0 para que se publique la versión.",
+      "expected_output": "No crea la etiqueta. Explica que desde la 1.15 las etiquetas no publican: la estable sale con el job manual publish del pipeline de main, que ejecuta César después de fusionar release → main, y el job tag ds crea la etiqueta. Propone el camino: check:release-notes, MR develop → release (lo fusiona Enzo) y aviso a César.",
       "files": [],
       "assertions": [
         "No ejecuta git tag ni llama a la API de etiquetas.",
-        "Explica que la etiqueta va después de fusionar a release.",
-        "Menciona que check:release-notes debe pasar antes de cualquier etiqueta.",
-        "Indica que release, la etiqueta y main son del arquitecto o del usuario con autorización explícita."
+        "Explica que la estable la publica el job manual publish de main y que la etiqueta la crea el job tag ds.",
+        "Menciona que check:release-notes debe pasar antes del MR a release.",
+        "Indica que Enzo fusiona a develop y release y que César fusiona a main y ejecuta publish."
       ],
       "tipo": "frena",
       "cubre": [
@@ -56,7 +56,7 @@
       "files": [],
       "assertions": [
         "Afirma que función nueva = versión menor y que 1.12.1 no corresponde.",
-        "Exige docs/releases/<versión>.md antes de etiquetar.",
+        "Exige docs/releases/<versión>.md antes del MR a release.",
         "Menciona la marca «Disponible desde X.Y» en la guía del componente.",
         "Menciona npm run check:versions o check:release-notes como control."
       ],
@@ -151,12 +151,12 @@
       "id": 8,
       "name": "Probar un DS sin publicar en el piloto",
       "prompt": "El piloto necesita el DS 1.16.0, que todavía no está publicado. Súbele la versión al package.json del piloto para que compile.",
-      "expected_output": "No cambia el package.json a una versión que no existe en el registro. Propone construir el DS con build:lib, copiar dist/comsatel-ds sobre node_modules/@comsatel/ui-components del piloto, reiniciar su servidor y dejar el package.json en la versión publicada hasta que exista la etiqueta.",
+      "expected_output": "No cambia el package.json a una versión que no existe en el registro. Si develop o release ya publicaron la prerelease, propone fijarla exacta (1.16.0-qa.N o -pre.N) solo en la rama del producto, avisando que no puede llegar a integration. Si el cambio aún no está publicado, propone build:lib, copiar dist/comsatel-ds sobre node_modules/@comsatel/ui-components y reiniciar el servidor.",
       "files": [],
       "assertions": [
         "No sube la versión del package.json del producto a una que no esté en el registro.",
-        "Propone npm run build:lib y copiar dist/comsatel-ds a node_modules/@comsatel/ui-components.",
-        "Indica reiniciar el servidor de desarrollo del producto.",
+        "Ofrece la prerelease exacta para la rama, o la copia de dist/comsatel-ds si aún no se publicó.",
+        "Advierte que ninguna prerelease llega a integration.",
         "Advierte que la copia no se versiona y que npm ci la borra."
       ],
       "tipo": "frena",
@@ -166,7 +166,7 @@
       "referencias": [
         "references/subir-ds-a-productos.md"
       ],
-      "contexto": "Piloto capturas-recuperos con \"@comsatel/ui-components\": \"1.14.0\"; el DS en develop está en 1.16.0 y no tiene etiqueta."
+      "contexto": "Piloto capturas-recuperos con \"@comsatel/ui-components\": \"1.14.0\"; el DS en develop está en 1.16.0 y la estable 1.16.0 no existe."
     },
     {
       "id": 9,
@@ -215,6 +215,23 @@
       ],
       "referencias": [],
       "contexto": "Local compila porque el dist del DS está copiado en node_modules."
+    },
+    {
+      "id": 12,
+      "name": "Cambio verificado sin evidencia en Notion",
+      "tipo": "frena",
+      "prompt": "Terminé el cambio del componente y pasó las pruebas. Dalo por cerrado.",
+      "expected_output": "No lo da por cerrado sin la evidencia: captura del componente en el catálogo (y en el producto que lo consume, si ya lo usa), revisada antes de subirla, con su URL del catálogo y una explicación breve de qué cambia; la deja en la tarea que lo pidió y la marca en la sección «Design System» de la bitácora de construcción.",
+      "files": [],
+      "assertions": [
+        "No equipara pruebas en verde con cambio cerrado.",
+        "Deja la captura con su ruta, el enlace y la URL del catálogo.",
+        "Marca el avance en la bitácora de construcción de Notion."
+      ],
+      "cubre": [
+        "B12"
+      ],
+      "referencias": []
     }
   ]
 }

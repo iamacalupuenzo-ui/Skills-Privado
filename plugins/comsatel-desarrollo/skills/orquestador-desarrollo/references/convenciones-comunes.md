@@ -3,7 +3,7 @@
 ## Commits
 
 - Estilo del repositorio de producto: `[develop] : texto en español`, en minúsculas y sin punto final. El DS usa Conventional Commits (`fix(table-footer): …`, `feat(…)`, `docs(…)`).
-- Cada commit termina con el trailer `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`.
+- Cada commit termina con el trailer `Co-Authored-By:` del modelo que lo escribió (el que indique el entorno).
 - Un commit por tema cuando se pueda; no mezclar la versión con el cambio funcional (la versión va en su propio commit).
 - Si el repositorio etiqueta los commits con la historia (`feat(US<n>): …`, como `microui-monitoring`), **antes del primer commit** lee el título del issue en `collaboration` (proyecto 622) y su HU, y confirma que el trabajo pertenece a esa historia. Ejemplo: US121 = HU-07-03 «Visualizar, buscar y filtrar Unidades en el mapa»; US123 = HU-07-14 «Usar las herramientas generales del mapa». Si el trabajo cambia de historia, cambia de rama.
 - Por qué: 10 commits de buscador y filtros (US121) quedaron como US123 en la rama de la 123. Separarlos después costó caro: `cherry-pick` y `revert` daban conflictos porque el código estaba entrelazado con el de Medir área.
@@ -17,14 +17,17 @@
 
 ## Ramas
 
-- `feature/<tema>` (o `fix/`, `docs/`) desde `origin/develop`. Antes de rebasar, `git fetch`.
-- No se trabaja ni se sube a `main` ni a `release`.
+- **Productos de CL2:** `CLF_Feature_<n>` (también `CLF_BugFix_<n>` y `CLF_Task_<n>`), con `n` = IID del issue de la historia en collaboration (id 622). Es la convención del equipo, verificada en 72 repos de CL2 (`<producto>_<tipo>_<número>`; `CL2_` y `D_` son de otros productos). Una rama por historia; si comparten código, apiladas.
+- **DS y knowledge-base:** `feature/<tema>` (o `fix/`, `docs/`, `ux/` en el KB).
+- Siempre desde `origin/develop`, traído de forma explícita. Antes de rebasar, `git fetch`.
+- No se trabaja ni se sube a `main`, `release` ni `integration`.
 
 ## Merge requests
 
-- Destino siempre `develop`, con `remove_source_branch: true`.
+- **Productos:** destino `integration` (DEV), revisor Luis (`lrodriguez`), `remove_source_branch: false` (la rama sigue para llegar a `develop`). Nunca un MR de `integration` a `develop`.
+- **DS y knowledge-base:** destino `develop`, revisor César, `remove_source_branch: true`.
 - Se crean por la API con `PRIVATE-TOKEN` desde `GITLAB_TOKEN`. **Título en ASCII** (la línea de comandos de Windows rompe los acentos); el **cuerpo** va en un archivo JSON UTF-8 con `curl --data-binary @archivo.json` o con `fetch` de Node.
-- Contenido mínimo de la descripción: qué cambia, por qué, contrato propuesto si lo hay, **pareja** (con enlace), verificación con cifras reales, lo no verificado y la versión.
+- Contenido mínimo de la descripción: historia (enlace al issue), qué cambia, por qué, contrato propuesto si lo hay, **pareja** (con enlace), verificación con cifras reales, lo no verificado y la versión.
 - Cuando dos MR van en pareja, abrirlos y luego editar cada descripción con el enlace del otro.
 
 ## Pruebas antes de publicar

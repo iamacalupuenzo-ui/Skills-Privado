@@ -1,6 +1,6 @@
 pack_name: desarrollo
-version: 1.0.0
-purpose: Llevar un cambio del Design System o de un producto de CL2 Flotas desde la documentación de UX hasta QA, con una puerta verificable en cada paso
+version: 1.1.0
+purpose: Llevar un cambio del Design System o de un producto de CL2 Flotas desde la documentación de UX hasta DEV (productos, por integration) o hasta el registro (DS), con una puerta verificable en cada paso
 # Estándar de referencia: comsatel-skill-pack-factory v1.2 (un orquestador y como máximo seis especialistas).
 skills:
 - name: orquestador-desarrollo
@@ -60,12 +60,13 @@ gates:
   criteria:
   - Versión subida (en los cinco sitios si es un producto)
   - Shell y micro UI en pareja con el mismo DS
-  - MR a develop asignado a César, sin fusionar
+  - Rama CLF_Feature_<n> por historia (productos) y mezcla de prueba con integration sin conflictos
+  - MR a integration con Luis de revisor (productos) o a develop con César (DS y KB), sin fusionar
 - id: G6
-  name: Comprobación en QA
+  name: Comprobación en DEV
   criteria:
-  - Los jobs del pipeline de develop pasaron
-  - QA responde de verdad con la versión nueva
+  - Los jobs del pipeline de integration pasaron
+  - DEV responde de verdad con la versión nueva
 - id: G7
   name: Documentación
   criteria:
@@ -113,13 +114,14 @@ tasks:
   gate: G5
   condition: el cambio es de un producto
   outputs:
-  - MR a develop del producto y de su pareja
+  - MR a integration del producto y de su pareja
 # Acciones que ningún skill ejecuta: las bloquea el guardia de skills/orquestador-desarrollo/hooks.
 human_only:
 - Fusionar un MR
-- Crear o borrar etiquetas (ds-v*)
-- npm publish
-- Push directo a develop, main o release
+- Crear o borrar etiquetas (ds-v*): las crea el job tag ds del pipeline de main
+- npm publish y el job manual publish de main (César)
+- Push directo a develop, integration, main o release
+- MR de integration hacia develop
 - Mostrar el token de GitLab
 # Cada skill con evals/evals.json; npm test lo exige.
 evals:

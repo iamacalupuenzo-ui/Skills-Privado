@@ -10,7 +10,8 @@ import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
-export const PROTEGIDAS = ['develop', 'main', 'release'];
+// integration es la rama que despliega en DEV en CL2 (desde 2026-11-12): también entra solo por MR.
+export const PROTEGIDAS = ['develop', 'integration', 'main', 'release'];
 
 export const AVISO_BLOQUEO = (titulo, motivo, que) =>
   `BLOQUEADO: ${titulo}\nMotivo: ${motivo}\nQué hacer: ${que}`;
@@ -119,20 +120,20 @@ export function evaluar(cmd, cwd) {
   // 2. Fusionar por API o glab.
   if (/merge_requests\/\d+\/merge\b/i.test(todo) || /\bglab\s+mr\s+(merge|accept)\b/i.test(todo)) {
     return ['deny', 'Fusionar un merge request',
-      'El agente no fusiona. La fusión a develop la ejecuta César (arquitecto) después de revisar el MR.',
-      'Deja el MR listo (pipeline en verde, sin conflictos ni discusiones abiertas) y asígnalo a César con un comentario. El responsable del repositorio también puede fusionar, pero lo decide él en la interfaz de GitLab.'];
+      'El agente no fusiona. Fusiona quien revisa: Luis (lrodriguez) los MR de productos hacia integration; en el DS, Enzo los de develop y release y César el de main; César los del knowledge-base.',
+      'Deja el MR listo (pipeline en verde, sin conflictos ni discusiones abiertas) y asígnalo a su revisor con un comentario. El responsable del repositorio también puede fusionar, pero lo decide él en la interfaz de GitLab.'];
   }
 
   // 3. Etiquetas y publicación de paquetes.
   if (/repository\/tags/i.test(todo) && /(-X\s*POST|--request\s*POST|-Method\s+Post|--data|-d\s|-Body|fetch\()/i.test(todo)) {
     return ['deny', 'Crear una etiqueta por la API',
-      'Las etiquetas (por ejemplo ds-vX.Y.Z del sistema de diseño) publican paquetes y son irreversibles en el registro. Las crea César.',
-      'Pídele a César la etiqueta indicando la versión y el commit ya fusionado en release.'];
+      'La etiqueta ds-vX.Y.Z del sistema de diseño la crea el job `tag ds` al publicar la estable en main. Una creada a mano no publica nada y ocupa la del pipeline.',
+      'Para la estable: César fusiona release → main y ejecuta el job manual `publish`. Las prereleases salen solas en cada rama.'];
   }
   if (/\bnpm\s+publish\b/i.test(todo)) {
     return ['deny', 'npm publish',
-      'Publicar un paquete es irreversible. El sistema de diseño se publica por etiqueta en GitLab, no desde esta máquina.',
-      'Prepara la versión y el MR; la etiqueta y la publicación las ejecuta César.'];
+      'Publicar un paquete es irreversible. El sistema de diseño lo publica su pipeline: cada rama su prerelease y main la estable con el job manual `publish`.',
+      'Prepara la versión y el MR. La estable la publica César desde el pipeline de main.'];
   }
 
   for (const s of sentencias(todo)) {
@@ -149,8 +150,8 @@ export function evaluar(cmd, cwd) {
       const crea = tag.args.length > 0 || tag.opciones.some((o) => /^-[asfmd]$|--delete/.test(o));
       if (crea && !(soloListar && tag.opciones.some((o) => /^(-l|--list)$/.test(o)))) {
         return ['deny', 'git tag (crear o borrar una etiqueta)',
-          'Las etiquetas del sistema de diseño disparan la publicación del paquete. Las crea César, no el agente.',
-          'Pídele a César la etiqueta indicando versión y commit. Para solo mirar las existentes usa `git tag --list`.'];
+          'Las etiquetas ds-v* las crea el pipeline de main al publicar la estable. Una creada a mano no publica y ocupa la del pipeline.',
+          'No crees etiquetas. Para solo mirar las existentes usa `git tag --list`.'];
       }
     }
 
@@ -162,8 +163,8 @@ export function evaluar(cmd, cwd) {
 
     if (push.opciones.some((o) => /^(--tags|--follow-tags|--mirror)$/.test(o)) || push.args.some((a) => /refs\/tags\//.test(a))) {
       return ['deny', 'git push de etiquetas o espejo',
-        'Subir etiquetas dispara la publicación del paquete del sistema de diseño. Es de César.',
-        'Sube solo tu rama feature/*; la etiqueta la pone César tras fusionar.'];
+        'Las etiquetas ds-v* las crea el pipeline de main al publicar la estable; no se suben a mano.',
+        'Sube solo tu rama; la estable la publica César con el job `publish` de main.'];
     }
     if (push.opciones.some((o) => /^(-f|--force|--force-with-lease(=.*)?|--force-if-includes)$/.test(o)) || push.args.some((a) => a.startsWith('+'))) {
       return ['deny', 'git push forzado',
@@ -194,8 +195,8 @@ export function evaluar(cmd, cwd) {
     }
     if (aProtegida) {
       return ['deny', `git push a la rama protegida ${aProtegida}`,
-        'develop, main y release están protegidas: nadie empuja directo, todo entra por merge request y lo fusiona César.',
-        `Crea una rama feature/<tema> desde origin/develop, súbela y abre un MR a develop asignado a César.`];
+        'develop, integration, main y release están protegidas: nadie empuja directo, todo entra por merge request y lo fusiona quien revisa.',
+        `Productos: crea CLF_Feature_<historia> desde origin/develop, súbela y abre un MR a integration (DEV) con Luis de revisor. DS: rama feature/<tema> y MR a develop con César.`];
     }
 
     // Push permitido en principio: pide confirmación (regla B1: nada se sube sin que lo confirmes).
@@ -206,16 +207,23 @@ export function evaluar(cmd, cwd) {
       enDS ? `Subir ${rama} al sistema de diseño (ui-components)` : `Subir ${rama} a GitLab`,
       (enDS
         ? 'Estás en el sistema de diseño: un cambio aquí afecta a todos los productos (Shell y micro UI). Debe estar confirmado y seguir flujo-ds.'
-        : 'Regla B1: nada se sube sin tu confirmación. Esto solo sube una rama feature/*; no fusiona ni etiqueta.')
+        : 'Regla B1: nada se sube sin tu confirmación. Esto solo sube una rama de trabajo; no fusiona ni etiqueta.')
         + (avisos.length ? `\nAvisos antes de subir:\n- ${avisos.join('\n- ')}` : ''),
-      'Si estás de acuerdo, confirma. Después se abre el MR a develop y se asigna a César (en pareja si es Shell + micro UI).'];
+      'Si estás de acuerdo, confirma. Después se abre el MR: productos a integration con Luis; DS y knowledge-base a develop con César (en pareja si es Shell + micro UI).'];
   }
 
-  // 6. Crear un merge request por la API: confirmar y recordar asignación a César.
+  // 6a. integration nunca se mezcla hacia develop (regla de César, ci-cd README): cada rama llega a develop con su propio MR.
+  if (/merge_requests\b/i.test(todo) && /source_branch["'=:\s]+integration\b/i.test(todo) && /target_branch["'=:\s]+develop\b/i.test(todo)) {
+    return ['deny', 'MR de integration hacia develop',
+      'integration junta el trabajo de todos para DEV; mezclarla en develop arrastraría ramas ajenas que nadie aprobó para QA.',
+      'Cada rama llega a develop por su lado, con su propio MR, y eso lo decide el equipo de desarrollo.'];
+  }
+
+  // 6b. Crear un merge request por la API: confirmar destino y revisor.
   if (/merge_requests\b/i.test(todo) && !/merge_requests\/\d+\/merge/i.test(todo) && /(-X\s*POST|--request\s*POST|-Method\s+Post|--data|-Body|--data-binary)/i.test(todo)) {
     return ['ask', 'Abrir un merge request',
-      'Abrir un MR es una acción separada de subir la rama (B1). Debe ir a develop, asignado a César, enlazado a su pareja si es Shell + micro UI.',
-      'Confirma si el título, el destino (develop) y el asignado (César) son correctos.'];
+      'Abrir un MR es una acción separada de subir la rama (B1). Productos: destino integration (DEV), revisor Luis (lrodriguez). DS y knowledge-base: destino develop, revisor César. Enlazado a su pareja si es Shell + micro UI.',
+      'Confirma si el título, el destino y el revisor son correctos.'];
   }
   return null;
 }

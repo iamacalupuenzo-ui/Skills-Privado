@@ -57,6 +57,8 @@ Construye el prototipo con micro UI, shell y componentes del DS. La investigaci�
 
 Mientras construyes, invoca accessibility-reviewer y crea o actualiza el ARP **sobre lo implementado**; no lo pospongas al cierre ni lo sustituyas con una revisión de Figma. Cada cambio en lo construido produce una propuesta de actualización de UXR, FLW, SCR y DEC, con captura, versión y estado. Enzo aprueba antes de escribir esos cambios. Toda respuesta y estado de pregunta se registra primero en Open questions del KB y luego se carga a Notion; las propuestas de otros responsables no se remapean a Propuesta UX.
 
+Cada paso verificado en el navegador deja su evidencia en Notion en ese momento: capturas de cada estado y una explicación breve de cómo funciona en la tarea FRONT; la bitácora de construcción y la página de servidores solo marcan y enlazan (`flujo-producto/references/evidencia-de-avance.md`, regla de Enzo del 2026-11-15).
+
 Flujos, Pantallas y Exploraciones siguen Borrador → En revisión → En construcción → Validado. Hay código que referencia su HU/FLW/SCR: propone En construcción; no lo dejes en Borrador. Una rama CLF_Feature_<US> o un merge aislado son evidencia a revisar, no prueba de validación. Validado solo con prueba de Enzo en el navegador, captura y ARP implementado de la misma versión. Figma es opcional cuando el diseño se validó en código.
 
 ## Compuertas automáticas

@@ -1,6 +1,6 @@
 # Mapa de repositorios y entornos
 
-Estado verificado el 2026-10-13. Releer GitLab antes de afirmar versiones: cambian a diario.
+Estado verificado el 2026-10-13; ramas y entornos, el 2026-11-13. Releer GitLab antes de afirmar versiones: cambian a diario.
 
 ## Repositorios
 
@@ -9,26 +9,26 @@ Raíz local: la carpeta donde cada persona clona los repositorios (todos hermano
 
 | Repo | Ruta GitLab | Qué es | Despliega |
 |---|---|---|---|
-| `ui-components` | `webs/componentes-ui/ui-components` | Design System (`@comsatel/ui-components`) | Etiqueta `ds-vX.Y.Z` publica en el registro |
-| `web-backoffice` | `webs/web-backoffice` | Shell del Backoffice | `develop` → QA |
-| `microui-bo-tenants` | `micros-ui/backoffice/microui-bo-tenants` | Micro UI de Distribuidores (alta, identidad visual) | `develop` → QA |
-| `web-flotas` | `webs/web-flotas` | Shell de Web Cliente | `develop` → QA |
-| `microui-monitoring` | `micros-ui/flotas/microui-monitoring` | Micro UI de Monitoreo (mapa) | `develop` → QA |
+| `ui-components` | `webs/componentes-ui/ui-components` | Design System (`@comsatel/ui-components`) | Cada rama publica su prerelease (`-dev`, `-qa`, `-pre`); `main` publica la estable con el job manual `publish` y crea `ds-vX.Y.Z` |
+| `web-backoffice` | `webs/web-backoffice` | Shell del Backoffice | `integration` → DEV; `develop` → QA |
+| `microui-bo-tenants` | `micros-ui/backoffice/microui-bo-tenants` | Micro UI de Distribuidores (alta, identidad visual, ficha, Funcionalidades, Clientes) | `integration` → DEV; `develop` → QA |
+| `web-flotas` | `webs/web-flotas` | Shell de Web Cliente | `integration` → DEV; `develop` → QA |
+| `microui-monitoring` | `micros-ui/flotas/microui-monitoring` | Micro UI de Monitoreo (mapa) | `integration` → DEV; `develop` → QA |
 | `flotas-web-bff` | `webs/flotas-web-bff` | BFF de Web Cliente; hoy lleva `mock/` (BFF de prueba, solo QA) | `develop` → QA |
 
 ## Parejas que se publican juntas
 
 | Pareja | Por qué |
 |---|---|
-| `web-backoffice` + `microui-bo-tenants` | El Shell aloja fuentes, sanitizer y avisos que usa la micro UI; y comparten el DS |
+| `web-backoffice` + `microui-bo-tenants` | El Shell aloja fuentes, sanitizer y avisos que usa la micro UI; y comparten el DS. Misma rama `CLF_Feature_<n>` en los dos |
 | `web-flotas` + `microui-monitoring` | Comparten el DS como singleton |
 
 ## Ramas y quién fusiona
 
-- Trabajo: `feature/*` desde `origin/develop`; MR a `develop`.
-- Las fusiones las hace el arquitecto (César, `cquevedo`) o el responsable del repositorio en GitLab. Las ramas `release` y `main` y las etiquetas del DS son suyas.
-- **El agente no fusiona ni etiqueta.** Sube la rama `feature/*`, abre el MR a `develop` y lo asigna a César. El guardia de `hooks/` lo hace cumplir (ver `hooks-bloqueantes.md`).
-- `develop`, `main` y `release` están protegidas: nadie empuja directo, solo por MR.
+- **Productos (CL2, desde 2026-11-12):** rama `CLF_Feature_<n>` por historia (n = IID del issue en collaboration), desde `origin/develop`; MR a `integration`, que despliega en DEV. Revisa y fusiona Luis (`lrodriguez`), jefe de desarrollo. `integration` nunca se mezcla hacia `develop`: cada rama llega a `develop` (QA) con su propio MR, y eso lo lleva desarrollo. Detalle en `flujo-producto/references/publicar-con-mr.md`.
+- **DS y knowledge-base:** rama `feature/<tema>` desde `origin/develop`; MR a `develop`. Revisa César (`cquevedo`); Enzo puede fusionar, pero César queda de revisor. `release`, `main` y las etiquetas del DS son de César.
+- **El agente no fusiona ni etiqueta.** Sube la rama y abre el MR con su revisor. El guardia de `hooks/` lo hace cumplir (ver `hooks-bloqueantes.md`).
+- `develop`, `integration`, `main` y `release` están protegidas: nadie empuja directo, solo por MR.
 - El entorno de Claude Code puede bloquear fusionar sin revisión de otra persona: no se rodea (B6).
 
 ## Puertos locales
