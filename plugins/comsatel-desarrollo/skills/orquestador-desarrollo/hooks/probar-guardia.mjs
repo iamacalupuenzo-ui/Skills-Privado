@@ -143,5 +143,6 @@ ejecutados++;
 for (const f of avisos) { fallos++; console.log(`FALLA  ${f}`); }
 if (!avisos.length) console.log('OK    avisos de push (prerelease y choques con integration) sin bloquear');
 
-console.log(`\n${casos.length + 3} casos, ${fallos} fallos`);
+console.log(`
+${casos.length + 3} declarados, ${ejecutados} ejecutados, ${omitidos} omitidos, ${fallos} fallos`);
 process.exit(fallos ? 1 : 0);
