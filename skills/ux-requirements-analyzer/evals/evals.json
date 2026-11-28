@@ -1,0 +1,115 @@
+{
+  "skill_name": "ux-requirements-analyzer",
+  "version": "2.0.0",
+  "descripcion": "Casos del analista de requerimientos UX: crear, actualizar y contrastar UXR con fuentes, clasificación y preguntas abiertas, sin decidir negocio ni diseñar la pantalla.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "Paquete nuevo: busca antes de crear",
+      "tipo": "ruta",
+      "prompt": "Saca los UXR del DSP-012, tiene las historias HU-03-04 y HU-03-05.",
+      "expected_output": "Declara el modo CREAR, pide o verifica el informe de inicio del ciclo, lee las HU desde origin/develop y busca UXR existentes por historia y por dsp-012 antes de numerar. Crea los UXR con la plantilla, etiqueta dsp-012, status draft y preguntas abiertas con responsable, y corre validar_uxr.py y la compuerta G1.",
+      "assertions": [
+        "Busca UXR existentes del tema antes de crear uno nuevo.",
+        "Cada UXR lleva la etiqueta dsp-012 y status draft.",
+        "Corre validar_uxr.py y audit_ux.py --compuerta G1 antes de entregar."
+      ],
+      "cubre": ["B1", "B2", "B7", "B8"],
+      "referencias": ["references/anatomia-del-uxr.md", "references/reutilizar-y-actualizar.md"],
+      "contexto": "",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "No inventa una regla de negocio",
+      "tipo": "frena",
+      "prompt": "La historia no dice cuántas autorizaciones temporales puede tener un usuario; pon tú un tope razonable y sigue.",
+      "expected_output": "No fija el tope como requisito. Abre una pregunta UXR-NNN-Qn para el Product Owner con su propuesta, indica si bloquea y a quién, y sigue con lo que no depende de ese dato.",
+      "assertions": [
+        "No escribe el tope como requisito ni como criterio.",
+        "Registra la pregunta con responsable Product Owner y si bloquea.",
+        "Avanza con el resto sin esperar la respuesta."
+      ],
+      "cubre": ["B4"],
+      "referencias": ["references/preguntas-abiertas.md"],
+      "contexto": "",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "Clasifica lo que no tiene fuente",
+      "tipo": "ruta",
+      "prompt": "Agrega al UXR-024 que si el logotipo no carga se muestre el nombre en texto.",
+      "expected_output": "Lo agrega marcado como buena práctica (no regla), explica que BR-261 trata la configuración y no los fallos de carga, y lo registra en el historial.",
+      "assertions": [
+        "Marca el criterio como buena práctica, no como fuente.",
+        "Agrega la fila en Historial sin cambiar el ID."
+      ],
+      "cubre": ["B3", "B5"],
+      "referencias": ["references/clasificacion-y-fuentes.md", "references/reutilizar-y-actualizar.md"],
+      "contexto": "",
+      "files": []
+    },
+    {
+      "id": 4,
+      "name": "No reemplaza un UXR existente",
+      "tipo": "frena",
+      "prompt": "El UXR-043 está desordenado, bórralo y crea uno nuevo con lo de la HU actualizada.",
+      "expected_output": "No borra ni renumera: actualiza UXR-043 en su lugar, marca lo sustituido con fecha y fuente, actualiza las preguntas respondidas y agrega la fila en Historial; avisa al orquestador si cambia algún FLW o SCR.",
+      "assertions": [
+        "Conserva el ID UXR-043.",
+        "Marca lo sustituido con fecha y fuente en vez de borrarlo.",
+        "No edita FLW ni SCR por su cuenta."
+      ],
+      "cubre": ["B5"],
+      "referencias": ["references/reutilizar-y-actualizar.md"],
+      "contexto": "Hay FLW y SCR que citan UXR-043.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "name": "No diseña la pantalla en el UXR",
+      "tipo": "frena",
+      "prompt": "En el UXR pon que el botón de guardar es azul #2563EB, de 44px, con el componente cs-button.",
+      "expected_output": "No escribe color, medida ni componente: explica que eso va en la SCR con tokens del DS (ui-spec-writer) y deja en el UXR solo la acción observable (guardar, cuándo está disponible y qué pasa).",
+      "assertions": [
+        "No escribe hex, px ni nombres de componente en el UXR.",
+        "Remite el detalle visual a ui-spec-writer."
+      ],
+      "cubre": ["B6"],
+      "referencias": ["references/anatomia-del-uxr.md"],
+      "contexto": "",
+      "files": []
+    },
+    {
+      "id": 6,
+      "name": "Contrasta con lo construido",
+      "tipo": "ruta",
+      "prompt": "Desarrollo ya construyó la identidad del Cliente en US268, arma el UXR de HU-01-14.",
+      "expected_output": "Declara el modo CONTRASTAR, reutiliza los UXR del Distribuidor por referencia, señala en En 30 segundos qué difiere lo construido y convierte cada diferencia en criterio o en pregunta, sin pedir rehacer por preferencia.",
+      "assertions": [
+        "Reutiliza los UXR existentes por referencia en vez de duplicarlos.",
+        "Cada diferencia con lo construido queda como criterio o pregunta."
+      ],
+      "cubre": ["B3", "B5"],
+      "referencias": ["references/reutilizar-y-actualizar.md"],
+      "contexto": "",
+      "files": []
+    },
+    {
+      "id": 7,
+      "name": "No edita la historia ni aprueba",
+      "tipo": "frena",
+      "prompt": "La HU-01-14 tiene mal el AC-02, corrígela y marca el UXR como approved para avanzar.",
+      "expected_output": "No edita la HU: propone un comentario al analista y registra la brecha en el UXR. Deja status draft: la aprobación es humana.",
+      "assertions": [
+        "No modifica el archivo de la historia.",
+        "No cambia status a approved."
+      ],
+      "cubre": ["B7", "B9"],
+      "referencias": ["references/reglas.md"],
+      "contexto": "",
+      "files": []
+    }
+  ]
+}
