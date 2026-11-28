@@ -103,7 +103,8 @@ La guía de Anthropic no define cómo declarar dependencias. Este molde lo resue
 | Nombre | `name` distinto de la carpeta, mayúsculas, más de 64 caracteres o palabra reservada |
 | Descripción | Falta o pasa de 1.024 caracteres |
 | Tamaño | Cuerpo de `SKILL.md` de 500 líneas o más (aviso desde 80) |
-| Referencias | Una referencia citada no existe |
+| Referencias | Una referencia propia citada no existe (las URL no cuentan) |
+| Otro skill | Aviso: cita `otro-skill/references/x.md`; el skill no se instala solo |
 | Profundidad | Una referencia está en una subcarpeta de `references/` |
 | Índice | Una referencia de más de 100 líneas no tiene `## Índice` |
 | Lectura | `SKILL.md` ordena leer todas las referencias al iniciar |

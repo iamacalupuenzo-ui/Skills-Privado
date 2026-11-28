@@ -27,7 +27,10 @@ LIMITE_SIN_INDICE = 100
 MIN_EVALS = 5
 RESERVADAS = ("anthropic", "claude")
 NOMBRE_VALIDO = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
-CITA_REFERENCIA = re.compile(r"references/([A-Za-z0-9_./-]+\.md)")
+# Cita propia: `references/x.md` que no forma parte de una URL ni de la ruta de otro skill.
+CITA_REFERENCIA = re.compile(r"(?<![\w/.-])references/([A-Za-z0-9_./-]+\.md)")
+# Cita a otro skill: `otro-skill/references/x.md` fuera de una URL (dependencia entre skills).
+CITA_OTRO_SKILL = re.compile(r"(?<![\w/.-])(?:\.\./)?([a-z0-9][a-z0-9-]+)/references/([A-Za-z0-9_./-]+\.md)")
 LECTURA_TOTAL = re.compile(r"leer siempre al iniciar|leer todas las referencias", re.IGNORECASE)
 INDICE = re.compile(r"^#{2,3}\s+(Índice|Indice|Contenido)\b", re.MULTILINE)
 EXT_SCRIPT = {".py", ".mjs", ".js", ".sh", ".ps1"}
@@ -114,6 +117,9 @@ def validar(carpeta: Path, entregable: bool) -> list[Hallazgo]:
         for ref in CITA_REFERENCIA.findall(linea):
             if not (carpeta / "references" / ref).is_file():
                 h.append(Hallazgo("ERROR", "referencias", "SKILL.md", n, f"cita `references/{ref}`, que no existe", "crea el archivo o corrige la ruta"))
+        for otro, ref in CITA_OTRO_SKILL.findall(linea):
+            if otro != carpeta.name:
+                h.append(Hallazgo("AVISO", "otro-skill", "SKILL.md", n, f"depende de `{otro}/references/{ref}`, de otro skill", "copia la guía dentro del skill o enlázala por URL para que se instale solo"))
 
     # Profundidad e índice
     refs = carpeta / "references"

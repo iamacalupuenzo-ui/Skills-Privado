@@ -81,6 +81,18 @@ class SkillRoto(ConCopia):
         self.editar("SKILL.md", "references/formato-del-resumen.md", "references/no-existe.md")
         self.assertIn("referencias", reglas(validar(self.skill, False)))
 
+    def test_url_a_otro_skill_no_es_error(self):
+        self.editar("SKILL.md", "## Cierre", "Protocolo en [ciclo](https://github.com/org/repo/blob/main/skills/otro/references/ciclo.md).\n\n## Cierre")
+        hallazgos = validar(self.skill, False)
+        self.assertNotIn("referencias", reglas(hallazgos))
+        self.assertNotIn("otro-skill", reglas(hallazgos, "AVISO"))
+
+    def test_ruta_de_otro_skill_avisa(self):
+        self.editar("SKILL.md", "## Cierre", "- `flujo-producto/references/evidencia.md` — capturas.\n\n## Cierre")
+        hallazgos = validar(self.skill, False)
+        self.assertNotIn("referencias", reglas(hallazgos))
+        self.assertIn("otro-skill", reglas(hallazgos, "AVISO"))
+
     def test_referencia_en_subcarpeta(self):
         sub = self.skill / "references" / "extra"
         sub.mkdir()

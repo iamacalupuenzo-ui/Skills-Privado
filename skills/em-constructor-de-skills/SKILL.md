@@ -9,7 +9,7 @@ description: >
   "actualiza el skill de W" o "renombra este skill". No instala, no publica ni registra en
   Notion sin pedido explícito.
 metadata:
-  version: "2.0.0"
+  version: "2.0.1"
 ---
 
 # Constructor de skills
