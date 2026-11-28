@@ -91,7 +91,7 @@ borrar la rama remota y volver a subirla es lo mismo que forzar. Lo que sí se h
 
 - Detecta patrones del texto del comando. Un comando muy disfrazado (variables armadas a
   trozos) podría escaparse; la protección de ramas de GitLab sigue siendo la barrera final.
-- La protección de `develop`, `integration`, `main` y `release` aplica a los remotos de Comsatel. En otros repos (por ejemplo el de skills en GitHub) el push solo pide confirmación.
+- La protección de `develop`, `integration`, `main` y `release` aplica a los remotos de Comsatel. En otros repos (por ejemplo el de skills en GitHub) el push pasa sin preguntar: Enzo lo delegó el 2026-11-28. El forzado, el borrado de ramas y las etiquetas se siguen bloqueando en todos.
 - Ignora el texto de los mensajes de commit (`-m` y heredoc), para no frenar un commit que solo *menciona* una acción bloqueada.
 - Solo cubre Claude Code. Codex tiene otro mecanismo de hooks y no está configurado.
 - El hook no sustituye a los permisos de GitLab: el token debe tener rol que no pueda fusionar.

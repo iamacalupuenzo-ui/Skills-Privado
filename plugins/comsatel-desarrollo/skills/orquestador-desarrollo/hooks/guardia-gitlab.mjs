@@ -199,6 +199,9 @@ export function evaluar(cmd, cwd) {
         `Productos: crea CLF_Feature_<historia> desde origin/develop, súbela y abre un MR a integration (DEV) con Luis de revisor. DS: rama feature/<tema> y MR a develop con César.`];
     }
 
+    // Fuera de Comsatel (repo privado de skills en GitHub) Enzo delega: el push pasa sin preguntar (2026-11-28).
+    if (remoto && !esComsatel) continue;
+
     // Push permitido en principio: pide confirmación (regla B1: nada se sube sin que lo confirmes).
     const enDS =/ui-components/i.test(remoto) || /ui-components/i.test(dirTrabajo);
     const rama = destinos[0] || ramaActual(cwd, push.dirC) || 'la rama actual';
