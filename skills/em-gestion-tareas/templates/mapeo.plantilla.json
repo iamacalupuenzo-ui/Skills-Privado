@@ -1,0 +1,63 @@
+{
+  "paquete": { "id": "DSP-NNN", "nombre": "<nombre del paquete>", "ruta": "requirements/scope-packs/DSP-NNN-<slug>.md", "issue": 0 },
+  "responsable": { "nombre": "<Nombre Apellido>", "usuario": "<usuario de GitLab>" },
+  "historias": {
+    "HU-NN-NN": { "issue": 0, "ruta": "requirements/context-packs/user-stories/HU-NN-NN-<slug>.md", "desarrollo": [], "calidad": [] }
+  },
+  "madres": [
+    {
+      "codigo": "XXX-UX",
+      "titulo": "<Entregable de la madre> (DSP-NNN)",
+      "antesDeLeer": "¿<pregunta cuya respuesta está en la tarea>?",
+      "en30": "<Conclusión en tres líneas como máximo.>",
+      "relato": { "problema": "<…>", "queSeHace": "<…>", "queEntrega": "<…>", "dondeEncaja": "<…>", "noDecidido": "<opcional>" },
+      "criterio": "Las {n} subtareas están completas. Las {horas} h incluyen las de las subtareas.",
+      "comprueba": "¿<pregunta de comprobación>?",
+      "alcance": { "incluye": ["<…>"], "noIncluye": ["<…>"] },
+      "artefactos": ["UXR-NNN", "FLW-NNN", "SCR-NNN"],
+      "criterios": ["<casilla verificable>"],
+      "cubre": [{ "historia": "HU-NN-NN", "ac": "AC-1 a AC-N" }],
+      "subtareas": [
+        {
+          "n": "01",
+          "tipo": "ux",
+          "historias": ["HU-NN-NN"],
+          "horas": 1.5,
+          "inicio": "AAAA-MM-DD",
+          "limite": "AAAA-MM-DD",
+          "titulo": "<Entregable de la subtarea> (HU-NN-NN)",
+          "criterio": "<cuándo está hecha, en una frase>",
+          "antesDeLeer": "¿<…>?",
+          "en30": "<…>",
+          "relato": { "problema": "<…>", "queSeHace": "<…>", "queEntrega": "<…>", "dondeEncaja": "<…>" },
+          "comprueba": "¿<…>?",
+          "alcance": { "incluye": ["<…>"], "noIncluye": ["<…>"] },
+          "artefactos": [],
+          "criterios": ["<casilla verificable>"],
+          "cubre": [{ "historia": "HU-NN-NN", "ac": "AC-1 a AC-N" }],
+          "bloqueadaPor": []
+        },
+        {
+          "n": "02",
+          "tipo": "revision",
+          "historias": ["HU-NN-NN"],
+          "horas": 1,
+          "inicio": "AAAA-MM-DD",
+          "limite": "AAAA-MM-DD",
+          "titulo": "Revisión de lo construido (HU-NN-NN)",
+          "criterio": "<…>",
+          "antesDeLeer": "¿<…>?",
+          "en30": "<…>",
+          "relato": { "problema": "<…>", "queSeHace": "<…>", "queEntrega": "<…>", "dondeEncaja": "<…>" },
+          "comprueba": "¿<…>?",
+          "alcance": { "incluye": ["<…>"] },
+          "construyo": { "usuario": "<usuario de GitLab>", "issue": 0 },
+          "criterios": ["Lo construido coincide con sus pantallas y estados", "Brechas y desvíos registrados con su dueño"],
+          "bloqueadaPor": ["XXX-UX · 01"]
+        }
+      ]
+    }
+  ],
+  "referencias": [{ "texto": "<qué es>", "ruta": "<ruta en la KB>", "en": ["XXX-UX · 01"] }],
+  "cambiosKb": []
+}

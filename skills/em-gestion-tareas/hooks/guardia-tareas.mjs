@@ -45,7 +45,8 @@ function revisarNotion(nombre, entrada) {
 }
 
 function revisarTerminal(cmd) {
-  const escribe = /(-X\s*(POST|PUT|DELETE)|--request\s+(POST|PUT|DELETE)|method:\s*['"](POST|PUT|DELETE)|--data|-d\s)/i;
+  // curl (-X, --request, --data), fetch (method:) y PowerShell (-Method de Invoke-RestMethod o Invoke-WebRequest).
+  const escribe = /(-X\s*(POST|PUT|PATCH|DELETE)|--request\s+(POST|PUT|PATCH|DELETE)|method:\s*['"](POST|PUT|PATCH|DELETE)|-Method\s+['"]?(POST|PUT|PATCH|DELETE)|--data|-d\s)/i;
   if (/publicar\.mjs/.test(cmd) && /--ejecutar/.test(cmd))
     responder('ask', 'Publicar tareas en GitLab y ClickUp\nMotivo: lo ve todo el equipo (B1).\nQué sigue: confirma solo si Enzo aprobó la corrida en seco de esta misma lista.');
   if (/tablero-dia\.mjs/.test(cmd) && /--ejecutar/.test(cmd))

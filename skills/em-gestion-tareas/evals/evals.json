@@ -1,7 +1,7 @@
 {
   "skill_name": "em-gestion-tareas",
-  "version": "1.0.0",
-  "descripcion": "Las 7 de flujo-tareas-gitlab adaptadas y 5 nuevas.",
+  "version": "1.1.0",
+  "descripcion": "Las 7 de flujo-tareas-gitlab adaptadas, 5 de la versión 1.0.0 y 5 de ruta nuevas (1.1.0) para AJUSTAR, PAUSAR, TABLERO, ACTIVIDAD y AVANCE con nota.",
   "evals": [
     {
       "id": 1,
@@ -168,7 +168,7 @@
         "Cada tarea lleva Alcance, Criterios de aceptación, Condición de cierre y Trazabilidad.",
         "No escribe en GitLab ni en ClickUp."
       ],
-      "tipo": "flujo",
+      "tipo": "ruta",
       "cubre": [
         "B14",
         "B1"
@@ -207,7 +207,7 @@
         "Marca la línea de la subtarea en el Plan de la madre.",
         "No cierra el issue antes de su fecha límite."
       ],
-      "tipo": "flujo",
+      "tipo": "ruta",
       "cubre": [
         "B9",
         "B4"
@@ -249,6 +249,116 @@
       "referencias": [
         "references/guardia-de-tareas.md"
       ]
+    },
+    {
+      "id": 13,
+      "name": "Ajustar agrega una subtarea por el mapeo, no a mano",
+      "prompt": "A mitad del DSP-009 apareció una pantalla nueva de vista previa del logotipo en IDV-UX. Agrégala como tarea.",
+      "expected_output": "Entra en AJUSTAR: agrega la subtarea al mapeo del paquete con su número siguiente, historias, horas, fechas, relato, alcance y criterios; corre armar-mapeo.mjs y, si pasa, crea la página en Notion con el contenido generado. Actualiza el Plan de la madre. Si el paquete ya está publicado, ofrece PUBLICAR en seco y espera confirmación.",
+      "assertions": [
+        "Edita el mapeo y valida con armar-mapeo.mjs antes de escribir en Notion.",
+        "No escribe la tarea a mano en Notion.",
+        "No publica en GitLab ni ClickUp sin corrida en seco y confirmación."
+      ],
+      "tipo": "ruta",
+      "cubre": [
+        "B14",
+        "B1"
+      ],
+      "referencias": [
+        "references/avance-y-cierre.md",
+        "references/estructura-de-la-tarea.md"
+      ],
+      "contexto": "El mapeo del DSP-009 está en examples/mapeo-dsp-009.json y ya fue publicado.",
+      "files": []
+    },
+    {
+      "id": 14,
+      "name": "Pausar marca la casilla sin cambiar el estado",
+      "prompt": "Pon en pausa IDV-FRONT · 03 (#281), estamos esperando a Arquitectura.",
+      "expected_output": "Entra en PAUSAR: marca la casilla «En pausa» en Notion sin cambiar el estado y anota quién responde y qué desbloquea. Propone en seco la etiqueta Task :: Stand By / Blocked en GitLab y «en pausa» en ClickUp, y espera confirmación. No cierra el issue.",
+      "assertions": [
+        "Conserva el estado de Notion y solo marca la casilla «En pausa».",
+        "No cierra el issue ni lo mueve sin confirmación.",
+        "Nombra la tarea con código, nombre e issue."
+      ],
+      "tipo": "ruta",
+      "cubre": [
+        "B11",
+        "B1",
+        "B10"
+      ],
+      "referencias": [
+        "references/mapeo-notion-gitlab-clickup.md"
+      ],
+      "contexto": "",
+      "files": []
+    },
+    {
+      "id": 15,
+      "name": "Inicio del día en seco",
+      "prompt": "Inicia el día: ¿qué vence hoy?",
+      "expected_output": "Entra en TABLERO: corre tablero-dia.mjs tablero en seco, muestra qué se mueve a la columna del día según la fecha límite, con enlaces, y pide confirmación antes de --ejecutar. Lee las listas del proyecto, no de la memoria.",
+      "assertions": [
+        "Muestra la corrida en seco antes de mover nada.",
+        "Lista las tareas con código, nombre e issue y su enlace.",
+        "No ejecuta --ejecutar sin confirmación."
+      ],
+      "tipo": "ruta",
+      "cubre": [
+        "B1",
+        "B5",
+        "B10"
+      ],
+      "referencias": [
+        "references/tablero-y-compromiso.md"
+      ],
+      "contexto": "",
+      "files": []
+    },
+    {
+      "id": 16,
+      "name": "Registrar una reunión como actividad corta",
+      "prompt": "Registra la reunión de 30 minutos que tuve hoy con Franklin sobre la identidad del Cliente.",
+      "expected_output": "Entra en ACTIVIDAD: busca si la actividad ya existe en la base Tareas; si no, crea una tarea corta en su frente con fecha, duración y nota, sin el patrón de código. No la publica en GitLab ni ClickUp salvo que se pida.",
+      "assertions": [
+        "Busca antes de crear para no duplicar.",
+        "Crea una actividad corta sin código XXX-UX.",
+        "No escribe en GitLab ni ClickUp sin que se pida y confirme."
+      ],
+      "tipo": "ruta",
+      "cubre": [
+        "B12",
+        "B1"
+      ],
+      "referencias": [
+        "references/reglas.md"
+      ],
+      "contexto": "",
+      "files": []
+    },
+    {
+      "id": 17,
+      "name": "Avance con nota por un cambio en la KB",
+      "prompt": "El paso 0 del orquestador detectó que cambió AC-4 de HU-01-16 en la KB, sin cambiar el alcance. Regístralo en las tareas.",
+      "expected_output": "Entra en AVANCE con nota: corre notas-kb.mjs con el informe de cambios y el mapeo, regenera con armar-mapeo.mjs y actualiza Notion con escribir-notion.mjs. La nota queda en «Trazabilidad → Cambios de la KB» con fecha, documento, sección y enlace a develop. No marca casillas. La nota en el issue se propone con confirmación.",
+      "assertions": [
+        "Guarda la nota en el mapeo para que una regeneración no la borre.",
+        "No marca ninguna casilla por un cambio de la KB.",
+        "El enlace apunta a develop de la KB, no a Notion."
+      ],
+      "tipo": "ruta",
+      "cubre": [
+        "B9",
+        "B15",
+        "B18"
+      ],
+      "referencias": [
+        "references/avance-y-cierre.md",
+        "references/scripts.md"
+      ],
+      "contexto": "",
+      "files": []
     }
   ]
 }
