@@ -4,7 +4,7 @@
 
 **En 30 segundos:** desde el 2026-11-12, en CL2 solo `integration` despliega en DEV. Cada historia tiene su rama (`CLF_Feature_<n>`), que sale de `develop` y llega a DEV con un MR hacia `integration` que revisa Luis. Nosotros (UX Engineering) no subimos a QA. Llevar la historia a `develop` le toca al equipo de desarrollo, con su propio MR y nunca desde `integration`.
 
-Todo paso de subida pide la confirmación del usuario (B1), y cada MR la suya. Si el cambio depende de un DS sin publicar o el usuario pide subir sin fusionar, no abras MR: sigue `subir-sin-fusionar.md` y, para el orden en que se fusiona después, `orden-de-fusion-ds-sin-publicar.md`.
+Todo paso de subida pide la confirmación del usuario (B1): una sola por la pareja de push y MR, no una por cada paso. Si el cambio depende de un DS sin publicar o el usuario pide subir sin fusionar, no abras MR: sigue `subir-sin-fusionar.md` y, para el orden en que se fusiona después, `orden-de-fusion-ds-sin-publicar.md`.
 
 ## El flujo de ramas
 
