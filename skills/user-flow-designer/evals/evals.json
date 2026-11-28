@@ -1,0 +1,98 @@
+{
+  "skill_name": "user-flow-designer",
+  "version": "2.0.0",
+  "descripcion": "Casos del diseñador de flujos: crear, actualizar y contrastar FLW con marcas, ramas completas y pantallas declaradas, sin layout ni decisiones de negocio.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "Flujo nuevo desde los UXR del paquete",
+      "tipo": "ruta",
+      "prompt": "Ya están los UXR-150 a UXR-153 del DSP-012, arma el flujo.",
+      "expected_output": "Declara CREAR, verifica que los UXR existan y pasen validar_uxr.py, busca flujos del mismo tema para reutilizar, escribe el FLW con la plantilla (requirements con HU y UXR, screens reservadas, ramas con ID y marca, diagrama mermaid) y corre validar_flw.py y la compuerta G2.",
+      "assertions": [
+        "Lista en requirements las HU y los UXR que recorre.",
+        "Reserva las pantallas en screens con los siguientes IDs libres.",
+        "Corre validar_flw.py y audit_ux.py --compuerta G2."
+      ],
+      "cubre": ["B1", "B2", "B5"],
+      "referencias": ["references/anatomia-del-flw.md", "references/pantallas-del-flujo.md"],
+      "contexto": "",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "No resuelve una rama pendiente",
+      "tipo": "frena",
+      "prompt": "El PO no dijo si al retirar se pierden los valores; asume que sí y deja la rama cerrada.",
+      "expected_output": "No la cierra: marca la rama [PENDIENTE: UXR-140-Q1], deja la propuesta en la pregunta del UXR y sigue con el resto del flujo.",
+      "assertions": [
+        "La rama queda marcada [PENDIENTE: <ID>].",
+        "No escribe la decisión como fuente."
+      ],
+      "cubre": ["B4"],
+      "referencias": ["references/ramas-y-marcas.md"],
+      "contexto": "",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "Reutiliza las ramas del flujo base",
+      "tipo": "ruta",
+      "prompt": "Haz el flujo de la identidad del Producto; es igual al del Distribuidor salvo quién la edita.",
+      "expected_output": "Declara FLW-004 como base, cita sus pasos con [Reutiliza] y lista sus ramas en «Reutilizadas de FLW-004» con la diferencia; solo escribe lo propio del Producto.",
+      "assertions": [
+        "Cita las ramas del flujo base en vez de copiarlas.",
+        "Escribe solo las ramas propias del nuevo nivel."
+      ],
+      "cubre": ["B8"],
+      "referencias": ["references/reutilizar-y-actualizar.md", "references/ramas-y-marcas.md"],
+      "contexto": "",
+      "files": []
+    },
+    {
+      "id": 4,
+      "name": "No mete layout en el flujo",
+      "tipo": "frena",
+      "prompt": "En el paso 3 pon que se abre un cs-modal de 480px con el botón azul a la derecha.",
+      "expected_output": "Escribe solo la intención («se abre una confirmación con el foco en Cancelar») y remite el componente, la medida y la posición a ui-spec-writer.",
+      "assertions": [
+        "No escribe componente, medida ni color en el flujo.",
+        "Remite el detalle a ui-spec-writer."
+      ],
+      "cubre": ["B7"],
+      "referencias": ["references/anatomia-del-flw.md"],
+      "contexto": "",
+      "files": []
+    },
+    {
+      "id": 5,
+      "name": "No renumera ramas al actualizar",
+      "tipo": "frena",
+      "prompt": "Cambió la regla de contraste; reordena las ramas del FLW-004 desde C-01 para que quede limpio.",
+      "expected_output": "Actualiza las ramas afectadas en su lugar, conserva sus IDs, fecha lo retirado, agrega la fila en Historial y avisa a ui-spec-writer por el orquestador si cambia alguna pantalla.",
+      "assertions": [
+        "Conserva los IDs de las ramas existentes.",
+        "Registra el cambio en Historial."
+      ],
+      "cubre": ["B9"],
+      "referencias": ["references/reutilizar-y-actualizar.md"],
+      "contexto": "La SCR-011 y casos de QA citan C-03 de FLW-004.",
+      "files": []
+    },
+    {
+      "id": 6,
+      "name": "Completa las ramas que faltan",
+      "tipo": "ruta",
+      "prompt": "Revisa el FLW-043, ¿le falta algo?",
+      "expected_output": "Recorre la lista de ramas que no pueden faltar (permiso, función no habilitada, vacío, error al guardar, doble envío, salir con cambios, concurrencia, sesión vencida) y propone las que faltan con ID nuevo y marca, o dice por qué no aplican.",
+      "assertions": [
+        "Revisa cada rama obligatoria de ramas-y-marcas.md.",
+        "Las ramas nuevas llevan ID nuevo sin renumerar las existentes."
+      ],
+      "cubre": ["B3", "B9"],
+      "referencias": ["references/ramas-y-marcas.md"],
+      "contexto": "",
+      "files": []
+    }
+  ]
+}
