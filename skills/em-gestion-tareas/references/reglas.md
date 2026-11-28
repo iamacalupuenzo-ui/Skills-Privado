@@ -11,9 +11,17 @@ alcance para decidir. SKILL.md trae cada regla en una línea; aquí está el por
 
 ## 1. Reglas B1 a B18
 
-- **B1 — Confirmación en GitLab y ClickUp.** Nada se crea, se mueve ni se cierra ahí sin la
-  confirmación del usuario. Primero la corrida en seco. En Notion la escritura está aprobada
-  (Enzo, 2026-11-26). El hook `guardia-tareas.mjs` pide confirmación aunque se olvide.
+- **B1 — Enzo decide si interviene en las subidas.** Antes de la primera escritura del día en
+  GitLab o ClickUp se le pregunta una sola vez: «¿Intervienes en las subidas o las ejecuto yo?»
+  (Enzo, 2026-11-28: no quiere una confirmación por cada subida).
+  - **Intervengo:** cada subida muestra su corrida en seco y espera su confirmación. Es el valor
+    por defecto si no respondió o si no se preguntó.
+  - **Ejecútalo tú:** se corre `node scripts/delegar.mjs delegar`. Hasta el fin del día (hora de
+    Lima) el agente corre la corrida en seco, ejecuta sin pedir confirmación y al final informa
+    qué subió, con enlaces. `delegar.mjs intervenir` lo revierte; `estado` lo muestra.
+  - En Notion la escritura está aprobada siempre (Enzo, 2026-11-26).
+  - La delegación no apaga el resto de reglas: la estructura (B14), la evidencia (B9) y la fecha
+    de cierre (B4) se siguen cumpliendo. Si algo choca con lo registrado (B13), se pregunta igual.
 - **B2 — Un issue es un entregable**, no un paso. Los pasos son casillas.
 - **B3 — Horas.** Las horas con IA van solo en Notion. Las humanas estimadas van como
   `/estimate` y como estimación de ClickUp. `/spend` lleva solo las horas reales que dice el

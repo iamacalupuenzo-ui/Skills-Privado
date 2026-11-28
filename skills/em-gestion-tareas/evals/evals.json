@@ -1,6 +1,6 @@
 {
   "skill_name": "em-gestion-tareas",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "descripcion": "Las 7 de flujo-tareas-gitlab adaptadas, 5 de la versión 1.0.0 y 5 de ruta nuevas (1.1.0) para AJUSTAR, PAUSAR, TABLERO, ACTIVIDAD y AVANCE con nota.",
   "evals": [
     {
@@ -26,7 +26,7 @@
         "references/estructura-de-la-tarea.md",
         "references/api-issues.md"
       ],
-      "contexto": "El hito del sprint es Sprint 6 (id 1820), vence el 27-nov-2026."
+      "contexto": "El hito del sprint es Sprint 6 (id 1820), vence el 27-nov-2026. Enzo eligió intervenir en las subidas de hoy."
     },
     {
       "id": 2,
@@ -49,7 +49,7 @@
       "referencias": [
         "references/tablero-y-compromiso.md"
       ],
-      "contexto": "El usuario tiene tareas en To Do, In Progress y una sin fecha límite."
+      "contexto": "El usuario tiene tareas en To Do, In Progress y una sin fecha límite. Enzo eligió intervenir en las subidas de hoy."
     },
     {
       "id": 3,
@@ -73,7 +73,7 @@
         "references/control-de-tiempos.md",
         "references/api-issues.md"
       ],
-      "contexto": "El issue ya tiene 5 horas imputadas hoy por el mismo usuario."
+      "contexto": "El issue ya tiene 5 horas imputadas hoy por el mismo usuario. Enzo eligió intervenir en las subidas de hoy."
     },
     {
       "id": 4,
@@ -155,7 +155,7 @@
       "referencias": [
         "references/control-de-tiempos.md"
       ],
-      "contexto": "El usuario ya tiene 4 horas imputadas hoy en otras tareas."
+      "contexto": "El usuario ya tiene 4 horas imputadas hoy en otras tareas. Enzo eligió intervenir en las subidas de hoy."
     },
     {
       "id": 8,
@@ -358,6 +358,29 @@
         "references/scripts.md"
       ],
       "contexto": "",
+      "files": []
+    },
+    {
+      "id": 18,
+      "name": "Pregunta una vez y, si delega, sube sin pedir confirmación por paso",
+      "prompt": "Sube a GitLab y ClickUp las 14 tareas del DSP-009.",
+      "expected_output": "Antes de la primera subida del día pregunta una sola vez si Enzo interviene o delega. Si responde «ejecútalo tú», corre delegar.mjs delegar, hace la corrida en seco de publicar.mjs, ejecuta con --ejecutar sin pedir confirmación por cada tarea y al final informa qué subió con enlaces. Sigue exigiendo la estructura y no cierra nada antes de su fecha.",
+      "assertions": [
+        "Pregunta si interviene o delega una sola vez, no por cada tarea.",
+        "Con la delegación, ejecuta sin pedir confirmación por paso y reporta al final con enlaces.",
+        "No usa la delegación para saltarse la estructura (B14) ni la fecha de cierre (B4)."
+      ],
+      "tipo": "ruta",
+      "cubre": [
+        "B1",
+        "B14",
+        "B4"
+      ],
+      "referencias": [
+        "references/reglas.md",
+        "references/scripts.md"
+      ],
+      "contexto": "Es la primera subida del día; no hay delegación guardada.",
       "files": []
     }
   ]

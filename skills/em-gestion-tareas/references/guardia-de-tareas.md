@@ -10,9 +10,16 @@
 |---|---|
 | Crear en la base Tareas una página con título de código (`XXX-UX`, `XXX-FRONT · NN`) sin alguna sección de la estructura, sin fecha límite o sin criterio de cierre | Bloquea |
 | Reemplazar el contenido de una tarea (`replace_content`) dejando fuera una sección | Bloquea |
-| `publicar.mjs --ejecutar` o `tablero-dia.mjs --ejecutar` | Pide confirmación |
-| `curl` o `fetch` que escribe en `api.clickup.com` o en `/api/v4/projects/…/issues` | Pide confirmación |
+| `publicar.mjs --ejecutar` o `tablero-dia.mjs --ejecutar` | Pide confirmación, salvo delegación del día |
+| `curl`, `fetch` o `Invoke-RestMethod` que escribe en `api.clickup.com` o en `/api/v4/projects/…/issues` | Pide confirmación, salvo delegación del día |
 | Una actividad corta (título sin código), otra base, una lectura o una corrida en seco | Pasa |
+
+## Delegación del día
+
+Si Enzo dijo «ejecútalo tú», `scripts/delegar.mjs delegar` guarda la fecha en
+`~/.claude/em-gestion-tareas/delegacion.json` y el hook deja de preguntar hasta el fin de ese día
+(hora de Lima). Al día siguiente vuelve a preguntar. La revisión de estructura en Notion no se
+apaga: no es una confirmación, solo bloquea una tarea mal formada.
 
 ## Probarlo
 
