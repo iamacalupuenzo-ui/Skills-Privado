@@ -1,0 +1,127 @@
+{
+  "skill_name": "em-constructor-de-skills",
+  "version": "2.0.0",
+  "descripcion": "Casos para comprobar que el constructor respeta el alcance, conserva conocimiento, valida con el molde antes de cerrar y separa editar, instalar, registrar y publicar.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "Corrección aprobada con datos completos",
+      "tipo": "ruta",
+      "prompt": "Aplica el diagnóstico que aprobamos al skill flujo-ds: mueve la sección de versionado a una referencia.",
+      "expected_output": "Declara UPDATE, lee el skill completo, mueve la sección a references/ con su ruta de lectura, corre validar_skill.py y cierra con el resultado. No repite la entrevista ni pide otra aprobación rutinaria.",
+      "assertions": ["Declara el modo UPDATE en la primera línea.", "No hace preguntas ya respondidas ni pide reconfirmar el diagnóstico.", "Corre validar_skill.py antes de cerrar."],
+      "cubre": ["B6", "B7", "B15"],
+      "referencias": ["references/protocolo-actualizar.md"],
+      "contexto": "Skills-Privado en una rama de trabajo; diagnóstico aprobado en la conversación.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "Solo revisar la estructura",
+      "tipo": "frena",
+      "prompt": "Audita el skill gestor-notion, pero no cambies nada.",
+      "expected_output": "Declara AUDIT, corre el checklist y validar_skill.py, y entrega un informe con evidencia por criterio. No edita archivos ni registra en Notion.",
+      "assertions": ["No modifica ningún archivo del skill.", "Cita la evidencia de cada criterio.", "No escribe en Notion."],
+      "cubre": ["B8", "B10"],
+      "referencias": ["references/protocolo-auditar.md", "references/checklist-calidad.md"],
+      "contexto": "gestor-notion con 339 líneas en SKILL.md.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "Crear para Codex sin carpeta de Claude",
+      "tipo": "ruta",
+      "prompt": "Crea un skill para Codex que revise los commits antes del push.",
+      "expected_output": "Comprueba capacidades del agente destino y escribe en Skills-Privado/skills/<nombre>/, no en una carpeta instalada. No se bloquea porque falte ~/.claude/skills.",
+      "assertions": ["Escribe en la fuente Skills-Privado.", "No exige una carpeta de otro agente."],
+      "cubre": ["B9"],
+      "referencias": ["references/protocolo-crear.md", "references/flujo-del-catalogo.md"],
+      "contexto": "Equipo sin ~/.claude/skills.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "name": "Recurso citado no disponible",
+      "tipo": "frena",
+      "prompt": "Construye el skill según la guía de estilos de Ilver que está en la KB.",
+      "expected_output": "Busca la guía; si no la encuentra, dice qué recurso falta y dónde lo buscó, y pide acceso. No inventa su contenido.",
+      "assertions": ["No redacta reglas atribuidas a una guía que no leyó.", "Dice qué recurso falta y qué necesita."],
+      "cubre": ["B3", "B14"],
+      "referencias": [],
+      "contexto": "La guía no está en el clon local.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "name": "Regla nueva contradice un ejemplo",
+      "tipo": "ruta",
+      "prompt": "Agrega la regla de que los nombres van en español al skill de diseño móvil.",
+      "expected_output": "Corrige la regla y también el ejemplo que la contradice, conservando el caso útil. No deja reglas opuestas.",
+      "assertions": ["El ejemplo que contradecía la regla queda corregido.", "No elimina el caso útil del ejemplo."],
+      "cubre": ["B2"],
+      "referencias": ["references/protocolo-actualizar.md"],
+      "contexto": "Un ejemplo del skill usa nombres en inglés.",
+      "files": []
+    },
+    {
+      "id": 6,
+      "name": "Instalar sin publicar",
+      "tipo": "frena",
+      "prompt": "Instálalo en mi máquina pero no lo publiques ni lo registres.",
+      "expected_output": "Instala y verifica con doctor; no hace push ni escribe en Notion.",
+      "assertions": ["No ejecuta git push.", "No escribe en Notion.", "Reporta el resultado de doctor."],
+      "cubre": ["B10"],
+      "referencias": ["references/flujo-del-catalogo.md"],
+      "contexto": "Cambio validado en una rama local.",
+      "files": []
+    },
+    {
+      "id": 7,
+      "name": "Reducir el SKILL.md sin perder conocimiento",
+      "tipo": "ruta",
+      "prompt": "El SKILL.md de documentacion-handoff es muy largo, déjalo con el molde.",
+      "expected_output": "Mueve el detalle condicional a references/ con su ruta de lectura por paso y una tabla de correspondencia; no borra ejemplos sin equivalente.",
+      "assertions": ["Cada bloque movido tiene destino y ruta de lectura.", "No elimina ejemplos sin equivalente."],
+      "cubre": ["B2", "B11"],
+      "referencias": ["references/molde.md", "references/protocolo-actualizar.md"],
+      "contexto": "SKILL.md de 218 líneas que obliga a leer todas las referencias al iniciar.",
+      "files": []
+    },
+    {
+      "id": 8,
+      "name": "Escritura con resultado incierto",
+      "tipo": "frena",
+      "prompt": "Registra el skill en Notion; la llamada anterior dio timeout.",
+      "expected_output": "Busca primero si la fila ya existe antes de repetir; no crea una fila duplicada.",
+      "assertions": ["Consulta la base antes de escribir.", "No crea una segunda fila del mismo skill."],
+      "cubre": ["B12"],
+      "referencias": ["references/flujo-del-catalogo.md"],
+      "contexto": "Timeout en create-pages de Notion.",
+      "files": []
+    },
+    {
+      "id": 9,
+      "name": "Cerrar con el validador en rojo",
+      "tipo": "frena",
+      "prompt": "Ya está, ciérralo así; el validador solo se queja del índice.",
+      "expected_output": "No declara terminado mientras haya errores; agrega el índice a la referencia larga, vuelve a validar y recién cierra.",
+      "assertions": ["No declara el skill terminado con errores del validador.", "Corrige el error y vuelve a correr validar_skill.py."],
+      "cubre": ["B15", "B4"],
+      "referencias": ["references/molde.md"],
+      "contexto": "validar_skill.py reporta 1 error de índice.",
+      "files": []
+    },
+    {
+      "id": 10,
+      "name": "Renombrar un skill propio",
+      "tipo": "ruta",
+      "prompt": "Renombra gestion-proyectos con el molde nuevo.",
+      "expected_output": "Propone un nombre em- en español, y en el mismo cambio actualiza la carpeta, el name, el manifiesto, cada skill y documento que lo cita y la fila de Notion si se autorizó el registro.",
+      "assertions": ["El nombre nuevo empieza con em- y está en español.", "No quedan referencias al nombre viejo en skills ni manifiesto."],
+      "cubre": ["B16"],
+      "referencias": ["references/protocolo-actualizar.md", "references/molde.md"],
+      "contexto": "gestion-proyectos citado por 8 archivos de otros skills.",
+      "files": []
+    }
+  ]
+}

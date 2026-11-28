@@ -39,7 +39,7 @@ la investigación.
 **No hace:**
 - Investigación de patrones de diseño y benchmarking de interfaces → usar el skill especializado disponible para UX o diseño.
 - Investigación con usuarios (entrevistas, síntesis, validación) → usar el skill especializado disponible para discovery o investigación de usuarios.
-- Construir o reescribir el skill que la investigación justifique → `skill-builder`.
+- Construir o reescribir el skill que la investigación justifique → `em-constructor-de-skills`.
 - Búsquedas rápidas sin una decisión que documentar: eso no necesita este skill.
 
 ---
@@ -243,7 +243,7 @@ Pendiente:     [experimento o verificación que quedó abierta]
 - **B8 — Hallazgos separados**: lo que falla en el producto va aparte de lo que falla en nuestro sistema. Mezclarlos hace que se descarte una herramienta útil o que se ignore un defecto propio.
 - **B9 — Lo no verificado se declara**: si el entorno no permitió observar algo, se dice. Que compile o que suba el puntaje no es verificación.
 - **B10 — Notion solo a pedido**: el registro vive en disco, en `D:\Investigacion - V4\02-investigaciones`. No se crea ni se actualiza una página porque sí.
-- **B11 — Skill solo con evidencia**: no proponer convertir la investigación en skill o capacidad antes de que los hechos verificados lo sostengan. Si se decide, el trabajo es de `skill-builder`.
+- **B11 — Skill solo con evidencia**: no proponer convertir la investigación en skill o capacidad antes de que los hechos verificados lo sostengan. Si se decide, el trabajo es de `em-constructor-de-skills`.
 - **B12 — Casos anteriores primero**: revisar la carpeta de investigaciones y `references/casos/` antes de abrir uno nuevo. Dos registros del mismo objeto fragmentan la evidencia.
 - **B13 — Capacidades verificadas antes de actuar**: no asumir conectores de Notion, búsqueda web ni permisos por el frontmatter. Confirmar la capacidad disponible antes de usarla; si falta, conservar el caso local y declarar la sincronización como pendiente.
 - **B14 — La capa de lectura refleja el estado actual**: toda actualización reescribe "En 30 segundos", la historia y "Qué sigue". Cerrar una actualización dejando arriba una conclusión vieja hace que el lector decida con información vencida, porque no va a llegar al registro de abajo.

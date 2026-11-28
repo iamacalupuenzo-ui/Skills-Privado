@@ -1,4 +1,4 @@
-# Skill Builder — Protocolo UPDATE
+# Constructor de skills — Protocolo UPDATE
 
 Protocolo completo para modificar un skill existente con un cambio puntual. Se
 activa cuando el modo detectado es `UPDATE`. Leer este archivo entero antes de
@@ -16,7 +16,7 @@ No editar sin leer. Leer SKILL.md + references/ afectadas.
 
 ```
 Cambio solicitado: [descripción]
-Fuente canónica: Skils/skills/[nombre]
+Fuente canónica: Skills-Privado/skills/[nombre]
 Archivos afectados:
   SKILL.md → sección [X]: [qué cambia exactamente]
   references/[archivo].md → [qué cambia]
@@ -27,19 +27,30 @@ Autorización: [diagnóstico aprobado; consultar solo ampliaciones]
 Distribución: [no solicitada / publicación solicitada / instalación solicitada]
 ```
 
+### Si el cambio es un renombre (B16)
+
+1. Proponer el nombre: prefijo `em-`, español, minúsculas con guiones.
+2. Buscar todas las citas del nombre viejo: `git grep -n "<nombre-viejo>"`. Separar las
+   vivas (skills, manifiesto, README, documentos de uso) de las históricas (bitácoras e
+   investigaciones fechadas), que no se tocan.
+3. Renombrar con `git mv` para conservar el historial; cambiar `name`, `agents/openai.yaml`,
+   `evals/evals.json` y el manifiesto en el mismo cambio.
+4. Regenerar los plugins que copian el skill (`npm run construir-plugin`).
+5. En Notion, renombrar la fila existente; no crear otra.
+
 ---
 
 ## Fase 2 — Editar
 
 Usar la herramienta de edición indicada por el entorno. Preservar el resto intacto.
 Resolver enlaces y respaldar antes de cambios amplios. Corregir regla, ejemplos y llamadas.
-Editar la fuente canónica en `Skils/skills/<nombre>/`, no una instalación local del agente.
+Editar la fuente canónica en `Skills-Privado/skills/<nombre>/`, no una instalación local del agente.
 
 ---
 
 ## Fase 3 — Re-validar los criterios afectados
 
-En cambios pequeños validar lo afectado; en refactorización amplia aplicar el checklist
+Correr `python scripts/validar_skill.py <carpeta>` (B15). En cambios pequeños validar lo afectado; en refactorización amplia aplicar el checklist
 completo y references/evaluaciones.md. Distinguir pruebas locales de integración real.
 Ejecutar `npm test`; si se alteró el catálogo o el contenido instalado, ejecutar además
 la CLI con `--dry-run` antes de proponer publicación o instalación.

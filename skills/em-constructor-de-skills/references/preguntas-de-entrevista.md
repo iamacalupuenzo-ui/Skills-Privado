@@ -6,6 +6,18 @@ Primero extrae las respuestas del pedido, la conversación, los archivos y los e
 Pregunta solo por información que cambie el alcance, el riesgo o el resultado.
 No pidas al usuario datos que puedes verificar mediante una lectura autorizada.
 
+## Índice
+
+1. Q1 — Propósito y resultado
+2. Q2 — Alcance y contexto de operación
+3. Q3 — Activación y exclusiones
+4. Q4 — Variantes del trabajo y modos
+5. Q5 — Herramientas, datos y permisos
+6. Q6 — Conocimiento que debe conservarse
+7. Q7 — Riesgos y límites
+8. Q8 — Fuente, instalación y distribución
+9. Síntesis de alcance
+
 ## Q1 — Propósito y resultado
 
 **Pregunta útil:** ¿Qué recibe este skill y qué resultado debe entregar?

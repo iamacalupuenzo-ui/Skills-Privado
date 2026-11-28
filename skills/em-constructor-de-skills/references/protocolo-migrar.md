@@ -1,4 +1,4 @@
-# Skill Builder — Protocolo MIGRATE
+# Constructor de skills — Protocolo MIGRATE
 
 Protocolo completo para migrar un comando o contexto dump existente a un skill
 global estructurado. Se activa cuando el modo detectado es `MIGRATE`. Leer este
@@ -58,8 +58,8 @@ Para migración solo se necesitan las preguntas que el archivo original no respo
 
 ## Fase 3 — Construir
 
-Seguir Fases 2, 3, 4 y 6 de `references/protocol-create.md`; fase 5 solo con registro
-solicitado. La versión migrada vive en `Skils/skills/<nombre>/` y se agrega al manifiesto
+Seguir Fases 2, 3, 4 y 6 de `references/protocolo-crear.md`; fase 5 solo con registro
+solicitado. La versión migrada vive en `Skills-Privado/skills/<nombre>/` y se agrega al manifiesto
 si es nueva. Comparar capacidades y ejemplos con el origen; probar antes de activar.
 
 ---

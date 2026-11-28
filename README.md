@@ -31,7 +31,7 @@ La decisión y evidencia que justifican la CLI están documentadas en
 | `gestor-notion` | Activo | Codex, Claude Code |
 | `investigador-de-producto` | Activo | Codex, Claude Code |
 | `paridad-diseno-desarrollo` | Activo | Codex, Claude Code |
-| `skill-builder` | Activo | Codex, Claude Code |
+| `em-constructor-de-skills` | Activo | Codex, Claude Code |
 | `orquestador-desarrollo` | Activo | Claude Code |
 | `flujo-ds` | Activo | Claude Code |
 | `flujo-producto` | Activo | Claude Code |

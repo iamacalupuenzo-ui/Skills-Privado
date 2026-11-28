@@ -1,4 +1,0 @@
-interface:
-  display_name: "Skill Builder"
-  short_description: "Diseña y valida skills reutilizables"
-  default_prompt: "Usa $skill-builder para diseñar o actualizar un skill con su arquitectura, referencias y validación."
