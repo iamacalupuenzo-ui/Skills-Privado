@@ -13,7 +13,7 @@ Nunca usar el flujo genérico — siempre el específico por tipo.
 ### Paso 0 — Verificar fuente, schema y duplicado (obligatorio)
 
 Antes de crear la fila, resolver la fuente canónica: el repositorio Skils (ver
-`skill-builder/references/catalog-flow.md`). Comprobar que el skill está declarado:
+`em-constructor-de-skills/references/flujo-del-catalogo.md`). Comprobar que el skill está declarado:
 
 ```powershell
 npx --yes github:iamacalupuenzo-ui/Skills-Privado#main list

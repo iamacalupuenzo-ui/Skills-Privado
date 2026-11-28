@@ -1,4 +1,4 @@
 interface:
-  display_name: "Skill Builder"
-  short_description: "Diseña y valida skills reutilizables"
-  default_prompt: "Usa $skill-builder para diseñar o actualizar un skill con su arquitectura, referencias y validación."
+  display_name: "Constructor de skills"
+  short_description: "Diseña, valida y mantiene skills con el molde del catálogo"
+  default_prompt: "Usa $em-constructor-de-skills para crear, auditar o actualizar un skill con su arquitectura, referencias, evals y validación."

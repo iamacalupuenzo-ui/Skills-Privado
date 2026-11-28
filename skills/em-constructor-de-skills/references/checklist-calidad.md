@@ -1,18 +1,31 @@
-# Skill Builder — Checklist de calidad
+# Constructor de skills — Checklist de calidad
 
-24 criterios organizados en 6 categorías (C24 se agregó el 2026-09-26 y queda al final del
-archivo para no renumerar los existentes; pertenece a la Categoría 2 — Orquestación).
-Verificar cada uno contra el contenido real del skill — no marcar ✅ por intuición.
+29 criterios en 7 categorías. C24 pertenece a Orquestación y C25–C29 (molde, 2026-11-28)
+van al final para no renumerar. Verificar cada uno contra el contenido real del skill — no
+marcar ✅ por intuición. Correr primero `scripts/validar_skill.py`: resuelve C1, C12 y
+C25–C28 de forma automática.
+
+## Índice
+
+1. Frontmatter (C1–C5)
+2. Orquestación (C6–C11, C24)
+3. Referencias (C12–C14)
+4. Bloqueantes (C15–C17)
+5. Formato y completitud (C18–C20)
+6. Racionalización, alerta temprana y eficiencia de contexto (C21–C23)
+7. Molde (C25–C29)
+8. Resultado
 
 ---
 
 ## Categoría 1: Frontmatter
 
 **C1 — Nombre en kebab-case**
-El campo `name:` coincide exactamente con el nombre de su directorio en la instalación
-del agente que se está auditando (`~/.codex/skills/` o `~/.claude/skills/`).
-✅ `name: react-dev` + directorio `react-dev/`
-❌ `name: ReactDev` o `name: react_dev`
+El campo `name:` coincide exactamente con el nombre de su carpeta en la fuente
+(`Skills-Privado/skills/<nombre>/`), en minúsculas con guiones, hasta 64 caracteres y sin
+`anthropic` ni `claude`. Un skill propio lleva prefijo `em-` y nombre en español.
+✅ `name: em-constructor-de-skills` + carpeta `em-constructor-de-skills/`
+❌ `name: SkillBuilder`, `name: skill_builder` o un nombre distinto de la carpeta
 
 **C2 — Activación discriminante**
 Description explica capacidad y cuándo usarla. No exige comillas ni una cuota de frases.
@@ -71,16 +84,8 @@ Cada modo tiene un bloque de cierre con formato fijo que define qué informació
 ## Categoría 3: Referencias
 
 **C12 — SKILL.md cita referencias que existen**
-Para cada `references/nombre.md` citado en el SKILL.md:
-```powershell
-$nombre = "[nombre-skill]"
-$roots = @(
-  (Join-Path $env:USERPROFILE ".codex\skills\$nombre"),
-  (Join-Path $env:USERPROFILE ".claude\skills\$nombre")
-)
-$skillRoot = $roots | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
-Test-Path -LiteralPath (Join-Path $skillRoot "references\[archivo].md")
-```
+Cada `references/nombre.md` citado en el SKILL.md existe. Lo comprueba
+`python scripts/validar_skill.py <carpeta>` (regla `referencias`).
 ❌ Citar `references/inventory.md` sin que el archivo exista.
 
 **C13 — Conocimiento conservado y lectura progresiva**
@@ -159,14 +164,40 @@ Probar código nuevo en aislamiento; validar el paquete con el agente objetivo c
 Para cada procedimiento del SKILL.md o sus references que sea una secuencia mecánica
 repetida (resolver un ejecutable, parsear un JSON de estado, calcular un umbral, verificar
 una condición booleana), hay evidencia de que se evaluó extraerla a `scripts/` — ya sea
-como script real con contrato y prueba de caso de fallo (ver `patterns-catalog.md`,
+como script real con contrato y prueba de caso de fallo (ver `catalogo-de-patrones.md`,
 Patrón 19), o una nota explícita de por qué no aplica (ej. requiere juicio no determinista).
 ✅ El skill tiene un script con contrato comentado y su caso negativo probado.
 ❌ Una secuencia de comandos idéntica se repite en dos protocolos distintos como prosa,
    sin que se haya considerado extraerla.
 No fuerces un script donde no hay operación determinista real — inventar código de ejemplo
 no ejecutable para cumplir esta casilla es peor que omitirla (ver antipatrón en
-skill-anatomy.md, sección 12).
+anatomia.md, sección 12).
+
+## Categoría 7: Molde
+
+Detalle en `references/molde.md`.
+
+**C25 — SKILL.md corto**
+Cuerpo de menos de 500 líneas (error) y objetivo de 80 (aviso). Lo demás está en referencias.
+
+**C26 — Referencias por paso, a un nivel y con índice**
+Cada referencia se lee en el paso que la necesita, está directo en `references/` y, si pasa
+de 100 líneas, empieza con `## Índice`.
+❌ Una instrucción de leer todas las referencias al iniciar, seguida de la lista completa.
+
+**C27 — Evals**
+`evals/evals.json` con al menos 5 casos, uno de tipo `frena`, cada uno con 2 assertions y
+reglas `B#` que existen en el SKILL.md.
+
+**C28 — Nivel entregable completo**
+Si el skill produce un entregable: plantilla en `templates/`, ejemplo en `examples/`,
+validador en `scripts/` y pruebas en `tests/`. Se comprueba con `--entregable`.
+Si no aplica, la arquitectura dice por qué.
+
+**C29 — Herramientas externas declaradas**
+Cada MCP o API que usa el skill está nombrada completa en el texto, se comprueba en la
+verificación de arranque y está relacionada en la base Herramientas externas de Notion.
+❌ Un skill que llama a Stitch sin comprobar que el MCP existe.
 
 ## Resultado
 

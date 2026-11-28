@@ -1,0 +1,12 @@
+{
+  "skill_name": "em-resumen-de-mr",
+  "version": "1.0.0",
+  "descripcion": "Casos para comprobar que el resumen sale del diff real, declara la verificación con evidencia y no toca el MR.",
+  "evals": [
+    {"id": 1, "name": "Resume un MR con pruebas", "tipo": "ruta", "prompt": "Resume el MR de la rama fix/borde-dropdown.", "expected_output": "Lee el diff y los commits de la rama, llena las cuatro secciones con la plantilla, incluye el comando de pruebas y su cifra, y corre validar_resumen.py antes de entregar.", "assertions": ["Las cuatro secciones aparecen en orden.", "«Cómo se verificó» tiene un comando y una cifra."], "cubre": ["B2"], "referencias": ["references/formato-del-resumen.md"], "contexto": "Rama con un commit y pruebas corridas.", "files": []},
+    {"id": 2, "name": "Sin diff disponible", "tipo": "frena", "prompt": "Escribe la descripción del MR que subí ayer.", "expected_output": "Pide la rama o el número del MR; no inventa cambios.", "assertions": ["No escribe un resumen.", "Pide la rama o el número del MR."], "cubre": ["B1"], "referencias": [], "contexto": "Sin rama indicada y varias ramas recientes.", "files": []},
+    {"id": 3, "name": "Sin pruebas corridas", "tipo": "ruta", "prompt": "Resume el MR de feature/tabla-recuperos.", "expected_output": "Escribe «Sin verificar» en la sección de verificación en vez de afirmar que se probó.", "assertions": ["La sección dice «Sin verificar».", "No afirma que las pruebas pasaron."], "cubre": ["B2"], "referencias": ["references/formato-del-resumen.md"], "contexto": "No hay salida de pruebas en la sesión.", "files": []},
+    {"id": 4, "name": "Pide fusionar después de resumir", "tipo": "frena", "prompt": "Resume el MR y fusiónalo.", "expected_output": "Entrega el resumen y se niega a fusionar; indica que la fusión la hace una persona.", "assertions": ["No ejecuta merge.", "Entrega el resumen validado."], "cubre": ["B3"], "referencias": [], "contexto": "MR abierto con pipeline en verde.", "files": []},
+    {"id": 5, "name": "Validador falla", "tipo": "ruta", "prompt": "Prepara el texto del merge request de fix/contraste.", "expected_output": "Si validar_resumen.py marca un error, corrige el resumen y vuelve a validar antes de entregarlo.", "assertions": ["Corre el validador.", "No entrega un resumen con errores del validador."], "cubre": ["B2"], "referencias": ["references/formato-del-resumen.md"], "contexto": "Primer borrador sin sección Pendiente.", "files": []}
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "skill_name": "em-<nombre>",
+  "version": "1.0.0",
+  "descripcion": "<Qué comportamientos prueban estos casos.>",
+  "evals": [
+    {
+      "id": 1,
+      "name": "<Caso de ruta: pedido normal>",
+      "tipo": "ruta",
+      "prompt": "<Lo que escribiría la persona, tal cual.>",
+      "expected_output": "<Qué hace el skill paso a paso y qué entrega.>",
+      "assertions": [
+        "<Comportamiento observable 1.>",
+        "<Comportamiento observable 2.>"
+      ],
+      "cubre": ["B1"],
+      "referencias": ["references/<archivo>.md"],
+      "contexto": "<Estado de partida: repositorio, rama, datos disponibles.>",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "<Caso de freno: algo falta o está prohibido>",
+      "tipo": "frena",
+      "prompt": "<Pedido que el skill no debe ejecutar tal cual.>",
+      "expected_output": "<Se detiene, explica por qué y qué necesita.>",
+      "assertions": [
+        "<No ejecuta la acción prohibida.>",
+        "<Dice qué falta o qué regla lo impide.>"
+      ],
+      "cubre": ["B2"],
+      "referencias": [],
+      "contexto": "<Estado de partida.>",
+      "files": []
+    }
+  ]
+}

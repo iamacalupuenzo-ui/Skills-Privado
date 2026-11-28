@@ -273,7 +273,7 @@ otro flujo — agregar el paso al array existente.
 > `/project-prd-analyzer`, `/nielsen-heuristic-evaluator`, `/usability-test`, `/ux-discovery`,
 > `/ux-writer-evaluator`, `/ui-ux-pro-max`) — una por flujo, producto de carga repetida.
 > Otros 7 tienen una copia huérfana sin procesos (`case-study`, `clickup-reporter`,
-> `design-director`, `finanzas`, `notion-workspace`, `pm`, `skill-builder`).
+> `design-director`, `finanzas`, `notion-workspace`, `pm`, `em-constructor-de-skills`).
 > **Decisión pendiente de Enzo:** dejarlos, renombrar con sufijo de flujo, o consolidar.
 > No tocar sin su aprobación explícita.
 

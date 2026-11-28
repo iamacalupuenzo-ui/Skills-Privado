@@ -5,6 +5,13 @@ El repositorio [Skills-Privado](https://github.com/iamacalupuenzo-ui/Skills-Priv
 verdad. Las carpetas de `~/.codex/skills` y `~/.claude/skills` son destinos instalados,
 no lugares donde se mantiene la versión canónica.
 
+## Índice
+
+1. Resolver la fuente
+2. Ciclo de creación o actualización
+3. Publicación e instalación
+4. Registro en Notion
+
 ## Resolver la fuente
 
 1. Si existe `SKILS_REPOSITORY`, usar esa ruta.
@@ -15,7 +22,7 @@ no lugares donde se mantiene la versión canónica.
 Estructura esperada:
 
 ```text
-Skils/
+Skills-Privado/
   skills/
     nombre-del-skill/
       SKILL.md
@@ -27,9 +34,9 @@ Skils/
 ## Ciclo de creación o actualización
 
 1. Leer el skill y referencias afectadas; para uno nuevo, diseñar su arquitectura.
-2. Escribir o editar exclusivamente en `Skils/skills/<nombre>/`.
+2. Escribir o editar exclusivamente en `Skills-Privado/skills/<nombre>/`.
 3. Para un skill nuevo, agregar su nombre exacto a `skills-manifest.json`.
-4. Validar el contenido y ejecutar `npm test` desde la raíz de `Skils`.
+4. Validar el contenido y ejecutar `npm test` desde la raíz de `Skills-Privado`.
 5. Probar el instalador sin escribir destinos reales:
 
    ```powershell
@@ -63,27 +70,34 @@ una sesión nueva.
 
 ## Registro en Notion
 
-Destino: espacio **Herramientas de IA** → base [Skills](https://app.notion.com/p/baa1a7d0638883f3b83d81e8697cc2b7).
+Destino: página **Agentes y skills** (antes Herramientas de IA) → base
+[Skills](https://app.notion.com/p/baa1a7d0638883f3b83d81e8697cc2b7). Bases relacionadas:
+Controles, Evals, Automatizaciones y Herramientas externas.
 
 Propiedades que se mantienen para un skill reutilizable:
 
-- `Skill`: nombre exacto en kebab-case.
+- `Skill`: nombre exacto de la carpeta (`em-...` para skills propios).
 - `Versión`: la de `metadata.version` del `SKILL.md` **publicado en `main`**. Se actualiza
   en el mismo cierre en que se publica; un cambio local sin publicar no cambia la versión
   en Notion. Para ver qué versión tiene instalada un equipo, leer `metadata.version` en
   su carpeta de skills: `doctor` solo confirma que el skill existe, no su versión.
-- `Estado del skill`: usar `Activo` solo tras validar su disponibilidad.
+- `Estado`: `Activo`, `En revisión` o `Retirado`. `Activo` solo tras validar (B13).
+- `Rol`: Orquestador, Especialista, Independiente o Referencia; `Coordinado por` si es
+  especialista de un orquestador.
+- `Origen` y `Autor`: quién lo escribió y quién lo mantiene.
 - `Qué hace`: una o dos frases tomadas del frontmatter del `SKILL.md`.
-- `Cuándo usarlo`: situación concreta y, al final, `Frases que lo activan: …`. Desde el
-  2026-09-24 ya no existen las propiedades `Descripción` (ahora `Qué hace`) ni
-  `Disparadores` (fusionada aquí).
+- `Cuándo usarlo`: situación concreta y, al final, `Frases que lo activan: …`.
 - `Entornos compatibles`: declarar únicamente ambientes verificados.
-- `Tipo`, `Prioridad de construcción`, `Capacidades` si corresponde.
-- `Repositorio fuente`: `Skils` para este catálogo compartido.
-- `Última revisión`.
+- `Líneas`: líneas del `SKILL.md`.
+- Casillas del molde: `Referencias por paso`, `Validador`, `Pruebas`, `Plantillas`,
+  `Ejemplos` y `Tiene evals`, con el resultado de `python scripts/medir_molde.py <carpeta>`.
+- `Herramientas externas`: relación con cada MCP o API que el skill usa.
+- `Capacidades` si corresponde y `Última revisión`.
+
+`Uso`, `Sesiones` y `Último uso` se miden contando sesiones; no se editan al registrar.
 
 No existe `Ruta local`: cambia en cada computador. La fuente es siempre
-`Skils/skills/<nombre>/` y se enlaza en el contenido de la página.
+`Skills-Privado/skills/<nombre>/` y se enlaza en el contenido de la página.
 
 Contenido de la página del skill: una guía de uso que se lee en menos de 5 minutos,
 escrita para la persona que lo va a usar, no para el agente. En este orden, con

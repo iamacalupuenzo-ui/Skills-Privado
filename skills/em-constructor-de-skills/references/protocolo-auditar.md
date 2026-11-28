@@ -1,4 +1,4 @@
-# Skill Builder — Protocolo AUDIT
+# Constructor de skills — Protocolo AUDIT
 
 Protocolo completo para auditar un skill existente contra el checklist de calidad.
 Se activa cuando el modo detectado es `AUDIT`. Leer este archivo entero antes de
@@ -8,7 +8,8 @@ actuar.
 
 ## Fase 0 — Localizar el skill
 
-Si da un nombre → resolver la instalación disponible y fuente real; no asumir Claude ni Codex.
+Si da un nombre → resolver primero la fuente `Skills-Privado/skills/<nombre>/`; si el skill
+no está en el catálogo, buscar la instalación disponible. No asumir Claude ni Codex.
 Si da una ruta → leer directamente.
 
 ```powershell
@@ -30,9 +31,16 @@ Leer SKILL.md y todos los archivos en references/ antes de auditar.
 
 ---
 
-## Fase 2 — Correr checklist
+## Fase 2 — Correr validador y checklist
 
-Aplicar cada criterio de `references/quality-checklist.md` verificando contra el
+Primero las comprobaciones automáticas, desde la carpeta del constructor:
+
+```bash
+python scripts/validar_skill.py <carpeta-del-skill> [--entregable]
+python scripts/medir_molde.py <carpeta-del-skill>
+```
+
+Después aplicar cada criterio de `references/checklist-calidad.md` verificando contra el
 contenido real. No marcar ✅ por intuición — citar la línea o sección que lo cumple.
 
 ---
@@ -60,6 +68,11 @@ REFERENCIAS
 
 BLOQUEANTES
   ✅ bloqueantes numerados y específicos
+  ...
+
+MOLDE (validar_skill.py y medir_molde.py)
+  ❌ evals/evals.json no existe
+  ⚠️  cuerpo de 140 líneas (objetivo 80)
   ...
 
 RACIONALIZACIÓN Y ALERTA TEMPRANA

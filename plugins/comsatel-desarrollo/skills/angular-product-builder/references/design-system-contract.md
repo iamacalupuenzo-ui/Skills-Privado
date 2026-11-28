@@ -16,7 +16,7 @@ Reglas que valen para cualquier sistema de diseño. Lo específico de cada siste
    preguntar.
 4. Si el sistema elegido no tiene referencia en `design-systems/`, trabajar con
    su README y sus tipos públicos. Si el usuario lo va a usar seguido, proponer
-   crear su referencia con `skill-builder`; no improvisarla dentro del proyecto.
+   crear su referencia con `em-constructor-de-skills`; no improvisarla dentro del proyecto.
 
 ## Límite de responsabilidad
 

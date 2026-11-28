@@ -5,7 +5,7 @@ Catálogo vigente: base Skills del espacio `Herramientas de IA` (antes `Sistema 
 | Registro en Notion | Directorio publicado | Motivo |
 | --- | --- | --- |
 | `investigador-de-producto` | `skills/investigador-de-producto` | Coincidencia directa. |
-| `skill-builder` | `skills/skill-builder` | Coincidencia directa. |
+| `em-constructor-de-skills` | `skills/em-constructor-de-skills` | Coincidencia directa. |
 | `comsatel-design-system` | `skills/comsatel-design-system` | Coincidencia directa. |
 | `gestion-proyectos` | `skills/gestion-proyectos` | Coincidencia directa. |
 | `documentacion-handoff` | `skills/documentacion-handoff` | Coincidencia directa; se conserva para evitar una migración no implementada. |

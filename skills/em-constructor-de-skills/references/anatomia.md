@@ -5,6 +5,21 @@ No es una plantilla de doce secciones obligatorias: cada pieza se incluye por su
 El principal orienta; las referencias conservan el detalle que corresponde a recorridos concretos.
 Una mejora de estructura debe poder explicar dónde quedó el conocimiento anterior.
 
+## Índice
+
+1. 1. Frontmatter: descubrimiento y contrato
+2. 2. Propósito y perspectiva
+3. 3. Alcance positivo y negativo
+4. 4. Mapa de recursos
+5. 5. Precondiciones y salida ante fallos
+6. 6. Selección de flujo
+7. 7. Protocolos con decisiones completas
+8. 8. Reglas comprobables
+9. 9. Atajos previsibles
+10. 10. Alertas observables
+11. 11. Contrato de salida
+12. 12. Mantenibilidad y cobertura
+
 ## 1. Frontmatter: descubrimiento y contrato
 
 Ejemplo del subconjunto utilizado para una fuente compartida:
@@ -90,7 +105,7 @@ Un skill de propósito único puede resolver el alcance en una frase.
 | agents/ | Configuración específica del agente | Necesidad real y formato verificado. |
 
 Ejemplo de ruta de lectura:
-> Para actualizar un documento existente, lee references/protocol-update.md antes de editar.
+> Para actualizar un documento existente, lee references/protocolo-actualizar.md antes de editar.
 
 El ejemplo es ilustrativo: cada ruta del paquete real debe existir.
 
@@ -99,7 +114,7 @@ SKILL.md aparece una secuencia mecánica que se repetiría igual en cada invocac
 un ejecutable, parsear un JSON de estado, calcular un umbral, verificar una condición
 booleana— es señal de extraerla a `scripts/` con contrato de entrada/salida y un caso
 negativo probado, en vez de volver a redactarla como instrucción en prosa cada vez. Ver
-`references/patterns-catalog.md`, Patrón 19, para un ejemplo real con las dos pruebas
+`references/catalogo-de-patrones.md`, Patrón 19, para un ejemplo real con las dos pruebas
 (caso normal y caso de fallo) ya verificadas.
 No basta enumerar “patrones”: explica cuándo consultarlos.
 Evita encadenamientos profundos. El principal debe permitir localizar los recursos relevantes.

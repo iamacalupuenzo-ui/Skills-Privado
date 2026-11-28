@@ -30,8 +30,8 @@ Antes de planificar trabajo especializado o delegable, consultar el catálogo de
 está disponible y seleccionar por `Capacidades` y `Cuándo usarlo`; reutilizar un skill
 verificado antes de proponer uno nuevo. Una actividad puntual no crea un skill. Si se
 identifica una capacidad recurrente sin cobertura, registrarla como necesidad `Por evaluar`
-en el catálogo o derivarla a `skill-builder` para su diseño. Cuando el skill se construye o
-cambia, `skill-builder` sincroniza su registro; este skill no inventa relaciones ni campos
+en el catálogo o derivarla a `em-constructor-de-skills` para su diseño. Cuando el skill se construye o
+cambia, `em-constructor-de-skills` sincroniza su registro; este skill no inventa relaciones ni campos
 en la BD de proyectos para simular esa integración.
 
 ## Límites de responsabilidad
@@ -283,7 +283,7 @@ Declarar el modo en la primera línea.
   dependencia sin reemplazo, excepción aprobada o cambio de alcance documentado.
 - **B16 — Skills por necesidad comprobada:** no crear un skill ni una fila de catálogo para
   resolver una tarea aislada. Reutilizar el catálogo existente; si la brecha es recurrente,
-  registrarla como `Por evaluar` o derivarla a `skill-builder` con propósito y criterio de uso.
+  registrarla como `Por evaluar` o derivarla a `em-constructor-de-skills` con propósito y criterio de uso.
 - **B17 — Productividad basada en evidencia:** no reportar cumplimiento de tiempo, avance,
   productividad o salud como hechos si faltan horas, fechas o evidencia de cierre. Señalar la
   brecha y solicitar el dato mínimo necesario.

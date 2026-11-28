@@ -40,7 +40,7 @@ npx --yes github:iamacalupuenzo-ui/Skills-Privado#main install --target claude
 Para instalar una selección:
 
 ```sh
-npx --yes github:iamacalupuenzo-ui/Skills-Privado#main install --target all --skill investigador-de-producto,skill-builder
+npx --yes github:iamacalupuenzo-ui/Skills-Privado#main install --target all --skill investigador-de-producto,em-constructor-de-skills
 ```
 
 ## Actualización

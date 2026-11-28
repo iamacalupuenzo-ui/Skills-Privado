@@ -1,8 +1,31 @@
-# Skill Builder — Catálogo de patrones reales
+# Constructor de skills — Catálogo de patrones reales
 
 Ejemplos adaptados de skills existentes; los nombres no implican instalación ni disponibilidad.
 Son patrones seleccionables, no una plantilla obligatoria para todos los dominios.
 Nunca copiar literalmente — adaptar al dominio del skill que se está construyendo.
+
+## Índice
+
+1. Patrón 1: Frontmatter — skill complejo (react-dev)
+2. Patrón 2: Frontmatter — skill de auditoría (audit-a11y)
+3. Patrón 3: Frontmatter — skill de rol conversacional (design-director)
+4. Patrón 4: Guard de proyecto (lyse-ds)
+5. Patrón 5: Guard de stack en código (react-dev)
+6. Patrón 6: Tabla de modos — skill complejo
+7. Patrón 7: Tabla de modos — skill conversacional
+8. Patrón 8: Fase con preflight y reporte (figma-component-builder)
+9. Patrón 9: Fase de planificación con confirmación (react-dev)
+10. Patrón 10: Blocking behaviors — estilo react-dev
+11. Patrón 11: Blocking behaviors — estilo figma-component-builder (numerados)
+12. Patrón 12: Cierre estructurado (lyse-ds)
+13. Patrón 13: Motor de razonamiento (design-director)
+14. Patrón 14: Formato de respuesta con restricciones de idioma
+15. Patrón 15: Auto-mejora (design-director)
+16. Patrón 16: Externalización de protocolos por modo (em-constructor-de-skills)
+17. Patrón 17: Racionalizaciones comunes (em-constructor-de-skills)
+18. Patrón 18: Señales de alerta (em-constructor-de-skills)
+19. Patrón 19: scripts/ con contrato y pruebas (orquestacion-multi-harness)
+20. Decisiones de arquitectura por tipo de skill
 
 ---
 
@@ -302,15 +325,15 @@ en sus propias referencias. Esto los hace más valiosos con el tiempo.
 
 ---
 
-## Patrón 16: Externalización de protocolos por modo (skill-builder)
+## Patrón 16: Externalización de protocolos por modo (em-constructor-de-skills)
 
 ````markdown
 ## Detección de modo
 
 | Modo | Señales | Acción |
 |------|---------|--------|
-| `CREATE` | "crea un skill", "nuevo skill" | Leer `references/protocol-create.md` completo y seguirlo |
-| `AUDIT` | "audita el skill", "qué le falta a" | Leer `references/protocol-audit.md` completo y seguirlo |
+| `CREATE` | "crea un skill", "nuevo skill" | Leer `references/protocolo-crear.md` completo y seguirlo |
+| `AUDIT` | "audita el skill", "qué le falta a" | Leer `references/protocolo-auditar.md` completo y seguirlo |
 
 ## Protocolos por modo
 
@@ -320,14 +343,14 @@ protocolo correspondiente entero antes de actuar.
 ````
 
 **Lección:** cuando un skill tiene ≥2 modos y el protocolo combinado supera ~150-200
-líneas, cada protocolo va en su propio `references/protocol-[modo].md`. La tabla de
+líneas, cada protocolo va en su propio `references/protocolo-[modo].md`. La tabla de
 modos apunta al archivo en vez de resumir la acción inline. El SKILL.md queda como
 orquestador puro — guard, tabla, bloqueantes, formato — y cada invocación real solo
 carga el protocolo del modo que se usa, no los otros.
 
 ---
 
-## Patrón 17: Racionalizaciones comunes (skill-builder)
+## Patrón 17: Racionalizaciones comunes (em-constructor-de-skills)
 
 ````markdown
 ## Racionalizaciones comunes
@@ -345,7 +368,7 @@ exacto que lleva a cometerla de todas formas (racionalización).
 
 ---
 
-## Patrón 18: Señales de alerta (skill-builder)
+## Patrón 18: Señales de alerta (em-constructor-de-skills)
 
 ````markdown
 ## Señales de alerta
@@ -408,7 +431,7 @@ negativo probado no cumple C21/C22 del checklist aunque el caso normal funcione.
 | Auditor | 1-2 (AUDIT, FIX) | checklist.md | medium |
 | Constructor | 3-5 (ADD, UPDATE, STATUS, AUDIT) | inventory.md, tokens.md, patterns.md | high |
 | Consultor/Razonamiento | 4-6 (conversacionales) | mental-models.md, learning-library.md | medium-high |
-| Orquestador complejo | 5+ (CREATE, MIGRATE, AUDIT, UPDATE) | anatomy.md, checklist.md, patterns.md, protocol-[modo].md por modo | high |
+| Orquestador complejo | 5+ (CREATE, MIGRATE, AUDIT, UPDATE) | anatomy.md, checklist.md, patterns.md, protocolo-[modo].md por modo | high |
 | Reporter | 1 (REPORT) | templates.md | low |
 | Configurador | 2-3 (SETUP, UPDATE, AUDIT) | schema.md | medium |
 

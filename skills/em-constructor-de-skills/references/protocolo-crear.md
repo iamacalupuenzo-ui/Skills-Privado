@@ -1,19 +1,31 @@
-# Skill Builder — Protocolo CREATE
+# Constructor de skills — Protocolo CREATE
 
 Protocolo completo para crear un skill nuevo desde cero. Se activa cuando el modo
 detectado es `CREATE`. Leer este archivo entero antes de actuar — no improvisar
 las fases de memoria.
 
+## Índice
+
+1. Fase 0 — Entrevista (forcing questions)
+2. Fase 1 — Diseño de arquitectura
+3. Fase 1.5 — Escribir las evals primero
+4. Fase 2 — Escribir references/ primero
+5. Fase 3 — Escribir SKILL.md
+6. Fase 4 — Validación
+7. Fase 5 — Registrar en Notion (opcional y autorizado)
+8. Fase 6 — Preparar distribución
+9. Cierre obligatorio
+
 ---
 
 ## Fase 0 — Entrevista (forcing questions)
 
-Leer `references/forcing-questions.md` antes de empezar.
+Leer `references/preguntas-de-entrevista.md` antes de empezar.
 
 Usar primero lo aportado en el pedido y los archivos. Preguntar solo vacíos materiales;
 no reiniciar la entrevista cuando el alcance ya esté definido.
 
-Orden de preguntas (ver forcing-questions.md para el detalle de cada una):
+Orden de preguntas (ver preguntas-de-entrevista.md para el detalle de cada una):
 1. Propósito y output
 2. Alcance: project-specific vs global
 3. Trigger phrases (ejemplos positivos y negativos, sin cuota)
@@ -62,7 +74,10 @@ Decisiones de arquitectura:
   - [Y] va en SKILL.md porque es lógica de orquestación que guía el comportamiento
   - [Z] no aplica porque [razón]
 
-Nombre del skill:  [nombre-en-kebab-case]
+Nivel del molde:   [base / entregable] — por qué (ver references/molde.md)
+Herramientas:      [MCP o API que usa, con su fila en Herramientas externas]
+
+Nombre del skill:  [em-nombre-en-espanol]
 Effort:            [low / medium / high] — por qué
 Allowed tools:     [lista y justificación de cada una]
 
@@ -72,6 +87,14 @@ Autorización: [existente; consultar únicamente decisiones nuevas]
 **Criterio para separar SKILL.md de references/:**
 - SKILL.md → procedimientos, fases, modos, guards, bloqueantes, formato de respuesta
 - references/ → tokens, decisiones tomadas, inventarios, patrones de código, checklists, mapas
+
+---
+
+## Fase 1.5 — Escribir las evals primero
+
+Antes de redactar referencias, escribir `evals/evals.json` con `templates/evals.plantilla.json`:
+al menos 5 casos y uno de tipo `frena`, sacados de lo que el agente hace mal sin el skill.
+Guía en `references/evaluaciones.md`.
 
 ---
 
@@ -96,7 +119,10 @@ Escribiendo references/nombre.md
 
 ## Fase 3 — Escribir SKILL.md
 
-Escribir el SKILL.md siguiendo la anatomía de `references/skill-anatomy.md`.
+Partir de `templates/SKILL.plantilla.md` y seguir la anatomía de `references/anatomia.md`.
+Si el nivel es entregable, escribir también la plantilla del entregable, un ejemplo
+resuelto, su validador en `scripts/` y sus pruebas en `tests/`. Ejemplo completo en
+`examples/em-resumen-de-mr/`.
 
 Secciones posibles (adaptar el orden; omitir lo que no aporte):
 1. Frontmatter (YAML)
@@ -106,8 +132,8 @@ Secciones posibles (adaptar el orden; omitir lo que no aporte):
 5. GUARD
 6. Detección de modo (tabla)
 7. Un bloque por modo: si el protocolo combinado supera ~150-200 líneas, externalizar
-   cada protocolo a `references/protocol-[modo].md` en vez de escribirlo inline (ver
-   `references/skill-anatomy.md`, sección 7)
+   cada protocolo a `references/protocolo-[modo].md` en vez de escribirlo inline (ver
+   `references/anatomia.md`, sección 7)
 8. Comportamientos bloqueantes (numerados B1..Bn)
 9. Racionalizaciones comunes (tabla excusa → realidad)
 10. Señales de alerta
@@ -116,22 +142,28 @@ Secciones posibles (adaptar el orden; omitir lo que no aporte):
 
 Reglas de escritura:
 - Description explica capacidad y activación; combina el resultado delimitado con 2-4
-  frases de disparo reales entre comillas (ver `references/skill-anatomy.md`, sección 1) —
+  frases de disparo reales entre comillas (ver `references/anatomia.md`, sección 1) —
   ni comillas vacías sin resultado, ni resultado sin ejemplos de activación.
 - Cada modo define entrada, acción, verificación y salida; pausa por decisiones nuevas.
 - Los bloqueantes son concretos, no principios vagos
 - Las racionalizaciones son específicas al dominio del skill, no genéricas
 - El formato de respuesta incluye idioma, tono, posición del modo y formato de cierre
 
-Guardar todos los archivos creados en `Skils/skills/<nombre-del-skill>/`. Si es un skill
-nuevo, agregar su nombre exacto a `Skils/skills-manifest.json`. No escribir primero en
+Guardar todos los archivos creados en `Skills-Privado/skills/<nombre-del-skill>/`. Si es un skill
+nuevo, agregar su nombre exacto a `Skills-Privado/skills-manifest.json`. No escribir primero en
 `~/.codex/skills` ni `~/.claude/skills`: son copias instaladas.
 
 ---
 
 ## Fase 4 — Validación
 
-Correr el checklist de `references/quality-checklist.md` sobre el skill recién escrito.
+Correr primero el validador; con errores no se sigue (B15):
+
+```bash
+python scripts/validar_skill.py Skills-Privado/skills/<nombre> [--entregable]
+```
+
+Después correr el checklist de `references/checklist-calidad.md` sobre el skill recién escrito.
 
 Formato del reporte de validación:
 ```
@@ -154,16 +186,16 @@ Ejecutar los casos de references/evaluaciones.md y pruebas aisladas de código n
 ## Fase 5 — Registrar en Notion (opcional y autorizado)
 
 Omitir esta fase si no se pidió registro. Verificar base y propiedades reales en
-`references/catalog-flow.md`. Usar la base **Skills**, buscar primero una fila
-existente y mantener: `Skill`, estado, descripción, cuándo usarlo, disparadores,
-entornos verificados, tipo, prioridad, repositorio fuente, ruta fuente y última revisión.
+`references/flujo-del-catalogo.md`. Usar la base **Skills**, buscar primero una fila
+existente y mantener las propiedades que allí se listan, incluidas las casillas del molde
+que calcula `scripts/medir_molde.py`.
 
 Confirmar con el ID de Notion y la URL de la página creada.
 
 ## Fase 6 — Preparar distribución
 
 Ejecutar `npm test` y `node bin/skils.js install --target all --skill <nombre> --dry-run`
-desde la raíz de `Skils`. Informar que publicar con Git e instalar con la CLI son pasos
+desde la raíz de `Skills-Privado`. Informar que publicar con Git e instalar con la CLI son pasos
 pendientes, a menos que el usuario los haya solicitado explícitamente.
 
 ## Cierre obligatorio
@@ -172,9 +204,9 @@ pendientes, a menos que el usuario los haya solicitado explícitamente.
 Skill creado — /nombre-del-skill
 ----------------------------------
 Archivos:
-  ✅ Skils/skills/nombre/SKILL.md
-  ✅ Skils/skills/nombre/references/archivo-1.md
-  ✅ Skils/skills/nombre/references/archivo-2.md
+  ✅ Skills-Privado/skills/nombre/SKILL.md
+  ✅ Skills-Privado/skills/nombre/references/archivo-1.md
+  ✅ Skills-Privado/skills/nombre/references/archivo-2.md
   [...]
 
 Validación: APROBADO / APROBADO CON OBSERVACIONES
