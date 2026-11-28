@@ -65,7 +65,7 @@ No pises campos humanos ni cierres decisiones por otra persona. Conserva comenta
 
 ## 7. Iteración y cierre UX
 
-La investigación de la solución vive dentro de **Pantallas** y deja un **INV y un DEC** enlazados al SCR, incluso en la vía directa a código. En cada iteración con cambios en lo construido, propone la actualización de UXR, FLW, SCR y DEC, la captura y el estado; Enzo aprueba antes de escribir. La investigación sustenta la propuesta, no sustituye la validación.
+La investigación de la solución vive dentro de **Pantallas** y deja un **INV y un DEC** enlazados al SCR, incluso en la vía directa a código. En cada iteración con cambios en lo construido, propone la actualización de UXR, FLW, SCR y DEC, la captura y el estado; el agente la valida y la escribe, y solo consulta a Enzo lo urgente o crítico. La investigación sustenta la propuesta, no sustituye la validación.
 
 Flujos, Pantallas y Exploraciones recorren **Borrador → En revisión → En construcción → Validado**. Validado exige prueba con Enzo en el navegador y captura de esa versión. La accesibilidad se evalúa sobre lo implementado antes de Validado; el contrato del Design System no reemplaza esa revisión. El esquema comprobable y los comandos de auditoría están en `../references/controles-de-cierre.md`.
 

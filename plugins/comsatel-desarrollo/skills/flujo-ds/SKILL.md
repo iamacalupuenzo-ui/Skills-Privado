@@ -9,7 +9,7 @@ description: >
   "registra esta brecha del sistema" o "sube el DS a los productos". No construye pantallas de
   producto (usa flujo-producto) ni audita tokens (usa comsatel-design-system).
 metadata:
-  version: "1.4.0"
+  version: "1.4.1"
 ---
 
 # Flujo del Design System

@@ -9,7 +9,7 @@ description: >
   pantalla?" o "compara con el piloto". No diseña (usa em-orquestador-ux), no construye la
   pantalla (usa angular-product-builder) ni publica (usa flujo-producto).
 metadata:
-  version: "1.2.0"
+  version: "1.2.1"
 ---
 
 # De UX a desarrollo
@@ -56,7 +56,7 @@ donde corresponde: en un documento, nunca como rótulo en la interfaz.
 
 Construye el prototipo con micro UI, shell y componentes del DS. La investigación de la solución vive dentro de Pantallas y deja INV y DEC antes de cerrar el SCR; incluye benchmarking, componentes disponibles o faltantes, micro UI y ubicación en el shell. La exploración puede hacerse en Claude Design, Figma o código y siempre guarda capturas.
 
-Mientras construyes, invoca accessibility-reviewer y crea o actualiza el ARP **sobre lo implementado**; no lo pospongas al cierre ni lo sustituyas con una revisión de Figma. Cada cambio en lo construido produce una propuesta de actualización de UXR, FLW, SCR y DEC, con captura, versión y estado. Enzo aprueba antes de escribir esos cambios. Toda respuesta y estado de pregunta se registra primero en Open questions del KB y luego se carga a Notion; las propuestas de otros responsables no se remapean a Propuesta UX.
+Mientras construyes, invoca accessibility-reviewer y crea o actualiza el ARP **sobre lo implementado**; no lo pospongas al cierre ni lo sustituyas con una revisión de Figma. Cada cambio en lo construido produce una propuesta de actualización de UXR, FLW, SCR y DEC, con captura, versión y estado. El agente la valida y la escribe sin pedir aprobación; solo consulta a Enzo si el cambio es urgente o crítico (negocio, permisos, datos o alcance). Toda respuesta y estado de pregunta se registra primero en Open questions del KB y luego se carga a Notion; las propuestas de otros responsables no se remapean a Propuesta UX.
 
 Cada paso verificado en el navegador deja su evidencia en Notion en ese momento: capturas de cada estado y una explicación breve de cómo funciona en la tarea FRONT; la bitácora de construcción y la página de servidores solo marcan y enlazan (`flujo-producto/references/evidencia-de-avance.md`, regla de Enzo del 2026-11-15).
 
