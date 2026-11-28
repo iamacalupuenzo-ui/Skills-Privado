@@ -14,8 +14,12 @@ const SISTEMAS = fs.readFileSync(path.join(RAIZ, 'config', 'sistemas.json'), 'ut
 const BASE_TAREAS = '87a1a7d0-6388-82a0-82c0-8709ea959111';
 const CREAR = 'mcp__claude_ai_Notion__notion-create-pages';
 
+// Archivo de delegación propio de las pruebas: no lee ni toca el real.
+const DELEGACION = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'delegacion-')), 'delegacion.json');
+const ENTORNO = { ...process.env, EM_GESTION_DELEGACION: DELEGACION };
+
 function decidir(tool_name, tool_input) {
-  const r = spawnSync(process.execPath, [HOOK], { input: JSON.stringify({ tool_name, tool_input }), encoding: 'utf8' });
+  const r = spawnSync(process.execPath, [HOOK], { input: JSON.stringify({ tool_name, tool_input }), encoding: 'utf8', env: ENTORNO });
   assert.equal(r.status, 0, 'el hook siempre sale con 0');
   return r.stdout ? JSON.parse(r.stdout).hookSpecificOutput.permissionDecision : 'pasa';
 }
@@ -79,4 +83,31 @@ test('escribir en un issue de GitLab pide confirmación y leerlo pasa (B1)', () 
 test('escribir en ClickUp desde PowerShell pide confirmación (B1)', () => {
   assert.equal(decidir('PowerShell', { command: 'Invoke-RestMethod https://api.clickup.com/api/v2/task/1 -Method PUT' }), 'ask');
   assert.equal(decidir('PowerShell', { command: 'Invoke-RestMethod https://api.clickup.com/api/v2/task/1' }), 'pasa');
+});
+
+test('con la subida delegada hoy, publicar --ejecutar pasa sin preguntar', () => {
+  const r = spawnSync(process.execPath, [path.join(RAIZ, 'scripts', 'delegar.mjs'), 'delegar'], { env: ENTORNO, encoding: 'utf8' });
+  assert.equal(r.status, 0, r.stderr);
+  try {
+    assert.equal(decidir('Bash', { command: 'node scripts/publicar.mjs mapeo.json --ejecutar' }), 'pasa');
+    assert.equal(decidir('Bash', { command: 'curl -X POST https://api.clickup.com/api/v2/list/1/task' }), 'pasa');
+    // La estructura de la tarea se sigue exigiendo: no es una confirmación, es calidad.
+    assert.equal(decidir(CREAR, tarea('IDV-UX · 01 — Mapa (HU-01-14)', '## Alcance\nalgo')), 'deny');
+  } finally {
+    spawnSync(process.execPath, [path.join(RAIZ, 'scripts', 'delegar.mjs'), 'intervenir'], { env: ENTORNO });
+  }
+});
+
+test('una delegación de otro día ya no vale', () => {
+  fs.writeFileSync(DELEGACION, JSON.stringify({ fecha: '2020-01-01', decision: 'delegar' }));
+  try {
+    assert.equal(decidir('Bash', { command: 'node scripts/publicar.mjs mapeo.json --ejecutar' }), 'ask');
+  } finally { fs.rmSync(DELEGACION, { force: true }); }
+});
+
+test('intervenir vuelve a pedir confirmación', () => {
+  spawnSync(process.execPath, [path.join(RAIZ, 'scripts', 'delegar.mjs'), 'delegar'], { env: ENTORNO });
+  spawnSync(process.execPath, [path.join(RAIZ, 'scripts', 'delegar.mjs'), 'intervenir'], { env: ENTORNO });
+  assert.equal(decidir('Bash', { command: 'node scripts/tablero-dia.mjs tablero --ejecutar' }), 'ask');
+
 });

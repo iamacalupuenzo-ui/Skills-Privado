@@ -5,6 +5,10 @@
 // 2. Escribir en GitLab (issues) o en ClickUp desde la terminal pide confirmación: lo ve el equipo.
 // Responde siempre con un JSON permissionDecision y salida 0 (en Windows el código 2 no es fiable).
 // Documentación: ../skills/em-gestion-tareas/references/guardia-de-tareas.md
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+
 const TAREAS = '87a1a7d0-6388-82a0-82c0-8709ea959111';
 const SECCIONES = ['Antes de leer', '## En 30 segundos', '## El relato', '## Alcance', '## Criterios de aceptación', '## Condición de cierre', '## Trazabilidad', '## Resultado', '## Comprueba'];
 const NOMBRE = /^[A-Z]{3}-(UX|FRONT)( · \d{2})? — .+/;
@@ -44,7 +48,17 @@ function revisarNotion(nombre, entrada) {
   }
 }
 
+// Si Enzo delegó las subidas hoy (scripts/delegar.mjs), no se pregunta por cada una.
+function delegadoHoy() {
+  const archivo = process.env.EM_GESTION_DELEGACION || path.join(os.homedir(), '.claude', 'em-gestion-tareas', 'delegacion.json');
+  try {
+    const d = JSON.parse(fs.readFileSync(archivo, 'utf8'));
+    return d.decision === 'delegar' && d.fecha === new Date().toLocaleDateString('en-CA', { timeZone: 'America/Lima' });
+  } catch { return false; }
+}
+
 function revisarTerminal(cmd) {
+  if (delegadoHoy()) return;
   // curl (-X, --request, --data), fetch (method:) y PowerShell (-Method de Invoke-RestMethod o Invoke-WebRequest).
   const escribe = /(-X\s*(POST|PUT|PATCH|DELETE)|--request\s+(POST|PUT|PATCH|DELETE)|method:\s*['"](POST|PUT|PATCH|DELETE)|-Method\s+['"]?(POST|PUT|PATCH|DELETE)|--data|-d\s)/i;
   if (/publicar\.mjs/.test(cmd) && /--ejecutar/.test(cmd))

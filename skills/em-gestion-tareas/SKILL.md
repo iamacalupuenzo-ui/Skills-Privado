@@ -12,7 +12,7 @@ description: >
   cada tarea. No decide qué trabajo se hace ni lo ejecuta, y no sube capturas: eso es de quien
   ejecuta (flujo-producto, flujo-ds, ux-a-desarrollo…).
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
   reemplaza: "flujo-tareas-gitlab 0.4.1 y recepcion-de-paquetes (respaldo en ~/.claude/skills-backup-2026-11-26)"
 ---
 
@@ -27,7 +27,8 @@ a mano. Este skill **registra**: no decide qué se hace ni lo ejecuta.
 
 1. Proyecto destino en GitLab (`cl2-flota/collaboration`, 622, o `svr-basico`) y **hito activo**; `publicar.mjs` se detiene si venció.
 2. Etiquetas y listas leídas del proyecto, no de la memoria (B5).
-3. Sistemas pedidos: Notion siempre; GitLab y ClickUp solo cuando se piden.
+3. Sistemas pedidos: Notion siempre; GitLab y ClickUp solo cuando se piden. Antes de la primera
+   subida del día, preguntar una vez: «¿Intervienes en las subidas o las ejecuto yo?» (B1).
 4. Antes de marcar algo como hecho, la **evidencia** (B9): commit, MR, artefacto en `develop` de la KB, comentario o reunión.
 5. Tokens: `GITLAB_TOKEN`, `~/.clickup/token.txt` y `~/.notion/token.txt`. Nunca se imprimen (B6).
 6. La KB se lee con `git show origin/develop:<ruta>` después de `git fetch`; el clon no se toca.
@@ -48,7 +49,7 @@ a mano. Este skill **registra**: no decide qué se hace ni lo ejecuta.
 | `ESTADO` | «¿cómo va el tablero?» | Leer y reportar por lista, con enlaces |
 
 AJUSTAR edita el mapeo, lo valida con `armar-mapeo.mjs` y actualiza con `escribir-notion.mjs`.
-PUBLICAR va en seco → confirmación → `--ejecutar` → `Issue` y `ClickUp` en Notion → `armar-mapeo --ids`.
+PUBLICAR va en seco → tu confirmación o la delegación del día → `--ejecutar` → `Issue` y `ClickUp` en Notion → `armar-mapeo --ids`.
 PAUSAR marca la
 casilla «En pausa» sin cambiar el estado.
 
@@ -70,7 +71,7 @@ Plantillas en `templates/`, ejemplo real en `examples/mapeo-dsp-009.json`.
 
 Detalle, excusas y señales de alerta en `references/reglas.md`.
 
-- **B1** — GitLab y ClickUp: nada sin confirmación y corrida en seco.
+- **B1** — GitLab y ClickUp: Enzo elige una vez al día si interviene o delega (`delegar.mjs`).
 - **B2** — Un issue es un entregable; los pasos son casillas.
 - **B3** — Horas con IA solo en Notion; `/spend` solo horas reales.
 - **B4** — Se cierra el día de la fecha límite, de 17:00 a 18:00 de Lima.

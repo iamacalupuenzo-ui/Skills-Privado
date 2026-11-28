@@ -13,6 +13,7 @@ corren con `node`. Ninguno imprime tokens (B6).
 | `notas-kb.mjs` | Pasa los cambios de la KB del informe de `cambios-kb.mjs` al mapeo (`cambiosKb`), para que una regeneración no los borre | Solo el mapeo; `--seco` muestra |
 | `publicar.mjs` | Crea issues y tareas de ClickUp, enlaces `relates_to`, `/estimate` y la columna del día. Corrida en seco por defecto | Con `--ejecutar` |
 | `tablero-dia.mjs` | Mueve cada mañana según la fecha límite y cierra a las 17:00–18:00 lo Completada que vence hoy | Con `--ejecutar` |
+| `delegar.mjs` | Guarda si Enzo interviene en las subidas o las delega por el día (B1): `delegar`, `intervenir`, `estado` | Solo el archivo de delegación |
 | `cu-formato.mjs` | Limpieza de ClickUp de una sola vez (2026-11-16); solo si vuelve a desordenarse | Con `--ejecutar` |
 
 ## Configuración
