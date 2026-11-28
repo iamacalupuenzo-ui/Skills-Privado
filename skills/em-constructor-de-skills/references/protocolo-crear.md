@@ -183,9 +183,9 @@ Ejecutar los casos de references/evaluaciones.md y pruebas aisladas de código n
 
 ---
 
-## Fase 5 — Registrar en Notion (opcional y autorizado)
+## Fase 5 — Registrar en Notion (obligatoria)
 
-Omitir esta fase si no se pidió registro. Verificar base y propiedades reales en
+Se hace siempre al cerrar, salvo que Enzo pida lo contrario (B10, B12). Verificar base y propiedades reales en
 `references/flujo-del-catalogo.md`. Usar la base **Skills**, buscar primero una fila
 existente y mantener las propiedades que allí se listan, incluidas las casillas del molde
 que calcula `scripts/medir_molde.py`.
@@ -195,8 +195,9 @@ Confirmar con el ID de Notion y la URL de la página creada.
 ## Fase 6 — Preparar distribución
 
 Ejecutar `npm test` y `node bin/skils.js install --target all --skill <nombre> --dry-run`
-desde la raíz de `Skills-Privado`. Informar que publicar con Git e instalar con la CLI son pasos
-pendientes, a menos que el usuario los haya solicitado explícitamente.
+desde la raíz de `Skills-Privado`. Con todo en verde: PR y merge en Skills-Privado, instalación en
+Claude y Codex con `doctor` en OK, y el registro de la Fase 5 con la página completa
+(`references/flujo-del-catalogo.md`). Se omite un paso solo si Enzo lo pide.
 
 ## Cierre obligatorio
 

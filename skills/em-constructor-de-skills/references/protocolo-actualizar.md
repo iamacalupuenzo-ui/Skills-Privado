@@ -53,7 +53,14 @@ Editar la fuente canónica en `Skills-Privado/skills/<nombre>/`, no una instalac
 Correr `python scripts/validar_skill.py <carpeta>` (B15). En cambios pequeños validar lo afectado; en refactorización amplia aplicar el checklist
 completo y references/evaluaciones.md. Distinguir pruebas locales de integración real.
 Ejecutar `npm test`; si se alteró el catálogo o el contenido instalado, ejecutar además
-la CLI con `--dry-run` antes de proponer publicación o instalación.
+la CLI con `--dry-run`.
+
+## Fase 4 — Publicar, instalar y registrar
+
+Con la validación en verde (B10): PR y merge, instalación con `doctor` en OK, y en Notion
+la fila existente con `Versión`, `Líneas`, las casillas de `medir_molde.py` y la página
+revisada: tabla de modos, diagrama, guías internas y versión operativa
+(`references/flujo-del-catalogo.md`). Si la página está vacía, se escribe completa.
 
 ---
 
@@ -67,6 +74,7 @@ Cambios:
   references/[archivo]:[línea] — [descripción]
 
 Criterios re-validados: [lista] — ✅
-Publicación: [no solicitada / commit y push verificados]
-Instalación: [no solicitada / doctor verificado]
+Publicación: [PR #n fusionado / el usuario lo fusiona]
+Instalación: [doctor OK en Claude y Codex]
+Notion: [enlace de la página; propiedades, casillas y página revisadas]
 ```

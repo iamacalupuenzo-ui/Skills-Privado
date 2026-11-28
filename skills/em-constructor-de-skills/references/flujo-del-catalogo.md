@@ -43,18 +43,20 @@ Skills-Privado/
    node bin/skils.js install --target all --skill <nombre> --dry-run
    ```
 
-6. Sincronizar la fila correspondiente de la base **Skills** de Notion con estado,
-   descripción, disparadores, entornos y ruta fuente cuando el alcance autorice el
-   registro. Usar la fila existente si el skill ya está registrado.
-7. Informar el cambio validado. No publicar ni instalar todavía si el usuario no lo pidió.
+6. Publicar: commit, push de la rama, PR y merge en Skills-Privado (Enzo delegó el merge;
+   se deja el PR abierto solo si dice que lo fusiona él).
+7. Instalar en Claude y Codex desde `main` y correr `doctor`.
+8. Registrar en Notion (sección «Registro en Notion»): propiedades, casillas y página
+   completa. Es obligatorio; se omite solo si Enzo lo pide.
+9. Informar con el enlace del PR y el de la página.
 
 ## Publicación e instalación
 
-Son operaciones independientes y requieren alcance explícito:
+Se ejecutan al cerrar un cambio validado (B10), en este orden, y cada una se verifica:
 
 | Operación | Comando o acción | Resultado verificable |
 | --- | --- | --- |
-| Publicar | `git add`, `git commit`, `git push origin main` | Commit visible en `origin/main` |
+| Publicar | Rama, commit, `git push`, `gh pr create` y `gh pr merge --merge --delete-branch` | PR fusionado y commit en `origin/main` |
 | Instalar por primera vez | `npx --yes github:iamacalupuenzo-ui/Skills-Privado#main install --target all` | `doctor` informa `OK` |
 | Actualizar instalaciones | `npx --yes github:iamacalupuenzo-ui/Skills-Privado#main update --target all` | `doctor` informa `OK` |
 | Validar sin escribir | Agregar `--dry-run` a install o update | Lista de cambios previstos |
@@ -98,6 +100,10 @@ Propiedades que se mantienen para un skill reutilizable:
 
 No existe `Ruta local`: cambia en cada computador. La fuente es siempre
 `Skills-Privado/skills/<nombre>/` y se enlaza en el contenido de la página.
+
+La página nunca queda vacía: se escribe en el mismo cierre que las propiedades, partiendo
+de `templates/pagina-notion.plantilla.md`. Al actualizar un skill se revisan también la
+página (diagrama, guías, versión operativa) y no solo la propiedad `Versión`.
 
 Contenido de la página del skill: una guía de uso que se lee en menos de 5 minutos,
 escrita para la persona que lo va a usar, no para el agente. En este orden, con

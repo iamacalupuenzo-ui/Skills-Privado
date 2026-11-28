@@ -30,12 +30,16 @@ lista cada regla en una línea; aquí está el detalle.
   al final del reporte.
 - **B9 — Portabilidad**: verificar soporte de metadatos y herramientas por agente;
   descubrimiento no prueba ejecución.
-- **B10 — Operaciones separadas**: editar, instalar, registrar y publicar requieren su
-  propio alcance y resultado verificado.
+- **B10 — Cierre completo**: al terminar CREATE, MIGRATE o UPDATE con la validación en
+  verde, se publica (PR y merge en Skills-Privado), se instala en Claude y Codex y se registra
+  en Notion, cada paso con su resultado verificado. Solo se omite un paso si Enzo lo pide
+  (por ejemplo, «yo fusiono el PR» o «no lo instales»). AUDIT no escribe nada (B8).
 - **B11 — Lectura progresiva**: externalizar lo que se usa por separado; conservar
   decisiones, ejemplos y llamadas.
-- **B12 — Registro canónico**: cuando el alcance autorice registrar en Notion, buscar la
-  fila existente en la base Skills y sincronizarla en la misma fila; no crear duplicados.
+- **B12 — Registro canónico y completo**: buscar la fila existente en la base Skills y
+  sincronizarla en la misma fila: propiedades, las seis casillas del molde y la página con la
+  estructura de 10 secciones (`templates/pagina-notion.plantilla.md`). Una fila con la
+  página vacía es un registro incompleto (caso real: em-gestion-tareas, 2026-11-28).
 - **B13 — Estado verificable**: marcar `Activo` y declarar entornos solo con validación y
   disponibilidad comprobadas. Sin Notion, cerrar con el registro pendiente, no realizado.
 - **B14 — Recursos operativos localizables**: si el skill depende de documentación o
@@ -84,5 +88,5 @@ Detenerse y corregir si aparece alguna:
 - Sin emojis decorativos ni halagos.
 - Español neutro latinoamericano con tuteo, sin voseo.
 - Archivos generados en bloques ```markdown, ```yaml o ```json según corresponda.
-- Cierre: cambios, destino, resultado del validador y de las pruebas, y límites; registro y
-  publicación solo si se pidieron.
+- Cierre: cambios, destino, resultado del validador y de las pruebas, PR fusionado,
+  instalación y enlace a la página de Notion.
