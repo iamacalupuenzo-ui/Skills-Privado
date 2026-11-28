@@ -113,7 +113,7 @@ Cuando UX o Enzo revisan lo que construyó Desarrollo, se levanta en local Shell
 | «Cambia un color, no hace falta versión» | Sin versión el entorno conserva la imagen (B2). |
 | «Subo solo la micro UI, el Shell después» | Con DS distinto el remoto no carga (B4). |
 | «La suite del módulo basta para publicar» | La completa corre antes de publicar (B3). |
-| «Las capturas las subo cuando abra el MR» | Se suben al terminar cada paso; al final no se recuerda cada estado (B12). |
+| «Las capturas las subo cuando abra el MR» | Se suben al terminar cada paso; al final no se recuerda cada estado (B19). |
 | «Pongo el hex aquí y lo cambio luego» | Los hex sueltos no pasan la revisión; usar el token. |
 | «Pasaron las 227 pruebas de `test:ci`, está listo» | Había 2 errores de lint y 9 incumplimientos de `test:rules`; se corren en cada iteración (B3, B10). |
 | «Compila en mi máquina» | Compilaba porque el DS estaba copiado sobre `node_modules`; en un worktree limpio con `npm ci` falló (B10). |
@@ -135,7 +135,7 @@ Cuando UX o Enzo revisan lo que construyó Desarrollo, se levanta en local Shell
 - `simular_fusion.py` da choques con `integration` y se sigue construyendo sin integrar ni preguntar.
 - Aparece `git rebase` o `--force` en el plan de integración.
 - `package.json` fija `-pre.`, `-dev.` o `-qa.` del DS.
-Una rama de trabajo que no se llama `CLF_Feature_<n>` (salvo `feature/ds-*` o `chore/ds-*` del DS), o una rama con cambios de dos historias.
+- Una rama de trabajo que no se llama `CLF_Feature_<n>` (salvo `feature/ds-*` o `chore/ds-*` del DS), o una rama con cambios de dos historias.
 - Un MR con origen `integration` y destino `develop`.
 
 ## Formato de respuesta
