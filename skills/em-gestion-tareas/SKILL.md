@@ -88,7 +88,7 @@ Detalle, excusas y señales de alerta en `references/reglas.md`.
 - **B15** — La trazabilidad apunta a GitLab; GitLab y ClickUp no enlazan a Notion.
 - **B16** — No sube capturas ni da por terminado el trabajo.
 - **B17** — Siglas con su nombre completo.
-- **B18 — Ciclo de retroalimentación obligatorio.** Aplica las escrituras del [protocolo](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md); no las decide.
+- **B18 — Ciclo de retroalimentación obligatorio.** Aplica las escrituras del [protocolo](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/em-orquestador-ux/references/ciclo-retroalimentacion.md); no las decide.
 
 ## Cierre
 

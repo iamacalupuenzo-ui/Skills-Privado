@@ -39,7 +39,7 @@ La decisión y evidencia que justifican la CLI están documentadas en
 | `verificar-calidad` | Activo | Claude Code |
 | `traspaso-entre-computadoras` | Activo | Claude Code |
 | `em-gestion-tareas` | Activo | Claude Code |
-| `ux-ui-orchestrator` | Activo | Claude Code |
+| `em-orquestador-ux` | Activo | Claude Code |
 | `ux-requirements-analyzer` | Activo | Claude Code |
 | `user-flow-designer` | Activo | Claude Code |
 | `ui-spec-writer` | Activo | Claude Code |
@@ -58,7 +58,7 @@ Los skills de terceros llevan su `LICENSE` original, un `LICENSE-UPSTREAM.md` y 
 
 ### Skills de documentación de UX y desarrollo
 
-- `orquestador-desarrollo` orquesta el desarrollo (flujo del DS y de los productos, verificación, publicación y despliegue). Su etapa previa es `ux-ui-orchestrator`, el orquestador de documentación, que coordina `ux-requirements-analyzer`, `user-flow-designer`, `ui-spec-writer`, `web-atomic-component-designer`, `stitch-ui-generator`, `claude-design-orchestrator`, `figma-design-validator`, `accessibility-reviewer` y `ux-development-handoff`.
+- `orquestador-desarrollo` orquesta el desarrollo (flujo del DS y de los productos, verificación, publicación y despliegue). Su etapa previa es `em-orquestador-ux`, el orquestador de documentación, que coordina `ux-requirements-analyzer`, `user-flow-designer`, `ui-spec-writer`, `web-atomic-component-designer`, `stitch-ui-generator`, `claude-design-orchestrator`, `figma-design-validator`, `accessibility-reviewer` y `ux-development-handoff`.
 - **Fuente única:** los skills de documentación de UX se editan **aquí**, en `skills/<nombre>/`. La carpeta `.claude/skills` del repositorio `kb-ux-uxr` no es una fuente: es una copia instalada y se pisa al actualizar con `skils`. Un cambio hecho solo allí se pierde. Para cambiar uno: editar en este repositorio, correr `npm test`, publicar y reinstalar.
 - Los skills nuevos están instalados solo en Claude Code; Codex requiere autorización explícita.
 
@@ -67,7 +67,7 @@ en [`notion-registry.md`](notion-registry.md).
 
 ## Ciclo obligatorio de producto y diseño
 
-El dueño es `ux-ui-orchestrator`: su [protocolo canónico](skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) exige verificación previa independiente y sincronización de cierre en cada desarrollo, mejora, análisis o definición. Los consumidores se registran en `skills-manifest.json` → `protocols`; ese registro documenta el contrato, no instala dependencias automáticamente. Resolver el dueño instalado o en la fuente central; si falta, detenerse. El detalle no se copia entre skills.
+El dueño es `em-orquestador-ux`: su [protocolo canónico](skills/em-orquestador-ux/references/ciclo-retroalimentacion.md) exige verificación previa independiente y sincronización de cierre en cada desarrollo, mejora, análisis o definición. Los consumidores se registran en `skills-manifest.json` → `protocols`; ese registro documenta el contrato, no instala dependencias automáticamente. Resolver el dueño instalado o en la fuente central; si falta, detenerse. El detalle no se copia entre skills.
 
 ## Convención de actualización
 

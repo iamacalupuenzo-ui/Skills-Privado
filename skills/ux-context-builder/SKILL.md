@@ -14,7 +14,7 @@ metadata:
 
 # ux-context-builder
 
-Es el especialista de `ux-ui-orchestrator` que **cierra un paquete de diseño**. Los demás skills producen artefactos sueltos
+Es el especialista de `em-orquestador-ux` que **cierra un paquete de diseño**. Los demás skills producen artefactos sueltos
 (UXR, flujos, pantallas); este los consolida en una UXS que es lo que leen Claude Design, QA y Desarrollo. Hace lo mismo que
 `af-requirement-context-builder` en requisitos y `architecture-context-builder` en arquitectura, pero para UX.
 
@@ -51,7 +51,7 @@ python "${CLAUDE_SKILL_DIR}/scripts/build_uxs.py" <knowledge-base> --paquete DSP
 2. **Pasa por parámetro lo que el script no puede saber:** qué está construido y dónde (`--construido`), quién valida (`--responsable`),
    el corte de la entrega. Si no lo sabes, no lo inventes: queda «sin información» y se pregunta a quien sabe.
 3. **Escribe** `design/specs/UXS-NNN-<slug>.md`, agrega su fila a `index.md` y su entrada a `changelog.md` (`--sin-indice` lo omite).
-4. **Verifica**: `python "${CLAUDE_SKILL_DIR}/../ux-ui-orchestrator/scripts/audit_ux.py" <kb> --exigir-uxs --paquetes DSP-005` debe dejar de marcar el paquete.
+4. **Verifica**: `python "${CLAUDE_SKILL_DIR}/../em-orquestador-ux/scripts/audit_ux.py" <kb> --exigir-uxs --paquetes DSP-005` debe dejar de marcar el paquete.
 5. **Revisa lo redactado** contra `references/criterios-de-veredicto.md`: cada veredicto necesita su razón; las preguntas abiertas, su responsable.
 6. **Detente para la revisión humana.** No subas la rama ni abras el MR sin confirmación (ver B6).
 
@@ -59,7 +59,7 @@ Si el paquete ya tiene UXS, el script se bloquea; `--actualizar` la regenera con
 
 ## Qué contiene la UXS que arma
 
-Las ocho secciones de la plantilla de `ux-ui-orchestrator`: alcance y escenario, artefactos del conjunto, resultado de la auditoría con hallazgos
+Las ocho secciones de la plantilla de `em-orquestador-ux`: alcance y escenario, artefactos del conjunto, resultado de la auditoría con hallazgos
 (Q-UXS-n), matriz de trazabilidad por pantalla, preguntas abiertas y decisiones humanas, preparación por consumidor, registro de orquestación y
 validación humana. Es el formato que lee el cargador de Notion del orquestador (base «Especificaciones UX»).
 
@@ -69,7 +69,7 @@ validación humana. Es el formato que lee el cargador de Notion del orquestador 
 
 ## Comportamientos bloqueantes
 
-- **B8 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
+- **B8 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `em-orquestador-ux` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/em-orquestador-ux/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
 - **B1 — Sin pantallas no hay UXS.** Un paquete sin SCR con su etiqueta `dsp-NNN` no se consolida: el script se detiene y dice qué producir antes. No se rellena con UXR sueltos.
 - **B2 — No se inventa lo que no está en los artefactos.** Lo construido, quién decide y el corte de la entrega los dice una persona; sin ese dato queda «sin información». Los veredictos salen de la evidencia, no de la impresión.
 - **B3 — Una UXS existente no se pisa.** Regenerar exige `--actualizar` y conserva número y archivo; nunca se crea una segunda UXS para el mismo paquete.

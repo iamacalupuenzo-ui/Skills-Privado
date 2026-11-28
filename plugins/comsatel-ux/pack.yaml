@@ -1,12 +1,13 @@
 pack_name: ux
-version: 1.3.0
+version: 2.0.0
 purpose: Llevar User Stories validadas hasta un paquete de diseño consolidado (UXS), un diseño gobernado y un handoff DESIGN_READY_FOR_DEV, con trazabilidad US → UXR → FLW → SCR → UXS → DTM y compuertas humanas
 # Estándar de referencia: comsatel-skill-pack-factory v1.2 (un orquestador y como máximo seis especialistas).
-# ux-ui-orchestrator coordina 10 skills porque tiene que preparar toda la documentación de UX: requisitos, flujos,
-# pantallas, catálogo atómico, consolidación del paquete (UXS), exploración, accesibilidad, diseño gobernado y handoff. Se acepta que supere los 6.
-excepcion_especialistas: Preparar toda la documentación de UX exige estas 10 especialidades; el límite de 6 rige para el pack de desarrollo.
+# em-orquestador-ux coordina 7: el handoff cierra el paquete cuando todos los recursos están validados y no se
+# fusiona con otro (Enzo, 2026-11-28). Fuera del flujo, sin retirarse: web-atomic-component-designer (Design System),
+# stitch-ui-generator y figma-design-validator (Figma en pausa).
+excepcion_especialistas: El handoff (ux-development-handoff) es el séptimo especialista porque cierra el paquete con todos los recursos validados (Enzo, 2026-11-28).
 skills:
-- name: ux-ui-orchestrator
+- name: em-orquestador-ux
   role: orchestrator
   description: "Diagnostica, planifica por fases, enruta las preguntas entre skills, audita (incluido el control de cierre de paquete: sin UXS no se sube una rama de diseño) y delega la consolidación en ux-context-builder"
 - name: ux-requirements-analyzer
@@ -18,24 +19,15 @@ skills:
 - name: ui-spec-writer
   role: specialist
   description: Convierte un flujo en especificación de pantallas (SCR), componentes y tokens
-- name: web-atomic-component-designer
-  role: specialist
-  description: Catálogo atómico Angular, opcional cuando hay librería de componentes
 - name: ux-context-builder
   role: specialist
   description: Arma la UXS (UX Context Pack) de un paquete DSP-NNN con veredicto por consumidor, hallazgos y preguntas abiertas; cierra el paquete de diseño
-- name: stitch-ui-generator
-  role: specialist
-  description: Genera la exploración visual en Google Stitch para pantallas ya especificadas
 - name: claude-design-orchestrator
   role: specialist
   description: Explora y critica alternativas de diseño en Claude Design
 - name: accessibility-reviewer
   role: specialist
   description: Evalúa una especificación, HTML o nodo contra WCAG 2.2 AA y registra hallazgos
-- name: figma-design-validator
-  role: specialist
-  description: Valida el diseño en Figma y lo registra como diseño gobernado
 - name: ux-development-handoff
   role: specialist
   description: Paquete de entrega a Desarrollo y puerta DESIGN_READY_FOR_DEV
@@ -144,14 +136,6 @@ tasks:
   - UXS con el veredicto por consumidor (el UX Context Pack que lee Claude Design, QA y Desarrollo)
 # Vía directa a front end: tras GU, orquestador-desarrollo construye desde los SCR, el Design System y las decisiones; el diseño se gobierna con
 # el prototipo validado al terminar de construir (G6). Esa vía también pasa por GU: la UXS se arma aunque no haya exploración.
-- id: T-04
-  skill: stitch-ui-generator
-  depends_on:
-  - T-03b
-  gate: G4
-  condition: se elige Stitch como herramienta de exploración
-  outputs:
-  - GEN y STP
 - id: T-05
   skill: claude-design-orchestrator
   depends_on:
@@ -168,16 +152,8 @@ tasks:
   condition: se está construyendo el prototipo en código, incluida la vía directa a front end
   outputs:
   - ARP creado y actualizado durante la construcción del prototipo en micro UI, shell y DS, sobre lo implementado
-- id: T-07
-  skill: figma-design-validator
-  depends_on:
-  - T-06
-  gate: G6
-  condition: se eligió gobernar el diseño en Figma; opcional si se validó en código
-  outputs:
-  - governed_design en el DTM
 - id: T-07b
-  skill: ux-ui-orchestrator
+  skill: em-orquestador-ux
   depends_on:
   - T-06
   gate: G6
@@ -187,13 +163,13 @@ tasks:
 - id: T-08
   skill: ux-development-handoff
   depends_on:
-  - T-07
+  - T-07b
   gate: G7
   condition: hay diseño gobernado en el DTM (Figma, Stitch, Claude Design o prototipo validado, con su contrato y aprobación humana)
   outputs:
   - HOF y gate DESIGN_READY_FOR_DEV
 - id: T-10
-  skill: ux-ui-orchestrator
+  skill: em-orquestador-ux
   depends_on:
   - T-03
   gate: GI
@@ -201,7 +177,7 @@ tasks:
   outputs:
   - Propuesta de actualización, captura, aprobación de Enzo y estado comprobable
 - id: T-11
-  skill: ux-ui-orchestrator
+  skill: em-orquestador-ux
   depends_on:
   - T-03b
   - T-10
@@ -210,7 +186,7 @@ tasks:
   outputs:
   - Informe Markdown y JSON de conciliación sin diferencias abiertas y auditoría de cierre
 - id: T-12
-  skill: ux-ui-orchestrator
+  skill: em-orquestador-ux
   depends_on:
   - T-03b
   gate: GI

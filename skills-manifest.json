@@ -22,7 +22,7 @@
     "ux-consultas-responder",
     "ux-decision-aplicar",
     "verificar-calidad",
-    "ux-ui-orchestrator",
+    "em-orquestador-ux",
     "ux-requirements-analyzer",
     "user-flow-designer",
     "ui-spec-writer",
@@ -42,7 +42,7 @@
   ],
   "protocols": {
     "ciclo-retroalimentacion": {
-      "owner": "ux-ui-orchestrator",
+      "owner": "em-orquestador-ux",
       "path": "references/ciclo-retroalimentacion.md",
       "consumers": [
         "orquestador-desarrollo",
@@ -78,7 +78,7 @@
       "path": "references/paridad-kb-codigo.md",
       "command": "scripts/paridad_kb_codigo.py",
       "consumers": [
-        "ux-ui-orchestrator",
+        "em-orquestador-ux",
         "orquestador-desarrollo",
         "flujo-producto"
       ]

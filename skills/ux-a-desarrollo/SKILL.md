@@ -6,7 +6,7 @@ description: >
   trazabilidad: qué pantallas y estados construir, cómo registrar lo que queda pendiente del PO
   y cómo iterar el diseño en el navegador. Úsalo cuando pidan "construye esto según el
   UXR/flujo", "aplica esta mejora de diseño", "registra esta decisión", "¿qué estados tiene esta
-  pantalla?" o "compara con el piloto". No diseña (usa ux-ui-orchestrator), no construye la
+  pantalla?" o "compara con el piloto". No diseña (usa em-orquestador-ux), no construye la
   pantalla (usa angular-product-builder) ni publica (usa flujo-producto).
 metadata:
   version: "1.2.0"
@@ -43,14 +43,14 @@ donde corresponde: en un documento, nunca como rótulo en la interfaz.
 
 ## Comportamientos bloqueantes
 
-- **B7 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
+- **B7 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `em-orquestador-ux` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/em-orquestador-ux/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
 - **B1 — Lo pendiente del PO no se pinta en la UI.** Nada de «PENDIENTE» ni rótulos de decisión en pantalla: va en el registro de decisiones.
 - **B2 — Una decisión que contradice la fuente se registra, no se resuelve.** Se escribe como «decisión del responsable de diseño, pendiente del PO».
 - **B3 — Todo estado se cubre:** cargando, error con reintento, vacío, sin permiso, solo lectura, éxito, y el caso de acceso perdido.
 - **B4 — El texto provisional se marca en el documento**, no en la pantalla, y no inventa reglas de negocio.
 - **B5 — Antes de cambiar un componente del DS se explica el cambio con evidencia** (ver `flujo-ds`).
 - **B6 — Lo que se construye se verifica en el navegador contra el piloto**, no solo con pruebas.
-- **B8 — Lo construido se documenta mientras se valida, no al cierre.** Cada texto, componente y comportamiento que difiere de la especificación (un flujo por pestaña que pasó a página, un botón que pasó a aviso, una validación que bloquea en lugar de una vista previa) se registra en el SCR/UXR en la misma rama del front, o en un DEC como desvío, y el informe de accesibilidad (ARP) no se entrega sin esa paridad. Si se deja para el cierre, los documentos describen otra pantalla y QA lo descubre al diseñar sus casos de prueba. La mejora pendiente de automatizarlo está en `ux-ui-orchestrator/references/mejoras-del-proceso.md`.
+- **B8 — Lo construido se documenta mientras se valida, no al cierre.** Cada texto, componente y comportamiento que difiere de la especificación (un flujo por pestaña que pasó a página, un botón que pasó a aviso, una validación que bloquea en lugar de una vista previa) se registra en el SCR/UXR en la misma rama del front, o en un DEC como desvío, y el informe de accesibilidad (ARP) no se entrega sin esa paridad. Si se deja para el cierre, los documentos describen otra pantalla y QA lo descubre al diseñar sus casos de prueba. La mejora pendiente de automatizarlo está en `em-orquestador-ux/references/mejoras-del-proceso.md`.
 
 ## Cierre de cada iteración
 
@@ -64,7 +64,7 @@ Flujos, Pantallas y Exploraciones siguen Borrador → En revisión → En constr
 
 ## Compuertas automáticas
 
-Ejecuta el audit_ux.py instalado con ux-ui-orchestrator, sin copiarlo al producto:
+Ejecuta el audit_ux.py instalado con em-orquestador-ux, sin copiarlo al producto:
 
 - Antes de cerrar el SCR: --compuerta G3; sin INV y DEC vinculados no avanza.
 - Durante la construcción y antes de Validado: --compuerta G5 y --compuerta G6; sin captura, prueba de Enzo o ARP implementado no pasa.

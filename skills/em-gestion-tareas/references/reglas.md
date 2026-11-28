@@ -50,7 +50,7 @@ alcance para decidir. SKILL.md trae cada regla en una línea; aquí está el por
   (FLW), Pantalla (SCR), Especificación UX (UXS), Informe de accesibilidad (ARP). Y el DSP con
   su nombre.
 - **B18 — Ciclo de retroalimentación.** El ciclo de inicio y cierre lo mantiene
-  `ux-ui-orchestrator` ([protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md)).
+  `em-orquestador-ux` ([protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/em-orquestador-ux/references/ciclo-retroalimentacion.md)).
   Este skill hace las escrituras que el ciclo pide: el estado vivo al empezar (A), el cierre
   continuo cuando ocurre el hecho (C) y las notas o bloqueos que salen de `cambios-kb.mjs`. No
   las decide: las aplica con la evidencia que le entrega el orquestador.

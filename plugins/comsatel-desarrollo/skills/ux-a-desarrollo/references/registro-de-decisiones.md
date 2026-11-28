@@ -18,7 +18,7 @@ Número y título de la iteración, la decisión, la fuente que toca (UXR-xxx-Qn
 
 ## Impacto en la base de conocimiento
 
-Cada decisión que puede obligar a cambiar una historia, UXR o flujo se anota en la tabla inicial del registro («decisiones que pueden obligar a actualizar la base de conocimiento»), y se deriva a `ux-ui-orchestrator` para sincronizarla en cada cierre según su protocolo canónico, conservando lo pendiente del PO y sin fabricar su validación.
+Cada decisión que puede obligar a cambiar una historia, UXR o flujo se anota en la tabla inicial del registro («decisiones que pueden obligar a actualizar la base de conocimiento»), y se deriva a `em-orquestador-ux` para sincronizarla en cada cierre según su protocolo canónico, conservando lo pendiente del PO y sin fabricar su validación.
 
 ## Qué no hacer
 

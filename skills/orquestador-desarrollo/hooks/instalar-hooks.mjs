@@ -12,14 +12,14 @@ if(args.includes('--apply')&&args.includes('--dry-run'))throw Error('Usa --apply
 const i=args.indexOf('--settings'),settings=resolve(i<0?join(homedir(),'.claude','settings.json'):args[i+1]);
 const apply=args.includes('--apply'),remove=args.includes('--quitar');
 const skills=resolve(here,'../..');
-const sources=[join(here,'guardia-gitlab.mjs'),join(skills,'ux-ui-orchestrator','hooks','guardia-uxs.mjs'),join(skills,'ux-ui-orchestrator','scripts','audit_ux.py')];
+const sources=[join(here,'guardia-gitlab.mjs'),join(skills,'em-orquestador-ux','hooks','guardia-uxs.mjs'),join(skills,'em-orquestador-ux','scripts','audit_ux.py')];
 if(!remove)for(const src of sources)if(!existsSync(src))throw Error('Falta dependencia: '+src);
 const fingerprint=remove?'unused':createHash('sha256').update(Buffer.concat(sources.map(src=>readFileSync(src)))).digest('hex').slice(0,16);
 const dest=join(dirname(settings),'hooks','comsatel-guardias',fingerprint);
 const files=[
 [join(here,'guardia-gitlab.mjs'),join(dest,'gitlab','guardia-gitlab.mjs')],
-[join(skills,'ux-ui-orchestrator','hooks','guardia-uxs.mjs'),join(dest,'ux','hooks','guardia-uxs.mjs')],
-[join(skills,'ux-ui-orchestrator','scripts','audit_ux.py'),join(dest,'ux','scripts','audit_ux.py')]];
+[join(skills,'em-orquestador-ux','hooks','guardia-uxs.mjs'),join(dest,'ux','hooks','guardia-uxs.mjs')],
+[join(skills,'em-orquestador-ux','scripts','audit_ux.py'),join(dest,'ux','scripts','audit_ux.py')]];
 if(!remove)for(const [src] of files)if(!existsSync(src))throw Error('Falta dependencia: '+src);
 const before=existsSync(settings)?readFileSync(settings,'utf8'):null;
 const config=before?JSON.parse(before.replace(/^\uFEFF/,'')):{};

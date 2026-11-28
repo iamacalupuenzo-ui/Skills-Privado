@@ -16,7 +16,7 @@
     "construir-plugin": "node scripts/construir-plugin.mjs",
     "sync:angular": "node scripts/sync-angular-skills.mjs",
     "sync:anatomy": "node scripts/sync-anatomy-skill.mjs",
-    "test:guards": "node skills/orquestador-desarrollo/hooks/probar-guardia.mjs && node skills/orquestador-desarrollo/hooks/probar-guardias-universales.mjs && node skills/ux-ui-orchestrator/hooks/probar-guardia-uxs.mjs",
+    "test:guards": "node skills/orquestador-desarrollo/hooks/probar-guardia.mjs && node skills/orquestador-desarrollo/hooks/probar-guardias-universales.mjs && node skills/em-orquestador-ux/hooks/probar-guardia-uxs.mjs",
     "test:environment": "node scripts/probar-entorno-skills.mjs",
     "test:parity": "node scripts/probar-paridad.mjs"
   },

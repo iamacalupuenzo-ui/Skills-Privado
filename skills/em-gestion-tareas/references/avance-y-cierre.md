@@ -17,7 +17,7 @@ accessibility-reviewer…) entrega la evidencia; el orquestador llama a este ski
 | **Con nota:** cambió la KB y la tarea sigue igual | Línea en «Trazabilidad → Cambios de la KB»: fecha, documento, sección («HU-01-16 · AC-4») y enlace. No marca casillas | Nota en el issue con el mismo texto, con confirmación |
 | **Con bloqueo:** pregunta abierta de otro responsable | Línea en «Bloqueada por»: la pregunta, quién responde y qué desbloquea; «En pausa» si frena toda la tarea | Nota y `Task :: Stand By / Blocked` si se pausó, con confirmación |
 
-Las notas y los bloqueos salen del informe de `ux-ui-orchestrator/scripts/cambios-kb.mjs` (paso 0 del orquestador). Las notas se aplican con `scripts/notas-kb.mjs <cambios.json> <mapeo.json>`, que las guarda en `cambiosKb` del mapeo, y después `armar-mapeo.mjs` y `escribir-notion.mjs`: así una regeneración no las borra. Los bloqueos se aprueban con Enzo antes de aplicarse.
+Las notas y los bloqueos salen del informe de `em-orquestador-ux/scripts/cambios-kb.mjs` (paso 0 del orquestador). Las notas se aplican con `scripts/notas-kb.mjs <cambios.json> <mapeo.json>`, que las guarda en `cambiosKb` del mapeo, y después `armar-mapeo.mjs` y `escribir-notion.mjs`: así una regeneración no las borra. Los bloqueos se aprueban con Enzo antes de aplicarse.
 
 ## AJUSTAR
 
