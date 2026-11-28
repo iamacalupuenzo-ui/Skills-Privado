@@ -40,6 +40,7 @@ const warnings = [];
 const SHARED_REFERENCES = [
   ['orquestador-desarrollo/references/hooks-bloqueantes.md', 'flujo-ds/references/hooks-bloqueantes.md', 'flujo-producto/references/hooks-bloqueantes.md'],
   ['orquestador-desarrollo/references/mapa-de-repos.md', 'flujo-producto/references/mapa-de-repos.md'],
+  ['flujo-producto/references/evidencia-de-avance.md', 'em-gestion-tareas/references/evidencia-de-avance.md'],
 ];
 
 // Skills que ya son instalables solos: un `../otro-skill/` aquí rompe. En el resto, aviso.
@@ -50,7 +51,7 @@ const ENLACE_A_OTRO_SKILL = /`[^`]*\.\.\/[a-z][a-z0-9-]*\//;
 const OLD_NAMES = ['comsatel-angular-product-builder', 'comsatel-product-orchestrator'];
 
 // Skills que deben llevar casos de prueba de comportamiento en evals/evals.json.
-const EVALS_REQUIRED = ['em-constructor-de-skills', 'orquestador-desarrollo', 'flujo-ds', 'flujo-producto', 'ux-context-builder', 'ux-consultas-responder', 'ux-decision-aplicar'];
+const EVALS_REQUIRED = ['em-constructor-de-skills', 'em-gestion-tareas', 'orquestador-desarrollo', 'flujo-ds', 'flujo-producto', 'ux-context-builder', 'ux-consultas-responder', 'ux-decision-aplicar'];
 const MIN_EVALS = 5;
 
 function validateEvals(name) {

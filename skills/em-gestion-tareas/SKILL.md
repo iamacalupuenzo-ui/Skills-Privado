@@ -12,128 +12,85 @@ description: >
   cada tarea. No decide qué trabajo se hace ni lo ejecuta, y no sube capturas: eso es de quien
   ejecuta (flujo-producto, flujo-ds, ux-a-desarrollo…).
 metadata:
-  version: "1.0.0"
-  estado: borrador
+  version: "1.1.0"
   reemplaza: "flujo-tareas-gitlab 0.4.1 y recepcion-de-paquetes (respaldo en ~/.claude/skills-backup-2026-11-26)"
 ---
 
 # Gestión de tareas: Notion, GitLab y ClickUp
 
-Una tarea nace en **Notion**, que es el registro de Enzo. Si el equipo la sigue, pasa a **GitLab**
-como issue y a **ClickUp** como tarea. Las tres plataformas llevan **el mismo contenido de
-trabajo**: alcance, criterios de aceptación, condición de cierre y trazabilidad. Solo Notion
-agrega la capa de lectura (pregunta inicial, 30 segundos, relato y comprobación). Todo sale de un
-mapeo JSON que valida `scripts/armar-mapeo.mjs`; nadie escribe una tarea a mano.
+Una tarea nace en **Notion**, el registro de Enzo. Si el equipo la sigue, pasa a **GitLab** como
+issue y a **ClickUp** como tarea, con el mismo contenido de trabajo. Solo Notion agrega la capa de
+lectura. Todo sale de un mapeo JSON que valida `scripts/armar-mapeo.mjs`; nadie escribe una tarea
+a mano. Este skill **registra**: no decide qué se hace ni lo ejecuta.
 
-Este skill **registra**: no decide qué se hace ni lo ejecuta. Los orquestadores lo llaman
-(`references/llamados.md`) y quien ejecuta le entrega la evidencia.
+## Verificación de arranque
 
-## Referencias disponibles
-
-- `references/estructura-de-la-tarea.md` — la estructura aprobada (2026-11-26), sus tres versiones y los títulos. Leer antes de crear o corregir una tarea.
-- `references/trazabilidad.md` — qué enlaza cada tarea y por qué todo apunta a GitLab. Leer al crear y al cerrar.
-- `references/recibir-un-paquete.md` — el modo Recibir paso a paso, con el lector de historias y la estimación. Leer al recibir un DSP.
-- `references/pagina-del-paquete.md` — qué va en la página del DSP: las vistas «Historias del paquete» y «Tareas del paquete» arriba, el resumen y el contenido de la KB. Leer al recibir un DSP (crear las vistas) y al cargarlo.
-- `references/avance-y-cierre.md` — qué marca Avance, qué marca Cerrar y con qué evidencia. Leer antes de cambiar un estado.
-- `references/llamados.md` — el contrato con los orquestadores y los ejecutores. Leer si cambia un orquestador.
-- `references/mapeo-notion-gitlab-clickup.md` — estados, niveles, formato de ClickUp y fechas entre los tres sistemas (aprobado 2026-11-14).
-- `references/tablero-y-compromiso.md` — columnas del tablero y regla del compromiso del día.
-- `references/control-de-tiempos.md` — horas por día y solo la diferencia.
-- `references/api-issues.md` — llamadas a la API de GitLab.
-- `references/guardia-de-tareas.md` — el hook que hace cumplir la estructura y la confirmación.
-- `flujo-producto/references/evidencia-de-avance.md` — capturas y «Cómo funciona», que agrega quien ejecuta.
-
-## Scripts
-
-| Script | Qué hace | Escribe |
-|---|---|---|
-| `leer-paquete.mjs` | Lee el DSP y sus historias desde la KB (`git show`, sin tocar el clon), cuenta los criterios de aceptación (AC), busca qué ya existe y estima | No |
-| `armar-mapeo.mjs` | Valida el mapeo y genera las tres versiones de cada tarea con su trazabilidad | No |
-| `escribir-notion.mjs` | Reemplaza el contenido de tareas que ya existen por el que generó `armar-mapeo.mjs` (API de markdown de Notion) y comprueba lo guardado. Úsalo para actualizar varias tareas sin transcribir texto | Sí (Notion está aprobado); `--seco` solo muestra |
-| `publicar.mjs` | Crea issues y tareas de ClickUp, enlaces `relates_to`, `/estimate` y la columna del día. Corrida en seco por defecto | Con `--ejecutar` |
-| `tablero-dia.mjs` | Mueve cada mañana según la fecha límite y cierra a las 17:00–18:00 lo Completada que vence hoy | Con `--ejecutar` |
-| `cu-formato.mjs` | Limpieza de ClickUp de una sola vez (2026-11-16); solo se usa si vuelve a desordenarse | Con `--ejecutar` |
-
-`config/sistemas.json` guarda los identificadores (bases de Notion, proyecto 622, tablero 513,
-lista de ClickUp). `config/modelo-estimacion.json` es la hipótesis de horas (calibrada con un dato).
-
-## GUARD — verificar contexto
-
-1. Proyecto destino en GitLab (`cl2-flota/collaboration`, 622, o `svr-basico`) y **hito activo**: `publicar.mjs` lo verifica y se detiene si venció.
+1. Proyecto destino en GitLab (`cl2-flota/collaboration`, 622, o `svr-basico`) y **hito activo**; `publicar.mjs` se detiene si venció.
 2. Etiquetas y listas leídas del proyecto, no de la memoria (B5).
-3. Qué sistemas pidió el usuario: Notion siempre; GitLab y ClickUp solo cuando lo pide.
+3. Sistemas pedidos: Notion siempre; GitLab y ClickUp solo cuando se piden.
 4. Antes de marcar algo como hecho, la **evidencia** (B9): commit, MR, artefacto en `develop` de la KB, comentario o reunión.
-5. Tokens: `GITLAB_TOKEN` en el entorno, `~/.clickup/token.txt` y `~/.notion/token.txt`. Nunca se imprimen.
-6. La KB se lee con `git show origin/develop:<ruta>` después de un `git fetch`: el clon local no se modifica.
+5. Tokens: `GITLAB_TOKEN`, `~/.clickup/token.txt` y `~/.notion/token.txt`. Nunca se imprimen (B6).
+6. La KB se lee con `git show origin/develop:<ruta>` después de `git fetch`; el clon no se toca.
 
 ## Detección de modo
 
-| Modo | Señales | Acción |
+| Modo | Señales | Leer |
 |---|---|---|
-| `RECIBIR` | «recibimos el DSP», «mapea las tareas del paquete» | `recibir-un-paquete.md`: leer, estimar, mapear, validar y crear en Notion el paquete, la historia que falte y las tareas |
-| `PUBLICAR` | «súbelas a GitLab y ClickUp», «comprométe el día» | `publicar.mjs` en seco → confirmación → `--ejecutar` → `Issue` y `ClickUp` en Notion → `armar-mapeo --ids` para enlazar la trazabilidad de Notion |
-| `AVANCE` | Lo llama un orquestador al empezar o al terminar un paso, al pasar una compuerta o cuando cambia la KB | `avance-y-cierre.md`: «En curso», casilla con evidencia, enlace en Trazabilidad. Tres variantes: **con evidencia** (marca la casilla), **con nota** (un cambio en la KB que no cambia el alcance: se anota con su enlace, sin marcar nada) y **con bloqueo** (pregunta abierta de otro responsable: se anota quién responde y qué desbloquea, y se marca «En pausa» si frena todo). Las capturas no |
-| `AJUSTAR` | Aparece trabajo nuevo a mitad de la ejecución (un módulo, una pantalla, un flujo) o una tarea mapeada deja de tener sentido | Se edita el mapeo del paquete (agregar, mover o retirar), se valida con `armar-mapeo.mjs` y se crea o actualiza en Notion con `escribir-notion.mjs`. Nunca se escribe una tarea a mano (B14). Si ya está publicada, PUBLICAR la sube después con confirmación |
-| `CERRAR` | Lo llama un orquestador al terminar; «cierra lo que ya hice» | Casillas de criterios y de cierre con su evidencia, línea del Plan en la madre, Resultado y estado. GitLab y ClickUp esperan su fecha (B4) |
-| `TABLERO` | «inicia el día», «qué vence hoy» | `tablero-dia.mjs tablero` en seco y con confirmación; en la tarde, `cierre` |
-| `PAUSAR` | «pon en pausa» | Casilla «En pausa» en Notion sin cambiar el estado; `Task :: Stand By / Blocked` y «en pausa» en ClickUp (B11) |
-| `HORAS` | «carga las horas», «hoy trabajé 8 h» | `control-de-tiempos.md`: tabla, confirmación y `/spend <diferencia> <fecha>` |
-| `ACTIVIDAD` | «registra la reunión», «la ayuda que di» | Tarea corta en su frente (B12); no sigue el patrón de código |
+| `RECIBIR` | «recibimos el DSP», «mapea las tareas del paquete» | `references/recibir-un-paquete.md` |
+| `PUBLICAR` | «súbelas a GitLab y ClickUp», «comprométe el día» | `references/api-issues.md` y `references/mapeo-notion-gitlab-clickup.md` |
+| `AVANCE` | Un orquestador empieza o termina un paso; cambia la KB | `references/avance-y-cierre.md` |
+| `AJUSTAR` | Aparece trabajo nuevo o una tarea mapeada pierde sentido | `references/avance-y-cierre.md` |
+| `CERRAR` | Un orquestador termina; «cierra lo que ya hice» | `references/avance-y-cierre.md` |
+| `TABLERO` | «inicia el día», «qué vence hoy» | `references/tablero-y-compromiso.md` |
+| `PAUSAR` | «pon en pausa» | `references/mapeo-notion-gitlab-clickup.md` |
+| `HORAS` | «carga las horas», «hoy trabajé 8 h» | `references/control-de-tiempos.md` |
+| `ACTIVIDAD` | «registra la reunión», «la ayuda que di» | `references/reglas.md` (B12) |
 | `ESTADO` | «¿cómo va el tablero?» | Leer y reportar por lista, con enlaces |
 
+AJUSTAR edita el mapeo, lo valida con `armar-mapeo.mjs` y actualiza con `escribir-notion.mjs`.
+PUBLICAR va en seco → confirmación → `--ejecutar` → `Issue` y `ClickUp` en Notion → `armar-mapeo --ids`.
+PAUSAR marca la
+casilla «En pausa» sin cambiar el estado.
 
-## Proyecto y producto: dos relaciones distintas (Enzo, 2026-11-26)
+## Guías por paso
 
-La jerarquía en Notion es **Proyecto → Producto → Paquete (DSP) → Historia (HU)**. Ejemplo: el proyecto «CL2 Flotas» tiene los productos «CL2 Flotas», «Piloto de CL2 Flotas», «CL2 SVR Captura y Recupero» y los dos Design System.
-
-- **Paquetes e historias** llevan solo **Producto**; el proyecto les llega por el producto. Una historia lleva el producto de su paquete.
-- **Tareas** llevan las dos relaciones, **Proyecto y Producto**, las del paquete que las origina.
-- Si una página no aparece en una vista, lo primero que se revisa es su Producto (caso real: HU-01-14 seguía en el Piloto y no se veía junto a HU-01-16).
-- **Si hay duda, no se adivina: se pregunta con opciones** (herramienta de preguntas, con las alternativas de la base Productos y su proyecto). Hay duda cuando el paquete no tiene producto o tiene más de uno, cuando el producto no tiene un único proyecto, o cuando la historia ya está en otro producto. `cargar-paquete.js` las devuelve en `dudas` (sale con código 3) y no cambia esa relación; con la respuesta se repite con `--producto <id>` o `--confirmar-producto`.
-
-## Comportamientos bloqueantes
-
-- **B1 — Nada se crea, se mueve ni se cierra en GitLab o ClickUp sin la confirmación del usuario.** Primero la corrida en seco. En Notion la escritura está aprobada (Enzo, 2026-11-26). El hook pide confirmación aunque se olvide.
-- **B2 — Un issue es un entregable**, no un paso. Los pasos son casillas.
-- **B3 — Horas.** Las horas con IA solo en Notion. Las humanas estimadas van como `/estimate` y como estimación de ClickUp. `/spend` solo lleva las horas reales que dice el usuario.
-- **B4 — Se cierra el día de su fecha límite**, entre las 17:00 y las 18:00 de Lima, ni antes ni después.
-- **B5 — Etiquetas y listas se leen del proyecto.**
-- **B6 — Nunca imprimir un token.**
-- **B7 — Todo issue se enlaza a su historia y a su madre** (`relates_to`); `publicar.mjs` lo hace.
-- **B8 — El tiempo se imputa por día, con la fecha real y solo la diferencia.**
-- **B9 — Sin evidencia no hay cierre ni casilla marcada.** Si no se ejecutó, no se cierra aunque su fecha haya pasado: se propone una fecha nueva.
-- **B10 — Las tareas se nombran completas**: código, nombre e issue.
-- **B11 — Pausa no es cierre.**
-- **B12 — Las actividades cortas también se registran**, después de buscar si ya existen.
-- **B13 — Cuestionar antes de actuar**: un dato que choca con lo registrado se muestra y se pregunta.
-- **B14 — Ninguna tarea se escribe sin `armar-mapeo.mjs`.** La estructura no se improvisa; el hook bloquea una tarea sin sus secciones.
-- **B15 — La trazabilidad apunta a GitLab.** Issues, historias y artefactos con su enlace a `develop` de la KB; GitLab y ClickUp no enlazan a Notion.
-- **B16 — Este skill no sube capturas ni da por terminado el trabajo.** Marca lo que el ejecutor demostró. Las capturas y «Cómo funciona» las agrega quien ejecuta, mientras avanza.
-- **B17 — Siglas con su nombre**: criterio de aceptación (AC), Requerimiento UX (UXR), Flujo (FLW), Pantalla (SCR), Especificación UX (UXS), Informe de accesibilidad (ARP). Y el DSP con su nombre.
-- **B18 — Ciclo de retroalimentación obligatorio.** El ciclo de inicio y cierre lo mantiene `ux-ui-orchestrator` ([protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md)). Este skill hace las escrituras de tareas que el ciclo pide: el estado vivo al empezar (A), el cierre continuo cuando ocurre el hecho (C) y las notas o bloqueos que salen de `cambios-kb.mjs`. No las decide: las aplica con la evidencia que le entrega el orquestador.
-
-## Racionalizaciones comunes
-
-| Excusa | Realidad |
+| Cuándo | Leer |
 |---|---|
-| «Es una tarea simple, la escribo directo en Notion» | Sin el script no lleva su estructura ni su trazabilidad (B14). |
-| «Pongo el enlace de Notion en GitLab para que lo encuentren» | La trazabilidad apunta a GitLab (B15). |
-| «Copio los criterios de la historia en la tarea» | Se cita qué AC cubre; los criterios viven en el issue de la historia. |
-| «Ya terminé, marco todas las casillas» | Cada casilla con su evidencia (B9). |
-| «Ya lo terminé en Notion, cierro el issue hoy» | Se cierra el día de su fecha límite (B4). |
-| «Subo las capturas al cerrar» | Las sube quien ejecuta, mientras avanza (B16). |
-| «Cargo las horas con IA en GitLab» | Solo en Notion (B3). |
+| Al crear o corregir una tarea | `references/estructura-de-la-tarea.md` y `references/trazabilidad.md` |
+| Al recibir un paquete o si una página no sale en su vista | `references/pagina-del-paquete.md` y `references/proyecto-y-producto.md` |
+| Antes de correr un script | `references/scripts.md` |
+| Si cambia un orquestador | `references/llamados.md` |
+| Si el hook bloquea | `references/guardia-de-tareas.md` |
+| Al explicar qué evidencia deja quien ejecuta | `references/evidencia-de-avance.md` |
+| Antes de crear, publicar, cerrar o cargar horas | `references/reglas.md` |
 
-## Señales de alerta
+Plantillas en `templates/`, ejemplo real en `examples/mapeo-dsp-009.json`.
 
-- Una tarea sin «Condición de cierre» o sin «Trazabilidad», o con «Artefactos que produce» vacío después de cerrada.
-- Un issue sin hito, sin responsable o sin enlace a su historia.
-- Una casilla marcada sin enlace de evidencia.
-- Una tarea Completada en Notion con el issue abierto después de su fecha.
-- Una tarea en ClickUp sin su enlace en el campo «ClickUp» de Notion.
+## Reglas de bloqueo
 
-## Formato de respuesta
+Detalle, excusas y señales de alerta en `references/reglas.md`.
 
-Corto: qué se hizo en cada sistema, con enlaces, y qué necesita Enzo. Si hay varias tareas, una
-tabla de tres columnas como máximo: la tarea (nombre completo con código e issue), lo que pasó en
-cada sistema y lo pendiente de confirmar.
+- **B1** — GitLab y ClickUp: nada sin confirmación y corrida en seco.
+- **B2** — Un issue es un entregable; los pasos son casillas.
+- **B3** — Horas con IA solo en Notion; `/spend` solo horas reales.
+- **B4** — Se cierra el día de la fecha límite, de 17:00 a 18:00 de Lima.
+- **B5** — Etiquetas y listas se leen del proyecto.
+- **B6** — Nunca imprimir un token.
+- **B7** — Todo issue enlaza a su historia y a su madre.
+- **B8** — Tiempo por día, con fecha real y solo la diferencia.
+- **B9** — Sin evidencia no hay cierre ni casilla.
+- **B10** — Tareas nombradas completas: código, nombre e issue.
+- **B11** — Pausa no es cierre.
+- **B12** — Las actividades cortas también se registran.
+- **B13** — Un dato que choca con lo registrado se muestra y se pregunta.
+- **B14** — Ninguna tarea sin `armar-mapeo.mjs`.
+- **B15** — La trazabilidad apunta a GitLab; GitLab y ClickUp no enlazan a Notion.
+- **B16** — No sube capturas ni da por terminado el trabajo.
+- **B17** — Siglas con su nombre completo.
+- **B18 — Ciclo de retroalimentación obligatorio.** Aplica las escrituras del [protocolo](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md); no las decide.
+
+## Cierre
+
+Corto: qué se hizo en cada sistema, con enlaces, y qué necesita Enzo. Con varias tareas, una
+tabla de tres columnas como máximo: tarea (código, nombre e issue), qué pasó en cada sistema y qué
+falta confirmar.

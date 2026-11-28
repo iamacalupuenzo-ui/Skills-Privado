@@ -80,4 +80,4 @@ lo dice para que no se sumen dos veces.
 ```
 
 Ejemplo completo: el mapeo del DSP-009 (Identidad visual del Cliente y base del Producto), en
-`ejemplos/mapeo-dsp-009.json`.
+`examples/mapeo-dsp-009.json`.
