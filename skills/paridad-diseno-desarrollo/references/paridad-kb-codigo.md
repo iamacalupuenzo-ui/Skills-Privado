@@ -1,7 +1,7 @@
 # Paridad obligatoria entre KB y código
 
 Dueño del comparador: `paridad-diseno-desarrollo`, modo `KB-CODIGO`. Dueño del ciclo,
-de la sincronización y de las derivaciones de SCR/FLW/UXR/UXS/DEC: `ux-ui-orchestrator`.
+de la sincronización y de las derivaciones de SCR/FLW/UXR/UXS/DEC: `em-orquestador-ux`.
 Este modo no necesita navegador, Figma, modelos, red ni dependencias de Python.
 No reemplaza la validación visual, los contratos API ni la aprobación humana.
 

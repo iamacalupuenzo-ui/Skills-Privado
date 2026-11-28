@@ -6,7 +6,7 @@ description: >
   se construye, verifica, sube, versiona, despliega y documenta, y exige la puerta de cada
   paso. Úsalo cuando pidan "vamos a construir esta mejora", "sube esto", "publica el DS",
   "súbelo a DEV", "¿qué falta para publicar?", "¿en qué orden lo subimos?", "¿cómo nombro la
-  rama?" o "evaluemos el estatus". No diseña pantallas (usa ux-ui-orchestrator), no escribe el código de una pantalla
+  rama?" o "evaluemos el estatus". No diseña pantallas (usa em-orquestador-ux), no escribe el código de una pantalla
   (usa angular-product-builder) ni gestiona épicas ni Notion (usa product-orchestrator).
 metadata:
   version: "1.9.0"
@@ -49,13 +49,13 @@ El DS tiene su camino: `feature/<tema>` → `develop` (`-qa`) → `release` (`-p
 
 ## Antes del desarrollo: la documentación de UX
 
-El desarrollo parte de documentación ya generada. Esa etapa tiene su propio orquestador, **`ux-ui-orchestrator`** (orquestador de documentación), que coordina los skills que producen cada documento: `ux-requirements-analyzer` (UXR), `user-flow-designer` (flujos FLW), `ui-spec-writer` (pantallas SCR, componentes, tokens), `web-atomic-component-designer` (catálogo atómico), `stitch-ui-generator` (exploración) y `ux-development-handoff` (paquete de entrega y puerta `DESIGN_READY_FOR_DEV`). Este orquestador **no** los sustituye ni los repite: si faltan UXR, flujos o pantallas, o la puerta del handoff no pasó, deriva a `ux-ui-orchestrator` y espera. Cuando el paquete está listo, `ux-a-desarrollo` lo baja a código.
+El desarrollo parte de documentación ya generada. Esa etapa tiene su propio orquestador, **`em-orquestador-ux`** (orquestador de documentación), que coordina los skills que producen cada documento: `ux-requirements-analyzer` (UXR), `user-flow-designer` (flujos FLW), `ui-spec-writer` (pantallas SCR, componentes, tokens), `web-atomic-component-designer` (catálogo atómico), `stitch-ui-generator` (exploración) y `ux-development-handoff` (paquete de entrega y puerta `DESIGN_READY_FOR_DEV`). Este orquestador **no** los sustituye ni los repite: si faltan UXR, flujos o pantallas, o la puerta del handoff no pasó, deriva a `em-orquestador-ux` y espera. Cuando el paquete está listo, `ux-a-desarrollo` lo baja a código.
 
 ## Segmentos que orquestas
 
 | Segmento | Cuándo | Fuente |
 |---|---|---|
-| `ux-ui-orchestrator` | Falta documentación de UX o el handoff no está listo (etapa previa) | skill |
+| `em-orquestador-ux` | Falta documentación de UX o el handoff no está listo (etapa previa) | skill |
 | `ux-a-desarrollo` | Hay UXR, flujo o decisión del PO que baja a código | skill |
 | `angular-product-builder` | Construir la pantalla o el flujo con el DS | skill |
 | `flujo-producto` | Versionar, publicar y desplegar un producto; subir el DS a un producto | skill |
@@ -84,7 +84,7 @@ El desarrollo parte de documentación ya generada. Esa etapa tiene su propio orq
 |---|---|
 | Edita `ui-components` (componente, token, guía, `GAPS.md`) | `flujo-ds` |
 | Edita `web-backoffice`, `web-flotas`, `microui-*` o `flotas-web-bff` | `flujo-producto` |
-| Falta UXR, flujo, pantalla (SCR) o el handoff no pasó la puerta | `ux-ui-orchestrator` primero; no se construye sin ese paquete |
+| Falta UXR, flujo, pantalla (SCR) o el handoff no pasó la puerta | `em-orquestador-ux` primero; no se construye sin ese paquete |
 | Hay UXR, flujo, UXS o una decisión del PO por bajar | `ux-a-desarrollo` y luego construir |
 | Falta un componente del DS | Construir en el producto con una API migrable, registrar la brecha (`flujo-producto`) y subirlo al DS por olas (`flujo-ds`) |
 | Subir el DS a los productos | `flujo-ds` hasta que el paquete esté en el registro; después `flujo-producto` en pareja, dentro de la rama de la historia que lo necesita |
@@ -114,7 +114,7 @@ Toda tarea que este orquestador ejecuta se registra con `em-gestion-tareas`; nin
 
 ## Validar lo construido: solo en local con datos simulados (Enzo, 2026-11-26)
 
-Cuando UX o Enzo revisan lo que construyó Desarrollo, se levanta en local Shell + micro UI desde `origin/integration` (worktrees `--detach`) con el mock BFF del Shell. Nunca DEV, QA ni usuarios reales: UX solo revisa el frontend. Si el mock no cubre las rutas de la pantalla, se simulan con un proxy delante del mock a partir del contrato de la micro UI, sin cambiar el repo, y se avisa a Desarrollo qué rutas faltan. Se entregan las URL de entrada diciendo cuál es cuál. Detalle y ejemplo: `ux-ui-orchestrator/references/mapa-de-decisiones-y-validacion.md`.
+Cuando UX o Enzo revisan lo que construyó Desarrollo, se levanta en local Shell + micro UI desde `origin/integration` (worktrees `--detach`) con el mock BFF del Shell. Nunca DEV, QA ni usuarios reales: UX solo revisa el frontend. Si el mock no cubre las rutas de la pantalla, se simulan con un proxy delante del mock a partir del contrato de la micro UI, sin cambiar el repo, y se avisa a Desarrollo qué rutas faltan. Se entregan las URL de entrada diciendo cuál es cuál. Detalle y ejemplo: `em-orquestador-ux/references/mapa-de-decisiones-y-validacion.md`.
 
 ## Comportamientos bloqueantes
 
@@ -129,7 +129,7 @@ Cuando UX o Enzo revisan lo que construyó Desarrollo, se levanta en local Shell
 - **B8 — Nunca imprimir tokens.** Se usan por cabecera o variable de entorno, sin mostrarlos.
 
 - **B9 — Se desarrolla donde trabaja el equipo.** Antes de abrir una rama se revisan `integration` y las ramas de los demás; si el equipo trabaja en `integration`, la rama sale de ahí, y lo ya hecho se integra con `git merge` (nunca rebase ni push forzado, `flujo-producto` B13). El 17-nov-2026 se construyó sobre `develop` la misma página que Gabriel ya tenía en `integration` y la simulación dio 6, 7 y 13 choques en monitoring.
-- **B10 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `ux-ui-orchestrator` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
+- **B10 — Ciclo de retroalimentación obligatorio.** Al inicio y al cierre de cada desarrollo, mejora, análisis o definición, invocar a `em-orquestador-ux` y leer su [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/em-orquestador-ux/references/ciclo-retroalimentacion.md) (resolver primero la versión local de ese skill o la fuente central). Sin informe de un agente de verificación previa distinto de quien construye, no empezar; sin sincronización comprobada, no declarar terminado. El orquestador conserva los formatos y dueños de artefactos; si falta el protocolo, detenerse y reportarlo.
 - **B11 — Paridad KB-código obligatoria.** En cada cierre de front/documentación y antes
   del MR, invocar `paridad-diseno-desarrollo`, modo KB-CODIGO, siguiendo su
   [protocolo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/paridad-diseno-desarrollo/references/paridad-kb-codigo.md).

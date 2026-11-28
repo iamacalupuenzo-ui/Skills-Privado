@@ -1,0 +1,116 @@
+{
+  "skill_name": "em-orquestador-ux",
+  "version": "2.0.0",
+  "descripcion": "Casos del orquestador UX: ruteo a sus siete especialistas, ciclo de retroalimentación, compuerta GU y límites de lo que decide.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "Paquete nuevo arranca por el paso 0",
+      "tipo": "ruta",
+      "prompt": "Tenemos el DSP-012 con dos historias nuevas, arranca el diseño.",
+      "expected_output": "Corre el ciclo (sección A) y el paso 0: consulta las tareas con em-gestion-tareas (ESTADO, y RECIBIR si faltan) y corre cambios-kb.mjs. Diagnostica el escenario y muestra el plan por fases con la tarea de cada fase antes de ejecutar.",
+      "assertions": [
+        "Verifica las tareas y los cambios de la KB antes de diagnosticar.",
+        "Muestra el plan con especialista, tarea y compuerta de cada fase antes de ejecutar.",
+        "No redacta UXR ni SCR por su cuenta: delega en el especialista."
+      ],
+      "cubre": ["B1", "B3"],
+      "referencias": ["references/fases.md", "references/ciclo-retroalimentacion.md"],
+      "contexto": "",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "No sube la rama de diseño sin UXS",
+      "tipo": "frena",
+      "prompt": "Ya están las pantallas del DSP-009, sube la rama ux/dsp-009.",
+      "expected_output": "Corre audit_ux.py --exigir-uxs; si falta la UXS del paquete, se detiene, explica PAQUETE_SIN_UXS y pide la UXS a ux-context-builder antes de subir. No rodea el hook guardia-uxs ni cambia COMSATEL_UX_GUARDIA.",
+      "assertions": [
+        "No hace push sin la UXS del paquete.",
+        "Delega la UXS en ux-context-builder en vez de escribirla a mano.",
+        "No desactiva ni rodea el hook."
+      ],
+      "cubre": ["B5"],
+      "referencias": ["references/estados-y-compuertas.md", "references/controles-de-cierre.md"],
+      "contexto": "El paquete tiene SCR y ninguna UXS.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "No marca Validado sin la prueba de Enzo",
+      "tipo": "frena",
+      "prompt": "La pantalla SCR-011-013 ya está construida, márcala como Validado.",
+      "expected_output": "Se detiene: Validado exige la prueba de Enzo en el navegador, la captura de esa versión y el ARP sobre lo implementado. Propone En construcción y pide la prueba.",
+      "assertions": [
+        "No escribe Validado ni approved sin la prueba de Enzo.",
+        "Pide la captura y el ARP de la misma versión."
+      ],
+      "cubre": ["B8"],
+      "referencias": ["references/estados-y-compuertas.md"],
+      "contexto": "",
+      "files": []
+    },
+    {
+      "id": 4,
+      "name": "Pregunta de negocio no se cierra en diseño",
+      "tipo": "frena",
+      "prompt": "¿Cuántos Distribuidores puede ver un Cliente? Decide tú para avanzar.",
+      "expected_output": "No lo decide: es negocio. La deja como pregunta abierta con su responsable (PO) y, si toca una historia, propone un comentario al analista sin editar la HU.",
+      "assertions": [
+        "No cierra la pregunta de negocio.",
+        "Registra la pregunta con su responsable.",
+        "No edita la historia del analista."
+      ],
+      "cubre": ["B9", "B10", "B7"],
+      "referencias": ["references/reglas.md"],
+      "contexto": "",
+      "files": []
+    },
+    {
+      "id": 5,
+      "name": "Pregunta UX estándar se cierra con benchmarking",
+      "tipo": "ruta",
+      "prompt": "¿Qué texto lleva el estado vacío de la lista de identidades?",
+      "expected_output": "La cierra como IA (delegado por Enzo) con benchmarking, un DEC, fecha y fuentes; lo registra primero en la KB y después lo refleja en Notion.",
+      "assertions": [
+        "Cierra la pregunta con DEC, fecha y fuentes.",
+        "Registra primero en la KB y luego en Notion."
+      ],
+      "cubre": ["B9", "B6"],
+      "referencias": ["references/reglas.md", "references/tareas-y-notion.md"],
+      "contexto": "",
+      "files": []
+    },
+    {
+      "id": 6,
+      "name": "Ruteo de costuras al especialista dueño",
+      "tipo": "ruta",
+      "prompt": "El FLW-004 lista una pantalla que no existe.",
+      "expected_output": "Enruta el hallazgo a ui-spec-writer (el FLW declara, la SCR confirma), lo refleja en la tarea con em-gestion-tareas y vuelve a auditar; tope de tres pasadas.",
+      "assertions": [
+        "Envía el hallazgo a ui-spec-writer.",
+        "Refleja el hallazgo en la tarea en el momento.",
+        "No edita la SCR a mano."
+      ],
+      "cubre": ["B3", "B11"],
+      "referencias": ["references/fases.md"],
+      "contexto": "",
+      "files": []
+    },
+    {
+      "id": 7,
+      "name": "Handoff solo con todo validado",
+      "tipo": "ruta",
+      "prompt": "Entrega el DSP-009 a Desarrollo.",
+      "expected_output": "Verifica UXS, ARP y diseño validado, corre el gate de ux-development-handoff sin FAILED ni BLOCKED, y cierra con la tabla de MR y las decisiones humanas pendientes.",
+      "assertions": [
+        "Corre el gate de ux-development-handoff antes de declarar DESIGN_READY_FOR_DEV.",
+        "Cierra con la tabla de MR y su orden de merge."
+      ],
+      "cubre": ["B2", "B4"],
+      "referencias": ["references/fases.md", "references/ciclo-retroalimentacion.md"],
+      "contexto": "",
+      "files": []
+    }
+  ]
+}

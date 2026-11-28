@@ -29,7 +29,7 @@ no decisiones cerradas; se respetan mientras nadie las cambie y se proponen camb
 
 1. Estás en `flotas-movil` (existen `pubspec.yaml` con `name: flotas_movil`, `lib/core/` y `lib/features/`). Si no, derivar a `flujo-ds-movil`.
 2. Leer `README.md`, la rama y los MR abiertos. Confirmar qué versión de la biblioteca fija `pubspec.lock`.
-3. Confirmar que existe la UX de la pantalla (requisitos, flujo, pantalla). Si falta, derivar a `ux-ui-orchestrator`; lo pendiente del PO queda en un documento, nunca como rótulo en la interfaz.
+3. Confirmar que existe la UX de la pantalla (requisitos, flujo, pantalla). Si falta, derivar a `em-orquestador-ux`; lo pendiente del PO queda en un documento, nunca como rótulo en la interfaz.
 4. **Si falta un componente `Cs*`, parar y preguntar (B1).** No se inventa un envoltorio ni se aproxima con un widget suelto.
 
 ## Detección de modo

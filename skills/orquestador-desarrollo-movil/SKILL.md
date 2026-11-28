@@ -6,7 +6,7 @@ description: >
   en qué orden se construye, verifica, sube y versiona, y exige la puerta de cada paso. Úsalo
   cuando pidan "vamos a construir esta pantalla móvil", "agrega este componente a la biblioteca
   Flutter", "sube la app móvil", "¿qué falta para la versión 0.1.0 móvil?" o "evaluemos el
-  estatus de móvil". No diseña pantallas (usa ux-ui-orchestrator y, para el diseño móvil, el
+  estatus de móvil". No diseña pantallas (usa em-orquestador-ux y, para el diseño móvil, el
   plugin mobile-application-design), no es para web ni Angular (usa orquestador-desarrollo) y no
   gestiona épicas ni Notion.
 metadata:
@@ -35,16 +35,16 @@ o publicar. Subes la rama, abres el MR y lo asignas a César; la fusión y la et
 ## Antes del desarrollo: la documentación de UX
 
 El desarrollo parte de documentación ya generada. Esa etapa tiene su propio orquestador,
-**`ux-ui-orchestrator`**, y el diseño móvil se apoya en el plugin `mobile-application-design` del
+**`em-orquestador-ux`**, y el diseño móvil se apoya en el plugin `mobile-application-design` del
 catálogo de skills. Este orquestador **no** los sustituye ni los repite: si faltan requisitos UX,
-flujos o pantallas, deriva a `ux-ui-orchestrator` y espera. Con el paquete listo, baja las
+flujos o pantallas, deriva a `em-orquestador-ux` y espera. Con el paquete listo, baja las
 decisiones a código con `ux-a-desarrollo` si está instalado.
 
 ## Segmentos que orquestas
 
 | Segmento | Cuándo | Fuente |
 |---|---|---|
-| `ux-ui-orchestrator` | Falta documentación de UX o el handoff no está listo (etapa previa) | skill |
+| `em-orquestador-ux` | Falta documentación de UX o el handoff no está listo (etapa previa) | skill |
 | `flujo-ds-movil` | Cambiar la biblioteca: componente, token, tema, catálogo, versión | skill |
 | `flujo-app-movil` | Construir o cambiar una pantalla o un flujo de `flotas-movil`; actualizar la biblioteca que la app usa | skill |
 | `verificar-movil` | Análisis, pruebas, contraste, emulador y capturas de estados | skill |
@@ -72,7 +72,7 @@ de ti**: se cumplen igual (B1, B6, B8).
 | Edita `mobile-ui-components` (componente, token, tema, catálogo, plantilla) | `flujo-ds-movil` |
 | Edita `flotas-movil` (pantalla, flujo, repositorio de datos, dependencia) | `flujo-app-movil` |
 | Falta un componente `Cs*` para una pantalla | Parar y preguntar (B3); si se confirma, `flujo-ds-movil` crea el componente y `flujo-app-movil` lo usa después |
-| Falta UXR, flujo, pantalla (SCR) o el handoff no pasó la puerta | `ux-ui-orchestrator` primero; no se construye sin ese paquete |
+| Falta UXR, flujo, pantalla (SCR) o el handoff no pasó la puerta | `em-orquestador-ux` primero; no se construye sin ese paquete |
 | Probar, medir contraste, capturar estados, compilar el APK | `verificar-movil` |
 | «¿Cómo vamos?» | Leer GitLab (MR, versión, etiqueta) y la memoria del trabajo; responder con evidencia y lo no verificado |
 
@@ -98,7 +98,7 @@ Toda tarea que este orquestador ejecuta se registra con `em-gestion-tareas`; nin
 
 ## Validar lo construido: solo en local con datos simulados (Enzo, 2026-11-26)
 
-Cuando UX o Enzo revisan lo que construyó Desarrollo, se levanta en local Shell + micro UI desde `origin/integration` (worktrees `--detach`) con el mock BFF del Shell. Nunca DEV, QA ni usuarios reales: UX solo revisa el frontend. Si el mock no cubre las rutas de la pantalla, se simulan con un proxy delante del mock a partir del contrato de la micro UI, sin cambiar el repo, y se avisa a Desarrollo qué rutas faltan. Se entregan las URL de entrada diciendo cuál es cuál. Detalle y ejemplo: `ux-ui-orchestrator/references/mapa-de-decisiones-y-validacion.md`.
+Cuando UX o Enzo revisan lo que construyó Desarrollo, se levanta en local Shell + micro UI desde `origin/integration` (worktrees `--detach`) con el mock BFF del Shell. Nunca DEV, QA ni usuarios reales: UX solo revisa el frontend. Si el mock no cubre las rutas de la pantalla, se simulan con un proxy delante del mock a partir del contrato de la micro UI, sin cambiar el repo, y se avisa a Desarrollo qué rutas faltan. Se entregan las URL de entrada diciendo cuál es cuál. Detalle y ejemplo: `em-orquestador-ux/references/mapa-de-decisiones-y-validacion.md`.
 
 ## Comportamientos bloqueantes
 

@@ -1,6 +1,6 @@
 # Contenido de las páginas de tareas
 
-Para trabajo sujeto al [ciclo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/ux-ui-orchestrator/references/ciclo-retroalimentacion.md), aplicar sus reglas de estados, sección Avance y conservación de horas/fechas por encima de las rutinas generales de esta referencia. Consultar siempre el schema vivo.
+Para trabajo sujeto al [ciclo canónico](https://github.com/iamacalupuenzo-ui/Skills-Privado/blob/main/skills/em-orquestador-ux/references/ciclo-retroalimentacion.md), aplicar sus reglas de estados, sección Avance y conservación de horas/fechas por encima de las rutinas generales de esta referencia. Consultar siempre el schema vivo.
 
 ## Principio
 

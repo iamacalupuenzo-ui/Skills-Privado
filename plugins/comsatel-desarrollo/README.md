@@ -32,7 +32,7 @@ node skills/orquestador-desarrollo/hooks/instalar-hooks.mjs --quitar
 
 ## Apoyo que no viaja en el plugin
 
-`ux-ui-orchestrator` (documentación de UX, etapa previa), `angular-developer`, `angular-new-app`, `comsatel-design-system` y `orquestacion-multi-harness`. Si faltan, el orquestador sigue con las reglas resumidas de sus referencias y avisa de lo que no pudo apoyar.
+`em-orquestador-ux` (documentación de UX, etapa previa), `angular-developer`, `angular-new-app`, `comsatel-design-system` y `orquestacion-multi-harness`. Si faltan, el orquestador sigue con las reglas resumidas de sus referencias y avisa de lo que no pudo apoyar.
 
 ## Mantenimiento
 

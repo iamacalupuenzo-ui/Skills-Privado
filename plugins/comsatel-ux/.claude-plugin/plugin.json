@@ -1,7 +1,7 @@
 {
   "name": "comsatel-ux",
-  "version": "1.3.0",
-  "description": "Documentación de UX/UI de CL2 Flotas de punta a punta: un orquestador y diez especialistas llevan User Stories validadas hasta un paquete de diseño consolidado (UXS), un diseño gobernado y un handoff DESIGN_READY_FOR_DEV, con trazabilidad US → UXR → FLW → SCR → UXS y compuertas humanas. Incluye el guardia de la UXS: una rama de diseño no se sube sin la UXS de los paquetes que toca.",
+  "version": "2.0.0",
+  "description": "Documentación de UX/UI de CL2 Flotas de punta a punta: un orquestador y siete especialistas llevan User Stories validadas hasta un paquete de diseño consolidado (UXS), un diseño gobernado y un handoff DESIGN_READY_FOR_DEV, con trazabilidad US → UXR → FLW → SCR → UXS y compuertas humanas. Incluye el guardia de la UXS: una rama de diseño no se sube sin la UXS de los paquetes que toca.",
   "author": {
     "name": "Comsatel"
   },
@@ -12,8 +12,6 @@
     "diseño",
     "handoff",
     "accesibilidad",
-    "stitch",
-    "figma",
     "uxs"
   ]
 }

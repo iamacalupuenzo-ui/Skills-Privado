@@ -15,9 +15,10 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const skillsDir = join(root, 'skills');
 
 // Carpetas que no se publican, por skill.
-const PERSONAL = { 'ux-ui-orchestrator': ['notion'] };
-// Secciones "## ..." de SKILL.md que se quitan enteras.
-const SECCIONES_PERSONALES = [/^## Módulo Notion/];
+const PERSONAL = { 'em-orquestador-ux': ['notion'] };
+// Secciones "## ..." que se quitan enteras: en SKILL.md y, en los skills con carpetas personales,
+// también en sus guías .md (el módulo Notion del orquestador UX vive en references/tareas-y-notion.md).
+const SECCIONES_PERSONALES = [/^## (\d+\. )?Módulo Notion/];
 // Lo que no puede quedar en ninguna copia publicada.
 const RESIDUOS = [/`notion\//, /notion\/config\.json/, /~\/\.notion/];
 
@@ -61,6 +62,14 @@ for (const nombre of skills) {
   const crlf = readFileSync(skillMd, 'utf8').includes('\r\n');
   const limpio = quitarSecciones(readFileSync(skillMd, 'utf8').replace(/\r\n/g, '\n'));
   writeFileSync(skillMd, crlf ? limpio.replace(/\n/g, '\r\n') : limpio);
+  if (PERSONAL[nombre]) {
+    for (const f of archivos(destino)) {
+      if (!f.endsWith('.md') || f === skillMd) continue;
+      const t = readFileSync(f, 'utf8');
+      const l = quitarSecciones(t.replace(/\r\n/g, '\n'));
+      writeFileSync(f, t.includes('\r\n') ? l.replace(/\n/g, '\r\n') : l);
+    }
+  }
 
   for (const f of archivos(destino)) {
     if (!/\.(md|json|mjs|js|py|yaml|yml|txt)$/.test(f)) continue;

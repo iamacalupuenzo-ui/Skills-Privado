@@ -45,7 +45,7 @@ piloto, corroborado por shell-layout.mapper.ts; no prueba una sesión con el BFF
 | Skill | Versión |
 |---|---|
 | paridad-diseno-desarrollo | 1.3.0 |
-| ux-ui-orchestrator | 1.2.0 |
+| em-orquestador-ux | 1.2.0 |
 | orquestador-desarrollo | 1.5.0 |
 | flujo-producto | 1.2.0 |
 
@@ -92,14 +92,14 @@ anterior ya no rigen: `main` había subido varias, así que se resolvió tomando
 | Skill o plugin | Versión publicada | Regla de paridad |
 |---|---|---|
 | paridad-diseno-desarrollo | 1.3.0 | Define el modo KB-CODIGO |
-| ux-ui-orchestrator | 1.2.0 | B4 |
+| em-orquestador-ux | 1.2.0 | B4 |
 | orquestador-desarrollo | 1.8.0 | B11 |
 | flujo-producto | 1.5.1 | B16 |
 | plugin comsatel-desarrollo | 1.3.0 | — |
 | plugin comsatel-ux | 1.3.0 | — |
 
 La regla tiene número distinto en cada skill porque cada uno ya tenía sus propias reglas B. En `main` ya existían
-B9 y B10 en orquestador-desarrollo, B10 a B15 en flujo-producto y B1 a B3 en ux-ui-orchestrator, así que la de
+B9 y B10 en orquestador-desarrollo, B10 a B15 en flujo-producto y B1 a B3 en em-orquestador-ux, así que la de
 paridad quedó al final de cada lista.
 
 El diseño gobernado de Claude Design y de prototipos (governed_artifacts.py) pasó a ser reconocido por el gate de

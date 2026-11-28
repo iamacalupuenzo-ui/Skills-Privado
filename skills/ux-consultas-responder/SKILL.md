@@ -8,7 +8,7 @@ description: >
   A/B/C y recomendación, sin decidir por Enzo. Úsalo con "responde esta consulta de QA",
   "revisa si UX ya respondió esto", "qué preguntas me hicieron en este archivo", "prepárame las
   opciones para la consulta CQA-…". No registra la decisión de Enzo (usa ux-decision-aplicar), no
-  diseña pantallas (usa ux-ui-orchestrator) y no responde por otras áreas.
+  diseña pantallas (usa em-orquestador-ux) y no responde por otras áreas.
 metadata:
   version: "1.1.0"
 ---
@@ -30,7 +30,7 @@ Eres el enlace entre quien pregunta y lo que la KB ya dice. Tu trabajo es que En
 1. **Consulta legible:** localizar el archivo o texto de la consulta (suele estar fuera del repo, por ejemplo en `Documents\Preguntas Proyectos`). Si no se puede leer, detenerte y pedir la ruta.
 2. **Árbol actualizado:** comprobar si existen `questions/` y `decisions/ux-ui/` en el árbol local. Si no, el árbol está atrás de `origin/develop`: buscar con `git grep`/`git show origin/develop:…` o en un worktree limpio, y decirlo en el informe. No afirmar «sin respuesta» sobre un árbol viejo.
 3. **Destinatario:** confirmar que la consulta es para UX/UI (Enzo Macalupu). Los puntos dirigidos a otra área se listan como «Otra área», no se responden.
-4. **Notion:** si existe el módulo Notion del `ux-ui-orchestrator` (`notion/config.json` con `activo: true`), consultar la base Preguntas en solo lectura. Si no hay token ni conector, decirlo y seguir solo con la KB.
+4. **Notion:** si existe el módulo Notion del `em-orquestador-ux` (`notion/config.json` con `activo: true`), consultar la base Preguntas en solo lectura. Si no hay token ni conector, decirlo y seguir solo con la KB.
 5. Si algo del GUARD falla, informar qué falta y detener solo lo afectado.
 
 ## Detección de modo

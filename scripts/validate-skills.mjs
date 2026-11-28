@@ -44,14 +44,14 @@ const SHARED_REFERENCES = [
 ];
 
 // Skills que ya son instalables solos: un `../otro-skill/` aquí rompe. En el resto, aviso.
-// ux-ui-orchestrator queda fuera: su worktree-protocol.md remite a af-requirements-orchestrator y es un archivo del equipo (Ian).
+// em-orquestador-ux queda fuera: su worktree-protocol.md remite a af-requirements-orchestrator y es un archivo del equipo (Ian).
 const AUTONOMOS = ['orquestador-desarrollo', 'flujo-ds', 'flujo-producto', 'angular-product-builder'];
 const ENLACE_A_OTRO_SKILL = /`[^`]*\.\.\/[a-z][a-z0-9-]*\//;
 
 const OLD_NAMES = ['comsatel-angular-product-builder', 'comsatel-product-orchestrator'];
 
 // Skills que deben llevar casos de prueba de comportamiento en evals/evals.json.
-const EVALS_REQUIRED = ['em-constructor-de-skills', 'em-gestion-tareas', 'orquestador-desarrollo', 'flujo-ds', 'flujo-producto', 'ux-context-builder', 'ux-consultas-responder', 'ux-decision-aplicar'];
+const EVALS_REQUIRED = ['em-constructor-de-skills', 'em-gestion-tareas', 'em-orquestador-ux', 'orquestador-desarrollo', 'flujo-ds', 'flujo-producto', 'ux-context-builder', 'ux-consultas-responder', 'ux-decision-aplicar'];
 const MIN_EVALS = 5;
 
 function validateEvals(name) {
@@ -108,7 +108,7 @@ function frontmatter(text) {
 const listed = new Set(manifest.skills);
 // Un único dueño del protocolo transversal; el registro no instala dependencias.
 const cycle = manifest.protocols?.['ciclo-retroalimentacion'];
-if (!cycle || cycle.owner !== 'ux-ui-orchestrator' || cycle.path !== 'references/ciclo-retroalimentacion.md') {
+if (!cycle || cycle.owner !== 'em-orquestador-ux' || cycle.path !== 'references/ciclo-retroalimentacion.md') {
   errors.push('manifest: falta el dueño/ruta canónicos del ciclo de retroalimentación');
 } else {
   if (!listed.has(cycle.owner) || !existsSync(join(skillsDir, cycle.owner, cycle.path))) {

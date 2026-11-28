@@ -7,7 +7,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/skills/ux-ui-orchestrator/hooks/guardia-uxs.mjs\"",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/skills/em-orquestador-ux/hooks/guardia-uxs.mjs\"",
             "timeout": 60
           }
         ]

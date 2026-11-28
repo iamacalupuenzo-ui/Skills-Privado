@@ -7,7 +7,7 @@ tareas solo se actualizaban cuando Enzo lo pedía.
 
 | Orquestador | Cuándo llama |
 |---|---|
-| `ux-ui-orchestrator` | Al recibir un paquete (Recibir), al empezar cada tarea UX (Avance), al terminar cada artefacto (Avance con el MR o el archivo) y al cerrar (Cerrar) |
+| `em-orquestador-ux` | Al recibir un paquete (Recibir), al empezar cada tarea UX (Avance), al terminar cada artefacto (Avance con el MR o el archivo) y al cerrar (Cerrar) |
 | `orquestador-desarrollo` | Al empezar una tarea FRONT o DS (Avance), al abrir o fusionar un MR (Avance) y al terminar (Cerrar) |
 | `orquestador-desarrollo-movil` | Igual que el de desarrollo, para la biblioteca y la app móvil |
 
@@ -29,4 +29,4 @@ la evidencia de lo hecho.
 | `product-orchestrator` | Épicas, segmentación y ruteo | Las tareas que salen de un plan |
 | `epica-a-plan-desarrollo` | Épicas, historias y casos de uso | Las tareas del plan |
 | `gestor-notion` | Registros, relaciones y plantillas generales | Las páginas de la base Tareas |
-| `ux-ui-orchestrator` (módulo Notion) | Conciliar UXR, FLW y SCR entre la KB y Notion | El registro del paquete, las historias y las tareas (modo Recibir) |
+| `em-orquestador-ux` (módulo Notion) | Conciliar UXR, FLW y SCR entre la KB y Notion | El registro del paquete, las historias y las tareas (modo Recibir) |

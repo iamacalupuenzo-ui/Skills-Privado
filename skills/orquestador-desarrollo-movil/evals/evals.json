@@ -7,12 +7,12 @@
       "id": 1,
       "name": "Pantalla móvil nueva: ruta y primera puerta",
       "prompt": "Construye la pantalla de recuperar contraseña en la app móvil.",
-      "expected_output": "Declara el flujo (app móvil). Lee el estado real (rama, MR, versión de la biblioteca que fija la app). Comprueba que existen requisitos, flujo y pantalla de UX; si faltan, deriva a ux-ui-orchestrator y espera. Si existen, delega en flujo-app-movil y pide validar el alcance antes de editar.",
+      "expected_output": "Declara el flujo (app móvil). Lee el estado real (rama, MR, versión de la biblioteca que fija la app). Comprueba que existen requisitos, flujo y pantalla de UX; si faltan, deriva a em-orquestador-ux y espera. Si existen, delega en flujo-app-movil y pide validar el alcance antes de editar.",
       "files": [],
       "assertions": [
         "Declara el flujo elegido en la primera línea.",
         "Lee git, los MR y pubspec.lock antes de responder, sin pedir confirmación para leer.",
-        "Deriva a ux-ui-orchestrator si falta la documentación de UX, en lugar de construir.",
+        "Deriva a em-orquestador-ux si falta la documentación de UX, en lugar de construir.",
         "Delega la construcción en flujo-app-movil, no en flujo-ds-movil."
       ],
       "tipo": "ruta",

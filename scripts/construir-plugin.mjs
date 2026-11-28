@@ -8,7 +8,7 @@
 // No toca plugin.json, hooks.json ni README.md: esos archivos se editan a mano.
 //
 // Qué se hace con cada skill:
-//   1. Se le quita lo personal con scripts/preparar-publicacion.mjs (p. ej. notion/ de ux-ui-orchestrator).
+//   1. Se le quita lo personal con scripts/preparar-publicacion.mjs (p. ej. notion/ de em-orquestador-ux).
 //   2. No viajan evals/ ni __pycache__.
 //   3. Se aplican REEMPLAZOS: rutas del repo (.claude/skills/...) que en un plugin no existen.
 //      Si el texto de origen cambia y un reemplazo ya no aplica, el script falla en vez de callar.
@@ -25,13 +25,17 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 // En SKILL.md rige ${CLAUDE_SKILL_DIR} (la carpeta del propio skill); las referencias .md no
 // se sustituyen, por eso allí va la indicación en prosa.
 export const REEMPLAZOS = {
-  'ux-ui-orchestrator': [
-    ['SKILL.md', 'python .claude/skills/ux-ui-orchestrator/scripts/audit_ux.py knowledge-base',
+  'em-orquestador-ux': [
+    ['SKILL.md', 'python .claude/skills/em-orquestador-ux/scripts/audit_ux.py knowledge-base',
       'python "${CLAUDE_SKILL_DIR}/scripts/audit_ux.py" knowledge-base'],
     ['SKILL.md', 'python .claude/skills/ux-development-handoff/validators/cli.py',
       'python "${CLAUDE_SKILL_DIR}/../ux-development-handoff/validators/cli.py"'],
+    ['references/fases.md', 'python .claude/skills/em-orquestador-ux/scripts/audit_ux.py knowledge-base',
+      'python <carpeta de este skill>/scripts/audit_ux.py knowledge-base'],
+    ['references/fases.md', 'python .claude/skills/ux-development-handoff/validators/cli.py',
+      'python <carpeta hermana ux-development-handoff>/validators/cli.py'],
     ['references/worktree-protocol.md', /^- \*\*Verificación previa:\*\*.*$/m,
-      '- **Verificación previa:** además de `git status --short`, comprueba que el worktree contiene `knowledge-base/design/`. Los skills y los validadores vienen con el plugin (no están en el worktree): ejecuta los validadores con la ruta del skill `ux-development-handoff`, carpeta hermana de `ux-ui-orchestrator`, y no los copies al worktree.'],
+      '- **Verificación previa:** además de `git status --short`, comprueba que el worktree contiene `knowledge-base/design/`. Los skills y los validadores vienen con el plugin (no están en el worktree): ejecuta los validadores con la ruta del skill `ux-development-handoff`, carpeta hermana de `em-orquestador-ux`, y no los copies al worktree.'],
   ],
 };
 

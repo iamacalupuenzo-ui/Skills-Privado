@@ -4,7 +4,7 @@ Leer en la fase 2. Objetivo: saber qué dice Notion sobre las preguntas y pantal
 
 ## Cuándo aplica
 
-Cuando existe el módulo Notion del `ux-ui-orchestrator` (`notion/config.json` con `"activo": true`; su ruta de instalación puede variar por equipo: buscar `ux-ui-orchestrator/notion/config.json`). Si Enzo dijo «sin Notion», se omite.
+Cuando existe el módulo Notion del `em-orquestador-ux` (`notion/config.json` con `"activo": true`; su ruta de instalación puede variar por equipo: buscar `em-orquestador-ux/notion/config.json`). Si Enzo dijo «sin Notion», se omite.
 
 ## Vías de acceso, en este orden
 
