@@ -9,7 +9,7 @@ description: >
   pantalla?" o "compara con el piloto". No diseña (usa em-orquestador-ux), no construye la
   pantalla (usa angular-product-builder) ni publica (usa flujo-producto).
 metadata:
-  version: "1.2.1"
+  version: "1.3.0"
 ---
 
 # De UX a desarrollo
@@ -23,6 +23,7 @@ donde corresponde: en un documento, nunca como rótulo en la interfaz.
 - `references/estados-de-pantalla.md` — los estados que toda pantalla debe cubrir y cómo se muestran. Leer antes de construir.
 - `references/registro-de-decisiones.md` — cómo registrar decisiones del responsable de diseño, desvíos de la fuente y brechas. Leer al decidir o desviarse.
 - `references/iteracion-visual.md` — cómo iterar con capturas, comparar con el piloto y verificar en el navegador. Leer al aplicar mejoras de diseño.
+- `references/seguimiento-de-cambios.md` — qué hacer cuando lo construido se aparta de la documentación y cuando otro cambia la documentación del paquete. Leer al construir y cuando el hook avisa cambios.
 - `references/respuesta-de-cierre.md` — estructura única de la respuesta que cierra un paso (resultado, «Lo que hice», «Lo que necesito de ti», «Lo siguiente»). Leer antes de cerrar.
 
 ## GUARD — verificar contexto
@@ -31,13 +32,15 @@ donde corresponde: en un documento, nunca como rótulo en la interfaz.
 2. Distinguir **decidido por la fuente**, **decidido por el responsable de diseño pero pendiente del PO** y **abierto**. Solo se construye con certeza lo primero; lo segundo se construye y se registra; lo tercero se pregunta.
 3. Si el diseño contradice la fuente (UXR/FLW), no se resuelve en silencio: se registra como desvío (`registro-de-decisiones.md`).
 4. Identificar el piloto de referencia (el producto que ya resolvió el patrón) y abrirlo corriendo para comparar.
+5. En `BAJAR`, registrar el paquete para seguir sus cambios: `node scripts/seguir-paquete.mjs registrar --kb <kb> --paquete DSP-NNN`. Si la sesión empezó con el aviso del hook, atenderlo primero (`seguimiento-de-cambios.md`, sección 3).
 
 ## Detección de modo
 
 | Modo | Señales | Acción |
 |---|---|---|
 | `BAJAR` | «construye según el flujo/UXR» | Extraer estados, reglas y copy; plan de pantalla; construir con `angular-product-builder` |
-| `ITERAR` | capturas con ajustes de espacio, tamaño, orden | `iteracion-visual.md`; propuesta documental y captura para aprobación de Enzo antes de escribir |
+| `ITERAR` | capturas con ajustes de espacio, tamaño, orden | `iteracion-visual.md`; propuesta documental y captura; el agente la valida y la escribe |
+| `SEGUIR` | aviso del hook, «¿cambió algo del diseño?» | `seguimiento-de-cambios.md`: revisar los cambios contra el código y marcar `visto` |
 | `REGISTRAR` | «anota esta decisión», «esto se aparta del UXR» | `registro-de-decisiones.md` |
 | `ESTADOS` | «¿qué estados tiene?», «¿qué falta?» | `estados-de-pantalla.md` |
 
@@ -50,7 +53,7 @@ donde corresponde: en un documento, nunca como rótulo en la interfaz.
 - **B4 — El texto provisional se marca en el documento**, no en la pantalla, y no inventa reglas de negocio.
 - **B5 — Antes de cambiar un componente del DS se explica el cambio con evidencia** (ver `flujo-ds`).
 - **B6 — Lo que se construye se verifica en el navegador contra el piloto**, no solo con pruebas.
-- **B8 — Lo construido se documenta mientras se valida, no al cierre.** Cada texto, componente y comportamiento que difiere de la especificación (un flujo por pestaña que pasó a página, un botón que pasó a aviso, una validación que bloquea en lugar de una vista previa) se registra en el SCR/UXR en la misma rama del front, o en un DEC como desvío, y el informe de accesibilidad (ARP) no se entrega sin esa paridad. Si se deja para el cierre, los documentos describen otra pantalla y QA lo descubre al diseñar sus casos de prueba. La mejora pendiente de automatizarlo está en `em-orquestador-ux/references/mejoras-del-proceso.md`.
+- **B8 — Lo construido se documenta mientras se valida, no al cierre.** Cada texto, componente y comportamiento que difiere de la especificación (un flujo por pestaña que pasó a página, un botón que pasó a aviso, una validación que bloquea en lugar de una vista previa) se registra en el SCR/UXR en la misma rama, con el skill dueño (`ux-requirements-analyzer` en modo ACTUALIZAR para el UXR, con `validar_uxr.py` sin errores; `ui-spec-writer` para la SCR), o en un DEC como desvío, y el informe de accesibilidad (ARP) no se entrega sin esa paridad. Si se deja para el cierre, los documentos describen otra pantalla y QA lo descubre al diseñar sus casos de prueba. La mejora pendiente de automatizarlo está en `em-orquestador-ux/references/mejoras-del-proceso.md`.
 
 ## Cierre de cada iteración
 
@@ -82,6 +85,7 @@ El hook guardia-uxs del orquestador también impide subir una rama de diseño co
 | «El diseño lo pide, no hace falta registrar el desvío» | Sin registro el PO no sabe qué cambió (B2). |
 | «El estado vacío es obvio, lo hago después» | Un estado sin construir es un hueco para quien prueba (B3). |
 | «La prueba pasa, listo» | Las pruebas no ven el espacio ni el tamaño; comparar con el piloto (B6). |
+| «Edito el UXR a mano, es solo una línea» | Sin el analista se pierde la clasificación, el historial o el ID; usa `ux-requirements-analyzer` y su validador (B8). |
 | «Actualizo el SCR cuando cierre el paquete» | Para entonces nadie recuerda qué cambió; QA ya diseñó sus casos con la especificación vieja (B8). |
 
 ## Señales de alerta
@@ -90,6 +94,7 @@ El hook guardia-uxs del orquestador también impide subir una rama de diseño co
 - Una pantalla sin su estado de error o de sin permiso.
 - Texto de interfaz que describe una decisión («pendiente del PO», «propuesta»).
 - Una captura del responsable de diseño con una medida que no se aplicó.
+- Una sesión que empezó con el aviso de cambios del hook y terminó sin `seguir-paquete.mjs visto`.
 - Un texto, componente o flujo construido que el SCR no menciona, o un SCR sin fecha posterior al último cambio del front.
 
 ## Formato de respuesta

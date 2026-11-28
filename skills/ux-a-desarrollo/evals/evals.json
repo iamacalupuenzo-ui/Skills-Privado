@@ -1,0 +1,84 @@
+{
+  "skill_name": "ux-a-desarrollo",
+  "version": "1.3.0",
+  "descripcion": "Casos de ux-a-desarrollo: bajar el diseño a código sin perder estados, documentar lo construido con el skill dueño y atender los cambios de diseño que llegan mientras se desarrolla.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "Lo construido se aparta del UXR",
+      "tipo": "ruta",
+      "prompt": "Al final la validación de IP bloquea al guardar en vez de mostrar la vista previa que pedía el UXR-027. Ya quedó así en el front.",
+      "expected_output": "Registra la diferencia en el momento con ux-requirements-analyzer en modo ACTUALIZAR (mismo ID, historial, clasificación) y corre validar_uxr.py; si contradice una fuente, deja el DEC como desvío o la pregunta al PO. No cierra el paso con el validador en rojo.",
+      "assertions": [
+        "Delega la actualización del UXR en ux-requirements-analyzer en vez de editarlo a mano.",
+        "Corre validar_uxr.py sobre el UXR tocado antes de cerrar el paso.",
+        "Conserva el ID UXR-027."
+      ],
+      "cubre": ["B8"],
+      "referencias": ["references/seguimiento-de-cambios.md"],
+      "contexto": "",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "La sesión arranca con el aviso de cambios",
+      "tipo": "ruta",
+      "prompt": "Sigamos con la pantalla de identidad del Cliente.",
+      "expected_output": "Antes de seguir, cuenta a Enzo que el hook avisó cambios en UXR-140 y SCR del DSP-009, revisa cada diff contra el código, ajusta lo construido o registra el desvío, y marca seguir-paquete.mjs visto.",
+      "assertions": [
+        "Menciona el aviso a Enzo en la primera respuesta.",
+        "Compara cada cambio con el código antes de seguir construyendo.",
+        "Marca el cambio como visto solo después de revisarlo."
+      ],
+      "cubre": ["B8"],
+      "referencias": ["references/seguimiento-de-cambios.md"],
+      "contexto": "El hook SessionStart entregó: DSP-009: 2 artefactos cambiaron (UXR-140, SCR-011).",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "Registra el paquete al empezar a bajar",
+      "tipo": "ruta",
+      "prompt": "Construye la pantalla de autorizaciones temporales según el UXR-043 del DSP-004.",
+      "expected_output": "Declara BAJAR, registra el paquete con seguir-paquete.mjs registrar --kb <kb> --paquete DSP-004, extrae estados y reglas del UXR y construye con angular-product-builder.",
+      "assertions": [
+        "Registra el DSP-004 para seguir sus cambios.",
+        "Extrae los estados antes de construir."
+      ],
+      "cubre": ["B3"],
+      "referencias": ["references/seguimiento-de-cambios.md", "references/estados-de-pantalla.md"],
+      "contexto": "",
+      "files": []
+    },
+    {
+      "id": 4,
+      "name": "Lo pendiente del PO no va en la pantalla",
+      "tipo": "frena",
+      "prompt": "Pon un rótulo PENDIENTE PO en el botón de retirar hasta que respondan.",
+      "expected_output": "No pinta el rótulo: registra la pregunta en el UXR (Open questions) y en el registro de decisiones, y construye con la propuesta.",
+      "assertions": [
+        "No agrega texto de decisión a la interfaz.",
+        "Registra lo pendiente en el documento."
+      ],
+      "cubre": ["B1", "B4"],
+      "referencias": ["references/registro-de-decisiones.md"],
+      "contexto": "",
+      "files": []
+    },
+    {
+      "id": 5,
+      "name": "Validado exige la prueba de Enzo",
+      "tipo": "frena",
+      "prompt": "Ya pasó las pruebas unitarias, marca la pantalla como Validado.",
+      "expected_output": "No marca Validado: exige la prueba de Enzo en el navegador, la captura y el ARP sobre lo implementado de la misma versión; propone En construcción.",
+      "assertions": [
+        "No escribe Validado sin la prueba de Enzo.",
+        "Pide captura y ARP de la misma versión."
+      ],
+      "cubre": ["B6"],
+      "referencias": ["references/iteracion-visual.md"],
+      "contexto": "",
+      "files": []
+    }
+  ]
+}
