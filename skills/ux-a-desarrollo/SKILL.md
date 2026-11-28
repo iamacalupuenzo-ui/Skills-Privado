@@ -9,7 +9,7 @@ description: >
   pantalla?" o "compara con el piloto". No diseña (usa em-orquestador-ux), no construye la
   pantalla (usa angular-product-builder) ni publica (usa flujo-producto).
 metadata:
-  version: "1.3.0"
+  version: "1.3.1"
 ---
 
 # De UX a desarrollo
@@ -53,7 +53,7 @@ donde corresponde: en un documento, nunca como rótulo en la interfaz.
 - **B4 — El texto provisional se marca en el documento**, no en la pantalla, y no inventa reglas de negocio.
 - **B5 — Antes de cambiar un componente del DS se explica el cambio con evidencia** (ver `flujo-ds`).
 - **B6 — Lo que se construye se verifica en el navegador contra el piloto**, no solo con pruebas.
-- **B8 — Lo construido se documenta mientras se valida, no al cierre.** Cada texto, componente y comportamiento que difiere de la especificación (un flujo por pestaña que pasó a página, un botón que pasó a aviso, una validación que bloquea en lugar de una vista previa) se registra en el SCR/UXR en la misma rama, con el skill dueño (`ux-requirements-analyzer` en modo ACTUALIZAR para el UXR, con `validar_uxr.py` sin errores; `ui-spec-writer` para la SCR), o en un DEC como desvío, y el informe de accesibilidad (ARP) no se entrega sin esa paridad. Si se deja para el cierre, los documentos describen otra pantalla y QA lo descubre al diseñar sus casos de prueba. La mejora pendiente de automatizarlo está en `em-orquestador-ux/references/mejoras-del-proceso.md`.
+- **B8 — Lo construido se documenta mientras se valida, no al cierre.** Cada texto, componente y comportamiento que difiere de la especificación (un flujo por pestaña que pasó a página, un botón que pasó a aviso, una validación que bloquea en lugar de una vista previa) se registra en la SCR, el FLW o el UXR en la misma rama, con el skill dueño (`ui-spec-writer` para la SCR; `user-flow-designer` en modo ACTUALIZAR para el FLW, con `validar_flw.py` sin errores; `ux-requirements-analyzer` en modo ACTUALIZAR para el UXR, con `validar_uxr.py` sin errores), o en un DEC como desvío, y el informe de accesibilidad (ARP) no se entrega sin esa paridad. Si se deja para el cierre, los documentos describen otra pantalla y QA lo descubre al diseñar sus casos de prueba. La mejora pendiente de automatizarlo está en `em-orquestador-ux/references/mejoras-del-proceso.md`.
 
 ## Cierre de cada iteración
 
