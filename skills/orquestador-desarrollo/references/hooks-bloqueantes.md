@@ -18,7 +18,7 @@ garantiza los pocos casos donde un error no se puede deshacer.
 
 | Acción | Resultado | Por qué | Quién la hace |
 |---|---|---|---|
-| Fusionar un MR (`/merge`, `glab mr merge`) | Bloquea | El agente no fusiona; fusiona quien revisa | Luis en productos (`integration`); César en DS y KB (`develop`) |
+| Fusionar un MR (`/merge`, `glab mr merge`) | Bloquea | El agente no fusiona; fusiona quien revisa | Luis en productos (`integration`); Enzo en DS (`develop` y `release`); César en KB (`develop`) y en `main` del DS |
 | Crear o borrar etiquetas (`git tag`, `--tags`, API de tags) | Bloquea | La etiqueta `ds-vX.Y.Z` la crea el job `tag ds` al publicar la estable; una creada a mano no publica y ocupa la del pipeline | Nadie a mano: el pipeline de `main` |
 | `npm publish` | Bloquea | Publicar un paquete es irreversible; cada rama del DS publica su prerelease sola | César, con el job manual `publish` de `main` (la estable) |
 | `git push` a `develop`, `integration`, `main` o `release` | Bloquea | Están protegidas: solo entran por MR | Quien revisa, tras el MR |
@@ -99,7 +99,7 @@ borrar la rama remota y volver a subirla es lo mismo que forzar. Lo que sí se h
 ## Pregunta de comprobación
 
 Un agente va a ejecutar `git push origin HEAD:release`. ¿Qué pasa y a quién le toca la acción?
-(Respuesta: se bloquea, porque `release` está protegida; la acción entra por MR y la fusiona César, dueño de `release`.)
+(Respuesta: se bloquea, porque `release` está protegida; la acción entra por MR y la fusiona Enzo, que fusiona `develop` y `release` del DS.)
 
 ## Guardias para Codex, Orca y otros agentes
 

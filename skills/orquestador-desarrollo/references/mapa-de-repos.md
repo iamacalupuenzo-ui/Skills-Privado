@@ -26,7 +26,7 @@ Raíz local: la carpeta donde cada persona clona los repositorios (todos hermano
 ## Ramas y quién fusiona
 
 - **Productos (CL2, desde 2026-11-12):** rama `CLF_Feature_<n>` por historia (n = IID del issue en collaboration), desde `origin/develop`; MR a `integration`, que despliega en DEV. Revisa y fusiona Luis (`lrodriguez`), jefe de desarrollo. `integration` nunca se mezcla hacia `develop`: cada rama llega a `develop` (QA) con su propio MR, y eso lo lleva desarrollo. Detalle en `flujo-producto/references/publicar-con-mr.md`.
-- **DS y knowledge-base:** rama `feature/<tema>` desde `origin/develop`; MR a `develop`. Revisa César (`cquevedo`); Enzo puede fusionar, pero César queda de revisor. `release`, `main` y las etiquetas del DS son de César.
+- **DS y knowledge-base:** rama `feature/<tema>` desde `origin/develop`; MR a `develop`. Revisa César (`cquevedo`). En el DS fusiona Enzo (`develop` y `release`); `main`, el job `publish` y las etiquetas son de César.
 - **El agente no fusiona ni etiqueta.** Sube la rama y abre el MR con su revisor. El guardia de `hooks/` lo hace cumplir (ver `hooks-bloqueantes.md`).
 - `develop`, `integration`, `main` y `release` están protegidas: nadie empuja directo, solo por MR.
 - El entorno de Claude Code puede bloquear fusionar sin revisión de otra persona: no se rodea (B6).
