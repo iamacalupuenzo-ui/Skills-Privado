@@ -132,10 +132,10 @@ Separar convenciones generales de rutas, IDs y memorias del equipo.
 ✅ Configuración con procedencia y verificación de vigencia.
 ❌ Dependencia obligatoria de una memoria ausente en otra laptop.
 
-**C20 — Distribución explícita**
-Editar, instalar, registrar y publicar son operaciones independientes.
-✅ Reportar qué destinos se verificaron y cuáles no fueron solicitados.
-❌ Dar por instalado por existir una fila en Notion, o registrar sin pedido.
+**C20 — Distribución completa y verificada**
+Al cerrar, publicar, instalar y registrar en Notion, cada paso con su evidencia.
+✅ PR fusionado, `doctor` en OK y la página de Notion con sus 10 secciones.
+❌ Dar por instalado por existir una fila en Notion, o dejar la página vacía.
 
 ---
 

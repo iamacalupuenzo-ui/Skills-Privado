@@ -6,10 +6,10 @@ description: >
   consola, pruebas, plantillas y ejemplos cuando el skill produce un entregable. Valida con
   scripts/validar_skill.py antes de cerrar. Usar cuando pidan "crea un skill para X",
   "convierte esto en un skill", "audita el skill de Y", "qué le falta al skill de Z",
-  "actualiza el skill de W" o "renombra este skill". No instala, no publica ni registra en
-  Notion sin pedido explícito.
+  "actualiza el skill de W" o "renombra este skill". Al cerrar una creación o actualización
+  validada la publica, la instala y deja su fila y su página completas en Notion.
 metadata:
-  version: "2.0.1"
+  version: "2.1.0"
 ---
 
 # Constructor de skills
@@ -24,7 +24,7 @@ validas contra el molde y sincronizas el catálogo cuando el alcance lo autoriza
    `origin` es `iamacalupuenzo-ui/Skills-Privado`). Las carpetas de `~/.claude/skills` y
    `~/.codex/skills` son destinos instalados, nunca la fuente.
 2. Leer AGENTS.md o CLAUDE.md del repositorio y el skill afectado completo.
-3. Trabajar en una rama; no publicar ni instalar sin pedido (B10).
+3. Trabajar en una rama; publicar solo con la validación en verde (B10).
 4. Si falta acceso, detener solo la operación afectada e informar qué falta.
 
 ## Detección de modo
@@ -49,7 +49,7 @@ Declarar el modo en la primera línea. Leer su protocolo completo antes de actua
 | Al validar | `references/checklist-calidad.md` y `references/evaluaciones.md` |
 | Al registrar, publicar o instalar | `references/flujo-del-catalogo.md` |
 
-Plantillas en `templates/`, ejemplo resuelto en `examples/em-resumen-de-mr/`.
+Plantillas en `templates/` (incluida la página de Notion), ejemplo en `examples/em-resumen-de-mr/`.
 
 ## Validación obligatoria
 
@@ -75,9 +75,9 @@ Detalle y atajos previsibles en `references/reglas.md`.
 - **B7** — Mostrar la arquitectura antes de escribir; consultar solo ampliaciones.
 - **B8** — AUDIT no edita sin aprobación.
 - **B9** — Verificar soporte real por agente.
-- **B10** — Editar, instalar, registrar y publicar son operaciones separadas.
+- **B10** — Al cerrar CREATE, MIGRATE o UPDATE: PR, merge, instalación y Notion, cada uno verificado.
 - **B11** — Referencias que se leen por paso.
-- **B12** — Registrar en la fila existente de Notion, sin duplicar.
+- **B12** — Fila de Notion con propiedades, casillas y página completa; nunca vacía ni duplicada.
 - **B13** — `Activo` solo con validación comprobada.
 - **B14** — Recursos externos con ruta de lectura verificable.
 - **B15** — No cerrar con `validar_skill.py` en rojo.
@@ -86,5 +86,5 @@ Detalle y atajos previsibles en `references/reglas.md`.
 ## Cierre
 
 Modo, archivos cambiados, resultado del validador y de `npm test`, nivel del molde
-(base o entregable) y qué quedó pendiente: registro, publicación e instalación solo si se
-pidieron. Formato de respuesta en `references/reglas.md`, sección 4.
+(base o entregable), PR fusionado, instalación y enlace a la página de Notion. AUDIT no
+escribe nada. Formato de respuesta en `references/reglas.md`, sección 4.
