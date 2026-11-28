@@ -22,12 +22,12 @@ rama de la KB, con el skill dueño del artefacto, no a mano:
 | Artefacto | Skill | Modo y control |
 |---|---|---|
 | UXR | `ux-requirements-analyzer` | `ACTUALIZAR` (o `CONTRASTAR` si es una pantalla entera); `scripts/validar_uxr.py` sin errores |
-| FLW | `user-flow-designer` | Actualiza las pantallas que declara el flujo |
+| FLW | `user-flow-designer` | `ACTUALIZAR` (pasos, ramas y `screens`, sin renumerar IDs); `scripts/validar_flw.py` sin errores |
 | SCR | `ui-spec-writer` | Actualiza estados, componentes y criterios de la pantalla |
 | Desvío de la fuente | Este skill | DEC en `registro-de-decisiones.md` |
 
-El paso no se da por cerrado hasta que `validar_uxr.py` pasa sobre los UXR tocados y el ID no
-cambió. Si la diferencia toca negocio, permisos, datos o alcance, queda como pregunta abierta
+El paso no se da por cerrado hasta que `validar_flw.py` y `validar_uxr.py` pasan sobre los
+flujos y UXR tocados y ningún ID cambió. Si la diferencia toca negocio, permisos, datos o alcance, queda como pregunta abierta
 para el PO; lo demás lo valida y lo escribe el agente.
 
 ## 3. La documentación cambia: el aviso al iniciar la sesión
