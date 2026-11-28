@@ -2,7 +2,7 @@
 name: em-orquestador-ux
 description: Orquesta el diseño UX/UI de Comsatel con siete especialistas (ux-requirements-analyzer, user-flow-designer, ui-spec-writer, claude-design-orchestrator, ux-context-builder, accessibility-reviewer y ux-development-handoff) para llevar historias validadas hasta la Especificación UX (UXS) del paquete y un handoff DESIGN_READY_FOR_DEV, con trazabilidad US→UXR→FLW→SCR→UXS→DTM y compuertas humanas. Es el dueño del ciclo obligatorio de retroalimentación. Úsalo cuando pidan gestionar, completar, auditar o retomar el diseño UX/UI de un paquete, preparar pantallas para Desarrollo, cerrar un paquete de diseño (la UXS), evaluar si una pantalla está lista o decidir qué skill UX/UI va y en qué orden, aunque no nombren ninguno. No redacta artefactos propios, no aprueba diseños y no escribe código.
 metadata:
-  version: "2.0.0"
+  version: "2.0.1"
   reemplaza: "ux-ui-orchestrator 1.2.0 (nació del catálogo de Ilver; el original sigue en skillcatalog)"
 ---
 

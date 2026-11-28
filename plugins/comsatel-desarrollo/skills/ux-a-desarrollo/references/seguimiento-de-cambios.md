@@ -26,6 +26,21 @@ rama de la KB, con el skill dueño del artefacto, no a mano:
 | SCR | `ui-spec-writer` | Actualiza estados, componentes y criterios de la pantalla |
 | Desvío de la fuente | Este skill | DEC en `registro-de-decisiones.md` |
 
+**Orden de propagación (hacia atrás, Enzo, 2026-11-28).** El cambio empieza en el artefacto más
+cercano al código y sube: SCR → nota en la IB → FLW → UXR → UXS. Se detiene en el primer nivel
+que ya no cambia:
+
+| Lo que cambió en lo construido | Hasta dónde llega |
+|---|---|
+| Un texto o un componente | SCR |
+| Un paso, una rama o una pantalla nueva | SCR y FLW |
+| Una capacidad o una regla | SCR, FLW y UXR; si toca negocio, pregunta al PO |
+
+- La UXS se actualiza siempre al final, porque consolida todo el paquete.
+- La exploración (IB) no se rehace: es el registro de lo que se exploró. Se le agrega una nota
+  «superada por DEC-NNN, AAAA-MM-DD» y se enlaza el DEC.
+- La historia (HU) nunca se edita: se le propone un comentario al analista.
+
 El paso no se da por cerrado hasta que `validar_flw.py` y `validar_uxr.py` pasan sobre los
 flujos y UXR tocados y ningún ID cambió. Si la diferencia toca negocio, permisos, datos o alcance, queda como pregunta abierta
 para el PO; lo demás lo valida y lo escribe el agente.

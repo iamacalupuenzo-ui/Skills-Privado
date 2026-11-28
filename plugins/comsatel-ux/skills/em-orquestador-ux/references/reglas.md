@@ -47,6 +47,7 @@ decidir. SKILL.md trae cada regla en una línea; aquí está el porqué.
 ## 4. Reglas de operación
 
 - **Actualizar, no reemplazar.** IDs permanentes (UXR, FLW, SCR, CMP, TKN, GEN, STP, DD, ARP, HOF, DTM). Nunca renumeres ni dupliques.
+- **Propagar hacia atrás y parar a tiempo** (Enzo, 2026-11-28). Si lo construido difiere, el cambio sube desde lo más cercano al código: SCR → nota en la IB → FLW → UXR → UXS, y se detiene en el primer nivel que ya no cambia (texto o componente: SCR; paso o pantalla: + FLW; capacidad o regla: + UXR y, si es negocio, pregunta al PO). La UXS va siempre al final; la IB no se rehace, se anota como superada por el DEC; la HU no se edita. Detalle en `ux-a-desarrollo/references/seguimiento-de-cambios.md`.
 - **Sin huérfanos.** Todo artefacto de diseño cuelga de FLW/SCR y estos de US/UXR. El DTM es la **única** fuente del vínculo SCR↔Stitch/Figma; no copies referencias externas al SCR.
 - **Exploración ≠ diseño gobernado.** Claude Design (y Stitch, si se usa) exploran. El diseño se gobierna en Claude Design con un DD humano, o con el prototipo construido en código y validado al terminar de construir; Figma gobierna solo si se usa. Al desarrollo nunca se entrega un artefacto Stitch si existe Figma gobernado.
 - **No inventar.** Ante un vacío (permiso, estado, contenido, token), abre pregunta. No aceptes contenido que Stitch inventó; anótalo.

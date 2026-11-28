@@ -9,7 +9,7 @@ description: >
   pantalla?" o "compara con el piloto". No diseña (usa em-orquestador-ux), no construye la
   pantalla (usa angular-product-builder) ni publica (usa flujo-producto).
 metadata:
-  version: "1.3.1"
+  version: "1.3.2"
 ---
 
 # De UX a desarrollo
